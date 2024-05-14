@@ -13,6 +13,7 @@ Here are some example programs:
 import { fp } from "@tscircuit/footprinter"
 
 fp.cap().w(0.4).h(0.2)
+fp.cap().p(0.1).pw(0.1).ph(0.1) // pitch, pad width and pad height
 fp.cap().metric("0402")
 fp.res().imperial("01005")
 fp.dip(4).w(7.62)
@@ -37,3 +38,8 @@ fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 attempts to convert the specified string into a `footprinter` string. This can
 help when you're looking at a random package designator from an online site. You
 should always confirm these footprints against the datasheet.
+
+## Generation Defaults
+
+- Pins are CCW starting at the top left
+- Y is upward-positive, X is rightward-positive
