@@ -26,9 +26,9 @@ A footprinter string is a string that maps to a set of builder calls.
 ```ts
 import { fp } from "@tscircuit/footprinter"
 
-fp("dip4_w7.62") // same as fp.dip(4).w(7.62)
-fp("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
-fp("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
+fp.string("dip4_w7.62") // same as fp.dip(4).w(7.62)
+fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
+fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 ```
 
 ## Magic
