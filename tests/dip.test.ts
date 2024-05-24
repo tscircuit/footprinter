@@ -23,7 +23,12 @@ const toPinPositionString = (soup: AnySoupElement[]) => {
     })
     .filter(Boolean)
     .sort((a: any, b: any) => a.pn - b.pn)
-    .map((e: any) => `${e.pn}: ${e.x.toFixed(2)},${e.y.toFixed(2)}`)
+    .map(
+      (e: any) =>
+        `${e.pn.padEnd(2)}: ${e.x.toFixed(2).padStart(5)} ${e.y
+          .toFixed(2)
+          .padStart(5)}`
+    )
     .join("\n")
 }
 
@@ -34,10 +39,10 @@ test("dip footprint", (t) => {
   t.is(
     ps,
     `
-1: -2,1
-2: -2,-1
-3: 2,-1
-4: 2,1
+1 : -2.00  1.00
+2 : -2.00 -1.00
+3 :  2.00 -1.00
+4 :  2.00  1.00
   `.trim()
   )
 })
