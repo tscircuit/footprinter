@@ -12,6 +12,8 @@ type StandardSize = {
   C_mm_ref: number
 }
 
+// https://www.worthingtonassembly.com/perfect-0201-footprint
+// https://static1.squarespace.com/static/54982a02e4b02e9f5e5d9ca7/t/660c692f69a0d83a4afecdf0/1712089391915/Discrete+Component+Footprints.pdf
 // https://page.venkel.com/hubfs/Resources/Technical/Resistors%20Landing%20Pattern.pdf
 const sizes = [
   {
@@ -33,10 +35,10 @@ const sizes = [
   {
     imperial: "0402",
     metric: "1005",
-    Z_mm_min: 2.0,
+    Z_mm_min: 1.6,
     G_mm_min: 0.4,
-    X_mm_min: 0.6,
-    C_mm_ref: 1.3,
+    X_mm_min: 0.7,
+    C_mm_ref: 1,
   },
   {
     imperial: "0603",
@@ -89,10 +91,12 @@ const sizes = [
 ]
 const metricMap: Record<string, StandardSize> = sizes.reduce((acc: any, s) => {
   acc[s.metric] = s
+  return acc
 }, {})
 const imperialMap: Record<string, StandardSize> = sizes.reduce(
   (acc: any, s) => {
     acc[s.imperial] = s
+    return acc
   },
   {}
 )
@@ -166,9 +170,6 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
       platedhole(2, -p / 2, 0, pw, (pw * 1) / 0.8),
     ]
   } else {
-    return [
-      rectpad(-p / 2 - pw / 2, 0, pw, ph),
-      rectpad(p / 2 + pw / 2, 0, pw, ph),
-    ]
+    return [rectpad(1, -p / 2, 0, pw, ph), rectpad(2, p / 2, 0, pw, ph)]
   }
 }

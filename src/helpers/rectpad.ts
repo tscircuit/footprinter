@@ -1,5 +1,6 @@
 import type { PCBSMTPad } from "@tscircuit/soup"
 export const rectpad = (
+  pn: number,
   x: number,
   y: number,
   w: number,
@@ -14,5 +15,6 @@ export const rectpad = (
     layer: "top",
     shape: "rect",
     pcb_smtpad_id: "",
+    port_hints: [pn.toString()],
   }
 }
