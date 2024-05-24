@@ -1,7 +1,15 @@
+import type { AnySoupElement } from "@tscircuit/soup"
+
 export const toPinPositionString = (soup: AnySoupElement[]) => {
   return soup
-    .map((e) => {
+    .map((e: AnySoupElement) => {
       if (e.type === "pcb_plated_hole") {
+        return {
+          x: e.x,
+          y: e.y,
+          pn: e.port_hints?.[0],
+        }
+      } else if (e.type === "pcb_smtpad") {
         return {
           x: e.x,
           y: e.y,

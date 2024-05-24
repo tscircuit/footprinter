@@ -24,3 +24,18 @@ test("dip footprint", (t) => {
   `.trim()
   )
 })
+
+test("dip4_w3", (t) => {
+  const soup = fp.string("dip4_w3").soup()
+  const ps = toPinPositionString(soup)
+
+  t.is(
+    ps,
+    `
+1 : -1.50  1.27
+2 : -1.50 -1.27
+3 :  1.50 -1.27
+4 :  1.50  1.27
+  `.trim()
+  )
+})

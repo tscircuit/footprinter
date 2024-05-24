@@ -11,7 +11,15 @@ export type FootprinterParamsBuilder<K extends string> = {
     : (v?: number | string) => FootprinterParamsBuilder<K>
 }
 
-type CommonPassiveOptionKey = "metric" | "imperial" | "tht" | "p"
+type CommonPassiveOptionKey =
+  | "metric"
+  | "imperial"
+  | "tht"
+  | "p"
+  | "pw"
+  | "ph"
+  | "w"
+  | "h"
 
 export type Footprinter = {
   dip: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
@@ -23,13 +31,28 @@ export type Footprinter = {
   quad: (
     num_pins: number
   ) => FootprinterParamsBuilder<
-    "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p"
+    "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
   >
   params: () => any
   soup: () => AnySoupElement[]
 }
 
-export const footprinter = (): Footprinter => {
+export const string = (def: string): Footprinter => {
+  let fp = footprinter()
+
+  const def_parts = def.split("_").map((s) => {
+    const m = s.match(/([a-z]+)(\d+)?/)
+    return { fn: m?.[1]!, v: m?.[2]! }
+  })
+
+  for (const { fn, v } of def_parts) {
+    fp = fp[fn](v)
+  }
+
+  return fp
+}
+
+export const footprinter = (): Footprinter & { string: typeof string } => {
   const proxy = new Proxy(
     {},
     {
@@ -61,5 +84,6 @@ export const footprinter = (): Footprinter => {
   )
   return proxy as any
 }
+footprinter.string = string
 
 export const fp = footprinter
