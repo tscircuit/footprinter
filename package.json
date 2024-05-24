@@ -16,5 +16,8 @@
     "esbuild": "^0.21.2",
     "esbuild-register": "^3.5.0",
     "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@tscircuit/mm": "^0.0.6"
   }
 }

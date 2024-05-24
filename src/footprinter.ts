@@ -3,15 +3,18 @@ import { diode } from "./fn/diode"
 import { cap } from "./fn/cap"
 import { led } from "./fn/led"
 import { res } from "./fn/res"
+import { AnySoupElement } from "@tscircuit/soup"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K]: (v?: number | string) => FootprinterParamsBuilder<K>
+  [P in K | "params" | "soup"]: P extends "params" | "soup"
+    ? Footprinter[P]
+    : (v?: number | string) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey = "metric" | "imperial" | "tht" | "p"
 
 export type Footprinter = {
-  dip: (num_pins: number) => FootprinterParamsBuilder<"w">
+  dip: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
@@ -22,9 +25,11 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p"
   >
+  params: () => any
+  soup: () => AnySoupElement[]
 }
 
-export const footprinter = () => {
+export const footprinter = (): Footprinter => {
   const proxy = new Proxy(
     {},
     {
@@ -39,7 +44,7 @@ export const footprinter = () => {
           return () => {
             // TODO improve error
             throw new Error(
-              "No function found for footprinter, make sure to specify .dip, .lr, .p, etc.!"
+              "No function found for footprinter, make sure to specify .dip, .lr, .p, etc."
             )
           }
         }
