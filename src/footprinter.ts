@@ -34,6 +34,11 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
   >
+  bga: (
+    num_pins: number
+  ) => FootprinterParamsBuilder<
+    "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
+  >
   params: () => any
   soup: () => AnySoupElement[]
 }
@@ -42,7 +47,8 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   const def_parts = def.split("_").map((s) => {
-    const m = s.match(/([a-z]+)(\d+)?/)
+    const m = s.match(/([a-z]+)([\d\-\+x;,]+)?/)
+    const [_, fn, v] = m ?? []
     return { fn: m?.[1]!, v: m?.[2]! }
   })
 
