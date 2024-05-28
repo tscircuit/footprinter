@@ -75,7 +75,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           return () => {
             // TODO improve error
             throw new Error(
-              "No function found for footprinter, make sure to specify .dip, .lr, .p, etc."
+              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`
             )
           }
         }
@@ -84,7 +84,12 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           return () => target
         }
         return (v: any) => {
-          target[prop] = v ?? true
+          if (["bga", "lr", "quad", "dip"].includes(prop as string)) {
+            target[prop] = true
+            target.num_pins = parseFloat(v)
+          } else {
+            target[prop] = v ?? true
+          }
           return proxy
         }
       },

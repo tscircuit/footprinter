@@ -14,7 +14,7 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
   const pads: PCBSMTPad[] = []
 
   const missing_pin_nums = (missing ?? []).filter((a) => typeof a === "number")
-  const num_pins_missing = num_pins - grid.x * grid.y
+  const num_pins_missing = grid.x * grid.y - num_pins
 
   if (missing?.includes("center")) {
     // Find the largest square that's square is less than
@@ -40,7 +40,7 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
 
   if (num_pins_missing !== missing_pin_nums.length) {
     throw new Error(
-      `not able to create bga component, unable to determine missing pins (try specifiying them with "missing+1+2"\n\n${JSON.stringify(
+      `not able to create bga component, unable to determine missing pins (try specifying them with "missing+1+2+..."\n\n${JSON.stringify(
         bga_params,
         null,
         "  "
@@ -56,7 +56,7 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
       if (missing_pin_nums_set.has(pin_num)) continue
 
       const pad_x = (x - (grid.x - 1) / 2) * p
-      const pad_y = (y - (grid.y - 1) / 2) * p
+      const pad_y = -(y - (grid.y - 1) / 2) * p
 
       pads.push(rectpad(pin_num, pad_x, pad_y, pad, pad))
     }
