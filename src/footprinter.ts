@@ -3,6 +3,7 @@ import { diode } from "./fn/diode"
 import { cap } from "./fn/cap"
 import { led } from "./fn/led"
 import { res } from "./fn/res"
+import { bga } from "./fn/bga"
 import { AnySoupElement } from "@tscircuit/soup"
 
 export type FootprinterParamsBuilder<K extends string> = {
@@ -63,6 +64,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           if ("cap" in target) return () => cap(target)
           if ("led" in target) return () => led(target)
           if ("res" in target) return () => res(target)
+          if ("bga" in target) return () => bga(target)
 
           return () => {
             // TODO improve error
