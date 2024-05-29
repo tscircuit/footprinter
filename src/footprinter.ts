@@ -4,7 +4,7 @@ import { cap } from "./fn/cap"
 import { led } from "./fn/led"
 import { res } from "./fn/res"
 import { bga } from "./fn/bga"
-import { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "@tscircuit/soup"
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | "params" | "soup"]: P extends "params" | "soup"
