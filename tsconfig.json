@@ -5,6 +5,7 @@
     "skipLibCheck": true,
     "target": "es2022",
     "allowJs": true,
+    "baseUrl": ".",
     "resolveJsonModule": true,
     "moduleDetection": "force",
     "isolatedModules": true,
