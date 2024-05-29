@@ -50,10 +50,15 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
 
   const missing_pin_nums_set = new Set(missing_pin_nums)
 
+  let missing_pins_passed = 0
   for (let y = 0; y < grid.y; y++) {
     for (let x = 0; x < grid.x; x++) {
-      const pin_num = y * grid.x + x + 1
-      if (missing_pin_nums_set.has(pin_num)) continue
+      let pin_num = y * grid.x + x + 1
+      if (missing_pin_nums_set.has(pin_num)) {
+        missing_pins_passed++
+        continue
+      }
+      pin_num -= missing_pins_passed
 
       const pad_x = (x - (grid.x - 1) / 2) * p
       const pad_y = -(y - (grid.y - 1) / 2) * p
