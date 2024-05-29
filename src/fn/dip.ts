@@ -1,5 +1,16 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
+import { z } from "zod"
+import { length } from "@tscircuit/soup"
+
+const dip_def = z.object({
+  dip: z.literal(true),
+  num_pins: z.number(),
+  w: length,
+  p: length.optional(),
+  id: length.optional(),
+  od: length.optional(),
+})
 
 export const getCcwDipCoords = (
   pinCount: number,
@@ -40,6 +51,7 @@ export const dip = (params: {
   id?: string | number
   od?: string | number
 }): AnySoupElement[] => {
+  params = dip_def.parse(params)
   const platedHoles: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
     const { x, y } = getCcwDipCoords(

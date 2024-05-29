@@ -47,7 +47,7 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   const def_parts = def.split("_").map((s) => {
-    const m = s.match(/([a-z]+)([\(\d\+].*)?/)
+    const m = s.match(/([a-z]+)([\(\d\.\+].*)?/)
     const [_, fn, v] = m ?? []
     return { fn: m?.[1]!, v: m?.[2]! }
   })

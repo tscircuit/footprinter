@@ -26,8 +26,8 @@ test("dip footprint", (t) => {
   )
 })
 
-test("dip4_w3", (t) => {
-  const soup = fp.string("dip4_w3").soup()
+test("dip4_w3.00mm", (t) => {
+  const soup = fp.string("dip4_w3.00mm").soup()
   const ps = toPinPositionString(soup)
 
   t.is(
