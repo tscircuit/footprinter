@@ -1,4 +1,5 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
+import { u_curve } from "../helpers/u-curve"
 import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
 import { length } from "@tscircuit/soup"
@@ -91,5 +92,27 @@ export const dip = (raw_params: {
       platedhole(i + 1, x, y, params.id ?? "0.8mm", params.od ?? "1mm")
     )
   }
-  return platedHoles
+  /** silkscreen width */
+  const sw = params.w - params.od - 0.4
+  const sh = (params.num_pins / 2 - 1) * params.p + params.od + 0.4
+  const silkscreenBorder: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -sw / 2, y: -sh / 2 },
+      { x: -sw / 2, y: sh / 2 },
+      // Little U shape at the top
+      ...u_curve.map(({ x, y }) => ({
+        x: (x * sw) / 6,
+        y: (y * sw) / 6 + sh / 2,
+      })),
+      { x: sw / 2, y: sh / 2 },
+      { x: sw / 2, y: -sh / 2 },
+      { x: -sw / 2, y: -sh / 2 },
+    ],
+    type: "pcb_silkscreen_path",
+  }
+
+  return [...platedHoles, silkscreenBorder]
 }
