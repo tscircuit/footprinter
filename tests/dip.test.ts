@@ -1,7 +1,7 @@
 import test from "ava"
 import { fp } from "../src/footprinter"
 import type { AnySoupElement } from "@tscircuit/soup"
-import { toPinPositionString } from "./fixtures"
+import { getTestFixture, toPinPositionString } from "./fixtures"
 
 test("dip params", (t) => {
   t.deepEqual(fp().dip(4).w(7.62).params(), {
@@ -26,7 +26,8 @@ test("dip footprint", (t) => {
   )
 })
 
-test("dip4_w3.00mm", (t) => {
+test("dip4_w3.00mm", async (t) => {
+  const { fp, logSoup } = await getTestFixture(t)
   const soup = fp.string("dip4_w3.00mm").soup()
   const ps = toPinPositionString(soup)
 
@@ -39,4 +40,6 @@ test("dip4_w3.00mm", (t) => {
 4 :  1.50  1.27
   `.trim()
   )
+
+  await logSoup(soup)
 })
