@@ -5,7 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "ava tests/dip.test.ts"
+    "test": "ava"
   },
   "keywords": [],
   "author": "",
