@@ -5,6 +5,7 @@ import { led } from "./fn/led"
 import { res } from "./fn/res"
 import { bga } from "./fn/bga"
 import type { AnySoupElement } from "@tscircuit/soup"
+import { isNotNull } from "./helpers/is-not-null"
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | "params" | "soup"]: P extends "params" | "soup"
@@ -48,11 +49,15 @@ export type Footprinter = {
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
-  const def_parts = def.split("_").map((s) => {
-    const m = s.match(/([a-z]+)([\(\d\.\+].*)?/)
-    const [_, fn, v] = m ?? []
-    return { fn: m?.[1]!, v: m?.[2]! }
-  })
+  const def_parts = def
+    .split("_")
+    .map((s) => {
+      const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
+      const [_, fn, v] = m ?? []
+      if (v?.includes("?")) return null
+      return { fn: m?.[1]!, v: m?.[2]! }
+    })
+    .filter(isNotNull)
 
   for (const { fn, v } of def_parts) {
     fp = fp[fn](v)
