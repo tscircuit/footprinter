@@ -1,9 +1,9 @@
 {
   "name": "@tscircuit/footprinter",
   "type": "module",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.cjs",
   "scripts": {
     "test": "ava",
     "build": "tsup ./src/index.ts --dts --sourcemap"
