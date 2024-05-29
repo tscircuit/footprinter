@@ -1,7 +1,7 @@
 import type { AnySoupElement, PCBSMTPad } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
-import { PassiveDef, passive } from "../helpers/passive-fn"
-import { BgaDef, BgaDefInput, bga_def } from "../helpers/zod/bga-def"
+import { type BgaDefInput, bga_def } from "../helpers/zod/bga-def"
+import { ALPHABET } from "../helpers/zod/ALPHABET"
 
 export const bga = (params: BgaDefInput): AnySoupElement[] => {
   const bga_params = bga_def.parse(params)
@@ -15,6 +15,16 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
 
   const missing_pin_nums = (missing ?? []).filter((a) => typeof a === "number")
   const num_pins_missing = grid.x * grid.y - num_pins
+
+  if (missing.length === 0 && num_pins_missing > 0) {
+    // No missing pins specified, let's see if a squared center works
+    // if num_pins_missing is a square
+    if (Math.sqrt(num_pins_missing) % 1 === 0) {
+      missing.push("center")
+    } else if (num_pins_missing === 1) {
+      missing.push("topleft")
+    }
+  }
 
   if (missing?.includes("center")) {
     // Find the largest square that's square is less than
@@ -63,7 +73,10 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
       const pad_x = (x - (grid.x - 1) / 2) * p
       const pad_y = -(y - (grid.y - 1) / 2) * p
 
-      pads.push(rectpad(pin_num, pad_x, pad_y, pad, pad))
+      // TODO handle >26 rows
+      pads.push(
+        rectpad([pin_num, `${ALPHABET[y]}${x + 1}`], pad_x, pad_y, pad, pad)
+      )
     }
   }
 

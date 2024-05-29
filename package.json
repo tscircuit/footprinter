@@ -23,6 +23,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@tscircuit/mm": "^0.0.6"
+    "@tscircuit/mm": "^0.0.7"
   }
 }

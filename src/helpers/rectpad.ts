@@ -1,6 +1,6 @@
 import type { PCBSMTPad } from "@tscircuit/soup"
 export const rectpad = (
-  pn: number,
+  pn: number | Array<string | number>,
   x: number,
   y: number,
   w: number,
@@ -15,6 +15,8 @@ export const rectpad = (
     layer: "top",
     shape: "rect",
     pcb_smtpad_id: "",
-    port_hints: [pn.toString()],
+    port_hints: Array.isArray(pn)
+      ? pn.map((item) => item.toString())
+      : [pn.toString()],
   }
 }
