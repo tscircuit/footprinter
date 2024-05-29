@@ -43,9 +43,7 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
   >
-  soic: (
-    num_pins: number
-  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
+  soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
   params: () => any
   soup: () => AnySoupElement[]
 }
@@ -96,9 +94,15 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           return () => target
         }
         return (v: any) => {
-          if (["bga", "lr", "quad", "dip"].includes(prop as string)) {
+          if (Object.keys(target).length === 0) {
             target[prop] = true
-            target.num_pins = parseFloat(v)
+            if (prop === "res" || prop === "cap") {
+              if (v) {
+                target.imperial = v // res0402, cap0603 etc.
+              }
+            } else {
+              target.num_pins = parseFloat(v)
+            }
           } else {
             target[prop] = v ?? true
           }
