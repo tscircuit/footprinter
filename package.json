@@ -5,7 +5,7 @@
   "description": "",
   "main": "dist/index.cjs",
   "scripts": {
-    "test": "ava",
+    "test": "FULL_RUN=1 ava",
     "build": "tsup ./src/index.ts --dts --sourcemap"
   },
   "keywords": [],

@@ -8,10 +8,12 @@ export const getTestFixture = async (t: ExecutionContext) => {
     fp,
     logSoup: (soup: AnySoupElement[]) => {
       if (process.env.CI) return
+      if (process.env.FULL_RUN) return
       return logSoup(`footprinter: ${t.title}`, soup)
     },
     logSoupWithPrefix: (prefix: string, soup: AnySoupElement[]) => {
       if (process.env.CI) return
+      if (process.env.FULL_RUN) return
       return logSoup(`footprinter: ${t.title} ${prefix}`, soup)
     },
   }
