@@ -33,16 +33,17 @@ export const getCcwDipCoords = (
  * Returns the plated holes for a DIP package.
  */
 export const dip = (params: {
-  dip: number
+  dip: true
+  num_pins: number
   w: number
   p?: number
   id?: string | number
   od?: string | number
 }): AnySoupElement[] => {
   const platedHoles: AnySoupElement[] = []
-  for (let i = 0; i < params.dip; i++) {
+  for (let i = 0; i < params.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
-      params.dip,
+      params.num_pins,
       i + 1,
       params.w,
       params.p ?? 2.54
