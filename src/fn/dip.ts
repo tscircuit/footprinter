@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
 import { length } from "@tscircuit/soup"
