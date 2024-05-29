@@ -1,5 +1,7 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 
+export { getTestFixture } from "./get-test-fixture"
+
 export const toPinPositionString = (soup: AnySoupElement[]) => {
   return soup
     .map((e: AnySoupElement) => {

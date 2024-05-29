@@ -43,3 +43,20 @@ should always confirm these footprints against the datasheet.
 
 - Pins are CCW starting at the top left
 - Y is upward-positive, X is rightward-positive
+
+## Slop
+
+Slop is a "sloppy" definition, it really doesn't have enough
+information to draw a footprint, i.e. it's missing critical dimensions.
+
+footprinter is extremely tolerant to Slop, because it's useful
+when you're iterating incrementally towards a fully constrained
+design, or when you're using footprinter strings as an output format
+for an AI.
+
+Generally when footprinter is interpreting a sloppy definition, it will use
+industry best practices or otherwise "reasonable" defaults. In theory, upgrading
+footprinter could cause the defaults to change, which is why sloppy definitions
+are generally not desirable.
+
+Currently it's not possible to see if a given definition is sloppy.

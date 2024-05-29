@@ -1,6 +1,6 @@
 import test from "ava"
 import { fp } from "../src/footprinter"
-import { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "@tscircuit/soup"
 import { toPinPositionString } from "./fixtures"
 
 test("dip params", (t) => {
