@@ -8,6 +8,7 @@ import { soic } from "./fn/soic"
 import { quad } from "./fn/quad"
 import { qfn } from "./fn/qfn"
 import { qfp } from "./fn/qfp"
+import { mlp } from "./fn/mlp"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
@@ -51,7 +52,8 @@ export type Footprinter = {
   >
   qfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
-  params: () => any
+  mlp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">,
+  params: () => any,
   soup: () => AnySoupElement[]
 }
 
@@ -91,6 +93,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           if ("quad" in target) return () => quad(target)
           if ("qfn" in target) return () => qfn(target)
           if ("qfp" in target) return () => qfp(target)
+          if ("mlp" in target) return () => mlp(target)
 
           return () => {
             // TODO improve error
