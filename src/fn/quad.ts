@@ -97,6 +97,8 @@ export const quad = (
   const params = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
   const pin_map = getQuadPinMap(params)
+  /** Side pin count */
+  const spc = params.num_pins / 4
   for (let i = 0; i < params.num_pins; i++) {
     const {
       x,
@@ -136,24 +138,42 @@ export const quad = (
 
   // Silkscreen corners
   const silkscreen_corners: PcbSilkscreenPath[] = []
-  for (let corner_index = 0; corner_index < 4; corner_index++) {
-    const dx = Math.floor(corner_index / 2) * 2 - 1
-    const dy = 1 - (corner_index % 2) * 2
+  for (const [corner, dx, dy] of [
+    ["top-left", -1, 1],
+    ["bottom-left", -1, -1],
+    ["bottom-right", 1, -1],
+    ["top-right", 1, 1],
+  ] as const) {
+    // const dx = Math.floor(corner_index / 2) * 2 - 1
+    // const dy = 1 - (corner_index % 2) * 2
     const corner_x = (params.w / 2 - params.pl / 2) * dx
     const corner_y = (params.h / 2 - params.pl / 2) * dy
     let arrow: "none" | "in1" | "in2" = "none"
     /** corner size */
     const csz = params.pw * 2
-    if (pin_map[1] === 1 && corner_index === 0) {
+
+    if (pin_map[1] === 1 && corner === "top-left") {
       arrow = "in1"
-    } else if (pin_map[16] === 1 && corner_index === 0) {
+    } else if (pin_map[spc * 4] === 1 && corner === "top-left") {
+      arrow = "in2"
+    } else if (pin_map[spc * 3 + 1] === 1 && corner === "top-right") {
+      arrow = "in2"
+    } else if (pin_map[spc * 3] === 1 && corner === "top-right") {
+      arrow = "in1"
+    } else if (pin_map[spc] === 1 && corner === "bottom-left") {
+      arrow = "in1"
+    } else if (pin_map[spc + 1] === 1 && corner === "bottom-left") {
+      arrow = "in2"
+    } else if (pin_map[spc * 2] === 1 && corner === "bottom-right") {
+      arrow = "in1"
+    } else if (pin_map[spc * 2 + 1] === 1 && corner === "bottom-right") {
       arrow = "in2"
     }
     if (arrow === "none") {
       silkscreen_corners.push({
         layer: "top",
         pcb_component_id: "",
-        pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner_index}`,
+        pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}`,
         route: [
           {
             x: corner_x - csz * dx,
@@ -176,7 +196,7 @@ export const quad = (
         {
           layer: "top",
           pcb_component_id: "",
-          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner_index}`,
+          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_1`,
           route: [
             {
               x: corner_x - csz * dx,
@@ -192,7 +212,7 @@ export const quad = (
         {
           layer: "top",
           pcb_component_id: "",
-          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner_index}`,
+          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_2`,
           route: [
             {
               x: corner_x,
@@ -208,10 +228,10 @@ export const quad = (
         {
           layer: "top",
           pcb_component_id: "",
-          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner_index}`,
+          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_3`,
           route: [
             {
-              x: corner_x - 0.2,
+              x: corner_x - 0.2 * -dx,
               y: corner_y + 0.2 * rotate_arrow,
             },
             {
@@ -219,11 +239,11 @@ export const quad = (
               y: corner_y,
             },
             {
-              x: corner_x + 0.2 * rotate_arrow,
+              x: corner_x + 0.2 * rotate_arrow * -dx,
               y: corner_y + 0.2,
             },
             {
-              x: corner_x - 0.2,
+              x: corner_x - 0.2 * -dx,
               y: corner_y + 0.2 * rotate_arrow,
             },
           ],

@@ -11,11 +11,11 @@ test("quad16_w4_l4_p0.4_pw0.25_pl0.4", async (t) => {
   t.pass()
 })
 
-test("quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(topside,leftpin)", async (t) => {
+test("quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(bottomside,leftpin)", async (t) => {
   const { fp, logSoup } = await getTestFixture(t)
   const soup = fp
     .string(
-      "quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(topside,leftpin)"
+      "quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(bottomside,leftpin)"
     )
     .soup()
 
