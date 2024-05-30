@@ -6,6 +6,7 @@ import { res } from "./fn/res"
 import { bga } from "./fn/bga"
 import { soic } from "./fn/soic"
 import { quad } from "./fn/quad"
+import { qfn } from "./fn/qfn"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
@@ -44,6 +45,9 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
   >
+  qfn: (
+    num_pins: number
+  ) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
   params: () => any
   soup: () => AnySoupElement[]
@@ -83,6 +87,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           if ("bga" in target) return () => bga(target)
           if ("soic" in target) return () => soic(target)
           if ("quad" in target) return () => quad(target)
+          if ("qfn" in target) return () => qfn(target)
 
           return () => {
             // TODO improve error
