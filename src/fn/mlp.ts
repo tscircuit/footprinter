@@ -6,5 +6,8 @@ export const mlp_def = base_quad_def.extend({}).transform(quadTransform)
 
 export const mlp = (params: z.input<typeof mlp_def>): AnySoupElement[] => {
   params.legsoutside = false
+  if (params.thermalpad === undefined) {
+    params.thermalpad = true
+  }
   return quad(params)
 }
