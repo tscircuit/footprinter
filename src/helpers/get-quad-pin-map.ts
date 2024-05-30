@@ -21,7 +21,8 @@ import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
  * 7 -> 3
  * 8 -> 2
  *
- * Which allows us to create the CW version of the package:
+ * Which allows us to create the CW version of the package using...
+ * new_pin = pin_map[old_pin]
  *
  *    2 3
  *  1     4
