@@ -60,6 +60,8 @@ const quad_def = base_quad_def.transform((v) => {
   return v as NowDefined<typeof v, "w" | "h" | "p" | "pw" | "pl">
 })
 
+const SIDES_CCW = ["left", "bottom", "right", "top"] as const
+
 export const getQuadCoords = (
   pinCount: number,
   pn: number, // pin number
@@ -68,26 +70,26 @@ export const getQuadCoords = (
   p: number // pitch between pins
 ) => {
   const sidePinCount = pinCount / 4
-  const side = Math.floor((pn - 1) / sidePinCount)
+  const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
 
   const halfW = w / 2
-  const halfL = h / 2
+  const halfH = h / 2
 
   /** inner box width */
-  const ibw = p * sidePinCount
-  // /** inner box height */
-  const ibh = p * sidePinCount
+  const ibw = p * (sidePinCount - 1)
+  /** inner box height */
+  const ibh = p * (sidePinCount - 1)
 
   switch (side) {
-    case 0:
-      return { x: -ibw, y: ibh - pos * p, o: "vert" } // left side
-    case 1:
-      return { x: -ibw + pos * p, y: -ibh, o: "horz" } // bottom side
-    case 2:
-      return { x: ibw, y: -ibh + pos * p, o: "vert" } // right side
-    case 3:
-      return { x: ibw - pos * p, y: ibh, o: "horz" } // top side
+    case "left":
+      return { x: -halfW / 2, y: ibh / 2 - pos * p, o: "vert" }
+    case "bottom":
+      return { x: -ibw / 2 + pos * p, y: -halfH / 2, o: "horz" }
+    case "right":
+      return { x: halfW / 2, y: -ibh / 2 + pos * p, o: "vert" }
+    case "top":
+      return { x: ibw / 2 - pos * p, y: halfH / 2, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }
@@ -118,12 +120,12 @@ export const quad = (raw_params: {
     )
 
     let pw = params.pw,
-      ph = params.pl
-    if (orientation === "horz") {
-      ;[pw, ph] = [ph, pw]
+      pl = params.pl
+    if (orientation === "vert") {
+      ;[pw, pl] = [pl, pw]
     }
 
-    pads.push(rectpad(i + 1, x, y, pw, ph))
+    pads.push(rectpad(i + 1, x, y, pw, pl))
   }
   return pads
 }

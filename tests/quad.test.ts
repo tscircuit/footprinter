@@ -3,9 +3,9 @@ import { fp } from "../src/footprinter"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { getTestFixture, toPinPositionString } from "./fixtures"
 
-test("quad16_w4_l4_p0.5", async (t) => {
+test("quad16_w4_l4_p0.4_pw0.25_pl0.4", async (t) => {
   const { fp, logSoup } = await getTestFixture(t)
-  const soup = fp.string("quad16_w4_l4").soup()
+  const soup = fp.string("quad16_w4_l4_p0.4_pw0.25_pl0.4").soup()
 
   await logSoup(soup)
   t.pass()
