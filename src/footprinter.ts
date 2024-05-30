@@ -5,6 +5,7 @@ import { led } from "./fn/led"
 import { res } from "./fn/res"
 import { bga } from "./fn/bga"
 import { soic } from "./fn/soic"
+import { quad } from "./fn/quad"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
@@ -81,6 +82,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           if ("res" in target) return () => res(target)
           if ("bga" in target) return () => bga(target)
           if ("soic" in target) return () => soic(target)
+          if ("quad" in target) return () => quad(target)
 
           return () => {
             // TODO improve error
