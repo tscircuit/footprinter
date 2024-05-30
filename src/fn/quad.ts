@@ -117,7 +117,7 @@ export const quad = (raw_params: {
       ;[pw, pl] = [pl, pw]
     }
 
-    const pn = getQuadPinMap(params)[i + 1]
+    const pn = pin_map[i + 1]
     pads.push(rectpad(pn!, x, y, pw, pl))
   }
   return pads
