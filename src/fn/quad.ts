@@ -60,14 +60,15 @@ const quad_def = base_quad_def.transform((v) => {
 
 const SIDES_CCW = ["left", "bottom", "right", "top"] as const
 
-export const getQuadCoords = (
-  pinCount: number,
-  pn: number, // pin number
-  w: number, // width of the package
-  h: number, // height (length) of the package
-  p: number, // pitch between pins
+export const getQuadCoords = (params: {
+  pin_count: number
+  pn: number // pin number
+  w: number // width of the package
+  h: number // height (length) of the package
+  p: number // pitch between pins
   pl: number // length of the pin
-) => {
+}) => {
+  const { pin_count: pinCount, pn, w, h, p, pl } = params
   const sidePinCount = pinCount / 4
   const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
@@ -104,14 +105,14 @@ export const quad = (
       x,
       y,
       o: orientation,
-    } = getQuadCoords(
-      params.num_pins,
-      i + 1,
-      params.w,
-      params.h,
-      params.p ?? 0.5,
-      params.pl
-    )
+    } = getQuadCoords({
+      pin_count: params.num_pins,
+      pn: i + 1,
+      w: params.w,
+      h: params.h,
+      p: params.p ?? 0.5,
+      pl: params.pl,
+    })
 
     let pw = params.pw
     let pl = params.pl
@@ -125,9 +126,8 @@ export const quad = (
 
   if (params.thermalpad) {
     if (typeof params.thermalpad === "boolean") {
-      const sidePinCount = params.num_pins / 4
-      const ibw = params.p * (sidePinCount - 1) + params.pw
-      const ibh = params.p * (sidePinCount - 1) + params.pw
+      const ibw = params.p * (spc - 1) + params.pw
+      const ibh = params.p * (spc - 1) + params.pw
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
       pads.push(
