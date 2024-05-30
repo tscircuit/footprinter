@@ -5,7 +5,7 @@ import { led } from "./fn/led"
 import { res } from "./fn/res"
 import { bga } from "./fn/bga"
 import { soic } from "./fn/soic"
-import { quad } from "./fn/quad-fn"
+import { quad } from "./fn/quad"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
