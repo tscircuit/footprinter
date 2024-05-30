@@ -3,17 +3,8 @@ import { z } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { rectpad } from "../helpers/rectpad"
-
-const pin_order_specifier = z.enum([
-  "leftside",
-  "topside",
-  "rightside",
-  "bottomside",
-  "toppin",
-  "bottompin",
-  "leftpin",
-  "rightpin",
-])
+import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
+import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 
 const base_quad_def = z.object({
   quad: z.literal(true),
@@ -106,6 +97,7 @@ export const quad = (raw_params: {
 }): AnySoupElement[] => {
   const params = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
+  const pin_map = getQuadPinMap(params)
   for (let i = 0; i < params.num_pins; i++) {
     const {
       x,
@@ -125,7 +117,8 @@ export const quad = (raw_params: {
       ;[pw, pl] = [pl, pw]
     }
 
-    pads.push(rectpad(i + 1, x, y, pw, pl))
+    const pn = getQuadPinMap(params)[i + 1]
+    pads.push(rectpad(pn!, x, y, pw, pl))
   }
   return pads
 }
