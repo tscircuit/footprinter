@@ -89,7 +89,7 @@ export const getQuadPinMap = ({
   // decrementing
   for (let i = 0; i < num_pins; i++) {
     pin_map.push(current_position_ccw_normal)
-    if (ccw) {
+    if (ccw || !cw) {
       current_position_ccw_normal++
       if (current_position_ccw_normal > num_pins) {
         current_position_ccw_normal = 1

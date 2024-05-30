@@ -11,6 +11,14 @@ test("quad16_w4_l4_p0.4_pw0.25_pl0.4", async (t) => {
   t.pass()
 })
 
+test("quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad", async (t) => {
+  const { fp, logSoup } = await getTestFixture(t)
+  const soup = fp.string("quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad").soup()
+
+  await logSoup(soup)
+  t.pass()
+})
+
 //   const ps = toPinPositionString(soup)
 
 //   t.is(

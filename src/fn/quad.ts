@@ -5,6 +5,7 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 import { rectpad } from "../helpers/rectpad"
 import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
+import { dim2d } from "src/helpers/zod/dim-2d"
 
 const base_quad_def = z.object({
   quad: z.literal(true),
@@ -17,6 +18,7 @@ const base_quad_def = z.object({
   p: length.default(length.parse("0.5mm")),
   pw: length.optional(),
   pl: length.optional(),
+  thermalpad: z.union([z.literal(true), dim2d]).optional(),
 })
 
 const quad_def = base_quad_def.transform((v) => {
@@ -86,15 +88,9 @@ export const getQuadCoords = (
   }
 }
 
-export const quad = (raw_params: {
-  quad: true
-  num_pins: number
-  w: number
-  l: number
-  p?: number
-  id?: string | number
-  od?: string | number
-}): AnySoupElement[] => {
+export const quad = (
+  raw_params: z.input<typeof quad_def>
+): AnySoupElement[] => {
   const params = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
   const pin_map = getQuadPinMap(params)
@@ -111,14 +107,28 @@ export const quad = (raw_params: {
       params.p ?? 0.5
     )
 
-    let pw = params.pw,
-      pl = params.pl
+    let pw = params.pw
+    let pl = params.pl
     if (orientation === "vert") {
       ;[pw, pl] = [pl, pw]
     }
 
-    const pn = pin_map[i + 1]
-    pads.push(rectpad(pn!, x, y, pw, pl))
+    const pn = pin_map[i + 1]!
+    pads.push(rectpad(pn, x, y, pw, pl))
   }
+
+  if (params.thermalpad) {
+    if (typeof params.thermalpad === "boolean") {
+      const sidePinCount = params.num_pins / 4
+      const ibw = params.p * (sidePinCount - 1) + params.pw
+      const ibh = params.p * (sidePinCount - 1) + params.pw
+      pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
+    } else {
+      pads.push(
+        rectpad(["thermalpad"], 0, 0, params.thermalpad.x, params.thermalpad.y)
+      )
+    }
+  }
+
   return pads
 }
