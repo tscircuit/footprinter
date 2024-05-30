@@ -78,7 +78,7 @@ export const getQuadCoords = (
     case "bottom":
       return { x: -ibw / 2 + pos * p, y: -h / 2 + pl / 2, o: "horz" }
     case "right":
-      return { x: w / 2, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2 - pl / 2, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
       return { x: ibw / 2 - pos * p, y: h / 2 - pl / 2, o: "horz" }
     default:
