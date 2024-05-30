@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { z } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
@@ -60,14 +60,12 @@ export const getQuadCoords = (
   pn: number, // pin number
   w: number, // width of the package
   h: number, // height (length) of the package
-  p: number // pitch between pins
+  p: number, // pitch between pins
+  pl: number // length of the pin
 ) => {
   const sidePinCount = pinCount / 4
   const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
-
-  const halfW = w / 2
-  const halfH = h / 2
 
   /** inner box width */
   const ibw = p * (sidePinCount - 1)
@@ -76,13 +74,13 @@ export const getQuadCoords = (
 
   switch (side) {
     case "left":
-      return { x: -halfW / 2, y: ibh / 2 - pos * p, o: "vert" }
+      return { x: -w / 2 + pl / 2, y: ibh / 2 - pos * p, o: "vert" }
     case "bottom":
-      return { x: -ibw / 2 + pos * p, y: -halfH / 2, o: "horz" }
+      return { x: -ibw / 2 + pos * p, y: -h / 2 + pl / 2, o: "horz" }
     case "right":
-      return { x: halfW / 2, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
-      return { x: ibw / 2 - pos * p, y: halfH / 2, o: "horz" }
+      return { x: ibw / 2 - pos * p, y: h / 2 - pl / 2, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }
@@ -104,7 +102,8 @@ export const quad = (
       i + 1,
       params.w,
       params.h,
-      params.p ?? 0.5
+      params.p ?? 0.5,
+      params.pl
     )
 
     let pw = params.pw
@@ -130,5 +129,34 @@ export const quad = (
     }
   }
 
-  return pads
+  // Silkscreen corners
+  const silkscreen_corners: PcbSilkscreenPath[] = []
+  for (let corner_index = 0; corner_index < 4; corner_index++) {
+    const dx = Math.floor(corner_index / 2) * 2 - 1
+    const dy = (corner_index % 2) * 2 - 1
+    const corner_x = (params.w / 2) * dx
+    const corner_y = (params.h / 2) * dy
+    silkscreen_corners.push({
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner_index}`,
+      route: [
+        {
+          x: corner_x - params.pw * dx,
+          y: corner_y,
+        },
+        {
+          x: corner_x,
+          y: corner_y,
+        },
+        {
+          x: corner_x,
+          y: corner_y - params.pw * dy,
+        },
+      ],
+      type: "pcb_silkscreen_path",
+    })
+  }
+
+  return [...pads, ...silkscreen_corners]
 }
