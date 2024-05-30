@@ -6,6 +6,8 @@ import { res } from "./fn/res"
 import { bga } from "./fn/bga"
 import { soic } from "./fn/soic"
 import { quad } from "./fn/quad"
+import { qfn } from "./fn/qfn"
+import { qfp } from "./fn/qfp"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
@@ -34,6 +36,9 @@ export type Footprinter = {
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   lr: (num_pins: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
+  qfp: (
+    num_pins: number
+  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   quad: (
     num_pins: number
   ) => FootprinterParamsBuilder<
@@ -44,6 +49,7 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
   >
+  qfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
   params: () => any
   soup: () => AnySoupElement[]
@@ -83,6 +89,8 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           if ("bga" in target) return () => bga(target)
           if ("soic" in target) return () => soic(target)
           if ("quad" in target) return () => quad(target)
+          if ("qfn" in target) return () => qfn(target)
+          if ("qfp" in target) return () => qfp(target)
 
           return () => {
             // TODO improve error

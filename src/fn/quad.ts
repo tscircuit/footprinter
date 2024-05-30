@@ -7,8 +7,7 @@ import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 
-const base_quad_def = z.object({
-  quad: z.literal(true),
+export const base_quad_def = z.object({
   cc: z.literal(true).optional(),
   ccw: z.literal(true).optional(),
   startingpin: z
@@ -24,9 +23,12 @@ const base_quad_def = z.object({
   pw: length.optional(),
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
+  legsoutside: z.boolean().optional(),
 })
 
-const quad_def = base_quad_def.transform((v) => {
+export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
+  v: T
+) => {
   if (v.w && !v.h) {
     v.h = v.w
   } else if (!v.w && v.h) {
@@ -55,8 +57,10 @@ const quad_def = base_quad_def.transform((v) => {
     v.pl = v.pw! * (1.0 / 0.6)
   }
 
-  return v as NowDefined<typeof v, "w" | "h" | "p" | "pw" | "pl">
-})
+  return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
+}
+
+export const quad_def = base_quad_def.transform(quadTransform)
 
 const SIDES_CCW = ["left", "bottom", "right", "top"] as const
 
@@ -67,9 +71,10 @@ export const getQuadCoords = (params: {
   h: number // height (length) of the package
   p: number // pitch between pins
   pl: number // length of the pin
+  legsoutside?: boolean
 }) => {
-  const { pin_count: pinCount, pn, w, h, p, pl } = params
-  const sidePinCount = pinCount / 4
+  const { pin_count, pn, w, h, p, pl, legsoutside } = params
+  const sidePinCount = pin_count / 4
   const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
 
@@ -78,15 +83,18 @@ export const getQuadCoords = (params: {
   /** inner box height */
   const ibh = p * (sidePinCount - 1)
 
+  /** pad center distance from edge (negative is inside, positive is outside) */
+  const pcdfe = legsoutside ? pl / 2 : -pl / 2
+
   switch (side) {
     case "left":
-      return { x: -w / 2 + pl / 2, y: ibh / 2 - pos * p, o: "vert" }
+      return { x: -w / 2 - pcdfe, y: ibh / 2 - pos * p, o: "vert" }
     case "bottom":
-      return { x: -ibw / 2 + pos * p, y: -h / 2 + pl / 2, o: "horz" }
+      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe, o: "horz" }
     case "right":
-      return { x: w / 2 - pl / 2, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2 + pcdfe, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
-      return { x: ibw / 2 - pos * p, y: h / 2 - pl / 2, o: "horz" }
+      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }
@@ -112,6 +120,7 @@ export const quad = (
       h: params.h,
       p: params.p ?? 0.5,
       pl: params.pl,
+      legsoutside: params.legsoutside,
     })
 
     let pw = params.pw
@@ -146,9 +155,13 @@ export const quad = (
   ] as const) {
     // const dx = Math.floor(corner_index / 2) * 2 - 1
     // const dy = 1 - (corner_index % 2) * 2
-    const corner_x = (params.w / 2 - params.pl / 2) * dx
-    const corner_y = (params.h / 2 - params.pl / 2) * dy
+    const corner_x = (params.w / 2) * dx
+    const corner_y = (params.h / 2) * dy
     let arrow: "none" | "in1" | "in2" = "none"
+
+    let arrow_x = corner_x
+    let arrow_y = corner_y
+
     /** corner size */
     const csz = params.pw * 2
 
@@ -169,7 +182,17 @@ export const quad = (
     } else if (pin_map[spc * 2 + 1] === 1 && corner === "bottom-right") {
       arrow = "in2"
     }
-    if (arrow === "none") {
+
+    const rotate_arrow = arrow === "in1" ? 1 : -1
+    if (params.legsoutside) {
+      const arrow_dx = arrow === "in1" ? params.pl / 2 : params.pw / 2
+      const arrow_dy = arrow === "in1" ? params.pw / 2 : params.pl / 2
+      arrow_x += arrow_dx * dx * rotate_arrow
+      arrow_y -= arrow_dy * dy * rotate_arrow
+    }
+
+    // Normal Corner
+    if (arrow === "none" || params.legsoutside) {
       silkscreen_corners.push({
         layer: "top",
         pcb_component_id: "",
@@ -190,8 +213,11 @@ export const quad = (
         ],
         type: "pcb_silkscreen_path",
       })
-    } else {
-      const rotate_arrow = arrow === "in1" ? 1 : -1
+    }
+
+    // Two lines nearly forming a corner, used when the arrow needs to overlap
+    // the corne (QFN components where legs are inside)
+    if ((arrow === "in1" || arrow === "in2") && !params.legsoutside) {
       silkscreen_corners.push(
         {
           layer: "top",
@@ -224,32 +250,34 @@ export const quad = (
             },
           ],
           type: "pcb_silkscreen_path",
-        },
-        {
-          layer: "top",
-          pcb_component_id: "",
-          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_3`,
-          route: [
-            {
-              x: corner_x - 0.2 * -dx,
-              y: corner_y + 0.2 * rotate_arrow,
-            },
-            {
-              x: corner_x,
-              y: corner_y,
-            },
-            {
-              x: corner_x + 0.2 * rotate_arrow * -dx,
-              y: corner_y + 0.2,
-            },
-            {
-              x: corner_x - 0.2 * -dx,
-              y: corner_y + 0.2 * rotate_arrow,
-            },
-          ],
-          type: "pcb_silkscreen_path",
         }
       )
+    }
+    if (arrow === "in1" || arrow === "in2") {
+      silkscreen_corners.push({
+        layer: "top",
+        pcb_component_id: "",
+        pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_3`,
+        route: [
+          {
+            x: arrow_x - 0.2 * -dx,
+            y: arrow_y + 0.2 * rotate_arrow,
+          },
+          {
+            x: arrow_x,
+            y: arrow_y,
+          },
+          {
+            x: arrow_x + 0.2 * rotate_arrow * -dx,
+            y: arrow_y + 0.2,
+          },
+          {
+            x: arrow_x - 0.2 * -dx,
+            y: arrow_y + 0.2 * rotate_arrow,
+          },
+        ],
+        type: "pcb_silkscreen_path",
+      })
     }
   }
 
