@@ -22,7 +22,7 @@ import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
  * 8 -> 2
  *
  * Which allows us to create the CW version of the package using...
- * new_pin = pin_map[old_pin]
+ * new_pin = pin_map[normal_ccw_pin]
  *
  *    2 3
  *  1     4
@@ -88,7 +88,7 @@ export const getQuadPinMap = ({
   // going CCW this means incrementing, if we're going CW this means
   // decrementing
   for (let i = 0; i < num_pins; i++) {
-    pin_map.push(current_position_ccw_normal)
+    pin_map[current_position_ccw_normal] = i + 1
     if (ccw || !cw) {
       current_position_ccw_normal++
       if (current_position_ccw_normal > num_pins) {
