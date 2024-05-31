@@ -61,7 +61,7 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   // special case: 0402, 0603, etc.
-  if ((def.length === 4 || def.length === 5) && def.matchAll(/\d+/))
+  if ((def.length === 4 || def.length === 5) && /^\d+$/.test(def))
     def = `res${def}`
 
   const def_parts = def
@@ -86,6 +86,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
     {},
     {
       get: (target: any, prop) => {
+        console.log(prop, target)
         if (prop === "soup") {
           if ("dip" in target) return () => dip(target)
           if ("diode" in target) return () => diode(target)
@@ -121,7 +122,12 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
               target.num_pins = parseFloat(v)
             }
           } else {
-            target[prop] = v ?? true
+            // handle dip_w or other invalid booleans
+            if (!v && ["w", "h", "p"].includes(prop as string)) {
+              // ignore
+            } else {
+              target[prop] = v ?? true
+            }
           }
           return proxy
         }

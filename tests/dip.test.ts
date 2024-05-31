@@ -26,6 +26,12 @@ test("dip footprint", (t) => {
   )
 })
 
+test.only("dip16", async (t) => {
+  const { fp, logSoup } = await getTestFixture(t)
+  const soup = fp.string("dip4").soup()
+  await logSoup(soup)
+})
+
 test("dip4_w3.00mm", async (t) => {
   const { fp, logSoup } = await getTestFixture(t)
   const soup = fp.string("dip4_w3.00mm").soup()
