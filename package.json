@@ -4,6 +4,7 @@
   "version": "0.0.23",
   "description": "",
   "main": "dist/index.cjs",
+  "files": ["dist"],
   "scripts": {
     "test": "FULL_RUN=1 ava",
     "build": "tsup ./src/index.ts --dts --sourcemap"
