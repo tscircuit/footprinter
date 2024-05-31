@@ -2,18 +2,10 @@
 
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
 
-> Footprinter is the DSL that [text-to-footprint](https://github.com/tscircuit/text-to-footprint) uses.
-> If you're unable to generate a particular footprint, try to see if you can produce it in footprinter.
-> If you can't, you'll need to add some kind of representation in the DSL before it can be generated.
-
 You can create very custom footprints using the `<footprint>` element, but the
 compressability is poor. `footprinter` produces very short, low parameter
 mini-programs for generating footprints, this makes it suitable for standardized
 footprints.
-
-> [INFO]
-> Compressability of the DSL is important because it allows an LLM to fit more examples into context,
-> and not waste output tokens on verbose elements
 
 Here are some example programs:
 
@@ -27,6 +19,15 @@ fp.res().imperial("01005")
 fp.dip(4).w(7.62)
 fp.dip(4).w(7.62).socket()
 ```
+
+> [!NOTE]
+> Footprinter is the DSL that [text-to-footprint](https://github.com/tscircuit/text-to-footprint) uses.
+> If you're unable to generate a particular footprint, try to see if you can produce it in footprinter.
+> If you can't, you'll need to add some kind of representation in the DSL before it can be generated.
+
+> [!NOTE]
+> Compressability of the DSL is important because it allows an LLM to fit more examples into context,
+> and not waste output tokens on verbose elements
 
 ## Footprinter Strings
 
