@@ -52,13 +52,17 @@ export type Footprinter = {
   >
   qfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
-  mlp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">,
-  params: () => any,
+  mlp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  params: () => any
   soup: () => AnySoupElement[]
 }
 
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
+
+  // special case: 0402, 0603, etc.
+  if ((def.length === 4 || def.length === 5) && def.matchAll(/\d+/))
+    def = `res${def}`
 
   const def_parts = def
     .split("_")

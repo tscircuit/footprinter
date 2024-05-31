@@ -26,6 +26,9 @@
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   },
+  "peerDependencies": {
+    "zod": "*"
+  },
   "dependencies": {
     "@tscircuit/mm": "^0.0.7"
   }
