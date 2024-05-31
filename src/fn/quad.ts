@@ -48,6 +48,12 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.p = (v.w - v.pl * 2) / (side_pin_count - 1)
   }
 
+  if (!v.w && !v.h && v.p) {
+    // HACK: underspecified
+    v.w = v.p * (side_pin_count + 4)
+    v.h = v.w
+  }
+
   if (v.p && !v.pw && !v.pl) {
     v.pw = v.p / 2
     v.pl = v.p / 2

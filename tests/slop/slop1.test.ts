@@ -11,6 +11,7 @@ export const SLOP_LIST = [
   "bga48",
   "bga48_grid8x8",
   "bga48_p2_pad0.2",
+  "qfn32_p0.5mm",
 ]
 
 test("slop1", async (t) => {
