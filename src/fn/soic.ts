@@ -9,7 +9,7 @@ const soic_def = z
   .object({
     soic: z.literal(true),
     num_pins: z.number(),
-    w: length,
+    w: length.default(length.parse("5.3mm")),
     p: length.default(length.parse("1.27mm")),
     id: length.optional(),
     od: length.optional(),
@@ -24,9 +24,6 @@ const soic_def = z
     } else if (!v.od) {
       v.od = v.id! * (1.0 / 0.6)
     }
-
-    if (!v.w) v.w = length.parse("5.3mm")
-    if (!v.p) v.p = length.parse("1.27mm")
 
     return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
   })
