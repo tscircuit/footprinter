@@ -42,12 +42,39 @@ fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 ```
 
-## Magic
+## Getting JSON output from the builder
 
-`footprinter` comes with a `fp.magic` function which calls a remote server that
-attempts to convert the specified string into a `footprinter` string. This can
-help when you're looking at a random package designator from an online site. You
-should always confirm these footprints against the datasheet.
+Use the `.soup()` function to output [tscircuit soup JSON](https://github.com/tscircuit/soup)
+
+```ts
+fp.string("res0402").soup()
+/*
+[
+  {
+    type: 'pcb_smtpad',
+    x: -0.5,
+    y: 0,
+    width: 0.6000000000000001,
+    height: 0.6000000000000001,
+    layer: 'top',
+    shape: 'rect',
+    pcb_smtpad_id: '',
+    port_hints: [ '1' ]
+  },
+  {
+    type: 'pcb_smtpad',
+    x: 0.5,
+    y: 0,
+    width: 0.6000000000000001,
+    height: 0.6000000000000001,
+    layer: 'top',
+    shape: 'rect',
+    pcb_smtpad_id: '',
+    port_hints: [ '2' ]
+  }
+]
+*/
+```
 
 ## Generation Defaults
 
