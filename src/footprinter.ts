@@ -77,7 +77,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
   const proxy = new Proxy(
     {},
     {
-      get: (target: any, prop) => {
+      get: (target: any, prop: string) => {
         // console.log(prop, target)
         if (prop === "soup") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
@@ -97,14 +97,19 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
         }
         return (v: any) => {
           if (Object.keys(target).length === 0) {
-            target[prop] = true
-            target.fn = prop
-            if (prop === "res" || prop === "cap") {
-              if (v) {
-                target.imperial = v // res0402, cap0603 etc.
-              }
+            if (`${prop}${v}` in FOOTPRINT_FN) {
+              target[`${prop}${v}`] = true
+              target.fn = `${prop}${v}`
             } else {
-              target.num_pins = Number.parseFloat(v)
+              target[prop] = true
+              target.fn = prop
+              if (prop === "res" || prop === "cap") {
+                if (v) {
+                  target.imperial = v // res0402, cap0603 etc.
+                }
+              } else {
+                target.num_pins = Number.parseFloat(v)
+              }
             }
           } else {
             // handle dip_w or other invalid booleans

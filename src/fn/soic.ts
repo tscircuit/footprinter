@@ -4,6 +4,7 @@ import { z, type AnyZodObject } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
+import { rectpad } from "src/helpers/rectpad"
 
 export const extendSoicDef = (newDefaults: { w?: string; p?: string }) =>
   z
@@ -12,21 +13,21 @@ export const extendSoicDef = (newDefaults: { w?: string; p?: string }) =>
       num_pins: z.number(),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
-      id: length.optional(),
-      od: length.optional(),
+      pw: length.optional(),
+      pl: length.optional(),
     })
     .transform((v) => {
       // Default inner diameter and outer diameter
-      if (!v.id && !v.od) {
-        v.id = length.parse("0.6mm")
-        v.od = length.parse("1.0mm")
-      } else if (!v.id) {
-        v.id = v.od! * (0.6 / 1.0)
-      } else if (!v.od) {
-        v.od = v.id! * (1.0 / 0.6)
+      if (!v.pw && !v.pl) {
+        v.pw = length.parse("0.6mm")
+        v.pl = length.parse("1.0mm")
+      } else if (!v.pw) {
+        v.pw = v.pl! * (0.6 / 1.0)
+      } else if (!v.pl) {
+        v.pl = v.pw! * (1.0 / 0.6)
       }
 
-      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
+      return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl">
     })
 
 const soic_def = extendSoicDef({})
@@ -75,7 +76,7 @@ export const soic = (raw_params: {
 }
 
 export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
-  const platedHoles: AnySoupElement[] = []
+  const pads: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
     const { x, y } = getCcwSoicCoords(
       params.num_pins,
@@ -83,14 +84,12 @@ export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
       params.w,
       params.p ?? 1.27
     )
-    platedHoles.push(
-      platedhole(i + 1, x, y, params.id ?? "0.6mm", params.od ?? "1mm")
-    )
+    pads.push(rectpad(i + 1, x, y, params.pw ?? "0.6mm", params.pl ?? "1mm"))
   }
 
   /** silkscreen width */
-  const sw = params.w - params.od - 0.4
-  const sh = (params.num_pins / 2 - 1) * params.p + params.od + 0.4
+  const sw = params.w - params.pw - 0.4
+  const sh = (params.num_pins / 2 - 1) * params.p + params.pl + 0.4
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -110,5 +109,5 @@ export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
     type: "pcb_silkscreen_path",
   }
 
-  return [...platedHoles, silkscreenBorder]
+  return [...pads, silkscreenBorder]
 }

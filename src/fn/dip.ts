@@ -5,40 +5,43 @@ import { z } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
-const dip_def = z
-  .object({
-    dip: z.literal(true),
-    num_pins: z.number(),
-    wide: z.boolean().optional(),
-    narrow: z.boolean().optional(),
-    w: length.optional(),
-    p: length.default(length.parse("2.54mm")),
-    id: length.optional(),
-    od: length.optional(),
-  })
-  .transform((v) => {
-    // Default inner diameter and outer diameter
-    if (!v.id && !v.od) {
-      v.id = length.parse("1.0mm")
-      v.od = length.parse("1.2mm")
-    } else if (!v.id) {
-      v.id = v.od! * (1.0 / 1.2)
-    } else if (!v.od) {
-      v.od = v.id! * (1.2 / 1.0)
-    }
-
-    // Default width (TODO high pin counts should probably be wide?)
-    if (!v.w) {
-      if (v.wide) {
-        v.w = length.parse("600mil")
-      } else if (v.narrow) {
-        v.w = length.parse("300mil")
-      } else {
-        v.w = length.parse("300mil")
+export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
+  z
+    .object({
+      dip: z.literal(true),
+      num_pins: z.number(),
+      wide: z.boolean().optional(),
+      narrow: z.boolean().optional(),
+      w: length.optional(),
+      p: length.default(length.parse(newDefaults.p ?? "2.54mm")),
+      id: length.optional(),
+      od: length.optional(),
+    })
+    .transform((v) => {
+      // Default inner diameter and outer diameter
+      if (!v.id && !v.od) {
+        v.id = length.parse("1.0mm")
+        v.od = length.parse("1.2mm")
+      } else if (!v.id) {
+        v.id = v.od! * (1.0 / 1.2)
+      } else if (!v.od) {
+        v.od = v.id! * (1.2 / 1.0)
       }
-    }
-    return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
-  })
+
+      // Default width (TODO high pin counts should probably be wide?)
+      if (!v.w) {
+        if (v.wide) {
+          v.w = length.parse("600mil")
+        } else if (v.narrow) {
+          v.w = length.parse("300mil")
+        } else {
+          v.w = length.parse(newDefaults.w ?? "300mil")
+        }
+      }
+      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
+    })
+
+export const dip_def = extendDipDef({})
 
 export const getCcwDipCoords = (
   pinCount: number,
