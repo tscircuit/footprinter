@@ -1,14 +1,4 @@
-import { dip } from "./fn/dip"
-import { diode } from "./fn/diode"
-import { cap } from "./fn/cap"
-import { led } from "./fn/led"
-import { res } from "./fn/res"
-import { bga } from "./fn/bga"
-import { soic } from "./fn/soic"
-import { quad } from "./fn/quad"
-import { qfn } from "./fn/qfn"
-import { qfp } from "./fn/qfp"
-import { mlp } from "./fn/mlp"
+import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "@tscircuit/soup"
 import { isNotNull } from "./helpers/is-not-null"
 
@@ -53,6 +43,8 @@ export type Footprinter = {
   qfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
   mlp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  ssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
+  tssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   params: () => any
   soup: () => AnySoupElement[]
 }
@@ -86,19 +78,11 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
     {},
     {
       get: (target: any, prop) => {
-        console.log(prop, target)
+        // console.log(prop, target)
         if (prop === "soup") {
-          if ("dip" in target) return () => dip(target)
-          if ("diode" in target) return () => diode(target)
-          if ("cap" in target) return () => cap(target)
-          if ("led" in target) return () => led(target)
-          if ("res" in target) return () => res(target)
-          if ("bga" in target) return () => bga(target)
-          if ("soic" in target) return () => soic(target)
-          if ("quad" in target) return () => quad(target)
-          if ("qfn" in target) return () => qfn(target)
-          if ("qfp" in target) return () => qfp(target)
-          if ("mlp" in target) return () => mlp(target)
+          if ("fn" in target && FOOTPRINT_FN[target.fn]) {
+            return () => FOOTPRINT_FN[target.fn](target)
+          }
 
           return () => {
             // TODO improve error
@@ -114,12 +98,13 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
         return (v: any) => {
           if (Object.keys(target).length === 0) {
             target[prop] = true
+            target.fn = prop
             if (prop === "res" || prop === "cap") {
               if (v) {
                 target.imperial = v // res0402, cap0603 etc.
               }
             } else {
-              target.num_pins = parseFloat(v)
+              target.num_pins = Number.parseFloat(v)
             }
           } else {
             // handle dip_w or other invalid booleans

@@ -1,32 +1,36 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
-import { z } from "zod"
+import { z, type AnyZodObject } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
 
-const soic_def = z
-  .object({
-    soic: z.literal(true),
-    num_pins: z.number(),
-    w: length.default(length.parse("5.3mm")),
-    p: length.default(length.parse("1.27mm")),
-    id: length.optional(),
-    od: length.optional(),
-  })
-  .transform((v) => {
-    // Default inner diameter and outer diameter
-    if (!v.id && !v.od) {
-      v.id = length.parse("0.6mm")
-      v.od = length.parse("1.0mm")
-    } else if (!v.id) {
-      v.id = v.od! * (0.6 / 1.0)
-    } else if (!v.od) {
-      v.od = v.id! * (1.0 / 0.6)
-    }
+export const extendSoicDef = (newDefaults: { w?: string; p?: string }) =>
+  z
+    .object({
+      soic: z.literal(true),
+      num_pins: z.number(),
+      w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
+      p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
+      id: length.optional(),
+      od: length.optional(),
+    })
+    .transform((v) => {
+      // Default inner diameter and outer diameter
+      if (!v.id && !v.od) {
+        v.id = length.parse("0.6mm")
+        v.od = length.parse("1.0mm")
+      } else if (!v.id) {
+        v.id = v.od! * (0.6 / 1.0)
+      } else if (!v.od) {
+        v.od = v.id! * (1.0 / 0.6)
+      }
 
-    return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
-  })
+      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
+    })
+
+const soic_def = extendSoicDef({})
+export type SoicInput = z.infer<typeof soic_def>
 
 export const getCcwSoicCoords = (
   pinCount: number,
@@ -67,7 +71,10 @@ export const soic = (raw_params: {
   id?: string | number
   od?: string | number
 }): AnySoupElement[] => {
-  const params = soic_def.parse(raw_params)
+  return soicWithoutParsing(soic_def.parse(raw_params))
+}
+
+export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
   const platedHoles: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
     const { x, y } = getCcwSoicCoords(

@@ -6,6 +6,7 @@ import { getTestFixture, toPinPositionString } from "./fixtures"
 test("dip params", (t) => {
   t.deepEqual(fp().dip(4).w(7.62).params(), {
     dip: true,
+    fn: "dip",
     num_pins: 4,
     w: 7.62,
   })
@@ -26,10 +27,11 @@ test("dip footprint", (t) => {
   )
 })
 
-test.only("dip16", async (t) => {
+test("dip16", async (t) => {
   const { fp, logSoup } = await getTestFixture(t)
   const soup = fp.string("dip4").soup()
   await logSoup(soup)
+  t.pass()
 })
 
 test("dip4_w3.00mm", async (t) => {
