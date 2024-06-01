@@ -161,8 +161,8 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     ph = (sz.Z_mm_min - sz.G_mm_min) / 2
   }
 
-  if (pw === undefined) throw new Error(`could not infer pad width`)
-  if (ph === undefined) throw new Error(`could not infer pad width`)
+  if (pw === undefined) throw new Error("could not infer pad width")
+  if (ph === undefined) throw new Error("could not infer pad width")
 
   if (tht) {
     return [
@@ -170,6 +170,9 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
       platedhole(2, -p / 2, 0, pw, (pw * 1) / 0.8),
     ]
   } else {
-    return [rectpad(1, -p / 2, 0, pw, ph), rectpad(2, p / 2, 0, pw, ph)]
+    return [
+      rectpad(["1", "left"], -p / 2, 0, pw, ph),
+      rectpad(["2", "right"], p / 2, 0, pw, ph),
+    ]
   }
 }
