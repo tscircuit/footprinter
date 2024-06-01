@@ -96,14 +96,20 @@ industry best practices or otherwise "reasonable" defaults. In theory, upgrading
 footprinter could cause the defaults to change, which is why sloppy definitions
 are generally not desirable.
 
-## Adding new footprint functions
+An example of a sloppy definition is `bga64`. It's very underconstrained and
+unlikely to be correct (what's the pitch? pad size?). tscircuit strict mode
+or a linter will eventually error if it sees these.
 
-You can add new footprint functions by introducing a new function in the [src/fn](https://github.com/tscircuit/footprinter/tree/main/src/fn)
-directory. You'll also need to export it from the [footprint function index file](https://github.com/tscircuit/footprinter/blob/main/src/fn/index.ts)
+## Adding a new footprint function
+
+You can add new footprint functions by introducing a new function in the [src/fn directory](https://github.com/tscircuit/footprinter/tree/main/src/fn). You'll also need to export it from the [footprint function index file](https://github.com/tscircuit/footprinter/blob/main/src/fn/index.ts)
 
 After you've written the function, you can introduce a quick test, e.g. [soic.test.ts](https://github.com/tscircuit/footprinter/blob/main/tests/soic.test.ts)
 Currently it's not possible to see if a given definition is sloppy.
 
-An example of a sloppy definition is `bga64`. It's very underconstrained and
-unlikely to be correct (what's the pitch? pad size?). tscircuit strict mode
-or a linter will eventually error if it sees these.
+To run tests, just run `npx ava ./tests/soic.test.ts` or whatever your test
+file is.
+
+You'll sometimes see this `logSoup` function- this makes some debug output
+appear at https://debug.tscircuit.com. Make sure to hit "pcb" and "pcb_renderer"
+after the design.

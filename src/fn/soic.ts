@@ -6,15 +6,22 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
 import { rectpad } from "src/helpers/rectpad"
 
-export const extendSoicDef = (newDefaults: { w?: string; p?: string }) =>
+export const extendSoicDef = (newDefaults: {
+  w?: string
+  p?: string
+  legsoutside?: boolean
+}) =>
   z
     .object({
-      soic: z.literal(true),
       num_pins: z.number(),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.optional(),
       pl: length.optional(),
+      legsoutside: z
+        .boolean()
+        .optional()
+        .default(newDefaults.legsoutside ?? false),
     })
     .transform((v) => {
       // Default inner diameter and outer diameter
@@ -33,14 +40,17 @@ export const extendSoicDef = (newDefaults: { w?: string; p?: string }) =>
 const soic_def = extendSoicDef({})
 export type SoicInput = z.infer<typeof soic_def>
 
-export const getCcwSoicCoords = (
-  pinCount: number,
-  pn: number,
-  w: number,
+export const getCcwSoicCoords = (params: {
+  num_pins: number
+  pn: number
+  w: number
   p: number
-) => {
+  pl: number
+  legsoutside: boolean
+}) => {
+  const { num_pins, pn, w, p, pl, legsoutside } = params
   /** pin height */
-  const ph = pinCount / 2
+  const ph = num_pins / 2
   const isLeft = pn <= ph
 
   /** Number of gaps between pins on each side, e.g. 4 pins = 3 spaces */
@@ -51,13 +61,15 @@ export const getCcwSoicCoords = (
 
   const h = gs * leftPinGaps
 
+  const legoffset = legsoutside ? pl / 2 : -pl / 2
+
   if (isLeft) {
     // The y position starts at h/2, then goes down by gap size
     // for each pin
-    return { x: -w / 2, y: h / 2 - (pn - 1) * gs }
+    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs }
   } else {
     // The y position starts at -h/2, then goes up by gap size
-    return { x: w / 2, y: -h / 2 + (pn - ph - 1) * gs }
+    return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
   }
 }
 
@@ -78,18 +90,20 @@ export const soic = (raw_params: {
 export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
   const pads: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
-    const { x, y } = getCcwSoicCoords(
-      params.num_pins,
-      i + 1,
-      params.w,
-      params.p ?? 1.27
-    )
-    pads.push(rectpad(i + 1, x, y, params.pw ?? "0.6mm", params.pl ?? "1mm"))
+    const { x, y } = getCcwSoicCoords({
+      num_pins: params.num_pins,
+      pn: i + 1,
+      w: params.w,
+      p: params.p ?? 1.27,
+      pl: params.pl,
+      legsoutside: params.legsoutside,
+    })
+    pads.push(rectpad(i + 1, x, y, params.pl ?? "1mm", params.pw ?? "0.6mm"))
   }
 
   /** silkscreen width */
-  const sw = params.w - params.pw - 0.4
-  const sh = (params.num_pins / 2 - 1) * params.p + params.pl + 0.4
+  const sw = params.w - (params.legsoutside ? 0 : params.pl * 2) - 0.2
+  const sh = (params.num_pins / 2 - 1) * params.p + params.pw
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
