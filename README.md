@@ -69,3 +69,7 @@ footprinter could cause the defaults to change, which is why sloppy definitions
 are generally not desirable.
 
 Currently it's not possible to see if a given definition is sloppy.
+
+An example of a sloppy definition is `bga64`. It's very underconstrained and
+unlikely to be correct (what's the pitch? pad size?). tscircuit strict mode
+or a linter will eventually error if it sees these.
