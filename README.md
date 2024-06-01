@@ -69,6 +69,12 @@ industry best practices or otherwise "reasonable" defaults. In theory, upgrading
 footprinter could cause the defaults to change, which is why sloppy definitions
 are generally not desirable.
 
+## Adding new footprint functions
+
+You can add new footprint functions by introducing a new function in the [src/fn](https://github.com/tscircuit/footprinter/tree/main/src/fn)
+directory. You'll also need to export it from the [footprint function index file](https://github.com/tscircuit/footprinter/blob/main/src/fn/index.ts)
+
+After you've written the function, you can introduce a quick test, e.g. [soic.test.ts](https://github.com/tscircuit/footprinter/blob/main/tests/soic.test.ts)
 Currently it's not possible to see if a given definition is sloppy.
 
 An example of a sloppy definition is `bga64`. It's very underconstrained and
