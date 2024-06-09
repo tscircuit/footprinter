@@ -46,8 +46,12 @@ export const getCcwSoicCoords = (params: {
   w: number
   p: number
   pl: number
-  legsoutside: boolean
+  legsoutside?: boolean
+  widthincludeslegs?: boolean
 }) => {
+  if (params.widthincludeslegs !== undefined) {
+    params.legsoutside = !params.widthincludeslegs
+  }
   const { num_pins, pn, w, p, pl, legsoutside } = params
   /** pin height */
   const ph = num_pins / 2
