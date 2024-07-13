@@ -46,6 +46,7 @@ export type Footprinter = {
   ssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
+  pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   params: () => any
   soup: () => AnySoupElement[]
 }

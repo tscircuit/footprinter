@@ -29,7 +29,7 @@ test("dip footprint", (t) => {
 
 test("dip16", async (t) => {
   const { fp, logSoup } = await getTestFixture(t)
-  const soup = fp.string("dip4").soup()
+  const soup = fp.string("dip16").soup()
   await logSoup(soup)
   t.pass()
 })

@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "test": "FULL_RUN=1 ava",
+    "dev": "cd previews && npm i && npm run storybook",
     "build": "tsup ./src/index.ts --dts --sourcemap"
   },
   "keywords": [],
@@ -16,7 +17,7 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^1.7.3",
-    "@tscircuit/log-soup": "^1.0.1",
+    "@tscircuit/log-soup": "^1.0.2",
     "@tscircuit/soup": "^0.0.17",
     "@tscircuit/soup-util": "^0.0.11",
     "@types/node": "^20.12.13",
