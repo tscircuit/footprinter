@@ -10,6 +10,7 @@ export const platedhole = (
 ): PCBPlatedHole => {
   return {
     type: "pcb_plated_hole",
+    shape: "circle",
     x,
     y,
     hole_diameter: mm(id),
