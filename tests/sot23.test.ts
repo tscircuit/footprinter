@@ -3,9 +3,9 @@ import { getTestFixture } from "tests/fixtures/get-test-fixture"
 import { su } from "@tscircuit/soup-util"
 
 test("sot23", async (t) => {
-  const { fp, logSoup } = await getTestFixture(t)
-  const soup = fp.string("sot23").soup()
+  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
+  const soup  = fp.string("sot23").soup()
 
-  await logSoup(soup)
+  await snapshotSoup(soup)
   t.pass()
 })
