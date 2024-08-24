@@ -7,5 +7,5 @@ test("dfn8_w5.3mm_p1.27mm", async (t) => {
   const soup = fp.string("dfn8_w5.3mm_p1.27mm").soup()
 
   t.is(su(soup).pcb_smtpad.list().length, 8)
-  await snapshotSoup(soup)
+  snapshotSoup(soup)
 })

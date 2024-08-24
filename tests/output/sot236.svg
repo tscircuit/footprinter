@@ -1,0 +1,19 @@
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+      <style>
+        .pcb-board { fill: #000; }
+        .pcb-trace { stroke: #FF0000; stroke-width: 0.3; fill: none; }
+        .pcb-hole { fill: #FF00FF; }
+        .pcb-pad { fill: #FF0000; }
+        .pcb-boundary { fill: none; stroke: #FFFFFF; stroke-width: 0.5; }
+      </style>
+      <rect class="pcb-board" x="0" y="0" width="800" height="600" />
+      <rect class="pcb-pad" x="160" y="133.33333333333331" width="133.33333333333334" height="80" />
+<rect class="pcb-pad" x="160" y="260" width="133.33333333333334" height="80" />
+<rect class="pcb-pad" x="160" y="386.6666666666667" width="133.33333333333334" height="80" />
+<rect class="pcb-pad" x="506.6666666666667" y="386.6666666666667" width="133.33333333333334" height="80" />
+<rect class="pcb-pad" x="506.6666666666667" y="260" width="133.33333333333334" height="80" />
+<rect class="pcb-pad" x="506.6666666666667" y="133.33333333333331" width="133.33333333333334" height="80" />
+      <rect class="pcb-boundary" x="226.66666666666666" y="133.33333333333331" width="346.66666666666674" height="333.33333333333337" />
+    </svg>
+  
