@@ -98,7 +98,7 @@ const imperialMap: Record<string, StandardSize> = sizes.reduce(
     acc[s.imperial] = s
     return acc
   },
-  {}
+  {},
 )
 
 export type PassiveDef = {
@@ -128,7 +128,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
 
   if (h! > w!) {
     throw new Error(
-      "height cannot be greater than width (rotated footprint not yet implemented)"
+      "height cannot be greater than width (rotated footprint not yet implemented)",
     )
   }
 
@@ -167,7 +167,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
-      platedhole(2, -p / 2, 0, pw, (pw * 1) / 0.8),
+      platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
     ]
   } else {
     return [
