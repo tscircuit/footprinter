@@ -50,3 +50,19 @@ test("bga7_w8_h8_grid3x3_p1_missing(center,B1)", async (t) => {
   )
   snapshotSoup(soup)
 })
+
+test("bga64_w10_h10_grid8x8_p1.27mm", async (t) => {
+  const { snapshotSoup } = await getTestFixture(t)
+  const soup = fp()
+    .bga(64)
+    .w("10mm")
+    .h("10mm")
+    .grid("8x8")
+    .missing("center")
+    .p(1.27)
+    .soup()
+  // 16pins, 4mm x 4mm, 8x8 grid, 1.27mm pitch
+  const ps = toPinPositionString(soup)
+  t.pass()
+  snapshotSoup(soup)
+})

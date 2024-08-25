@@ -18,3 +18,14 @@ test("qfp48_w14_p1mm_startingpin(topside,leftpin)", async (t) => {
   snapshotSoup(soup)
   t.pass()
 })
+
+test("qfp80_w14_h14_p0.65mm", async (t) => {
+  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
+  const soup = fp
+    .string("qfp80_w14_h14_p0.65mm_startingpin(topside,leftpin)")
+    .soup()
+
+  await logSoup(soup)
+  snapshotSoup(soup)
+  t.pass()
+})
