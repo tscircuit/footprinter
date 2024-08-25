@@ -33,8 +33,6 @@ export const extendSoicDef = (newDefaults: {
       } else if (!v.pl) {
         v.pl = v.pw! * (1.0 / 0.6)
       }
-      // Consider pin width when calculating pitch
-      v.p += v.pw
 
       return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl">
     })
