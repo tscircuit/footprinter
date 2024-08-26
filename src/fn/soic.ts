@@ -106,12 +106,15 @@ export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
   }
 
   /** silkscreen width */
+  const m = Math.min(1, params.p / 2)
   const sw = params.w - (params.legsoutside ? 0 : params.pl * 2) - 0.2
-  const sh = (params.num_pins / 2 - 1) * params.p + params.pw
+  const sh = (params.num_pins / 2 - 1) * params.p + params.pw + m
   const silkscreenBorder: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
+    stroke_width: 0.1,
     route: [
       { x: -sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: sh / 2 },
@@ -124,7 +127,6 @@ export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
       { x: sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: -sh / 2 },
     ],
-    type: "pcb_silkscreen_path",
   }
 
   return [...pads, silkscreenBorder]
