@@ -1,0 +1,19 @@
+
+    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
+      <style>
+        .pcb-board { fill: #000; }
+        .pcb-trace { stroke: #FF0000; stroke-width: 0.3; fill: none; }
+        .pcb-hole { fill: #FF00FF; }
+        .pcb-pad { fill: #FF0000; }
+        .pcb-boundary { fill: none; stroke: #FFFFFF; stroke-width: 0.5; }
+      </style>
+      <rect class="pcb-board" x="0" y="0" width="800" height="600" />
+      <rect class="pcb-pad" x="223.63636363636357" y="181.81818181818178" width="121.81818181818184" height="54.545454545454554" />
+<rect class="pcb-pad" x="223.63636363636357" y="272.72727272727275" width="121.81818181818184" height="54.545454545454554" />
+<rect class="pcb-pad" x="223.63636363636357" y="363.6363636363637" width="121.81818181818184" height="54.545454545454554" />
+<rect class="pcb-pad" x="454.54545454545456" y="363.6363636363637" width="121.81818181818184" height="54.545454545454554" />
+<rect class="pcb-pad" x="454.54545454545456" y="272.72727272727275" width="121.81818181818184" height="54.545454545454554" />
+<rect class="pcb-pad" x="454.54545454545456" y="181.81818181818178" width="121.81818181818184" height="54.545454545454554" />
+      <rect class="pcb-boundary" x="284.5454545454545" y="181.8181818181818" width="230.909090909091" height="236.36363636363637" />
+    </svg>
+  
