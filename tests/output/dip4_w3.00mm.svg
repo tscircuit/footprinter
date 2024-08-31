@@ -1,17 +1,7 @@
-
-    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600">
-      <style>
-        .pcb-board { fill: #000; }
-        .pcb-trace { stroke: #FF0000; stroke-width: 0.3; fill: none; }
-        .pcb-hole { fill: #FF00FF; }
-        .pcb-pad { fill: #FF0000; }
-        .pcb-boundary { fill: none; stroke: #FFFFFF; stroke-width: 0.5; }
-      </style>
-      <rect class="pcb-board" x="0" y="0" width="800" height="600" />
-      <circle class="pcb-hole" cx="253.42019543973942" cy="175.8957654723127" r="58.631921824104225" />
-<circle class="pcb-hole" cx="253.42019543973942" cy="424.1042345276873" r="58.631921824104225" />
-<circle class="pcb-hole" cx="546.5798045602605" cy="424.1042345276873" r="58.631921824104225" />
-<circle class="pcb-hole" cx="546.5798045602605" cy="175.8957654723127" r="58.631921824104225" />
-      <rect class="pcb-boundary" x="253.42019543973942" y="97.71986970684037" width="293.1596091205211" height="404.56026058631926" />
-    </svg>
-  
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><style>
+              .pcb-board { fill: #000; }
+              .pcb-trace { stroke: #FF0000; stroke-width: 0.3; fill: none; }
+              .pcb-hole { fill: #FF00FF; }
+              .pcb-pad { fill: #FF0000; }
+              .pcb-boundary { fill: none; stroke: #f2eda1; stroke-width: 4.88599348534202; }
+            </style><rect class="pcb-board" x="0" y="0" width="800" height="600"/><circle class="pcb-hole" cx="253.42019543973942" cy="175.8957654723127" r="58.631921824104225"/><circle class="pcb-hole" cx="253.42019543973942" cy="424.1042345276873" r="58.631921824104225"/><circle class="pcb-hole" cx="546.5798045602605" cy="424.1042345276873" r="58.631921824104225"/><circle class="pcb-hole" cx="546.5798045602605" cy="175.8957654723127" r="58.631921824104225"/><path class="pcb-boundary" d="M 331.59609120521174 502.28013029315963 L 331.59609120521174 97.71986970684037 L 377.19869706840393 97.71986970684037 L 378.9343429069088 106.44555057509976 L 383.8770440771797 113.84282562966067 L 391.27431913174064 118.7855267999316 L 400 120.52117263843647 L 408.72568086825936 118.7855267999316 L 416.1229559228203 113.84282562966067 L 421.0656570930912 106.44555057509976 L 422.80130293159607 97.71986970684037 L 468.40390879478826 97.71986970684037 L 468.40390879478826 502.28013029315963 L 331.59609120521174 502.28013029315963"/></svg>
