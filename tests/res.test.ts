@@ -1,6 +1,7 @@
 import test from "ava"
 import { getTestFixture } from "tests/fixtures/get-test-fixture"
 import { su } from "@tscircuit/soup-util"
+import { res } from "src/fn/res"
 
 test("res_imperial0402", async (t) => {
   const { fp, snapshotSoup } = await getTestFixture(t)
