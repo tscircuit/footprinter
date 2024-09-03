@@ -1,9 +1,10 @@
 import { logSoup } from "@tscircuit/log-soup"
 import type { AnySoupElement } from "@tscircuit/soup"
 import type { ExecutionContext } from "ava"
-import { circuitJsonToPcbSvg } from "circuit-to-svg"
-import fs from "fs"
-import path from "path"
+
+import { circuitJsonToPcbSvg, circuitJsonToSchematicSvg } from "circuit-to-svg"
+import fs from "node:fs"
+import path from "node:path"
 import { fp } from "../../src"
 
 export const getTestFixture = async (t: ExecutionContext) => {
