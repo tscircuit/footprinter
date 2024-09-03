@@ -2,7 +2,7 @@ import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
-import { positive_sign } from "./+_sign"
+import { positive_sign } from "./plus_sign"
 type StandardSize = {
   imperial: string
   metric: string
@@ -191,10 +191,9 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     },
   ]
 
-  let PcbSilkscreenPositiveSign: PcbSilkscreenPath[] | undefined
+  let pcbSilkscreenPositiveSign: PcbSilkscreenPath[] | undefined
   if (polarized) {
-    // if()
-    PcbSilkscreenPositiveSign = positive_sign(p, pw, ph)
+    pcbSilkscreenPositiveSign = positive_sign(p, pw, ph)
   }
   if (tht) {
     const pads = [
@@ -203,7 +202,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     ]
 
     if (PcbSilkscreenPath.length > 0 && polarized) {
-      return [...pads, ...PcbSilkscreenPath, ...PcbSilkscreenPositiveSign!]
+      return [...pads, ...PcbSilkscreenPath, ...pcbSilkscreenPositiveSign!]
       // biome-ignore lint/style/noUselessElse: <explanation>
     } else if (PcbSilkscreenPath.length > 0 && !polarized) {
       return [...pads, ...PcbSilkscreenPath]
@@ -218,7 +217,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     ]
 
     if (PcbSilkscreenPath.length > 0 && polarized) {
-      return [...pads, ...PcbSilkscreenPath, ...PcbSilkscreenPositiveSign!]
+      return [...pads, ...PcbSilkscreenPath, ...pcbSilkscreenPositiveSign!]
       // biome-ignore lint/style/noUselessElse: <explanation>
     } else if (PcbSilkscreenPath.length > 0 && !polarized) {
       return [...pads, ...PcbSilkscreenPath]
