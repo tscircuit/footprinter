@@ -2,7 +2,7 @@ import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
-import { positive_sign } from "./plus_sign"
+import { positive_sign } from "./positive_sign"
 type StandardSize = {
   imperial: string
   metric: string
