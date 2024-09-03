@@ -1,8 +1,8 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
-
+import { positive_sign } from "./+_sign"
 type StandardSize = {
   imperial: string
   metric: string
@@ -110,6 +110,7 @@ export type PassiveDef = {
   imperial?: string
   w?: number
   h?: number
+  polarized?: boolean
 }
 
 const deriveXFromH = (h: number) => 0.079 * h ** 2 + 0.94 * h - 0.009
@@ -118,7 +119,7 @@ const deriveGFromW = (w: number) => 0.59 * w - 0.31
 const deriveCFromW = (w: number) => -0.01 * w ** 2 + 0.94 * w + 0.03
 
 export const passive = (params: PassiveDef): AnySoupElement[] => {
-  let { tht, p, pw, ph, metric, imperial, w, h } = params
+  let { tht, p, pw, ph, metric, imperial, w, h, polarized } = params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -163,16 +164,65 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
 
   if (pw === undefined) throw new Error("could not infer pad width")
   if (ph === undefined) throw new Error("could not infer pad width")
+  // if (params.w && params.p && params.pw) {
 
+  const PcbSilkscreenPath: PcbSilkscreenPath[] = [
+    {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "1",
+      pcb_silkscreen_path_id: "1",
+      stroke_width: 0.05,
+      route: [
+        { x: -p / 2 + pw / 2 + 0.1, y: ph / 2 },
+        { x: p / 2 - pw / 2 - 0.1, y: ph / 2 },
+      ],
+    },
+    {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "2",
+      pcb_silkscreen_path_id: "2",
+      stroke_width: 0.05,
+      route: [
+        { x: -p / 2 + pw / 2 + 0.1, y: -ph / 2 },
+        { x: p / 2 - pw / 2 - 0.1, y: -ph / 2 },
+      ],
+    },
+  ]
+
+  let PcbSilkscreenPositiveSign: PcbSilkscreenPath[] | undefined
+  if (polarized) {
+    // if()
+    PcbSilkscreenPositiveSign = positive_sign(p, pw, ph)
+  }
   if (tht) {
-    return [
+    const pads = [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
     ]
-  } else {
-    return [
+
+    if (PcbSilkscreenPath.length > 0 && polarized) {
+      return [...pads, ...PcbSilkscreenPath, ...PcbSilkscreenPositiveSign!]
+      // biome-ignore lint/style/noUselessElse: <explanation>
+    } else if (PcbSilkscreenPath.length > 0 && !polarized) {
+      return [...pads, ...PcbSilkscreenPath]
+    }
+
+    return pads
+    // biome-ignore lint/style/noUselessElse: <explanation>
+  } else if (!tht) {
+    const pads = [
       rectpad(["1", "left"], -p / 2, 0, pw, ph),
       rectpad(["2", "right"], p / 2, 0, pw, ph),
     ]
+
+    if (PcbSilkscreenPath.length > 0 && polarized) {
+      return [...pads, ...PcbSilkscreenPath, ...PcbSilkscreenPositiveSign!]
+      // biome-ignore lint/style/noUselessElse: <explanation>
+    } else if (PcbSilkscreenPath.length > 0 && !polarized) {
+      return [...pads, ...PcbSilkscreenPath]
+    }
+    return pads
   }
 }

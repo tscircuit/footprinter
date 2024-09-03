@@ -1,22 +1,22 @@
-import { logSoup } from "@tscircuit/log-soup";
-import type { AnySoupElement } from "@tscircuit/soup";
-import type { ExecutionContext } from "ava";
-import { pcbSoupToSvg, soupToSvg } from "circuit-to-svg";
-import fs from "fs";
-import path from "path";
-import { fp } from "../../src";
+import { logSoup } from "@tscircuit/log-soup"
+import type { AnySoupElement } from "@tscircuit/soup"
+import type { ExecutionContext } from "ava"
+import { circuitJsonToPcbSvg } from "circuit-to-svg"
+import fs from "fs"
+import path from "path"
+import { fp } from "../../src"
 
 export const getTestFixture = async (t: ExecutionContext) => {
-  const outputDir = path.join(__dirname, "../output");
+  const outputDir = path.join(__dirname, "../output")
   if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true });
+    fs.mkdirSync(outputDir, { recursive: true })
   }
 
   const snapshotSoup = (soup: AnySoupElement[]) => {
-    const outputPath = path.join(outputDir, `${t.title}.svg`);
-    const svg = pcbSoupToSvg(soup);
-    fs.writeFileSync(outputPath, svg);
-  };
+    const outputPath = path.join(outputDir, `${t.title}.svg`)
+    const svg = circuitJsonToPcbSvg(soup)
+    fs.writeFileSync(outputPath, svg)
+  }
 
   return {
     fp,
