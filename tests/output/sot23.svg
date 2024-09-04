@@ -1,8 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><style>
               .pcb-board { fill: #000; }
-              .pcb-trace { stroke: rgb(200, 52, 52); stroke-width: 0.3; fill: none; }
-              .pcb-hole-outer { fill: rgb(200, 52, 52); }
-              .pcb-hole-inner { fill: rgb(255, 38, 226); }
-              .pcb-pad { fill: rgb(200, 52, 52); }
+              .pcb-trace { stroke: #FF0000; stroke-width: 0.3; fill: none; }
+              .pcb-hole { fill: #FF00FF; }
+              .pcb-pad { fill: #FF0000; }
               .pcb-boundary { fill: none; stroke: #f2eda1; stroke-width: 7.407407407407408; }
             </style><rect class="pcb-board" x="0" y="0" width="800" height="600"/><rect class="pcb-pad" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/></svg>

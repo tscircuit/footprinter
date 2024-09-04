@@ -1,7 +1,6 @@
 import { logSoup } from "@tscircuit/log-soup"
 import type { AnySoupElement } from "@tscircuit/soup"
 import type { ExecutionContext } from "ava"
-
 import { circuitJsonToPcbSvg, circuitJsonToSchematicSvg } from "circuit-to-svg"
 import fs from "node:fs"
 import path from "node:path"
