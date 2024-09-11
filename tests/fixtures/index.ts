@@ -26,7 +26,7 @@ export const toPinPositionString = (soup: AnySoupElement[]) => {
       (e: any) =>
         `${e.pn.padEnd(2)}: ${e.x.toFixed(2).padStart(5)} ${e.y
           .toFixed(2)
-          .padStart(5)}`
+          .padStart(5)}`,
     )
     .join("\n")
 }

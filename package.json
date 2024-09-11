@@ -4,9 +4,7 @@
   "version": "0.0.59",
   "description": "",
   "main": "dist/index.cjs",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "test": "FULL_RUN=1 ava",
     "dev": "cd previews && npm i && npm run storybook",

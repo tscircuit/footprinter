@@ -4,7 +4,7 @@ export const rectpad = (
   x: number,
   y: number,
   w: number,
-  h: number
+  h: number,
 ): PCBSMTPad => {
   return {
     type: "pcb_smtpad",

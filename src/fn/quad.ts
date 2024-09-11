@@ -27,7 +27,7 @@ export const base_quad_def = z.object({
 })
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
-  v: T
+  v: T,
 ) => {
   if (v.w && !v.h) {
     v.h = v.w
@@ -107,7 +107,7 @@ export const getQuadCoords = (params: {
 }
 
 export const quad = (
-  raw_params: z.input<typeof quad_def>
+  raw_params: z.input<typeof quad_def>,
 ): AnySoupElement[] => {
   const params = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
@@ -146,7 +146,7 @@ export const quad = (
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
       pads.push(
-        rectpad(["thermalpad"], 0, 0, params.thermalpad.x, params.thermalpad.y)
+        rectpad(["thermalpad"], 0, 0, params.thermalpad.x, params.thermalpad.y),
       )
     }
   }
@@ -256,7 +256,7 @@ export const quad = (
             },
           ],
           type: "pcb_silkscreen_path",
-        }
+        },
       )
     }
     if (arrow === "in1" || arrow === "in2") {
