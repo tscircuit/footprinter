@@ -47,7 +47,7 @@ export const getCcwDipCoords = (
   pinCount: number,
   pn: number,
   w: number,
-  p: number
+  p: number,
 ) => {
   /** pin height */
   const ph = pinCount / 2
@@ -89,10 +89,10 @@ export const dip = (raw_params: {
       params.num_pins,
       i + 1,
       params.w,
-      params.p ?? 2.54
+      params.p ?? 2.54,
     )
     platedHoles.push(
-      platedhole(i + 1, x, y, params.id ?? "0.8mm", params.od ?? "1mm")
+      platedhole(i + 1, x, y, params.id ?? "0.8mm", params.od ?? "1mm"),
     )
   }
   /** silkscreen width */

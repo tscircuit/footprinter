@@ -3,7 +3,7 @@ import { extendSoicDef, soicWithoutParsing, type SoicInput } from "./soic"
 export const tssop_def = extendSoicDef({
   w: "6.1mm",
   p: "0.65mm",
-  legsoutside: true
+  legsoutside: true,
 })
 
 export const tssop = (raw_params: SoicInput) => {

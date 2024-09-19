@@ -107,8 +107,8 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
       `not able to create bga component, unable to determine missing pins (try specifying them with "missing+1+2+..."\n\n${JSON.stringify(
         bga_params,
         null,
-        "  "
-      )}`
+        "  ",
+      )}`,
     )
   }
 
@@ -129,7 +129,7 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
 
       // TODO handle >26 rows
       pads.push(
-        rectpad([pin_num, `${ALPHABET[y]}${x + 1}`], pad_x, pad_y, pad, pad)
+        rectpad([pin_num, `${ALPHABET[y]}${x + 1}`], pad_x, pad_y, pad, pad),
       )
     }
   }

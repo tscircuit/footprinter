@@ -13,5 +13,5 @@ export const dim2d = z
     z.object({
       x: z.number(),
       y: z.number(),
-    })
+    }),
   )

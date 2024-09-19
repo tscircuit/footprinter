@@ -20,7 +20,7 @@ type CommonPassiveOptionKey =
 
 export type Footprinter = {
   dip: (
-    num_pins: number
+    num_pins: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
@@ -28,15 +28,15 @@ export type Footprinter = {
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   lr: (num_pins: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
-    num_pins: number
+    num_pins: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   quad: (
-    num_pins: number
+    num_pins: number,
   ) => FootprinterParamsBuilder<
     "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
   >
   bga: (
-    num_pins: number
+    num_pins: number,
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
   >
@@ -89,7 +89,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           return () => {
             // TODO improve error
             throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`
+              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`,
             )
           }
         }
@@ -124,7 +124,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           return proxy
         }
       },
-    }
+    },
   )
   return proxy as any
 }

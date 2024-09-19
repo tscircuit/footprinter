@@ -6,7 +6,7 @@ export const platedhole = (
   x: number,
   y: number,
   id: number | string,
-  od: number | string
+  od: number | string,
 ): PCBPlatedHole => {
   return {
     type: "pcb_plated_hole",

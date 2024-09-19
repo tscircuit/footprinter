@@ -4,13 +4,12 @@
   "version": "0.0.61",
   "description": "",
   "main": "dist/index.cjs",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "test": "FULL_RUN=1 ava",
     "dev": "cd previews && npm i && npm run storybook",
-    "build": "tsup ./src/index.ts --dts --sourcemap"
+    "build": "tsup ./src/index.ts --dts --sourcemap",
+    "format": "biome format . --write"
   },
   "keywords": [],
   "author": "",
