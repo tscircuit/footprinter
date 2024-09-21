@@ -3,6 +3,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 
 export const sot723_def = z.object({
+  fn: z.string(),
   num_pins: z.number().default(3),
   w: z.string().default("1.2mm"),
   h: z.string().default("1.2mm"),
@@ -11,9 +12,13 @@ export const sot723_def = z.object({
 })
 
 export const sot723 = (
-  params: z.input<typeof sot723_def>,
-): AnySoupElement[] => {
-  return sot723WithoutParsing(sot723_def.parse(params))
+  raw_params: z.input<typeof sot723_def>,
+): { circuitJson: AnySoupElement[]; parameters: string } => {
+  const params = sot723_def.parse(raw_params)
+  return {
+    circuitJson: sot723WithoutParsing(params),
+    parameters: JSON.stringify(params),
+  }
 }
 
 export const getCcwSot723Coords = (params: {

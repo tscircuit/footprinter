@@ -16,7 +16,9 @@ export const dfn_def = extendSoicDef({})
  *
  * Similar to SOIC but different silkscreen
  */
-export const dfn = (raw_params: SoicInput) => {
+export const dfn = (
+  raw_params: SoicInput,
+): { circuitJson: AnySoupElement[]; parameters: string } => {
   const params = dfn_def.parse(raw_params)
   const pads: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
@@ -85,5 +87,8 @@ export const dfn = (raw_params: SoicInput) => {
     ],
   })
 
-  return [...pads, ...silkscreenPaths]
+  return {
+    circuitJson: [...pads, ...silkscreenPaths],
+    parameters: JSON.stringify(params),
+  }
 }

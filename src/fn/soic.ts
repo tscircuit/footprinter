@@ -13,6 +13,7 @@ export const extendSoicDef = (newDefaults: {
 }) =>
   z
     .object({
+      fn: z.string(),
       num_pins: z.number(),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
@@ -87,8 +88,12 @@ export const soic = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): AnySoupElement[] => {
-  return soicWithoutParsing(soic_def.parse(raw_params))
+}): { circuitJson: AnySoupElement[]; parameters: string } => {
+  const params = soic_def.parse(raw_params)
+  return {
+    circuitJson: soicWithoutParsing(params),
+    parameters: JSON.stringify(params),
+  }
 }
 
 export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {

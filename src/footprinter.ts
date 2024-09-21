@@ -49,6 +49,7 @@ export type Footprinter = {
   pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   params: () => any
   soup: () => AnySoupElement[]
+  json: () => string
 }
 
 export const string = (def: string): Footprinter => {
@@ -83,7 +84,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
         // console.log(prop, target)
         if (prop === "soup") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
-            return () => FOOTPRINT_FN[target.fn](target)
+            return () => FOOTPRINT_FN[target.fn](target).circuitJson
           }
 
           return () => {
@@ -92,6 +93,9 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
               `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`,
             )
           }
+        }
+        if (prop === "json") {
+          return () => FOOTPRINT_FN[target.fn](target).parameters
         }
         if (prop === "params") {
           // TODO

@@ -8,6 +8,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 
 export const base_quad_def = z.object({
+  fn: z.string(),
   cc: z.literal(true).optional(),
   ccw: z.literal(true).optional(),
   startingpin: z
@@ -108,7 +109,7 @@ export const getQuadCoords = (params: {
 
 export const quad = (
   raw_params: z.input<typeof quad_def>,
-): AnySoupElement[] => {
+): { circuitJson: AnySoupElement[]; parameters: string } => {
   const params = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
   const pin_map = getQuadPinMap(params)
@@ -287,5 +288,8 @@ export const quad = (
     }
   }
 
-  return [...pads, ...silkscreen_corners]
+  return {
+    circuitJson: [...pads, ...silkscreen_corners],
+    parameters: JSON.stringify(params),
+  }
 }

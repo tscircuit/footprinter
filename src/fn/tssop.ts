@@ -1,3 +1,4 @@
+import type { AnySoupElement } from "@tscircuit/soup"
 import { extendSoicDef, soicWithoutParsing, type SoicInput } from "./soic"
 
 export const tssop_def = extendSoicDef({
@@ -6,6 +7,12 @@ export const tssop_def = extendSoicDef({
   legsoutside: true,
 })
 
-export const tssop = (raw_params: SoicInput) => {
-  return soicWithoutParsing(tssop_def.parse(raw_params))
+export const tssop = (
+  raw_params: SoicInput,
+): { circuitJson: AnySoupElement[]; parameters: string } => {
+  const params = tssop_def.parse(raw_params)
+  return {
+    circuitJson: soicWithoutParsing(params),
+    parameters: JSON.stringify(params),
+  }
 }

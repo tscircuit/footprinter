@@ -10,7 +10,7 @@ test("led_rect", async (t) => {
     p: 2.5,
     pw: 0.5,
     ph: 0.5,
-  })
+  }).circuitJson
 
   snapshotSoup(soup)
   t.pass()
@@ -25,7 +25,7 @@ test("led_hole", async (t) => {
     metric: "mm",
     w: 5,
     h: 2,
-  })
+  }).circuitJson
 
   snapshotSoup(soup)
   t.pass()

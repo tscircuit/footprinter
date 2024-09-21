@@ -8,6 +8,7 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
     .object({
+      fn: z.string(),
       dip: z.literal(true),
       num_pins: z.number(),
       wide: z.boolean().optional(),
@@ -81,7 +82,7 @@ export const dip = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): AnySoupElement[] => {
+}): { circuitJson: AnySoupElement[]; parameters: string } => {
   const params = dip_def.parse(raw_params)
   const platedHoles: AnySoupElement[] = []
   for (let i = 0; i < params.num_pins; i++) {
@@ -117,5 +118,8 @@ export const dip = (raw_params: {
     type: "pcb_silkscreen_path",
   }
 
-  return [...platedHoles, silkscreenBorder]
+  return {
+    circuitJson: [...platedHoles, silkscreenBorder],
+    parameters: JSON.stringify(params),
+  }
 }
