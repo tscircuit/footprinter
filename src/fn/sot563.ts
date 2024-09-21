@@ -8,7 +8,7 @@ export const sot563 = (
   raw_params: z.input<typeof sot563_def>,
 ): { circuitJson: AnySoupElement[]; parameters: string } => {
   const params = sot563_def.parse({
-    fn: 'sot563',
+    fn: "sot563",
     num_pins: 6,
     w: 1.94,
     p: 0.5,
