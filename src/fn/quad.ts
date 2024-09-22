@@ -147,7 +147,13 @@ export const quad = (
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
       pads.push(
-        rectpad(["thermalpad"], 0, 0, parameters.thermalpad.x, parameters.thermalpad.y),
+        rectpad(
+          ["thermalpad"],
+          0,
+          0,
+          parameters.thermalpad.x,
+          parameters.thermalpad.y,
+        ),
       )
     }
   }

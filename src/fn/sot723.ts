@@ -39,7 +39,9 @@ export const getCcwSot723Coords = (parameters: {
   }
 }
 
-export const sot723WithoutParsing = (parameters: z.infer<typeof sot723_def>) => {
+export const sot723WithoutParsing = (
+  parameters: z.infer<typeof sot723_def>,
+) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 0; i < 3; i++) {

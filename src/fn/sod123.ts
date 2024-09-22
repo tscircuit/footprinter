@@ -43,7 +43,13 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
       pad_spacing: parseFloat(parameters.pad_spacing),
     })
     pads.push(
-      rectpad(i + 1, x, y, parseFloat(parameters.pl), parseFloat(parameters.pw)),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        parseFloat(parameters.pl),
+        parseFloat(parameters.pw),
+      ),
     )
   }
 

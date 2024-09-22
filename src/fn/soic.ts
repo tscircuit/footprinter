@@ -107,12 +107,15 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"))
+    pads.push(
+      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
+    )
   }
 
   /** silkscreen width */
   const m = Math.min(1, parameters.p / 2)
-  const sw = parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
+  const sw =
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",

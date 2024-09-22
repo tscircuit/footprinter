@@ -30,7 +30,9 @@ export const dfn = (
       pl: parameters.pl,
       widthincludeslegs: true,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"))
+    pads.push(
+      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
+    )
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1

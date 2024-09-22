@@ -51,7 +51,13 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
       pl: parseFloat(parameters.pl),
     })
     pads.push(
-      rectpad(i + 1, x, y, parseFloat(parameters.pl), parseFloat(parameters.pw)),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        parseFloat(parameters.pl),
+        parseFloat(parameters.pw),
+      ),
     )
   }
 
