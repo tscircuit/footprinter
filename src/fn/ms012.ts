@@ -10,10 +10,10 @@ export const ms012_def = extendSoicDef({
 
 export const ms012 = (
   raw_params: z.input<typeof ms012_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = ms012_def.parse({ ...raw_params, num_pins: 8 })
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = ms012_def.parse({ ...raw_params, num_pins: 8 })
   return {
-    circuitJson: soicWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: soicWithoutParsing(parameters),
+    parameters,
   }
 }

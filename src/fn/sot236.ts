@@ -10,10 +10,10 @@ export const sot236_def = extendSoicDef({
 
 export const sot236 = (
   raw_params: z.input<typeof sot236_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = sot236_def.parse({ ...raw_params, num_pins: 6 })
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = sot236_def.parse({ ...raw_params, num_pins: 6 })
   return {
-    circuitJson: soicWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: soicWithoutParsing(parameters),
+    parameters,
   }
 }

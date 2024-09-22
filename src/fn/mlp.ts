@@ -5,11 +5,11 @@ import type { z } from "zod"
 export const mlp_def = base_quad_def.extend({}).transform(quadTransform)
 
 export const mlp = (
-  params: z.input<typeof mlp_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  params.legsoutside = false
-  if (params.thermalpad === undefined) {
-    params.thermalpad = true
+  parameters: z.input<typeof mlp_def>,
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  parameters.legsoutside = false
+  if (parameters.thermalpad === undefined) {
+    parameters.thermalpad = true
   }
-  return quad(params)
+  return quad(parameters)
 }

@@ -13,19 +13,19 @@ export const sod_def = z.object({
 
 export const sod123 = (
   raw_params: z.input<typeof sod_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = sod_def.parse(raw_params)
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = sod_def.parse(raw_params)
   return {
-    circuitJson: sodWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: sodWithoutParsing(parameters),
+    parameters,
   }
 }
 
-export const getSodCoords = (params: {
+export const getSodCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
-  const { pn, pad_spacing } = params
+  const { pn, pad_spacing } = parameters
 
   if (pn === 1) {
     return { x: -pad_spacing / 2, y: 0 }
@@ -34,16 +34,16 @@ export const getSodCoords = (params: {
   }
 }
 
-export const sodWithoutParsing = (params: z.infer<typeof sod_def>) => {
+export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 0; i < 2; i++) {
     const { x, y } = getSodCoords({
       pn: i + 1,
-      pad_spacing: parseFloat(params.pad_spacing),
+      pad_spacing: parseFloat(parameters.pad_spacing),
     })
     pads.push(
-      rectpad(i + 1, x, y, parseFloat(params.pl), parseFloat(params.pw)),
+      rectpad(i + 1, x, y, parseFloat(parameters.pl), parseFloat(parameters.pw)),
     )
   }
 

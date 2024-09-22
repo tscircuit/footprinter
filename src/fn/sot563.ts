@@ -6,8 +6,8 @@ export const sot563_def = extendSoicDef({})
 
 export const sot563 = (
   raw_params: z.input<typeof sot563_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = sot563_def.parse({
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = sot563_def.parse({
     fn: "sot563",
     num_pins: 6,
     w: 1.94,
@@ -17,7 +17,7 @@ export const sot563 = (
     legoutside: true,
   })
   return {
-    circuitJson: soicWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: soicWithoutParsing(parameters),
+    parameters,
   }
 }

@@ -13,22 +13,22 @@ export const sot723_def = z.object({
 
 export const sot723 = (
   raw_params: z.input<typeof sot723_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = sot723_def.parse(raw_params)
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = sot723_def.parse(raw_params)
   return {
-    circuitJson: sot723WithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: sot723WithoutParsing(parameters),
+    parameters,
   }
 }
 
-export const getCcwSot723Coords = (params: {
+export const getCcwSot723Coords = (parameters: {
   num_pins: number
   pn: number
   w: number
   h: number
   pl: number
 }) => {
-  const { pn, w, h, pl } = params
+  const { pn, w, h, pl } = parameters
 
   if (pn === 1) {
     return { x: 0, y: 0 }
@@ -39,24 +39,24 @@ export const getCcwSot723Coords = (params: {
   }
 }
 
-export const sot723WithoutParsing = (params: z.infer<typeof sot723_def>) => {
+export const sot723WithoutParsing = (parameters: z.infer<typeof sot723_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 0; i < 3; i++) {
     const { x, y } = getCcwSot723Coords({
-      num_pins: params.num_pins,
+      num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(params.w),
-      h: Number.parseFloat(params.h),
-      pl: Number.parseFloat(params.pl),
+      w: Number.parseFloat(parameters.w),
+      h: Number.parseFloat(parameters.h),
+      pl: Number.parseFloat(parameters.pl),
     })
     pads.push(
       rectpad(
         i + 1,
         x,
         y,
-        Number.parseFloat(params.pl),
-        i !== 0 ? Number.parseFloat(params.pw) : 0.42,
+        Number.parseFloat(parameters.pl),
+        i !== 0 ? Number.parseFloat(parameters.pw) : 0.42,
       ),
     )
   }

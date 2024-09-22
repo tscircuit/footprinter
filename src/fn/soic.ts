@@ -41,7 +41,7 @@ export const extendSoicDef = (newDefaults: {
 const soic_def = extendSoicDef({})
 export type SoicInput = z.infer<typeof soic_def>
 
-export const getCcwSoicCoords = (params: {
+export const getCcwSoicCoords = (parameters: {
   num_pins: number
   pn: number
   w: number
@@ -50,10 +50,10 @@ export const getCcwSoicCoords = (params: {
   legsoutside?: boolean
   widthincludeslegs?: boolean
 }) => {
-  if (params.widthincludeslegs !== undefined) {
-    params.legsoutside = !params.widthincludeslegs
+  if (parameters.widthincludeslegs !== undefined) {
+    parameters.legsoutside = !parameters.widthincludeslegs
   }
-  const { num_pins, pn, w, p, pl, legsoutside } = params
+  const { num_pins, pn, w, p, pl, legsoutside } = parameters
   /** pin height */
   const ph = num_pins / 2
   const isLeft = pn <= ph
@@ -88,32 +88,32 @@ export const soic = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = soic_def.parse(raw_params)
+}): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = soic_def.parse(raw_params)
   return {
-    circuitJson: soicWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: soicWithoutParsing(parameters),
+    parameters,
   }
 }
 
-export const soicWithoutParsing = (params: z.infer<typeof soic_def>) => {
+export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const pads: AnySoupElement[] = []
-  for (let i = 0; i < params.num_pins; i++) {
+  for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
-      num_pins: params.num_pins,
+      num_pins: parameters.num_pins,
       pn: i + 1,
-      w: params.w,
-      p: params.p ?? 1.27,
-      pl: params.pl,
-      legsoutside: params.legsoutside,
+      w: parameters.w,
+      p: parameters.p ?? 1.27,
+      pl: parameters.pl,
+      legsoutside: parameters.legsoutside,
     })
-    pads.push(rectpad(i + 1, x, y, params.pl ?? "1mm", params.pw ?? "0.6mm"))
+    pads.push(rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"))
   }
 
   /** silkscreen width */
-  const m = Math.min(1, params.p / 2)
-  const sw = params.w - (params.legsoutside ? 0 : params.pl * 2) - 0.2
-  const sh = (params.num_pins / 2 - 1) * params.p + params.pw + m
+  const m = Math.min(1, parameters.p / 2)
+  const sw = parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",

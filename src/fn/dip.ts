@@ -82,23 +82,23 @@ export const dip = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = dip_def.parse(raw_params)
+}): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = dip_def.parse(raw_params)
   const platedHoles: AnySoupElement[] = []
-  for (let i = 0; i < params.num_pins; i++) {
+  for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
-      params.num_pins,
+      parameters.num_pins,
       i + 1,
-      params.w,
-      params.p ?? 2.54,
+      parameters.w,
+      parameters.p ?? 2.54,
     )
     platedHoles.push(
-      platedhole(i + 1, x, y, params.id ?? "0.8mm", params.od ?? "1mm"),
+      platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"),
     )
   }
   /** silkscreen width */
-  const sw = params.w - params.od - 0.4
-  const sh = (params.num_pins / 2 - 1) * params.p + params.od + 0.4
+  const sw = parameters.w - parameters.od - 0.4
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.od + 0.4
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -120,6 +120,6 @@ export const dip = (raw_params: {
 
   return {
     circuitJson: [...platedHoles, silkscreenBorder],
-    parameters: JSON.stringify(params),
+    parameters,
   }
 }

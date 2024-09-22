@@ -10,10 +10,10 @@ export const ssop_def = extendSoicDef({
 
 export const ssop = (
   raw_params: SoicInput,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = ssop_def.parse(raw_params)
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = ssop_def.parse(raw_params)
   return {
-    circuitJson: soicWithoutParsing(params),
-    parameters: JSON.stringify(params),
+    circuitJson: soicWithoutParsing(parameters),
+    parameters,
   }
 }

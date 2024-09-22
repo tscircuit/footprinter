@@ -109,29 +109,29 @@ export const getQuadCoords = (params: {
 
 export const quad = (
   raw_params: z.input<typeof quad_def>,
-): { circuitJson: AnySoupElement[]; parameters: string } => {
-  const params = quad_def.parse(raw_params)
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = quad_def.parse(raw_params)
   const pads: AnySoupElement[] = []
-  const pin_map = getQuadPinMap(params)
+  const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
-  const spc = params.num_pins / 4
-  for (let i = 0; i < params.num_pins; i++) {
+  const spc = parameters.num_pins / 4
+  for (let i = 0; i < parameters.num_pins; i++) {
     const {
       x,
       y,
       o: orientation,
     } = getQuadCoords({
-      pin_count: params.num_pins,
+      pin_count: parameters.num_pins,
       pn: i + 1,
-      w: params.w,
-      h: params.h,
-      p: params.p ?? 0.5,
-      pl: params.pl,
-      legsoutside: params.legsoutside,
+      w: parameters.w,
+      h: parameters.h,
+      p: parameters.p ?? 0.5,
+      pl: parameters.pl,
+      legsoutside: parameters.legsoutside,
     })
 
-    let pw = params.pw
-    let pl = params.pl
+    let pw = parameters.pw
+    let pl = parameters.pl
     if (orientation === "vert") {
       ;[pw, pl] = [pl, pw]
     }
@@ -140,14 +140,14 @@ export const quad = (
     pads.push(rectpad(pn, x, y, pw, pl))
   }
 
-  if (params.thermalpad) {
-    if (typeof params.thermalpad === "boolean") {
-      const ibw = params.p * (spc - 1) + params.pw
-      const ibh = params.p * (spc - 1) + params.pw
+  if (parameters.thermalpad) {
+    if (typeof parameters.thermalpad === "boolean") {
+      const ibw = parameters.p * (spc - 1) + parameters.pw
+      const ibh = parameters.p * (spc - 1) + parameters.pw
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
       pads.push(
-        rectpad(["thermalpad"], 0, 0, params.thermalpad.x, params.thermalpad.y),
+        rectpad(["thermalpad"], 0, 0, parameters.thermalpad.x, parameters.thermalpad.y),
       )
     }
   }
@@ -162,15 +162,15 @@ export const quad = (
   ] as const) {
     // const dx = Math.floor(corner_index / 2) * 2 - 1
     // const dy = 1 - (corner_index % 2) * 2
-    const corner_x = (params.w / 2) * dx
-    const corner_y = (params.h / 2) * dy
+    const corner_x = (parameters.w / 2) * dx
+    const corner_y = (parameters.h / 2) * dy
     let arrow: "none" | "in1" | "in2" = "none"
 
     let arrow_x = corner_x
     let arrow_y = corner_y
 
     /** corner size */
-    const csz = params.pw * 2
+    const csz = parameters.pw * 2
 
     if (pin_map[1] === 1 && corner === "top-left") {
       arrow = "in1"
@@ -191,15 +191,15 @@ export const quad = (
     }
 
     const rotate_arrow = arrow === "in1" ? 1 : -1
-    if (params.legsoutside) {
-      const arrow_dx = arrow === "in1" ? params.pl / 2 : params.pw / 2
-      const arrow_dy = arrow === "in1" ? params.pw / 2 : params.pl / 2
+    if (parameters.legsoutside) {
+      const arrow_dx = arrow === "in1" ? parameters.pl / 2 : parameters.pw / 2
+      const arrow_dy = arrow === "in1" ? parameters.pw / 2 : parameters.pl / 2
       arrow_x += arrow_dx * dx * rotate_arrow
       arrow_y -= arrow_dy * dy * rotate_arrow
     }
 
     // Normal Corner
-    if (arrow === "none" || params.legsoutside) {
+    if (arrow === "none" || parameters.legsoutside) {
       silkscreen_corners.push({
         layer: "top",
         pcb_component_id: "",
@@ -224,7 +224,7 @@ export const quad = (
 
     // Two lines nearly forming a corner, used when the arrow needs to overlap
     // the corne (QFN components where legs are inside)
-    if ((arrow === "in1" || arrow === "in2") && !params.legsoutside) {
+    if ((arrow === "in1" || arrow === "in2") && !parameters.legsoutside) {
       silkscreen_corners.push(
         {
           layer: "top",
@@ -290,6 +290,6 @@ export const quad = (
 
   return {
     circuitJson: [...pads, ...silkscreen_corners],
-    parameters: JSON.stringify(params),
+    parameters,
   }
 }
