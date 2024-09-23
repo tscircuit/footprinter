@@ -9,6 +9,7 @@ import type { NowDefined } from "src/helpers/zod/now-defined"
 
 export const bga_def = z
   .object({
+    fn: z.string(),
     num_pins: z.number(),
     grid: dim2d.optional(),
     p: distance.default("0.8mm"),
@@ -57,9 +58,11 @@ export const bga_def = z
 export type BgaDefInput = z.input<typeof bga_def>
 export type BgaDef = z.infer<typeof bga_def>
 
-export const bga = (params: BgaDefInput): AnySoupElement[] => {
-  const bga_params = bga_def.parse(params)
-  let { num_pins, grid, p, w, h, ball, pad, missing } = bga_params
+export const bga = (
+  raw_params: BgaDefInput,
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = bga_def.parse(raw_params)
+  let { num_pins, grid, p, w, h, ball, pad, missing } = parameters
 
   ball ??= (0.75 / 1.27) * p
 
@@ -105,7 +108,7 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
   if (num_pins_missing !== missing_pin_nums.length) {
     throw new Error(
       `not able to create bga component, unable to determine missing pins (try specifying them with "missing+1+2+..."\n\n${JSON.stringify(
-        bga_params,
+        parameters,
         null,
         "  ",
       )}`,
@@ -134,5 +137,5 @@ export const bga = (params: BgaDefInput): AnySoupElement[] => {
     }
   }
 
-  return [...pads]
+  return { circuitJson: [...pads], parameters }
 }

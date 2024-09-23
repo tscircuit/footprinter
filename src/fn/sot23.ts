@@ -3,6 +3,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 
 export const sot23_def = z.object({
+  fn: z.string(),
   num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
@@ -10,18 +11,24 @@ export const sot23_def = z.object({
   pw: z.string().default("0.764mm"),
 })
 
-export const sot23 = (params: z.input<typeof sot23_def>): AnySoupElement[] => {
-  return sot23WithoutParsing(sot23_def.parse(params))
+export const sot23 = (
+  raw_params: z.input<typeof sot23_def>,
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parameters = sot23_def.parse(raw_params)
+  return {
+    circuitJson: sot23WithoutParsing(parameters),
+    parameters: parameters,
+  }
 }
 
-export const getCcwSot23Coords = (params: {
+export const getCcwSot23Coords = (parameters: {
   num_pins: number
   pn: number
   w: number
   h: number
   pl: number
 }) => {
-  const { pn, w, h, pl } = params
+  const { pn, w, h, pl } = parameters
 
   if (pn === 1) {
     return { x: -1.7, y: 0 }
@@ -32,19 +39,25 @@ export const getCcwSot23Coords = (params: {
   }
 }
 
-export const sot23WithoutParsing = (params: z.infer<typeof sot23_def>) => {
+export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnySoupElement[] = []
 
-  for (let i = 0; i < params.num_pins; i++) {
+  for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23Coords({
-      num_pins: params.num_pins,
+      num_pins: parameters.num_pins,
       pn: i + 1,
-      w: parseFloat(params.w),
-      h: parseFloat(params.h),
-      pl: parseFloat(params.pl),
+      w: parseFloat(parameters.w),
+      h: parseFloat(parameters.h),
+      pl: parseFloat(parameters.pl),
     })
     pads.push(
-      rectpad(i + 1, x, y, parseFloat(params.pl), parseFloat(params.pw)),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        parseFloat(parameters.pl),
+        parseFloat(parameters.pw),
+      ),
     )
   }
 

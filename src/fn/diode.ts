@@ -1,8 +1,9 @@
 import type { AnySoupElement } from "@tscircuit/soup"
+import { passive } from "src/helpers/passive-fn"
 
-export const diode = (params: {
+export const diode = (parameters: {
   tht: boolean
   p: number
-}): AnySoupElement[] => {
-  return []
+}): { circuitJson: AnySoupElement[]; parameters: any } => {
+  return { circuitJson: passive(parameters), parameters }
 }

@@ -4,7 +4,9 @@ import type { z } from "zod"
 
 export const qfn_def = base_quad_def.extend({}).transform(quadTransform)
 
-export const qfn = (params: z.input<typeof qfn_def>): AnySoupElement[] => {
-  params.legsoutside = false
-  return quad(params)
+export const qfn = (
+  parameters: z.input<typeof qfn_def>,
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  parameters.legsoutside = false
+  return quad(parameters)
 }
