@@ -1,4 +1,4 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
+import type { AnySoupElement, PcbFabricationNoteText, PcbSilkscreenPath } from "@tscircuit/soup"
 import { u_curve } from "../helpers/u-curve"
 import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
@@ -116,10 +116,36 @@ export const dip = (raw_params: {
       { x: -sw / 2, y: -sh / 2 },
     ],
     type: "pcb_silkscreen_path",
+    stroke_width: 0.1
+  }
+  const silkscreenPins: PcbFabricationNoteText[] = []
+  for (let i = 0; i < parameters.num_pins; i++) {
+    const isLeft = i < parameters.num_pins / 2
+    const pinLabelX = isLeft ? -parameters.w / 2 - parameters.p / 2 - 0.2 : parameters.p / 2 + parameters.w / 2 + 0.2
+    const pinLabelY = isLeft
+      ? (-sh + 1.6) / 2 + i * parameters.p
+      : (-sh + 1.6) / 2 + (i - parameters.num_pins / 2) * parameters.p
+    const silkscreenPin = {
+      type: "pcb_fabrication_note_text",
+      layer: "top",
+      pcb_component_id: `pin_${i + 1}`,
+      pcb_silkscreen_text_id: `pin_${i + 1}`,
+      text: `{pin${i + 1}}`,
+      anchor_position: {
+        x: pinLabelX,
+        y: pinLabelY,
+      },
+      font_size: 0.3,
+      font_color: "red",
+      font: "tscircuit2024",
+      anchor_alignment: "top-left",
+    }
+
+    silkscreenPins.push(silkscreenPin)
   }
 
   return {
-    circuitJson: [...platedHoles, silkscreenBorder],
+    circuitJson: [...platedHoles, silkscreenBorder, ...silkscreenPins],
     parameters,
   }
 }

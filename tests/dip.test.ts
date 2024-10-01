@@ -56,3 +56,10 @@ test("dip4_w3.00mm", async (t) => {
   await logSoup(soup)
   snapshotSoup(soup)
 })
+test("dip10_w4.00mm_p2.65mm", async (t) => {
+  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
+  const soup = fp.string("dip10_w4.00mm_p2.65mm").circuitJson()
+  await logSoup(soup)
+  snapshotSoup(soup)
+  t.pass()
+})
