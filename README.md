@@ -8,7 +8,30 @@ mini-programs for generating footprints, this makes it suitable for standardized
 footprints. You can use it with any component that accepts a footprint prop, e.g.
 `<bug footprint="qfp12_p0.5" />`
 
-Here are some example programs:
+Here are some example footprinter strings:
+
+```
+0402
+0603
+cap0402
+res0805
+soic8_p1.27mm
+dip16
+pinrow10
+tssop20_p0.5mm
+sot23
+qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
+axial_p0.2in
+```
+
+You can use these like so:
+
+```tsx
+const circuitJson = fp.string("dip8_w0.5in").circuitJson()
+const parameters = fp.string("dip8_w0.5in").parameters()
+```
+
+You can also programmatically build footprints like so:
 
 ```ts
 import { fp } from "@tscircuit/footprinter"
