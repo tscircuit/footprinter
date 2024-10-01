@@ -47,8 +47,11 @@ export type Footprinter = {
   tssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
+  axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   params: () => any
+  /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
+  circuitJson: () => AnySoupElement[]
   json: () => any
 }
 
@@ -82,7 +85,7 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
     {
       get: (target: any, prop: string) => {
         // console.log(prop, target)
-        if (prop === "soup") {
+        if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
           }
