@@ -1,11 +1,11 @@
-import type { AnySoupElement } from "@tscircuit/soup";
-import { extendSoicDef, soicWithoutParsing } from "./soic";
-import type { z } from "zod";
+import type { AnySoupElement } from "@tscircuit/soup"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
+import type { z } from "zod"
 
-export const sot25_def = extendSoicDef({});
+export const sot25_def = extendSoicDef({})
 
 export const sot25 = (
-  raw_params: z.input<typeof sot25_def>
+  raw_params: z.input<typeof sot25_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sot25_def.parse({
     fn: "sot25",
@@ -16,10 +16,10 @@ export const sot25 = (
     pw: 0.55,
     pl: 0.8,
     legoutside: true,
-  });
+  })
 
   return {
     circuitJson: soicWithoutParsing(parameters),
     parameters,
-  };
-};
+  }
+}
