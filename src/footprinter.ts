@@ -1,5 +1,5 @@
-import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "@tscircuit/soup"
+import * as FOOTPRINT_FN from "./fn"
 import { isNotNull } from "./helpers/is-not-null"
 
 export type FootprinterParamsBuilder<K extends string> = {
@@ -91,9 +91,8 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
           }
 
           return () => {
-            // TODO improve error
             throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`,
+              `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.`,
             )
           }
         }
