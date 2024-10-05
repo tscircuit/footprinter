@@ -2,3 +2,4 @@ node_modules
 dist
 .aider*
 .vscode
+.DS_Store
