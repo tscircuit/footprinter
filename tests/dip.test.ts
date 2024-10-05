@@ -31,16 +31,15 @@ test("dip footprint", async (t) => {
 })
 
 test("dip16", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("dip16").soup()
-  await logSoup(soup)
+  const { fp, snapshotSoup } = await getTestFixture(t)
+  const soup = fp.string("dip16").circuitJson()
   snapshotSoup(soup)
   t.pass()
 })
 
 test("dip4_w3.00mm", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("dip4_w3.00mm").soup()
+  const { fp, snapshotSoup } = await getTestFixture(t)
+  const soup = fp.string("dip4_w3.00mm").circuitJson()
   const ps = toPinPositionString(soup)
 
   t.is(
@@ -53,7 +52,6 @@ test("dip4_w3.00mm", async (t) => {
   `.trim(),
   )
 
-  await logSoup(soup)
   snapshotSoup(soup)
 })
 test("dip10_w4.00mm_p2.65mm", async (t) => {

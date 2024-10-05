@@ -36,11 +36,11 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       // Default width (TODO high pin counts should probably be wide?)
       if (!v.w) {
         if (v.wide) {
-          v.w = length.parse("600mil")
+          v.w = length.parse("15.24mm")
         } else if (v.narrow) {
-          v.w = length.parse("300mil")
+          v.w = length.parse("7.62mm")
         } else {
-          v.w = length.parse(newDefaults.w ?? "300mil")
+          v.w = length.parse(newDefaults.w ?? "7.62mm")
         }
       }
       return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
