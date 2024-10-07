@@ -1,12 +1,12 @@
 import type {
-  AnySoupElement,
+  AnyCircuitElement,
   PcbFabricationNoteText,
   PcbSilkscreenPath,
-} from "@tscircuit/soup"
+} from "circuit-json"
 import { u_curve } from "../helpers/u-curve"
 import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
-import { length } from "@tscircuit/soup"
+import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
@@ -86,9 +86,9 @@ export const dip = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: any } => {
+}): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = dip_def.parse(raw_params)
-  const platedHoles: AnySoupElement[] = []
+  const platedHoles: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
       parameters.num_pins,

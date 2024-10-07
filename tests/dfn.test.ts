@@ -1,11 +1,10 @@
-import test from "ava"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
-import { su } from "@tscircuit/soup-util"
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { fp } from "../src/footprinter"
 
-test("dfn8_w5.3mm_p1.27mm", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("dfn8_w5.3mm_p1.27mm").soup()
-
-  t.is(su(soup).pcb_smtpad.list().length, 8)
-  snapshotSoup(soup)
+test("dfn8_w5.3mm_p1.27mm", () => {
+  const soup = fp.string("dfn8_w5.3mm_p1.27mm").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dfn8_w5.3mm_p1.27mm")
 })

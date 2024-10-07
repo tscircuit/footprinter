@@ -1,22 +1,19 @@
-import test from "ava"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
-import { su } from "@tscircuit/soup-util"
-import { led } from "src/fn"
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { led } from "../src/fn"
 
-test("led_rect", async (t) => {
-  const { fp, snapshotSoup } = await getTestFixture(t)
+test("led_rect", () => {
   const soup = led({
     tht: false,
     p: 2.5,
     pw: 0.5,
     ph: 0.5,
   }).circuitJson
-
-  snapshotSoup(soup)
-  t.pass()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_rect")
 })
-test("led_hole", async (t) => {
-  const { fp, snapshotSoup } = await getTestFixture(t)
+test("led_hole", () => {
   const soup = led({
     tht: true,
     p: 2,
@@ -26,7 +23,6 @@ test("led_hole", async (t) => {
     w: 5,
     h: 2,
   }).circuitJson
-
-  snapshotSoup(soup)
-  t.pass()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_hole")
 })
