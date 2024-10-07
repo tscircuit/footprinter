@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "^1.9.2",
+    "@biomejs/biome": "^1.9.3",
     "@tscircuit/log-soup": "^1.0.2",
     "@tscircuit/soup-util": "^0.0.11",
     "@types/node": "^20.12.13",
@@ -29,7 +29,7 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@tscircuit/mm": "^0.0.7",
+    "@tscircuit/mm": "^0.0.8",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
