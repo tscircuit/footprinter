@@ -1,10 +1,8 @@
-import test from "ava"
-import { getTestFixture } from "../fixtures"
+import { describe, it, expect } from "bun:test" // Bun's test utilities
+import { getTestFixture } from "../fixtures" // Adjust path based on your structure
 import type { AnySoupElement } from "@tscircuit/soup"
 
-/**
- * Slop is an underdefined definition.
- */
+// biome-ignore lint/suspicious/noExportsInTest: <explanation>
 export const SLOP_LIST = [
   "dip3",
   "bga64",
@@ -14,34 +12,40 @@ export const SLOP_LIST = [
   "qfn32_p0.5mm",
 ]
 
-test("slop1", async (t) => {
-  const { fp, logSoupWithPrefix } = await getTestFixture(t)
+describe("Slop Tests", () => {
+  it("should handle slop elements correctly", async () => {
+    const { fp, logSoupWithPrefix } = await getTestFixture("slop1")
 
-  const soups: AnySoupElement[][] = []
-  const failures: Array<{
-    slop_string: string
-    error: any
-  }> = []
+    const soups: AnySoupElement[][] = []
+    const failures: Array<{
+      slop_string: string
+      error: any
+    }> = []
 
-  for (const slop of SLOP_LIST) {
-    try {
-      const soup = fp.string(slop).soup()
-      soups.push(soup)
-      if (slop === SLOP_LIST[SLOP_LIST.length - 1]) {
-        await logSoupWithPrefix(slop, soup)
+    for (const slop of SLOP_LIST) {
+      try {
+        const soup = fp.string(slop).soup()
+        soups.push(soup)
+        if (slop === SLOP_LIST[SLOP_LIST.length - 1]) {
+          await logSoupWithPrefix(slop, soup)
+        }
+      } catch (e: any) {
+        failures.push({
+          slop_string: slop,
+          error: e,
+        })
+        throw console.error(e)
       }
-    } catch (e: any) {
-      failures.push({
-        slop_string: slop,
-        error: e,
-      })
-      throw e
     }
-  }
 
-  if (failures.length > 0) {
-    t.fail(`Failures:\n${failures.map((f) => f.slop_string).join("\n")}`)
-  } else {
-    t.pass()
-  }
+    // Check if there were any failures and log the message
+    if (failures.length > 0) {
+      throw new Error(
+        `Failures:\n${failures.map((f) => f.slop_string).join("\n")}`,
+      )
+      // biome-ignore lint/style/noUselessElse: <explanation>
+    } else {
+      expect(failures.length).toBe(0) // Assert that there are no failures
+    }
+  })
 })

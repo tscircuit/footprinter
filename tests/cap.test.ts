@@ -1,33 +1,16 @@
-import test from "ava"
-import { fp } from "../src/footprinter"
-import { toPinPositionString } from "./fixtures"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
-test("cap footprint", async (t) => {
-  const soup = fp().cap().imperial("0402").soup()
-  const ps = toPinPositionString(soup)
-  const { snapshotSoup } = await getTestFixture(t)
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { fp } from "dist"
 
-  t.is(
-    ps,
-    `
-1 : -0.50  0.00
-2 :  0.50  0.00
-  `.trim(),
-  )
-  snapshotSoup(soup)
+test("cap footprint", () => {
+  const soup = fp().cap().imperial("0402").soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "cap footprint")
 })
 
-test("cap_imperial0402", async (t) => {
-  const soup = fp.string("cap_imperial0402").soup()
-  const ps = toPinPositionString(soup)
-  const { snapshotSoup } = await getTestFixture(t)
-
-  t.is(
-    ps,
-    `
-1 : -0.50  0.00
-2 :  0.50  0.00
-  `.trim(),
-  )
-  snapshotSoup(soup)
+test("cap_imperial0402", () => {
+  const soup = fp.string("cap_imperial0402").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "cap_imperial0402")
 })

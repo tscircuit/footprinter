@@ -1,11 +1,10 @@
-import test from "ava"
-import { getTestFixture, toPinPositionString } from "./fixtures"
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { fp } from "dist"
 
-test("mlp16_w4_h4_p0.5mm", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("mlp16_w4_h4_p0.5mm").soup()
-
-  await logSoup(soup)
-  snapshotSoup(soup)
-  t.pass()
+test("mlp16_w4_h4_p0.5mm", () => {
+  const soup = fp.string("mlp16_w4_h4_p0.5mm").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "mlp16_w4_h4_p0.5mm")
 })

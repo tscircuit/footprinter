@@ -1,18 +1,18 @@
-import test from "ava"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
-import { su } from "@tscircuit/soup-util"
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { fp } from "dist"
 
-test("sot23", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("sot23").soup()
-
-  snapshotSoup(soup)
-  t.pass()
+test("sot23", () => {
+  const soup = fp.string("sot23").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23")
 })
-test("sot23_w3_h1.5_p0.95mm", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("sot23_w3_h1.5_p0.95mm").soup()
-
-  snapshotSoup(soup)
-  t.pass()
+test("sot23_w3_h1.5_p0.95mm", () => {
+  const soup = fp.string("sot23_w3_h1.5_p0.95mm").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "sot23_w3_h1.5_p0.95mm",
+  )
 })

@@ -1,12 +1,10 @@
-import test from "ava"
-import { getTestFixture } from "tests/fixtures/get-test-fixture"
-import { su } from "@tscircuit/soup-util"
+import "bun-match-svg"
+import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { fp } from "dist"
 
-test("pinrow5", async (t) => {
-  const { fp, logSoup, snapshotSoup } = await getTestFixture(t)
-  const soup = fp.string("pinrow5").soup()
-
-  t.is(su(soup).pcb_plated_hole.list().length, 5)
-  await logSoup(soup)
-  snapshotSoup(soup)
+test("pinrow5", () => {
+  const soup = fp.string("pinrow5").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5")
 })
