@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><style>
-              .boundary { fill: #000; }
-              .pcb-board { fill: none; }
+              .pcb-board { fill: #000; }
               .pcb-trace { fill: none; }
               .pcb-hole-outer { fill: rgb(200, 52, 52); }
               .pcb-hole-inner { fill: rgb(255, 38, 226); }
@@ -10,4 +9,4 @@
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="200" y="300" width="400" height="0"/><g><circle class="pcb-hole-outer" cx="200" cy="300" r="62.5"/><circle class="pcb-hole-inner" cx="200" cy="300" r="50"/></g><g><circle class="pcb-hole-outer" cx="600" cy="300" r="62.5"/><circle class="pcb-hole-inner" cx="600" cy="300" r="50"/></g></svg>
+            </style><rect class="pcb-board" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="200" y="300" width="400" height="0"/><g><circle class="pcb-hole-outer" cx="200" cy="300" r="62.5"/><circle class="pcb-hole-inner" cx="200" cy="300" r="50"/></g><g><circle class="pcb-hole-outer" cx="600" cy="300" r="62.5"/><circle class="pcb-hole-inner" cx="600" cy="300" r="50"/></g></svg>

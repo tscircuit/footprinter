@@ -1,6 +1,6 @@
+import type { AnySoupElement } from "@tscircuit/soup"
 import test from "ava"
 import { getTestFixture } from "../fixtures"
-import type { AnySoupElement } from "@tscircuit/soup"
 
 /**
  * Slop is an underdefined definition.
@@ -43,5 +43,18 @@ test("slop1", async (t) => {
     t.fail(`Failures:\n${failures.map((f) => f.slop_string).join("\n")}`)
   } else {
     t.pass()
+  }
+})
+
+test("slop1 error", async (t) => {
+  const { fp } = await getTestFixture(t)
+
+  const invalidSlop = "invalid"
+  
+  try {
+    fp.string(invalidSlop).soup()
+    t.fail("Expected an error to be thrown for invalid slop")
+  } catch (error) {
+    t.pass("Error thrown as expected for invalid slop")
   }
 })
