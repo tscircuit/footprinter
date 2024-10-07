@@ -1,7 +1,8 @@
 import "bun-match-svg"
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "dist"
+import { fp } from "../src/footprinter"
+
 
 test("dip footprint", () => {
   const soup = fp().dip(4).w(4).p(2).soup()
@@ -12,7 +13,6 @@ test("dip footprint", () => {
 test("dip16", () => {
   const soup = fp.string("dip16").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  console.log(fp.string("dip16").json())
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip16")
 })
 

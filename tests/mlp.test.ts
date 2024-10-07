@@ -1,7 +1,7 @@
 import "bun-match-svg"
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "dist"
+import { fp } from "../src/footprinter"
 
 test("mlp16_w4_h4_p0.5mm", () => {
   const soup = fp.string("mlp16_w4_h4_p0.5mm").circuitJson()

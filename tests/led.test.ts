@@ -1,7 +1,7 @@
 import "bun-match-svg"
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { led } from "src/fn"
+import { led } from "../src/fn"
 
 test("led_rect", () => {
   const soup = led({

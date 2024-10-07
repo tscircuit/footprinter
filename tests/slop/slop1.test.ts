@@ -1,6 +1,6 @@
 import { describe, it, expect } from "bun:test" // Bun's test utilities
 import { getTestFixture } from "../fixtures" // Adjust path based on your structure
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnyCircuitElement } from "circuit-json"
 
 // biome-ignore lint/suspicious/noExportsInTest: <explanation>
 export const SLOP_LIST = [
@@ -16,7 +16,7 @@ describe("Slop Tests", () => {
   it("should handle slop elements correctly", async () => {
     const { fp, logSoupWithPrefix } = await getTestFixture("slop1")
 
-    const soups: AnySoupElement[][] = []
+    const soups: AnyCircuitElement[][] = []
     const failures: Array<{
       slop_string: string
       error: any
