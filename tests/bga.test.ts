@@ -3,7 +3,6 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
-
 test("bga footprint", () => {
   const soup = fp()
     .bga(8)

@@ -3,7 +3,6 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
-
 test("dip footprint", () => {
   const soup = fp().dip(4).w(4).p(2).soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)

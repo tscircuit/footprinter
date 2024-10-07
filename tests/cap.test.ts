@@ -3,7 +3,6 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
-
 test("cap footprint", () => {
   const soup = fp().cap().imperial("0402").soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
