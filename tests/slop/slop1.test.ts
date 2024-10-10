@@ -1,6 +1,6 @@
-import { describe, it, expect } from "bun:test" // Bun's test utilities
-import { getTestFixture } from "../fixtures" // Adjust path based on your structure
-import type { AnyCircuitElement } from "circuit-json"
+import { describe, expect, it } from "bun:test"; // Bun's test utilities
+import type { AnyCircuitElement } from "circuit-json";
+import { getTestFixture } from "../fixtures"; // Adjust path based on your structure
 
 // biome-ignore lint/suspicious/noExportsInTest: <explanation>
 export const SLOP_LIST = [
@@ -46,6 +46,22 @@ describe("Slop Tests", () => {
       // biome-ignore lint/style/noUselessElse: <explanation>
     } else {
       expect(failures.length).toBe(0) // Assert that there are no failures
+    }
+  }),
+
+  it("should throw an error for invalid footprint function", async () => {
+    const { fp } = await getTestFixture("slop1")
+
+    const invalidFootprint = "invalidFunction"
+
+    try {
+      fp.string(invalidFootprint).soup()
+      expect.fail("Expected an exrror to be thrown, but no error was thrown")
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error)
+
+      expect(error.message).toContain("Function not found for footprinter")
+      expect(error.message).toContain("Specify a valid function like .dip, .lr, .p, etc.")
     }
   })
 })
