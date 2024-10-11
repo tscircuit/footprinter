@@ -29,3 +29,8 @@ test("qfp80_w14_h14_p0.65mm", () => {
     "qfp80_w14_h14_p0.65mm_startingpin(topside,leftpin)",
   )
 })
+test("qfp52", () => {
+  const soup = fp.string("qfp52").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "qfp52")
+})
