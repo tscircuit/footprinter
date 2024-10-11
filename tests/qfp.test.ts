@@ -32,6 +32,5 @@ test("qfp80_w14_h14_p0.65mm", () => {
 test("qfp52", () => {
   const soup = fp.string("qfp52").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  console.log(fp.string("qfp52").json())
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "qfp52")
 })
