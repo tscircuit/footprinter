@@ -106,7 +106,7 @@ export const footprinter = (): Footprinter & {
           return () => {
             // TODO improve error
             throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${JSON.stringify(target)}\"`,
+              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"prop\"`,
             )
           }
         }
