@@ -2,3 +2,4 @@ node_modules
 dist
 .aider*
 .vscode
+*.diff.png
