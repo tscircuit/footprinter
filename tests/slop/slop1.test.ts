@@ -1,8 +1,7 @@
-import { describe, expect, it } from "bun:test" // Bun's test utilities
+import { describe, expect, it } from "bun:test"
 import type { AnyCircuitElement } from "circuit-json"
-import { getTestFixture } from "../fixtures" // Adjust path based on your structure
+import { getTestFixture } from "../fixtures"
 
-// biome-ignore lint/suspicious/noExportsInTest: <explanation>
 export const SLOP_LIST = [
   "dip3",
   "bga64",
@@ -38,14 +37,12 @@ describe("Slop Tests", () => {
       }
     }
 
-    // Check if there were any failures and log the message
     if (failures.length > 0) {
       throw new Error(
         `Failures:\n${failures.map((f) => f.slop_string).join("\n")}`,
       )
-      // biome-ignore lint/style/noUselessElse: <explanation>
     } else {
-      expect(failures.length).toBe(0) // Assert that there are no failures
+      expect(failures.length).toBe(0)
     }
   })
 })
