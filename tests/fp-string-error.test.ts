@@ -3,6 +3,6 @@ import { fp } from "src/footprinter"
 
 test("fp.string error", () => {
   expect(() => fp.string("nonexistentfn4_p3").circuitJson()).toThrow(
-    'Invalid footprint function, got "nonexistentfn", with string "nonexistentfn4_p3"',
+    'Invalid footprint function, got "nonexistentfn", from string "nonexistentfn4_p3"',
   )
 })

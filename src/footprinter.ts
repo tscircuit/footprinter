@@ -98,7 +98,7 @@ export const footprinter = (): Footprinter & {
           if (!FOOTPRINT_FN[target.fn]) {
             throw new Error(
               `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, with string "${target.string}"` : ""
+                target.string ? `, from string "${target.string}"` : ""
               }`,
             )
           }
@@ -114,7 +114,7 @@ export const footprinter = (): Footprinter & {
           if (!FOOTPRINT_FN[target.fn]) {
             throw new Error(
               `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, with string "${target.string}"` : ""
+                target.string ? `, from string "${target.string}"` : ""
               }`,
             )
           }
