@@ -76,10 +76,15 @@ export const string = (def: string): Footprinter => {
     fp = fp[fn](v)
   }
 
+  fp.setString(def)
+
   return fp
 }
 
-export const footprinter = (): Footprinter & { string: typeof string } => {
+export const footprinter = (): Footprinter & {
+  string: typeof string
+  setString: (string) => void
+} => {
   const proxy = new Proxy(
     {},
     {
@@ -90,19 +95,40 @@ export const footprinter = (): Footprinter & { string: typeof string } => {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
           }
 
+          if (!FOOTPRINT_FN[target.fn]) {
+            throw new Error(
+              `Invalid footprint function, got "${target.fn}"${
+                target.string ? `, with string "${target.string}"` : ""
+              }`,
+            )
+          }
+
           return () => {
             // TODO improve error
             throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`,
+              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${JSON.stringify(target)}\"`,
             )
           }
         }
         if (prop === "json") {
+          if (!FOOTPRINT_FN[target.fn]) {
+            throw new Error(
+              `Invalid footprint function, got "${target.fn}"${
+                target.string ? `, with string "${target.string}"` : ""
+              }`,
+            )
+          }
           return () => FOOTPRINT_FN[target.fn](target).parameters
         }
         if (prop === "params") {
           // TODO
           return () => target
+        }
+        if (prop === "setString") {
+          return (v: string) => {
+            target.string = v
+            return proxy
+          }
         }
         return (v: any) => {
           if (Object.keys(target).length === 0) {
