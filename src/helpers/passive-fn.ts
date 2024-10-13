@@ -2,6 +2,8 @@ import type { AnySoupElement } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
+import { z } from "zod"
+import { length } from "circuit-json"
 
 type StandardSize = {
   imperial: string
@@ -101,16 +103,29 @@ const imperialMap: Record<string, StandardSize> = sizes.reduce(
   {},
 )
 
-export type PassiveDef = {
-  tht: boolean
-  p: number
-  pw?: number
-  ph?: number
-  metric?: string
-  imperial?: string
-  w?: number
-  h?: number
-}
+// export type PassiveDef = {
+//   tht: boolean
+//   p: number
+//   pw?: number
+//   ph?: number
+//   metric?: string
+//   imperial?: string
+//   w?: number
+//   h?: number
+// }
+
+export const passive_def = z.object({
+  tht: z.boolean(),
+  p: length,
+  pw: length.optional(),
+  ph: length.optional(),
+  metric: z.string().optional(),
+  imperial: z.string().optional(),
+  w: length.optional(),
+  h: length.optional(),
+})
+
+export type PassiveDef = z.input<typeof passive_def>
 
 const deriveXFromH = (h: number) => 0.079 * h ** 2 + 0.94 * h - 0.009
 const deriveZFromW = (w: number) => 1.09 * w + 0.6

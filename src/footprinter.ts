@@ -1,5 +1,7 @@
 import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnyCircuitElement } from "circuit-json"
+import type { AnyParameterDefinition } from "./helpers/zod/AnyParamterDefinition"
 import { isNotNull } from "./helpers/is-not-null"
 
 export type FootprinterParamsBuilder<K extends string> = {
@@ -52,7 +54,7 @@ export type Footprinter = {
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
   circuitJson: () => AnySoupElement[]
-  json: () => any
+  json: () => AnyParameterDefinition[]
 }
 
 export const string = (def: string): Footprinter => {
