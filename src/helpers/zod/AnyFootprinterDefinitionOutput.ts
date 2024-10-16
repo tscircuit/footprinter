@@ -45,4 +45,4 @@ export const any_footprinter_def = z.union([
   passive_def,
 ])
 
-export type AnyParameterDefinition = z.infer<typeof any_footprinter_def>
+export type AnyFootprinterDefinitionOutput = z.infer<typeof any_footprinter_def>
