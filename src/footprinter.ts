@@ -1,7 +1,7 @@
 import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "@tscircuit/soup"
 import type { AnyCircuitElement } from "circuit-json"
-import type { AnyParameterDefinition } from "./helpers/zod/AnyParamterDefinition"
+import type { AnyParameterDefinition } from "./helpers/zod/AnyParameterDefinition"
 import { isNotNull } from "./helpers/is-not-null"
 
 export type FootprinterParamsBuilder<K extends string> = {

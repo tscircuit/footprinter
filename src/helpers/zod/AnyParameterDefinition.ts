@@ -21,7 +21,7 @@ import { ssop_def } from "src/fn/ssop"
 import { tssop_def } from "src/fn/tssop"
 import { passive_def } from "../passive-fn"
 
-export const anyParameterType = z.union([
+export const any_footprinter_def = z.union([
   axial_def,
   bga_def,
   dfn_def,
@@ -45,4 +45,4 @@ export const anyParameterType = z.union([
   passive_def,
 ])
 
-export type AnyParameterDefinition = z.infer<typeof anyParameterType>
+export type AnyParameterDefinition = z.infer<typeof any_footprinter_def>
