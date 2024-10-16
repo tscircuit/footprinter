@@ -22,10 +22,6 @@ import { tssop_def } from "src/fn/tssop"
 import { passive_def } from "../passive-fn";
 
 export const anyParameterType = z.union([
-  // TODO cap
-  // TODO diode
-  // TODO led
-  // TODO res
   axial_def,
   bga_def,
   dfn_def,
