@@ -19,7 +19,7 @@ import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
 import { ssop_def } from "src/fn/ssop"
 import { tssop_def } from "src/fn/tssop"
-import { passive_def } from "../passive-fn";
+import { passive_def } from "../passive-fn"
 
 export const anyParameterType = z.union([
   axial_def,
@@ -42,7 +42,7 @@ export const anyParameterType = z.union([
   sot723_def,
   ssop_def,
   tssop_def,
-  passive_def
+  passive_def,
 ])
 
 export type AnyParameterDefinition = z.infer<typeof anyParameterType>
