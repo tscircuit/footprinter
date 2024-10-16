@@ -1,5 +1,5 @@
 import type { AnySoupElement } from "@tscircuit/soup"
-import { PassiveDef, passive } from "../helpers/passive-fn"
+import { type PassiveDef, passive } from "../helpers/passive-fn"
 
 export const led = (
   parameters: PassiveDef,

@@ -38,7 +38,7 @@ export const extendSoicDef = (newDefaults: {
       return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl">
     })
 
-const soic_def = extendSoicDef({})
+export const soic_def = extendSoicDef({})
 export type SoicInput = z.infer<typeof soic_def>
 
 export const getCcwSoicCoords = (parameters: {

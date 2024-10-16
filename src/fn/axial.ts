@@ -8,7 +8,7 @@ import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 
-const axial_def = z.object({
+export const axial_def = z.object({
   fn: z.string(),
   num_pins: z.any().transform(() => 2),
   p: length.optional().default("2.54mm"),
