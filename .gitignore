@@ -3,3 +3,4 @@ dist
 .aider*
 .vscode
 *.diff.png
+package-lock.json
