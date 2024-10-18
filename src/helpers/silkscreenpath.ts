@@ -7,7 +7,7 @@ export const silkscreenpath = (
     layer?: string
     pcb_component_id?: string
     pcb_silkscreen_path_id?: string
-  } = {}
+  } = {},
 ): PcbSilkscreenPath => {
   return {
     type: "pcb_silkscreen_path",
