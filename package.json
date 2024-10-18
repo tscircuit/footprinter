@@ -17,7 +17,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@biomejs/biome": "^1.9.3",
+    "@biomejs/biome": "^1.9.4",
     "@tscircuit/log-soup": "^1.0.2",
     "@tscircuit/soup-util": "^0.0.11",
     "@types/bun": "^1.1.10",
