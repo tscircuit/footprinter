@@ -1,4 +1,4 @@
-import type { PCBPlatedHole, PCBSMTPad } from "@tscircuit/soup"
+import type { PcbPlatedHole } from "circuit-json"
 import { mm } from "@tscircuit/mm"
 
 export const platedhole = (
@@ -7,7 +7,7 @@ export const platedhole = (
   y: number,
   id: number | string,
   od: number | string,
-): PCBPlatedHole => {
+): PcbPlatedHole => {
   return {
     type: "pcb_plated_hole",
     shape: "circle",
