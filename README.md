@@ -6,7 +6,7 @@ You can create very custom footprints using the `<footprint>` element, but the
 compressability is poor. `footprinter` produces very short, low parameter
 mini-programs for generating footprints, this makes it suitable for standardized
 footprints. You can use it with any component that accepts a footprint prop, e.g.
-`<bug footprint="qfp12_p0.5" />`
+`<chip footprint="qfp12_p0.5" />`
 
 Here are some example footprinter strings:
 
