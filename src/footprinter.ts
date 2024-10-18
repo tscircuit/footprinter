@@ -50,10 +50,13 @@ export type Footprinter = {
   dfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
+  pushbutton: () => FootprinterParamsBuilder<
+    "tllabel" | "trlabel" | "bllabel" | "brlabel"
+  >
   params: () => any
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
-  circuitJson: () => AnySoupElement[]
+  circuitJson: () => AnyCircuitElement[]
   json: () => AnyFootprinterDefinitionOutput[]
 }
 
