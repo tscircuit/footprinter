@@ -24,7 +24,7 @@ jobs:
         run: bun run generate-gallery
       
       - name: Rename gallery.html to index.html
-        run: mv gallery.html index.html
+        run: mv public/gallery.html public/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
