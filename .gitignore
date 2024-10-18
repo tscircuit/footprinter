@@ -4,3 +4,4 @@ dist
 .vscode
 *.diff.png
 package-lock.json
+public
