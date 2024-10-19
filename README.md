@@ -1,12 +1,16 @@
 # @tscircuit/footprinter
 
+[Online Gallery](https://tscircuit.github.io/footprinter/) &middot; [discord](https://tscircuit.com/join) &middot; [main tscircuit repo](https://github.com/tscircuit/tscircuit)
+
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
+
+![image](https://github.com/user-attachments/assets/24f7a9ba-47ef-4dd9-9a66-9536159a8ff9)
 
 You can create very custom footprints using the `<footprint>` element, but the
 compressability is poor. `footprinter` produces very short, low parameter
 mini-programs for generating footprints, this makes it suitable for standardized
 footprints. You can use it with any component that accepts a footprint prop, e.g.
-`<bug footprint="qfp12_p0.5" />`
+`<chip footprint="qfp12_p0.5" />`
 
 Here are some example footprinter strings:
 

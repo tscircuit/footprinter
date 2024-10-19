@@ -59,7 +59,7 @@ export type Footprinter = {
   params: () => any
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
-  circuitJson: () => AnySoupElement[]
+  circuitJson: () => AnyCircuitElement[]
   json: () => AnyFootprinterDefinitionOutput[]
 }
 
