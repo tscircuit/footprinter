@@ -43,11 +43,42 @@ export const stampboard = (
   const params = stampboard_def.parse(raw_params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
+  let firstPinLocation: {
+    x: number
+    y: number
+  } = { x: 0, y: 0 }
+  let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
   const outerDiameter = 1.2
+  const triangleHeight = 1 // Adjust triangle size as needed
+  const triangleWidth = 0.6 // Adjust triangle width as needed
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
+      if (i === 0 && !params.left && !params.bottom) {
+        firstPinLocation = {
+          x: params.w / 2 - params.pl * 1.4,
+          y: yoff + i * params.p,
+        }
+        routes = [
+          {
+            x: firstPinLocation.x + triangleHeight / 2,
+            y: firstPinLocation.y,
+          }, // Tip of the triangle (pointing right)
+          {
+            x: firstPinLocation.x - triangleHeight / 2,
+            y: firstPinLocation.y + triangleWidth / 2,
+          }, // Bottom corner of the base
+          {
+            x: firstPinLocation.x - triangleHeight / 2,
+            y: firstPinLocation.y - triangleWidth / 2,
+          }, // Top corner of the base
+          {
+            x: firstPinLocation.x + triangleHeight / 2,
+            y: firstPinLocation.y,
+          }, // Close the path at the tip
+        ]
+      }
       rectpads.push(
         rectpad(
           i + 1,
@@ -79,10 +110,33 @@ export const stampboard = (
       }
     }
   }
-
   if (params.left) {
     const yoff = -((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
+      if (i === params.left - 1) {
+        firstPinLocation = {
+          x: -params.w / 2 + params.pl * 1.4,
+          y: yoff + i * params.p,
+        }
+        routes = [
+          {
+            x: firstPinLocation.x - triangleHeight / 2,
+            y: firstPinLocation.y,
+          }, // Tip of the triangle (pointing left)
+          {
+            x: firstPinLocation.x + triangleHeight / 2,
+            y: firstPinLocation.y + triangleWidth / 2,
+          }, // Top corner of the base
+          {
+            x: firstPinLocation.x + triangleHeight / 2,
+            y: firstPinLocation.y - triangleWidth / 2,
+          }, // Bottom corner of the base
+          {
+            x: firstPinLocation.x - triangleHeight / 2,
+            y: firstPinLocation.y,
+          }, // Close the path at the tip
+        ]
+      }
       rectpads.push(
         rectpad(
           i + 1,
@@ -117,6 +171,35 @@ export const stampboard = (
   if (params.top) {
     const xoff = -((params.top - 1) / 2) * params.p
     for (let i = 0; i < params.top; i++) {
+      if (
+        i === params.top - 1 &&
+        !params.left &&
+        !params.bottom &&
+        !params.right
+      ) {
+        firstPinLocation = {
+          x: xoff + i * params.p,
+          y: getHeight(params) / 2 - params.pl * 1.4,
+        }
+        routes = [
+          {
+            x: firstPinLocation.x,
+            y: firstPinLocation.y + triangleHeight / 2,
+          }, // Tip of the triangle (pointing up)
+          {
+            x: firstPinLocation.x - triangleWidth / 2,
+            y: firstPinLocation.y - triangleHeight / 2,
+          }, // Left corner of the base
+          {
+            x: firstPinLocation.x + triangleWidth / 2,
+            y: firstPinLocation.y - triangleHeight / 2,
+          }, // Right corner of the base
+          {
+            x: firstPinLocation.x,
+            y: firstPinLocation.y + triangleHeight / 2,
+          }, // Close the path at the tip
+        ]
+      }
       rectpads.push(
         rectpad(
           i + 1,
@@ -151,6 +234,30 @@ export const stampboard = (
   if (params.bottom) {
     const xoff = -((params.bottom - 1) / 2) * params.p
     for (let i = 0; i < params.bottom; i++) {
+      if (i === 0 && !params.left) {
+        firstPinLocation = {
+          x: xoff + i * params.p,
+          y: -getHeight(params) / 2 + params.pl * 1.4,
+        }
+        routes = [
+          {
+            x: firstPinLocation.x,
+            y: firstPinLocation.y - triangleHeight / 2,
+          }, // Tip of the triangle (pointing down)
+          {
+            x: firstPinLocation.x - triangleWidth / 2,
+            y: firstPinLocation.y + triangleHeight / 2,
+          }, // Left corner of the base
+          {
+            x: firstPinLocation.x + triangleWidth / 2,
+            y: firstPinLocation.y + triangleHeight / 2,
+          }, // Right corner of the base
+          {
+            x: firstPinLocation.x,
+            y: firstPinLocation.y - triangleHeight / 2,
+          }, // Close the path at the tip
+        ]
+      }
       rectpads.push(
         rectpad(
           i + 1,
@@ -182,6 +289,16 @@ export const stampboard = (
       }
     }
   }
+
+  const silkscreenTriangle: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    pcb_silkscreen_path_id: "pcb_silkscreen_triangle_1",
+    pcb_component_id: "2",
+    route: routes,
+    stroke_width: 0.1,
+    layer: "top",
+  }
+
   const silkscreenPath: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     pcb_silkscreen_path_id: "pcb_silkscreen_path_1",
@@ -191,13 +308,14 @@ export const stampboard = (
       { x: params.w / 2, y: getHeight(params) / 2 },
       { x: params.w / 2, y: -getHeight(params) / 2 },
       { x: -params.w / 2, y: -getHeight(params) / 2 },
+      { x: -params.w / 2, y: getHeight(params) / 2 },
     ],
     stroke_width: 0.1,
     layer: "top",
   }
 
   return {
-    circuitJson: [...rectpads, ...holes, silkscreenPath],
+    circuitJson: [...rectpads, ...holes, silkscreenPath, silkscreenTriangle],
     parameters: params,
   }
 }
