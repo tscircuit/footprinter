@@ -43,8 +43,8 @@ export const stampboard = (
   const params = stampboard_def.parse(raw_params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
-  const innerDiameter =1
-  const outerDiameter =1.2
+  const innerDiameter = 1
+  const outerDiameter = 1.2
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
@@ -57,25 +57,26 @@ export const stampboard = (
           params.pw,
         ),
       )
-      if(params.innerhole)
-      {
-        holes.push(platedhole(
-          i + 1,
-          params.w / 2,
-          yoff + i * params.p,
-          innerDiameter,
-         outerDiameter
-        ))
-        holes.push(platedhole(
-          i + 1,
-          params.w / 2 - params.pl + outerDiameter/2,
-          yoff + i * params.p,
-          innerDiameter,
-         outerDiameter,
-        ))
+      if (params.innerhole) {
+        holes.push(
+          platedhole(
+            i + 1,
+            params.w / 2,
+            yoff + i * params.p,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
+        holes.push(
+          platedhole(
+            i + 1,
+            params.w / 2 - params.pl + outerDiameter / 2,
+            yoff + i * params.p,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
       }
-
-
     }
   }
 
@@ -91,23 +92,26 @@ export const stampboard = (
           params.pw,
         ),
       )
-      if(params.innerhole)        
-        {
-          holes.push(platedhole(
+      if (params.innerhole) {
+        holes.push(
+          platedhole(
             i + 1,
             -params.w / 2,
             yoff + i * params.p,
             innerDiameter,
-           outerDiameter
-          ))
-          holes.push(platedhole(
+            outerDiameter,
+          ),
+        )
+        holes.push(
+          platedhole(
             i + 1,
-            -params.w / 2 + params.pl - outerDiameter/2,
+            -params.w / 2 + params.pl - outerDiameter / 2,
             yoff + i * params.p,
             innerDiameter,
-           outerDiameter
-          ))
-        }
+            outerDiameter,
+          ),
+        )
+      }
     }
   }
   if (params.top) {
@@ -122,23 +126,26 @@ export const stampboard = (
           params.pl,
         ),
       )
-      if(params.innerhole)
-        {
-          holes.push(platedhole(
+      if (params.innerhole) {
+        holes.push(
+          platedhole(
             i + 1,
             xoff + i * params.p,
             getHeight(params) / 2,
             innerDiameter,
-           outerDiameter
-          ))
-          holes.push(platedhole(
+            outerDiameter,
+          ),
+        )
+        holes.push(
+          platedhole(
             i + 1,
             xoff + i * params.p,
-            getHeight(params) / 2 - params.pl + outerDiameter/2,
+            getHeight(params) / 2 - params.pl + outerDiameter / 2,
             innerDiameter,
-           outerDiameter
-          ))
-        }
+            outerDiameter,
+          ),
+        )
+      }
     }
   }
   if (params.bottom) {
@@ -153,23 +160,26 @@ export const stampboard = (
           params.pl,
         ),
       )
-      if(params.innerhole)
-        {
-          holes.push(platedhole(
+      if (params.innerhole) {
+        holes.push(
+          platedhole(
             i + 1,
             xoff + i * params.p,
             -getHeight(params) / 2,
             innerDiameter,
-           outerDiameter
-          ))
-          holes.push(platedhole(
+            outerDiameter,
+          ),
+        )
+        holes.push(
+          platedhole(
             i + 1,
             xoff + i * params.p,
-            -getHeight(params) / 2 + params.pl - outerDiameter/2,
+            -getHeight(params) / 2 + params.pl - outerDiameter / 2,
             innerDiameter,
-           outerDiameter
-          ))
-        }
+            outerDiameter,
+          ),
+        )
+      }
     }
   }
   const silkscreenPath: PcbSilkscreenPath = {
@@ -186,5 +196,8 @@ export const stampboard = (
     layer: "top",
   }
 
-  return { circuitJson: [...rectpads,...holes, silkscreenPath], parameters: params }
+  return {
+    circuitJson: [...rectpads, ...holes, silkscreenPath],
+    parameters: params,
+  }
 }
