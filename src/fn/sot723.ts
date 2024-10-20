@@ -1,6 +1,7 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sot723_def = z.object({
   fn: z.string(),
@@ -15,8 +16,14 @@ export const sot723 = (
   raw_params: z.input<typeof sot723_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sot723_def.parse(raw_params)
+  const pad = sot723WithoutParsing(parameters)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    Number(parameters.h),
+    0.3,
+  )
   return {
-    circuitJson: sot723WithoutParsing(parameters),
+    circuitJson: [...pad, silkscreenRefText as AnySoupElement],
     parameters,
   }
 }

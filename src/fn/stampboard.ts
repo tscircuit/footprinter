@@ -7,6 +7,7 @@ import {
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { platedhole } from "src/helpers/platedhole"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const stampboard_def = z.object({
   fn: z.string(),
@@ -313,9 +314,19 @@ export const stampboard = (
     stroke_width: 0.1,
     layer: "top",
   }
-
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    getHeight(params) / 2 + 0.5,
+    getHeight(params) / 25,
+  )
   return {
-    circuitJson: [...rectpads, ...holes, silkscreenPath, silkscreenTriangle],
+    circuitJson: [
+      ...rectpads,
+      ...holes,
+      silkscreenPath,
+      silkscreenTriangle,
+      silkscreenRefText,
+    ],
     parameters: params,
   }
 }
