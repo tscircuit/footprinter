@@ -53,6 +53,9 @@ export type Footprinter = {
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
+  stampboard: () => FootprinterParamsBuilder<
+    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl" | "innerhole"
+  >
   params: () => any
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
