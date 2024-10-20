@@ -54,7 +54,7 @@ export const dfn = (
         { x: (dx * sw) / 2, y: (dy * sh) / 2 - dy * parameters.p },
       ],
       type: "pcb_silkscreen_path",
-      stroke_width: 0.1
+      stroke_width: 0.1,
     })
   }
 
@@ -89,11 +89,19 @@ export const dfn = (
         y: aty,
       },
     ],
-    stroke_width: 0.1
+    stroke_width: 0.1,
   })
- const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh /2 +0.4, sh/12)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    sh / 2 + 0.4,
+    sh / 12,
+  )
   return {
-    circuitJson: [...pads, silkscreenRefText, ...silkscreenPaths ] as AnySoupElement[],
+    circuitJson: [
+      ...pads,
+      silkscreenRefText,
+      ...silkscreenPaths,
+    ] as AnySoupElement[],
     parameters,
   }
 }

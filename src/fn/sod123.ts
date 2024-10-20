@@ -17,10 +17,16 @@ export const sod123 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
-const silkscreenRefText: SilkscreenRef = silkscreenRef(0, Number(parameters.h)/4 +0.4, 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    Number(parameters.h) / 4 + 0.4,
+    0.3,
+  )
 
   return {
-    circuitJson:sodWithoutParsing(parameters).concat(silkscreenRefText as AnySoupElement),
+    circuitJson: sodWithoutParsing(parameters).concat(
+      silkscreenRefText as AnySoupElement,
+    ),
     parameters,
   }
 }
@@ -33,7 +39,7 @@ export const getSodCoords = (parameters: {
 
   if (pn === 1) {
     return { x: -pad_spacing / 2, y: 0 }
-  // biome-ignore lint/style/noUselessElse: <explanation>
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
     return { x: pad_spacing / 2, y: 0 }
   }

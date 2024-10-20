@@ -150,10 +150,15 @@ export const dip = (raw_params: {
 
     silkscreenPins.push(silkscreenPin)
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh /2 +0.5, 0.4)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
   return {
-    circuitJson: [...platedHoles, silkscreenBorder, silkscreenRefText, ...silkscreenPins],
+    circuitJson: [
+      ...platedHoles,
+      silkscreenBorder,
+      silkscreenRefText,
+      ...silkscreenPins,
+    ],
     parameters,
   }
 }

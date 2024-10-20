@@ -7,7 +7,7 @@ import {
 import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from '../helpers/silkscreenRef';
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
 export const axial_def = z.object({
   fn: z.string(),
@@ -41,6 +41,13 @@ export const axial = (
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
-const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p/4, 0.5)
-  return { circuitJson: [...plated_holes, silkscreenLine , silkscreenRefText as AnySoupElement], parameters } 
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
+  return {
+    circuitJson: [
+      ...plated_holes,
+      silkscreenLine,
+      silkscreenRefText as AnySoupElement,
+    ],
+    parameters,
+  }
 }

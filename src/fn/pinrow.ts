@@ -24,6 +24,9 @@ export const pinrow = (
   for (let i = 0; i < parameters.num_pins; i++) {
     holes.push(platedhole(i + 1, xoff + i * p, 0, id, od))
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p/2, 0.5)
-  return { circuitJson: [...holes, silkscreenRefText] as AnySoupElement[], parameters }
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 2, 0.5)
+  return {
+    circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
+    parameters,
+  }
 }

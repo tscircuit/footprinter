@@ -61,6 +61,10 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
       ),
     )
   }
-const silkscreenRefText: SilkscreenRef = silkscreenRef(0, Number(parameters.h), 0.3)
-  return [...pads , silkscreenRefText as AnySoupElement]
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    Number(parameters.h),
+    0.3,
+  )
+  return [...pads, silkscreenRefText as AnySoupElement]
 }

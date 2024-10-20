@@ -137,7 +137,14 @@ export const bga = (
       )
     }
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0,grid.y*p/2, 0.2)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    (grid.y * p) / 2,
+    0.2,
+  )
 
-  return { circuitJson: [...pads , silkscreenRefText  as AnySoupElement] , parameters }
+  return {
+    circuitJson: [...pads, silkscreenRefText as AnySoupElement],
+    parameters,
+  }
 }

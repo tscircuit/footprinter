@@ -226,7 +226,7 @@ export const quad = (
           },
         ],
         type: "pcb_silkscreen_path",
-        stroke_width: 0.1
+        stroke_width: 0.1,
       })
     }
 
@@ -249,7 +249,7 @@ export const quad = (
             },
           ],
           type: "pcb_silkscreen_path",
-          stroke_width: 0
+          stroke_width: 0,
         },
         {
           layer: "top",
@@ -266,7 +266,7 @@ export const quad = (
             },
           ],
           type: "pcb_silkscreen_path",
-          stroke_width: 0.1
+          stroke_width: 0.1,
         },
       )
     }
@@ -294,13 +294,21 @@ export const quad = (
           },
         ],
         type: "pcb_silkscreen_path",
-        stroke_width: 0.1
+        stroke_width: 0.1,
       })
     }
   }
-const silkscreenRefText: SilkscreenRef = silkscreenRef(0, parameters.h/2 + (parameters.legsoutside ? parameters.pl*1.2 :0.5), 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
+    0.3,
+  )
   return {
-    circuitJson: [...pads, ...silkscreen_corners , silkscreenRefText] as AnySoupElement[],
+    circuitJson: [
+      ...pads,
+      ...silkscreen_corners,
+      silkscreenRefText,
+    ] as AnySoupElement[],
     parameters,
   }
 }

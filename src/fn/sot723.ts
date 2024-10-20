@@ -16,10 +16,14 @@ export const sot723 = (
   raw_params: z.input<typeof sot723_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sot723_def.parse(raw_params)
-  const pad =sot723WithoutParsing(parameters)
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, Number(parameters.h), 0.3)
+  const pad = sot723WithoutParsing(parameters)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    Number(parameters.h),
+    0.3,
+  )
   return {
-    circuitJson:[...pad ,silkscreenRefText as AnySoupElement],
+    circuitJson: [...pad, silkscreenRefText as AnySoupElement],
     parameters,
   }
 }
