@@ -2,6 +2,7 @@ import type { AnyCircuitElement } from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pushbutton_def = z.object({
   fn: z.literal("pushbutton"),
@@ -44,9 +45,9 @@ export const pushbutton = (
       { x: width / 5, y: 0 },
     ]),
   ]
-
+const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height/2 +0.4, 0.5)
   return {
-    circuitJson: [...holes, ...silkscreenLines],
+    circuitJson: [...holes, ...silkscreenLines, silkscreenRefText],
     parameters,
   }
 }

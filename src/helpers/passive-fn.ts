@@ -4,6 +4,7 @@ import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 
 type StandardSize = {
   imperial: string
@@ -168,15 +169,18 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (pw === undefined) throw new Error("could not infer pad width")
   if (ph === undefined) throw new Error("could not infer pad width")
 
+  const silkscreenRefText: SilkscreenRef = silkscreenRef( 0 , h / 2, h / 12)
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      silkscreenRefText,
     ]
   } else {
     return [
       rectpad(["1", "left"], -p / 2, 0, pw, ph),
       rectpad(["2", "right"], p / 2, 0, pw, ph),
+      silkscreenRefText,
     ]
   }
 }

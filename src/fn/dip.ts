@@ -8,6 +8,7 @@ import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
@@ -149,9 +150,10 @@ export const dip = (raw_params: {
 
     silkscreenPins.push(silkscreenPin)
   }
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh /2 +0.5, 0.4)
 
   return {
-    circuitJson: [...platedHoles, silkscreenBorder, ...silkscreenPins],
+    circuitJson: [...platedHoles, silkscreenBorder, silkscreenRefText, ...silkscreenPins],
     parameters,
   }
 }

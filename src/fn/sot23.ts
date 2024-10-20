@@ -1,6 +1,7 @@
 import type { AnySoupElement } from "@tscircuit/soup"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sot23_def = z.object({
   fn: z.string(),
@@ -46,20 +47,20 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
     const { x, y } = getCcwSot23Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: parseFloat(parameters.w),
-      h: parseFloat(parameters.h),
-      pl: parseFloat(parameters.pl),
+      w: Number.parseFloat(parameters.w),
+      h: Number.parseFloat(parameters.h),
+      pl: Number.parseFloat(parameters.pl),
     })
     pads.push(
       rectpad(
         i + 1,
         x,
         y,
-        parseFloat(parameters.pl),
-        parseFloat(parameters.pw),
+        Number.parseFloat(parameters.pl),
+        Number.parseFloat(parameters.pw),
       ),
     )
   }
-
-  return pads
+const silkscreenRefText: SilkscreenRef = silkscreenRef(0, Number(parameters.h), 0.3)
+  return [...pads , silkscreenRefText as AnySoupElement]
 }

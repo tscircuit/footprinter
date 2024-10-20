@@ -5,7 +5,7 @@ import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
 import { rectpad } from "src/helpers/rectpad"
-
+import { silkscreenRef, type SilkscreenRef } from '../helpers/silkscreenRef';
 export const extendSoicDef = (newDefaults: {
   w?: string
   p?: string
@@ -91,7 +91,7 @@ export const soic = (raw_params: {
 }): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = soic_def.parse(raw_params)
   return {
-    circuitJson: soicWithoutParsing(parameters),
+    circuitJson: soicWithoutParsing(parameters) as AnySoupElement[],
     parameters,
   }
 }
@@ -117,6 +117,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const sw =
     parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh /2 +0.4, sh/12)
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -137,5 +138,6 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  return [...pads, silkscreenBorder]
+  return [...pads, silkscreenBorder , silkscreenRefText] as AnySoupElement[]
+
 }

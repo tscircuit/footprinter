@@ -6,6 +6,7 @@ import { length, distance } from "@tscircuit/soup"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
 import type { NowDefined } from "src/helpers/zod/now-defined"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
 export const bga_def = z
   .object({
@@ -44,8 +45,8 @@ export const bga_def = z
         if (s === "topleft") return "topleft"
         const m = s.match(/([A-Z]+)(\d+)/)
         if (!m) return s
-        let Y = ALPHABET.indexOf(m[1]!)
-        let X = parseInt(m[2]!) - 1
+        const Y = ALPHABET.indexOf(m[1]!)
+        const X = Number.parseInt(m[2]!) - 1
         return Y * a.grid!.x + X + 1
       })
     }
@@ -136,6 +137,7 @@ export const bga = (
       )
     }
   }
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0,grid.y*p/2, 0.2)
 
-  return { circuitJson: [...pads], parameters }
+  return { circuitJson: [...pads , silkscreenRefText  as AnySoupElement] , parameters }
 }

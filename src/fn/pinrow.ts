@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { length, type AnySoupElement } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pinrow_def = z.object({
   fn: z.string(),
@@ -23,5 +24,6 @@ export const pinrow = (
   for (let i = 0; i < parameters.num_pins; i++) {
     holes.push(platedhole(i + 1, xoff + i * p, 0, id, od))
   }
-  return { circuitJson: holes, parameters }
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p/2, 0.5)
+  return { circuitJson: [...holes, silkscreenRefText] as AnySoupElement[], parameters }
 }
