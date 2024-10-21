@@ -57,7 +57,7 @@ export type Footprinter = {
     "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl" | "innerhole"
   >
   stampreceiver: () => FootprinterParamsBuilder<
-    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl"
+    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl" | "innerhole"
   >
   params: () => any
   /** @deprecated use circuitJson() instead */
