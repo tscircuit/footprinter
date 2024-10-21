@@ -56,6 +56,9 @@ export type Footprinter = {
   stampboard: () => FootprinterParamsBuilder<
     "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl" | "innerhole"
   >
+  stampreceiver: () => FootprinterParamsBuilder<
+    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl"
+  >
   params: () => any
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]

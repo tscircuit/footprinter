@@ -6,10 +6,9 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
-export const stampboard_def = z.object({
+export const stampreceiver_def = z.object({
   fn: z.string(),
   w: length.default("22.58mm"),
   left: length.optional(),
@@ -18,14 +17,13 @@ export const stampboard_def = z.object({
   bottom: length.optional(),
   p: length.default(length.parse("2.54mm")),
   pw: length.default(length.parse("1.6mm")),
-  pl: length.default(length.parse("2.11mm")),
-  innerhole: z.boolean().default(false),
+  pl: length.default(length.parse("3.2mm")),
 })
 
-export type Stampboard_def = z.input<typeof stampboard_def>
+export type Stampreceiver_def = z.input<typeof stampreceiver_def>
 
-const getHeight = (parameters: Stampboard_def) => {
-  const params = stampboard_def.parse(parameters)
+const getHeight = (parameters: Stampreceiver_def) => {
+  const params = stampreceiver_def.parse(parameters)
   if (params.left && params.right) {
     return Math.max(params.left, params.right) * params.p
   }
@@ -41,7 +39,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
   let routes: { x: number; y: number }[] = []
   const triangleHeight = 1 // Adjust triangle size as needed
   const triangleWidth = 0.6 // Adjust triangle width as needed
-  if (side === "right") {
+  if (side === "left") {
     routes = [
       {
         x: x + triangleHeight / 2,
@@ -61,7 +59,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
       }, // Close the path at the tip
     ]
   }
-  if (side === "left") {
+  if (side === "right") {
     routes = [
       {
         x: x - triangleHeight / 2,
@@ -81,7 +79,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
       }, // Close the path at the tip
     ]
   }
-  if (side === "top") {
+  if (side === "bottom") {
     routes = [
       {
         x: x,
@@ -101,7 +99,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
       }, // Close the path at the tip
     ]
   }
-  if (side === "bottom") {
+  if (side === "top") {
     routes = [
       {
         x: x,
@@ -123,22 +121,18 @@ const getTriangleDir = (x: number, y: number, side: string) => {
   }
   return routes
 }
-
-export const stampboard = (
-  raw_params: Stampboard_def,
+export const stampreceiver = (
+  raw_params: Stampreceiver_def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const params = stampboard_def.parse(raw_params)
+  const params = stampreceiver_def.parse(raw_params)
   const rectpads: AnyCircuitElement[] = []
-  const holes: PcbPlatedHole[] = []
   let routes: { x: number; y: number }[] = []
-  const innerDiameter = 1
-  const outerDiameter = 1.2
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
       if (i === 0 && !params.left && !params.bottom) {
         routes = getTriangleDir(
-          params.w / 2 - params.pl * 1.4,
+          params.w / 2 + params.pl * 1.4,
           yoff + i * params.p,
           "right",
         )
@@ -152,26 +146,6 @@ export const stampboard = (
           params.pw,
         ),
       )
-      if (params.innerhole) {
-        holes.push(
-          platedhole(
-            i + 1,
-            params.w / 2,
-            yoff + i * params.p,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-        holes.push(
-          platedhole(
-            i + 1,
-            params.w / 2 - params.pl + outerDiameter / 2,
-            yoff + i * params.p,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-      }
     }
   }
   if (params.left) {
@@ -179,7 +153,7 @@ export const stampboard = (
     for (let i = 0; i < params.left; i++) {
       if (i === params.left - 1) {
         routes = getTriangleDir(
-          -params.w / 2 + params.pl * 1.4,
+          -params.w / 2 - params.pl / 3,
           yoff + i * params.p,
           "left",
         )
@@ -193,26 +167,6 @@ export const stampboard = (
           params.pw,
         ),
       )
-      if (params.innerhole) {
-        holes.push(
-          platedhole(
-            i + 1,
-            -params.w / 2,
-            yoff + i * params.p,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-        holes.push(
-          platedhole(
-            i + 1,
-            -params.w / 2 + params.pl - outerDiameter / 2,
-            yoff + i * params.p,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-      }
     }
   }
   if (params.top) {
@@ -226,7 +180,7 @@ export const stampboard = (
       ) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          getHeight(params) / 2 - params.pl * 1.4,
+          getHeight(params) / 2 + params.pl * 1.4,
           "top",
         )
       }
@@ -239,26 +193,6 @@ export const stampboard = (
           params.pl,
         ),
       )
-      if (params.innerhole) {
-        holes.push(
-          platedhole(
-            i + 1,
-            xoff + i * params.p,
-            getHeight(params) / 2,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-        holes.push(
-          platedhole(
-            i + 1,
-            xoff + i * params.p,
-            getHeight(params) / 2 - params.pl + outerDiameter / 2,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-      }
     }
   }
   if (params.bottom) {
@@ -267,7 +201,7 @@ export const stampboard = (
       if (i === 0 && !params.left) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          -getHeight(params) / 2 + params.pl * 1.4,
+          -getHeight(params) / 2 - params.pl * 1.4,
           "bottom",
         )
       }
@@ -280,36 +214,16 @@ export const stampboard = (
           params.pl,
         ),
       )
-      if (params.innerhole) {
-        holes.push(
-          platedhole(
-            i + 1,
-            xoff + i * params.p,
-            -getHeight(params) / 2,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-        holes.push(
-          platedhole(
-            i + 1,
-            xoff + i * params.p,
-            -getHeight(params) / 2 + params.pl - outerDiameter / 2,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-      }
     }
   }
 
   const silkscreenTriangle: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
-    pcb_silkscreen_path_id: "pcb_silkscreen_triangle_1",
-    pcb_component_id: "2",
+    pcb_silkscreen_path_id: "1",
+    pcb_component_id: "1",
+    layer: "top",
     route: routes,
     stroke_width: 0.1,
-    layer: "top",
   }
 
   const silkscreenPath: PcbSilkscreenPath = {
@@ -317,11 +231,26 @@ export const stampboard = (
     pcb_silkscreen_path_id: "pcb_silkscreen_path_1",
     pcb_component_id: "1",
     route: [
-      { x: -params.w / 2, y: getHeight(params) / 2 },
-      { x: params.w / 2, y: getHeight(params) / 2 },
-      { x: params.w / 2, y: -getHeight(params) / 2 },
-      { x: -params.w / 2, y: -getHeight(params) / 2 },
-      { x: -params.w / 2, y: getHeight(params) / 2 },
+      {
+        x: -params.w / 2 - params.pl / 3,
+        y: getHeight(params) / 2 + params.pl / 3,
+      },
+      {
+        x: params.w / 2 + params.pl / 3,
+        y: getHeight(params) / 2 + params.pl / 3,
+      },
+      {
+        x: params.w / 2 + params.pl / 3,
+        y: -getHeight(params) / 2 - params.pl / 3,
+      },
+      {
+        x: -params.w / 2 - params.pl / 3,
+        y: -getHeight(params) / 2 - params.pl / 3,
+      },
+      {
+        x: -params.w / 2 - params.pl / 3,
+        y: getHeight(params) / 2 + params.pl / 3,
+      },
     ],
     stroke_width: 0.1,
     layer: "top",
@@ -334,7 +263,6 @@ export const stampboard = (
   return {
     circuitJson: [
       ...rectpads,
-      ...holes,
       silkscreenPath,
       silkscreenTriangle,
       silkscreenRefText,
