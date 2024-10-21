@@ -20,6 +20,7 @@ export const stampreceiver_def = z.object({
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("3.2mm")),
   innerhole: z.boolean().default(false),
+  innerholeedgedistance: length.default(length.parse("1.61mm")),
 })
 
 export type Stampreceiver_def = z.input<typeof stampreceiver_def>
@@ -155,7 +156,7 @@ export const stampreceiver = (
         holes.push(
           platedhole(
             i + 1,
-            params.w / 2 - 1.61,
+            params.w / 2 - params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
             outerDiameter,
@@ -186,7 +187,7 @@ export const stampreceiver = (
         holes.push(
           platedhole(
             i + 1,
-            -params.w / 2 + 1.61,
+            -params.w / 2 + params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
             outerDiameter,
@@ -223,7 +224,7 @@ export const stampreceiver = (
           platedhole(
             i + 1,
             xoff + i * params.p,
-            getHeight(params) / 2 - 1.61,
+            getHeight(params) / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -254,7 +255,7 @@ export const stampreceiver = (
           platedhole(
             i + 1,
             xoff + i * params.p,
-            -getHeight(params) / 2 + 1.61,
+            -getHeight(params) / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),

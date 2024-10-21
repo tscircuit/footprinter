@@ -20,6 +20,7 @@ export const stampboard_def = z.object({
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("2.4mm")),
   innerhole: z.boolean().default(false),
+  innerholeedgedistance: length.default(length.parse("1.61mm")),
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>
@@ -165,7 +166,7 @@ export const stampboard = (
         holes.push(
           platedhole(
             i + 1,
-            params.w / 2 - 1.61,
+            params.w / 2 - params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
             outerDiameter,
@@ -206,7 +207,7 @@ export const stampboard = (
         holes.push(
           platedhole(
             i + 1,
-            -params.w / 2 + 1.61,
+            -params.w / 2 + params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
             outerDiameter,
@@ -253,7 +254,7 @@ export const stampboard = (
           platedhole(
             i + 1,
             xoff + i * params.p,
-            getHeight(params) / 2 - 1.61,
+            getHeight(params) / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -294,7 +295,7 @@ export const stampboard = (
           platedhole(
             i + 1,
             xoff + i * params.p,
-            -getHeight(params) / 2 + 1.61,
+            -getHeight(params) / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
