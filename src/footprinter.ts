@@ -54,10 +54,28 @@ export type Footprinter = {
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
   stampboard: () => FootprinterParamsBuilder<
-    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl" | "innerhole"
+    | "w"
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | "p"
+    | "pw"
+    | "pl"
+    | "innerhole"
+    | "innerholeedgedistance"
   >
   stampreceiver: () => FootprinterParamsBuilder<
-    "w" | "left" | "right" | "top" | "bottom" | "p" | "pw" | "pl"
+    | "w"
+    | "left"
+    | "right"
+    | "top"
+    | "bottom"
+    | "p"
+    | "pw"
+    | "pl"
+    | "innerhole"
+    | "innerholeedgedistance"
   >
   params: () => any
   /** @deprecated use circuitJson() instead */

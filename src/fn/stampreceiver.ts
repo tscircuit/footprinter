@@ -7,6 +7,7 @@ import {
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { platedhole } from "src/helpers/platedhole"
 
 export const stampreceiver_def = z.object({
   fn: z.string(),
@@ -18,6 +19,8 @@ export const stampreceiver_def = z.object({
   p: length.default(length.parse("2.54mm")),
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("3.2mm")),
+  innerhole: z.boolean().default(false),
+  innerholeedgedistance: length.default(length.parse("1.61mm")),
 })
 
 export type Stampreceiver_def = z.input<typeof stampreceiver_def>
@@ -126,6 +129,9 @@ export const stampreceiver = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const params = stampreceiver_def.parse(raw_params)
   const rectpads: AnyCircuitElement[] = []
+  const holes: PcbPlatedHole[] = []
+  const innerDiameter = 1
+  const outerDiameter = 1.2
   let routes: { x: number; y: number }[] = []
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
@@ -146,6 +152,16 @@ export const stampreceiver = (
           params.pw,
         ),
       )
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            i + 1,
+            params.w / 2 - params.innerholeedgedistance,
+            yoff + i * params.p,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
     }
   }
   if (params.left) {
@@ -167,6 +183,16 @@ export const stampreceiver = (
           params.pw,
         ),
       )
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            i + 1,
+            -params.w / 2 + params.innerholeedgedistance,
+            yoff + i * params.p,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
     }
   }
   if (params.top) {
@@ -193,6 +219,16 @@ export const stampreceiver = (
           params.pl,
         ),
       )
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            i + 1,
+            xoff + i * params.p,
+            getHeight(params) / 2 - params.innerholeedgedistance,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
     }
   }
   if (params.bottom) {
@@ -214,6 +250,16 @@ export const stampreceiver = (
           params.pl,
         ),
       )
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            i + 1,
+            xoff + i * params.p,
+            -getHeight(params) / 2 + params.innerholeedgedistance,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
     }
   }
 
@@ -262,6 +308,7 @@ export const stampreceiver = (
   )
   return {
     circuitJson: [
+      ...holes,
       ...rectpads,
       silkscreenPath,
       silkscreenTriangle,
