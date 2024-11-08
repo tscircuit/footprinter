@@ -69,24 +69,68 @@ export const sot23_5WithoutParsing = (
 
   const width = ((num_pins + 1) / 2) * Number.parseFloat(parameters.p)
   const height = Number.parseFloat(parameters.h)
-  const silkscreenBorder: PcbSilkscreenPath = {
+  const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
     route: [
-      { x: -height / 2, y: -width / 2 },
-      { x: -height / 2, y: width / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: (x * height) / 6,
-        y: (y * height) / 6 + width / 2,
-      })),
-      { x: height / 2, y: width / 2 },
-      { x: height / 2, y: -width / 2 },
-      { x: -height / 2, y: -width / 2 },
+      { x: -width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
+      { x: width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
     ],
     type: "pcb_silkscreen_path",
-    stroke_width: 0.1,
+    stroke_width: 0.05,
+  }
+  const silkscreenPath2: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
+      { x: width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.05,
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.3, 0.3)
-  return [...pads, silkscreenRefText, silkscreenBorder as AnyCircuitElement]
+  const pin1Position = getCcwSot235Coords({
+    h: Number.parseFloat(parameters.h),
+    p: Number.parseFloat(parameters.p),
+    pn: 5,
+  })
+  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5
+  const triangleHeight = 0.7 // Adjust triangle size as needed
+  const triangleWidth = 0.3 // Adjust triangle width as needed
+  const pin1Indicator: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      }, // Tip of the triangle (pointing right)
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y + triangleWidth / 2,
+      }, // Bottom corner of the base
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y - triangleWidth / 2,
+      }, // Top corner of the base
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      }, // Close the path at the tip
+    ],
+    stroke_width: 0.05,
+  }
+
+  return [
+    ...pads,
+    silkscreenRefText,
+    silkscreenPath1,
+    silkscreenPath2,
+    pin1Indicator as AnyCircuitElement,
+  ]
 }
