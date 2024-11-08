@@ -83,7 +83,6 @@ export type Footprinter = {
   soup: () => AnySoupElement[]
   circuitJson: () => AnyCircuitElement[]
   json: () => AnyFootprinterDefinitionOutput[]
-  getFootprintNames: () => string[]
 }
 
 export const string = (def: string): Footprinter => {
@@ -112,8 +111,13 @@ export const string = (def: string): Footprinter => {
   return fp
 }
 
+export const getFootprintNames = (): string[] => {
+  return Object.keys(FOOTPRINT_FN)
+}
+
 export const footprinter = (): Footprinter & {
   string: typeof string
+  getFootprintNames: string[]
   setString: (string) => void
 } => {
   const proxy = new Proxy(
@@ -150,9 +154,6 @@ export const footprinter = (): Footprinter & {
             )
           }
           return () => FOOTPRINT_FN[target.fn](target).parameters
-        }
-        if (prop === "getFootprintNames") {
-          return () => Object.keys(FOOTPRINT_FN)
         }
         if (prop === "params") {
           // TODO
@@ -196,5 +197,6 @@ export const footprinter = (): Footprinter & {
   return proxy as any
 }
 footprinter.string = string
+footprinter.getFootprintNames = getFootprintNames
 
 export const fp = footprinter
