@@ -50,6 +50,7 @@ export type Footprinter = {
   dfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
   pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
+  sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
   lqfp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
