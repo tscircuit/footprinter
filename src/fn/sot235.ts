@@ -1,4 +1,7 @@
-import type { AnyCircuitElement, PcbSilkscreenPath, PcbSilkscreenRect } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -27,32 +30,34 @@ export const getCcwSot235Coords = (parameters: {
   p: number
   pn: number
 }) => {
-  const { p, h ,pn } = parameters
-    if (pn === 1) {
-      return { x:h/2 + 0.5 , y: -p }
-    }
-    if (pn === 2) {
-      return { x: h/2 + 0.5, y: p }
-    }
-    if (pn === 3) {
-      return { x: -h/2 - 0.5, y: -p }
-    }
-    if (pn === 4) {
-      return { x: -h/2 - 0.5, y: 0 }
-    }
-    if (pn === 5) {
-      return { x: -h/2 - 0.5, y: p }
-    }
-    throw new Error("Invalid pin number")
+  const { p, h, pn } = parameters
+  if (pn === 1) {
+    return { x: h / 2 + 0.5, y: -p }
+  }
+  if (pn === 2) {
+    return { x: h / 2 + 0.5, y: p }
+  }
+  if (pn === 3) {
+    return { x: -h / 2 - 0.5, y: -p }
+  }
+  if (pn === 4) {
+    return { x: -h / 2 - 0.5, y: 0 }
+  }
+  if (pn === 5) {
+    return { x: -h / 2 - 0.5, y: p }
+  }
+  throw new Error("Invalid pin number")
 }
 
-export const sot23_5WithoutParsing = (parameters: z.infer<typeof sot235_def>) => {
+export const sot23_5WithoutParsing = (
+  parameters: z.infer<typeof sot235_def>,
+) => {
   const pads: AnyCircuitElement[] = []
   for (let i = 1; i <= num_pins; i++) {
     const { x, y } = getCcwSot235Coords({
       h: Number.parseFloat(parameters.h),
       p: Number.parseFloat(parameters.p),
-      pn: i
+      pn: i,
     })
     pads.push(
       rectpad(
@@ -64,8 +69,8 @@ export const sot23_5WithoutParsing = (parameters: z.infer<typeof sot235_def>) =>
       ),
     )
   }
-  
-  const width = (num_pins+1)/2 * Number.parseFloat(parameters.p)
+
+  const width = ((num_pins + 1) / 2) * Number.parseFloat(parameters.p)
   const height = Number.parseFloat(parameters.h)
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
@@ -85,10 +90,6 @@ export const sot23_5WithoutParsing = (parameters: z.infer<typeof sot235_def>) =>
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-   height+ 0.3,
-    0.3,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.3, 0.3)
   return [...pads, silkscreenRefText, silkscreenBorder as AnyCircuitElement]
 }
