@@ -8,7 +8,7 @@ export const pinrow_def = z.object({
   num_pins: z.number(),
   p: length.default("0.1in").describe("pitch"),
   id: length.default("1.0mm").describe("inner diameter"),
-  od: length.default("1.2mm").describe("outer diameter"),
+  od: length.default("1.5mm").describe("outer diameter"),
 })
 
 export const pinrow = (
