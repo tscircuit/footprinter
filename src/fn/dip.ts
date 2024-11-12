@@ -26,7 +26,7 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       // Default inner diameter and outer diameter
       if (!v.id && !v.od) {
         v.id = length.parse("1.0mm")
-        v.od = length.parse("1.2mm")
+        v.od = length.parse("1.5mm")
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.2)
       } else if (!v.od) {
