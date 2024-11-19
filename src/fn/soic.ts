@@ -9,12 +9,13 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 export const extendSoicDef = (newDefaults: {
   w?: string
   p?: string
+  num_pins?: number
   legsoutside?: boolean
 }) =>
   z
     .object({
       fn: z.string(),
-      num_pins: z.number(),
+      num_pins: z.number().optional().default(8),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.optional(),

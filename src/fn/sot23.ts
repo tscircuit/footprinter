@@ -5,7 +5,7 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sot23_def = z.object({
   fn: z.string(),
-  num_pins: z.number().default(3),
+  num_pins: z.literal(3).default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
   pl: z.string().default("0.8mm"),
@@ -61,6 +61,7 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
       ),
     )
   }
+
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     Number(parameters.h),

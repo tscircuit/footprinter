@@ -1,5 +1,5 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
-import { z } from "zod"
+import { optional, z } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { rectpad } from "../helpers/rectpad"
@@ -18,7 +18,7 @@ export const base_quad_def = z.object({
     .transform((a) => (typeof a === "string" ? a.slice(1, -1).split(",") : a))
     .pipe(z.array(pin_order_specifier))
     .optional(),
-  num_pins: z.number(),
+  num_pins: z.number().optional().default(64),
   w: length.optional(),
   h: length.optional(),
   p: length.default(length.parse("0.5mm")),

@@ -1,11 +1,11 @@
-import { z } from "zod"
+import { number, z } from "zod"
 import { length, type AnySoupElement } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pinrow_def = z.object({
   fn: z.string(),
-  num_pins: z.number(),
+  num_pins: number().optional().default(6),
   p: length.default("0.1in").describe("pitch"),
   id: length.default("1.0mm").describe("inner diameter"),
   od: length.default("1.2mm").describe("outer diameter"),

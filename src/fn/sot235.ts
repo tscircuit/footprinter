@@ -2,16 +2,16 @@ import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { u_curve } from "src/helpers/u-curve"
 
 export const sot235_def = z.object({
   fn: z.string(),
+  num_pins: z.literal(5).default(5),
   h: z.string().default("1.6mm"),
   pl: z.string().default("1mm"),
   pw: z.string().default("0.7mm"),
   p: z.string().default("0.95mm"),
 })
-const num_pins = 5
+
 export const sot235 = (
   raw_params: z.input<typeof sot235_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -50,7 +50,7 @@ export const sot23_5WithoutParsing = (
   parameters: z.infer<typeof sot235_def>,
 ) => {
   const pads: AnyCircuitElement[] = []
-  for (let i = 1; i <= num_pins; i++) {
+  for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({
       h: Number.parseFloat(parameters.h),
       p: Number.parseFloat(parameters.p),
@@ -67,7 +67,8 @@ export const sot23_5WithoutParsing = (
     )
   }
 
-  const width = ((num_pins + 1) / 2) * Number.parseFloat(parameters.p)
+  const width =
+    ((parameters.num_pins + 1) / 2) * Number.parseFloat(parameters.p)
   const height = Number.parseFloat(parameters.h)
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
