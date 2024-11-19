@@ -1,7 +1,7 @@
 import type { AnySoupElement, PCBSMTPad } from "@tscircuit/soup"
 import { rectpad } from "../helpers/rectpad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
-import { number, z } from "zod"
+import { z } from "zod"
 import { length, distance } from "@tscircuit/soup"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
