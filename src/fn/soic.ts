@@ -1,6 +1,6 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
 import { platedhole } from "../helpers/platedhole"
-import { z, type AnyZodObject } from "zod"
+import { z } from "zod"
 import { length } from "@tscircuit/soup"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
