@@ -6,6 +6,10 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pushbutton_def = z.object({
   fn: z.literal("pushbutton"),
+  w: z.literal(4.5).default(4.5),
+  h: z.literal(6.5).default(6.5),
+  id: z.literal(1).default(1),
+  od: z.literal(1.2).default(1.2),
 })
 
 export const pushbutton = (
@@ -13,9 +17,9 @@ export const pushbutton = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = pushbutton_def.parse(raw_params)
 
-  const width = 4.5
-  const height = 6.5
-  const holeDiameter = 1
+  const width = parameters.w
+  const height = parameters.h
+  const holeDiameter = parameters.id
 
   const holes: AnyCircuitElement[] = [
     platedhole(1, -width / 2, height / 2, holeDiameter, holeDiameter * 1.2),

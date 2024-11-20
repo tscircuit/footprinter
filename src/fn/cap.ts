@@ -4,6 +4,6 @@ import { type PassiveDef, passive } from "../helpers/passive-fn"
 
 export const cap = (
   parameters: PassiveDef,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
   return { circuitJson: passive(parameters), parameters }
 }

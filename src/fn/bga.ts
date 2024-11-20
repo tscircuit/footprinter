@@ -11,7 +11,7 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 export const bga_def = z
   .object({
     fn: z.string(),
-    num_pins: z.number(),
+    num_pins: z.number().optional().default(64),
     grid: dim2d.optional(),
     p: distance.default("0.8mm"),
     w: length.optional(),
@@ -104,16 +104,6 @@ export const bga = (
 
   if (missing?.includes("topleft")) {
     missing_pin_nums.push(1)
-  }
-
-  if (num_pins_missing !== missing_pin_nums.length) {
-    throw new Error(
-      `not able to create bga component, unable to determine missing pins (try specifying them with "missing+1+2+..."\n\n${JSON.stringify(
-        parameters,
-        null,
-        "  ",
-      )}`,
-    )
   }
 
   const missing_pin_nums_set = new Set(missing_pin_nums)

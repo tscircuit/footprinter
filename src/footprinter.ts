@@ -22,36 +22,36 @@ type CommonPassiveOptionKey =
 
 export type Footprinter = {
   dip: (
-    num_pins: number,
+    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
-  lr: (num_pins: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
+  lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
-    num_pins: number,
+    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   quad: (
-    num_pins: number,
+    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
   >
   bga: (
-    num_pins: number,
+    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
   >
-  qfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
-  soic: (num_pins: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
-  mlp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "p">
-  ssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
-  tssop: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
-  dfn: (num_pins: number) => FootprinterParamsBuilder<"w" | "p">
-  pinrow: (num_pins: number) => FootprinterParamsBuilder<"p" | "id" | "od">
+  qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  soic: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
+  mlp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  pinrow: (num_pins?: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
-  lqfp: (num_pins: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
@@ -183,7 +183,9 @@ export const footprinter = (): Footprinter & {
                   target.imperial = v // res0402, cap0603 etc.
                 }
               } else {
-                target.num_pins = Number.parseFloat(v)
+                target.num_pins = Number.isNaN(Number.parseFloat(v))
+                  ? undefined
+                  : Number.parseFloat(v)
               }
             }
           } else {

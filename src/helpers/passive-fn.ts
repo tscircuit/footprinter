@@ -169,7 +169,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (pw === undefined) throw new Error("could not infer pad width")
   if (ph === undefined) throw new Error("could not infer pad width")
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2, h / 12)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0.9, 0.2)
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),

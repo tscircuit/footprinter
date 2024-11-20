@@ -12,8 +12,8 @@ import { platedhole } from "src/helpers/platedhole"
 export const stampreceiver_def = z.object({
   fn: z.string(),
   w: length.default("22.58mm"),
-  left: length.optional(),
-  right: length.optional(),
+  left: length.optional().default(20),
+  right: length.optional().default(20),
   top: length.optional(),
   bottom: length.optional(),
   p: length.default(length.parse("2.54mm")),

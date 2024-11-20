@@ -6,6 +6,7 @@ import { length } from "circuit-json"
 
 export const sod_def = z.object({
   fn: z.string(),
+  num_pins: z.literal(3).default(3),
   w: z.string().default("2.36mm"),
   h: z.string().default("1.22mm"),
   pl: z.string().default("0.9mm"),
@@ -19,7 +20,7 @@ export const sod123 = (
   const parameters = sod_def.parse(raw_params)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    Number(parameters.h) / 4 + 0.4,
+    length.parse(parameters.h) / 4 + 0.4,
     0.3,
   )
 
@@ -48,14 +49,14 @@ export const getSodCoords = (parameters: {
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   const pads: AnySoupElement[] = []
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
-      pn: i + 1,
+      pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing),
     })
     pads.push(
       rectpad(
-        i + 1,
+        i,
         x,
         y,
         Number.parseFloat(parameters.pl),
