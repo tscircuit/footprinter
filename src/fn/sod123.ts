@@ -6,7 +6,7 @@ import { length } from "circuit-json"
 
 export const sod_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(3).default(3),
+  num_pins: z.literal(2).default(2),
   w: z.string().default("2.36mm"),
   h: z.string().default("1.22mm"),
   pl: z.string().default("0.9mm"),

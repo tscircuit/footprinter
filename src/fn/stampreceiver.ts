@@ -25,104 +25,66 @@ export const stampreceiver_def = z.object({
 
 export type Stampreceiver_def = z.input<typeof stampreceiver_def>
 
-const getHeight = (parameters: Stampreceiver_def) => {
+const getHeight = (parameters: Stampreceiver_def): number => {
   const params = stampreceiver_def.parse(parameters)
+
+  // Calculate height based on the presence of left and right parameters
   if (params.left && params.right) {
     return Math.max(params.left, params.right) * params.p
   }
+
   if (params.left) {
     return params.left * params.p
   }
+
   if (params.right) {
     return params.right * params.p
   }
-  return 51 // Default height if no pins are provided
+
+  // Return default height if neither left nor right is provided
+  return 51
 }
-const getTriangleDir = (x: number, y: number, side: string) => {
-  let routes: { x: number; y: number }[] = []
-  const triangleHeight = 1 // Adjust triangle size as needed
-  const triangleWidth = 0.6 // Adjust triangle width as needed
-  if (side === "left") {
-    routes = [
-      {
-        x: x + triangleHeight / 2,
-        y: y,
-      }, // Tip of the triangle (pointing right)
-      {
-        x: x - triangleHeight / 2,
-        y: y + triangleWidth / 2,
-      }, // Bottom corner of the base
-      {
-        x: x - triangleHeight / 2,
-        y: y - triangleWidth / 2,
-      }, // Top corner of the base
-      {
-        x: x + triangleHeight / 2,
-        y: y,
-      }, // Close the path at the tip
-    ]
+type Point = { x: number; y: number }
+type Direction = "left" | "right" | "top" | "bottom"
+
+const getTriangleDir = (
+  x: number,
+  y: number,
+  side: Direction,
+  triangleHeight = 1,
+  triangleWidth = 0.6,
+): Point[] => {
+  const halfHeight = triangleHeight / 2
+  const halfWidth = triangleWidth / 2
+
+  const routes: Record<Direction, Point[]> = {
+    left: [
+      { x: x + halfHeight, y }, // Tip
+      { x: x - halfHeight, y: y + halfWidth }, // Bottom corner
+      { x: x - halfHeight, y: y - halfWidth }, // Top corner
+      { x: x + halfHeight, y }, // Close path
+    ],
+    right: [
+      { x: x - halfHeight, y }, // Tip
+      { x: x + halfHeight, y: y + halfWidth }, // Top corner
+      { x: x + halfHeight, y: y - halfWidth }, // Bottom corner
+      { x: x - halfHeight, y }, // Close path
+    ],
+    top: [
+      { x, y: y - halfHeight }, // Tip
+      { x: x - halfWidth, y: y + halfHeight }, // Left corner
+      { x: x + halfWidth, y: y + halfHeight }, // Right corner
+      { x, y: y - halfHeight }, // Close path
+    ],
+    bottom: [
+      { x, y: y + halfHeight }, // Tip
+      { x: x - halfWidth, y: y - halfHeight }, // Left corner
+      { x: x + halfWidth, y: y - halfHeight }, // Right corner
+      { x, y: y + halfHeight }, // Close path
+    ],
   }
-  if (side === "right") {
-    routes = [
-      {
-        x: x - triangleHeight / 2,
-        y: y,
-      }, // Tip of the triangle (pointing left)
-      {
-        x: x + triangleHeight / 2,
-        y: y + triangleWidth / 2,
-      }, // Top corner of the base
-      {
-        x: x + triangleHeight / 2,
-        y: y - triangleWidth / 2,
-      }, // Bottom corner of the base
-      {
-        x: x - triangleHeight / 2,
-        y: y,
-      }, // Close the path at the tip
-    ]
-  }
-  if (side === "bottom") {
-    routes = [
-      {
-        x: x,
-        y: y + triangleHeight / 2,
-      }, // Tip of the triangle (pointing up)
-      {
-        x: x - triangleWidth / 2,
-        y: y - triangleHeight / 2,
-      }, // Left corner of the base
-      {
-        x: x + triangleWidth / 2,
-        y: y - triangleHeight / 2,
-      }, // Right corner of the base
-      {
-        x: x,
-        y: y + triangleHeight / 2,
-      }, // Close the path at the tip
-    ]
-  }
-  if (side === "top") {
-    routes = [
-      {
-        x: x,
-        y: y - triangleHeight / 2,
-      }, // Tip of the triangle (pointing down)
-      {
-        x: x - triangleWidth / 2,
-        y: y + triangleHeight / 2,
-      }, // Left corner of the base
-      {
-        x: x + triangleWidth / 2,
-        y: y + triangleHeight / 2,
-      }, // Right corner of the base
-      {
-        x: x,
-        y: y - triangleHeight / 2,
-      }, // Close the path at the tip
-    ]
-  }
-  return routes
+
+  return routes[side]
 }
 export const stampreceiver = (
   raw_params: Stampreceiver_def,
@@ -132,6 +94,8 @@ export const stampreceiver = (
   const holes: PcbPlatedHole[] = []
   const innerDiameter = 1
   const outerDiameter = 1.2
+  const totalPadsNumber =
+    params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
   let routes: { x: number; y: number }[] = []
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
@@ -145,7 +109,7 @@ export const stampreceiver = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.left + (params.bottom ?? 0),
           params.w / 2 - params.pl / 2,
           yoff + i * params.p,
           params.pl,
@@ -155,7 +119,7 @@ export const stampreceiver = (
       params.innerhole &&
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + (params.bottom ?? 0) + totalPadsNumber,
             params.w / 2 - params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
@@ -186,7 +150,7 @@ export const stampreceiver = (
       params.innerhole &&
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + totalPadsNumber,
             -params.w / 2 + params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
@@ -212,7 +176,7 @@ export const stampreceiver = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.right + (params.bottom ?? 0) + params.left,
           xoff + i * params.p,
           getHeight(params) / 2 - params.pl / 2,
           params.pw,
@@ -222,7 +186,12 @@ export const stampreceiver = (
       params.innerhole &&
         holes.push(
           platedhole(
-            i + 1,
+            i +
+              1 +
+              params.right +
+              (params.bottom ?? 0) +
+              params.left +
+              totalPadsNumber,
             xoff + i * params.p,
             getHeight(params) / 2 - params.innerholeedgedistance,
             innerDiameter,
@@ -243,7 +212,7 @@ export const stampreceiver = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.left,
           xoff + i * params.p,
           -getHeight(params) / 2 + params.pl / 2,
           params.pw,
@@ -253,7 +222,7 @@ export const stampreceiver = (
       params.innerhole &&
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + totalPadsNumber,
             xoff + i * params.p,
             -getHeight(params) / 2 + params.innerholeedgedistance,
             innerDiameter,

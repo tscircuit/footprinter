@@ -134,6 +134,8 @@ export const stampboard = (
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
   const outerDiameter = 1.2
+  const totalPadsNumber =
+    params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
@@ -146,7 +148,7 @@ export const stampboard = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.left + (params.bottom ?? 0),
           params.w / 2 - params.pl / 2,
           yoff + i * params.p,
           params.pl,
@@ -156,7 +158,7 @@ export const stampboard = (
       if (params.innerhole) {
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + (params.bottom ?? 0) + totalPadsNumber,
             params.w / 2,
             yoff + i * params.p,
             innerDiameter,
@@ -165,7 +167,7 @@ export const stampboard = (
         )
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + (params.bottom ?? 0) + totalPadsNumber * 2,
             params.w / 2 - params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
@@ -197,7 +199,7 @@ export const stampboard = (
       if (params.innerhole) {
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + totalPadsNumber,
             -params.w / 2,
             yoff + i * params.p,
             innerDiameter,
@@ -206,7 +208,7 @@ export const stampboard = (
         )
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + totalPadsNumber * 2,
             -params.w / 2 + params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
@@ -233,7 +235,7 @@ export const stampboard = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.left + params.right + (params.bottom ?? 0),
           xoff + i * params.p,
           getHeight(params) / 2 - params.pl / 2,
           params.pw,
@@ -243,7 +245,12 @@ export const stampboard = (
       if (params.innerhole) {
         holes.push(
           platedhole(
-            i + 1,
+            i +
+              1 +
+              params.left +
+              params.right +
+              (params.bottom ?? 0) +
+              totalPadsNumber,
             xoff + i * params.p,
             getHeight(params) / 2,
             innerDiameter,
@@ -252,7 +259,12 @@ export const stampboard = (
         )
         holes.push(
           platedhole(
-            i + 1,
+            i +
+              1 +
+              params.left +
+              params.right +
+              (params.bottom ?? 0) +
+              totalPadsNumber * 2,
             xoff + i * params.p,
             getHeight(params) / 2 - params.innerholeedgedistance,
             innerDiameter,
@@ -274,7 +286,7 @@ export const stampboard = (
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          i + 1 + params.left,
           xoff + i * params.p,
           -getHeight(params) / 2 + params.pl / 2,
           params.pw,
@@ -284,7 +296,7 @@ export const stampboard = (
       if (params.innerhole) {
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + totalPadsNumber,
             xoff + i * params.p,
             -getHeight(params) / 2,
             innerDiameter,
@@ -293,7 +305,7 @@ export const stampboard = (
         )
         holes.push(
           platedhole(
-            i + 1,
+            i + 1 + params.left + totalPadsNumber * 2,
             xoff + i * params.p,
             -getHeight(params) / 2 + params.innerholeedgedistance,
             innerDiameter,
