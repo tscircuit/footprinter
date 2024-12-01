@@ -29,19 +29,19 @@ export const getCcwSot235Coords = (parameters: {
 }) => {
   const { p, h, pn } = parameters
   if (pn === 1) {
-    return { x: h / 2 + 0.5, y: -p }
+    return { x: -h / 2 - 0.5, y: p }
   }
   if (pn === 2) {
-    return { x: h / 2 + 0.5, y: p }
+    return { x: -h / 2 - 0.5, y: 0 }
   }
   if (pn === 3) {
     return { x: -h / 2 - 0.5, y: -p }
   }
   if (pn === 4) {
-    return { x: -h / 2 - 0.5, y: 0 }
+    return { x: h / 2 + 0.5, y: -p }
   }
   if (pn === 5) {
-    return { x: -h / 2 - 0.5, y: p }
+    return { x: h / 2 + 0.5, y: p }
   }
   throw new Error("Invalid pin number")
 }
@@ -96,7 +96,7 @@ export const sot23_5WithoutParsing = (
   const pin1Position = getCcwSot235Coords({
     h: Number.parseFloat(parameters.h),
     p: Number.parseFloat(parameters.p),
-    pn: 5,
+    pn: 1,
   })
   pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5
   const triangleHeight = 0.7 // Adjust triangle size as needed
