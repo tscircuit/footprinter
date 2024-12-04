@@ -14,11 +14,11 @@ test("stampboard", () => {
 })
 test("stampboard", () => {
   const soup = fp
-    .string("stampboard_left10_right10_bottom4_w21mm_p2.54mm")
+    .string("stampboard_left10_right10_bottom4_top0_w21mm_p2.54mm")
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "stampboard_left10_right10_bottom4_w21mm_p2.54mm",
+    "stampboard_left10_right10_bottom4_top0_w21mm_p2.54mm",
   )
 })
