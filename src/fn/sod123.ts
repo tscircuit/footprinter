@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"

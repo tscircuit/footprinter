@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { type PassiveDef, passive } from "../helpers/passive-fn"
 

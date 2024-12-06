@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { length, type AnySoupElement } from "@tscircuit/soup"
+import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 

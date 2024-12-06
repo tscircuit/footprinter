@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 import type { z } from "zod"
 

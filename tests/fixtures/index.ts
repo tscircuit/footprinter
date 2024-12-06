@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 
 export { getTestFixture } from "./get-test-fixture"
 
