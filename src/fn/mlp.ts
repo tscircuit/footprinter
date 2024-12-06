@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import { base_quad_def, quad, quad_def, quadTransform } from "./quad"
 import type { z } from "zod"
 

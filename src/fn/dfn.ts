@@ -1,4 +1,4 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
 import {
   extendSoicDef,
   soicWithoutParsing,

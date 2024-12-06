@@ -1,6 +1,6 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "@tscircuit/soup"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
 import { optional, z } from "zod"
-import { length } from "@tscircuit/soup"
+import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { rectpad } from "../helpers/rectpad"
 import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"

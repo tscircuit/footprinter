@@ -1,5 +1,5 @@
 import * as FOOTPRINT_FN from "./fn"
-import type { AnySoupElement } from "@tscircuit/soup"
+import type { AnySoupElement } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 import { isNotNull } from "./helpers/is-not-null"

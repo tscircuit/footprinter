@@ -1,4 +1,4 @@
-import type { PCBSMTPad } from "@tscircuit/soup"
+import type { PCBSMTPad } from "circuit-json"
 export const rectpad = (
   pn: number | Array<string | number>,
   x: number,
