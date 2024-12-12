@@ -12,6 +12,7 @@ import { platedhole } from "src/helpers/platedhole"
 export const stampreceiver_def = z.object({
   fn: z.string(),
   w: length.default("22.58mm"),
+  h: length.optional(),
   left: length.optional().default(20),
   right: length.optional().default(20),
   top: length.optional().default(2),
@@ -90,6 +91,7 @@ export const stampreceiver = (
   raw_params: Stampreceiver_def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const params = stampreceiver_def.parse(raw_params)
+  const height = params.h ?? getHeight(params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
   const innerDiameter = 1
@@ -170,7 +172,7 @@ export const stampreceiver = (
       ) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          getHeight(params) / 2 + params.pl * 1.4,
+          height / 2 + params.pl * 1.4,
           "top",
         )
       }
@@ -178,7 +180,7 @@ export const stampreceiver = (
         rectpad(
           i + 1 + params.right + (params.bottom ?? 0) + params.left,
           xoff + i * params.p,
-          getHeight(params) / 2 - params.pl / 2,
+          height / 2 - params.pl / 2,
           params.pw,
           params.pl,
         ),
@@ -193,7 +195,7 @@ export const stampreceiver = (
               params.left +
               totalPadsNumber,
             xoff + i * params.p,
-            getHeight(params) / 2 - params.innerholeedgedistance,
+            height / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -206,7 +208,7 @@ export const stampreceiver = (
       if (i === 0 && !params.left) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          -getHeight(params) / 2 - params.pl * 1.4,
+          -height / 2 - params.pl * 1.4,
           "bottom",
         )
       }
@@ -214,7 +216,7 @@ export const stampreceiver = (
         rectpad(
           i + 1 + params.left,
           xoff + i * params.p,
-          -getHeight(params) / 2 + params.pl / 2,
+          -height / 2 + params.pl / 2,
           params.pw,
           params.pl,
         ),
@@ -224,7 +226,7 @@ export const stampreceiver = (
           platedhole(
             i + 1 + params.left + totalPadsNumber,
             xoff + i * params.p,
-            -getHeight(params) / 2 + params.innerholeedgedistance,
+            -height / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -248,23 +250,23 @@ export const stampreceiver = (
     route: [
       {
         x: -params.w / 2 - params.pl / 3,
-        y: getHeight(params) / 2 + params.pl / 3,
+        y: height / 2 + params.pl / 3,
       },
       {
         x: params.w / 2 + params.pl / 3,
-        y: getHeight(params) / 2 + params.pl / 3,
+        y: height / 2 + params.pl / 3,
       },
       {
         x: params.w / 2 + params.pl / 3,
-        y: -getHeight(params) / 2 - params.pl / 3,
+        y: -height / 2 - params.pl / 3,
       },
       {
         x: -params.w / 2 - params.pl / 3,
-        y: -getHeight(params) / 2 - params.pl / 3,
+        y: -height / 2 - params.pl / 3,
       },
       {
         x: -params.w / 2 - params.pl / 3,
-        y: getHeight(params) / 2 + params.pl / 3,
+        y: height / 2 + params.pl / 3,
       },
     ],
     stroke_width: 0.1,
@@ -272,8 +274,8 @@ export const stampreceiver = (
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    getHeight(params) / 1.8,
-    getHeight(params) / 25,
+    height / 1.8,
+    height / 25,
   )
   return {
     circuitJson: [
