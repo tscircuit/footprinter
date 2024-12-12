@@ -12,6 +12,7 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 export const stampboard_def = z.object({
   fn: z.string(),
   w: length.default("22.58mm"),
+  h: length.optional(),
   left: length.optional().default(20),
   right: length.optional().default(20),
   top: length.optional().default(2),
@@ -129,6 +130,7 @@ export const stampboard = (
   raw_params: Stampboard_def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const params = stampboard_def.parse(raw_params)
+  const height = params.h ?? getHeight(params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
   let routes: { x: number; y: number }[] = []
@@ -229,7 +231,7 @@ export const stampboard = (
       ) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          getHeight(params) / 2 - params.pl * 1.4,
+          height / 2 - params.pl * 1.4,
           "top",
         )
       }
@@ -237,7 +239,7 @@ export const stampboard = (
         rectpad(
           i + 1 + params.left + params.right + (params.bottom ?? 0),
           xoff + i * params.p,
-          getHeight(params) / 2 - params.pl / 2,
+          height / 2 - params.pl / 2,
           params.pw,
           params.pl,
         ),
@@ -252,7 +254,7 @@ export const stampboard = (
               (params.bottom ?? 0) +
               totalPadsNumber,
             xoff + i * params.p,
-            getHeight(params) / 2,
+            height / 2,
             innerDiameter,
             outerDiameter,
           ),
@@ -266,7 +268,7 @@ export const stampboard = (
               (params.bottom ?? 0) +
               totalPadsNumber * 2,
             xoff + i * params.p,
-            getHeight(params) / 2 - params.innerholeedgedistance,
+            height / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -280,7 +282,7 @@ export const stampboard = (
       if (i === 0 && !params.left) {
         routes = getTriangleDir(
           xoff + i * params.p,
-          -getHeight(params) / 2 + params.pl * 1.4,
+          -height / 2 + params.pl * 1.4,
           "bottom",
         )
       }
@@ -288,7 +290,7 @@ export const stampboard = (
         rectpad(
           i + 1 + params.left,
           xoff + i * params.p,
-          -getHeight(params) / 2 + params.pl / 2,
+          -height / 2 + params.pl / 2,
           params.pw,
           params.pl,
         ),
@@ -298,7 +300,7 @@ export const stampboard = (
           platedhole(
             i + 1 + params.left + totalPadsNumber,
             xoff + i * params.p,
-            -getHeight(params) / 2,
+            -height / 2,
             innerDiameter,
             outerDiameter,
           ),
@@ -307,7 +309,7 @@ export const stampboard = (
           platedhole(
             i + 1 + params.left + totalPadsNumber * 2,
             xoff + i * params.p,
-            -getHeight(params) / 2 + params.innerholeedgedistance,
+            -height / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
@@ -330,19 +332,19 @@ export const stampboard = (
     pcb_silkscreen_path_id: "pcb_silkscreen_path_1",
     pcb_component_id: "1",
     route: [
-      { x: -params.w / 2, y: getHeight(params) / 2 },
-      { x: params.w / 2, y: getHeight(params) / 2 },
-      { x: params.w / 2, y: -getHeight(params) / 2 },
-      { x: -params.w / 2, y: -getHeight(params) / 2 },
-      { x: -params.w / 2, y: getHeight(params) / 2 },
+      { x: -params.w / 2, y: height / 2 },
+      { x: params.w / 2, y: height / 2 },
+      { x: params.w / 2, y: -height / 2 },
+      { x: -params.w / 2, y: -height / 2 },
+      { x: -params.w / 2, y: height / 2 },
     ],
     stroke_width: 0.1,
     layer: "top",
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    getHeight(params) / 1.8,
-    getHeight(params) / 25,
+    height / 1.8,
+    height / 25,
   )
   return {
     circuitJson: [

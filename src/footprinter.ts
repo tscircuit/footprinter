@@ -57,6 +57,7 @@ export type Footprinter = {
   >
   stampboard: () => FootprinterParamsBuilder<
     | "w"
+    | "h"
     | "left"
     | "right"
     | "top"
@@ -69,6 +70,7 @@ export type Footprinter = {
   >
   stampreceiver: () => FootprinterParamsBuilder<
     | "w"
+    | "h"
     | "left"
     | "right"
     | "top"
