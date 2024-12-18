@@ -29,9 +29,9 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
         v.id = length.parse("1.0mm")
         v.od = length.parse("1.5mm")
       } else if (!v.id) {
-        v.id = v.od! * (1.0 / 1.2)
+        v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
-        v.od = v.id! * (1.2 / 1.0)
+        v.od = v.id! * (1.5 / 1.0)
       }
 
       // Default width (TODO high pin counts should probably be wide?)
