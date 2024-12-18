@@ -11,7 +11,7 @@ import { platedhole } from "src/helpers/platedhole"
 
 export const breakoutheaders_def = z.object({
   fn: z.string(),
-  w: length.default("22.58mm"),
+  w: length.default("10mm"),
   h: length.optional(),
   left: length.optional().default(20),
   right: length.optional().default(20),
@@ -19,7 +19,7 @@ export const breakoutheaders_def = z.object({
   bottom: length.optional().default(0),
   p: length.default(length.parse("2.54mm")),
   id: length.optional().default(length.parse("1mm")),
-  od: length.optional().default(length.parse("1.2mm")),
+  od: length.optional().default(length.parse("1.5mm")),
 })
 
 export type breakoutheaders_def = z.input<typeof breakoutheaders_def>
@@ -42,10 +42,11 @@ const getHeight = (parameters: breakoutheaders_def): number => {
 
   return 51
 }
+
 type Point = { x: number; y: number }
 type Direction = "left" | "right" | "top" | "bottom"
 
-const getTriangleDir = (
+const getTrianglePath = (
   x: number,
   y: number,
   side: Direction,
@@ -97,7 +98,7 @@ export const breakoutheaders = (
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
       if (i === 0 && !params.left && !params.bottom) {
-        routes = getTriangleDir(
+        routes = getTrianglePath(
           params.w / 2 + outerDiameter * 1.4,
           yoff + i * params.p,
           "right",
@@ -118,7 +119,7 @@ export const breakoutheaders = (
     const yoff = -((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
       if (i === params.left - 1) {
-        routes = getTriangleDir(
+        routes = getTrianglePath(
           -params.w / 2 - outerDiameter * 1.4,
           yoff + i * params.p,
           "left",
@@ -144,7 +145,7 @@ export const breakoutheaders = (
         !params.bottom &&
         !params.right
       ) {
-        routes = getTriangleDir(
+        routes = getTrianglePath(
           xoff + i * params.p,
           height / 2 + outerDiameter * 1.4,
           "top",
@@ -165,7 +166,7 @@ export const breakoutheaders = (
     const xoff = -((params.bottom - 1) / 2) * params.p
     for (let i = 0; i < params.bottom; i++) {
       if (i === 0 && !params.left) {
-        routes = getTriangleDir(
+        routes = getTrianglePath(
           xoff + i * params.p,
           -height / 2 - outerDiameter * 1.4,
           "bottom",
