@@ -56,7 +56,7 @@ const getTrianglePath = (
   const halfHeight = triangleHeight / 2
   const halfWidth = triangleWidth / 2
 
-  const routes: Record<Direction, Point[]> = {
+  const silkscreenTriangleRoutes: Record<Direction, Point[]> = {
     left: [
       { x: x + halfHeight, y },
       { x: x - halfHeight, y: y + halfWidth },
@@ -83,7 +83,7 @@ const getTrianglePath = (
     ],
   }
 
-  return routes[side]
+  return silkscreenTriangleRoutes[side]
 }
 export const breakoutheaders = (
   raw_params: breakoutheaders_def,
@@ -93,12 +93,12 @@ export const breakoutheaders = (
   const holes: PcbPlatedHole[] = []
   const innerDiameter = params.id
   const outerDiameter = params.od
-  let routes: { x: number; y: number }[] = []
+  let silkscreenTriangleRoutes: { x: number; y: number }[] = []
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
       if (i === 0 && !params.left && !params.bottom) {
-        routes = getTrianglePath(
+        silkscreenTriangleRoutes = getTrianglePath(
           params.w / 2 + outerDiameter * 1.4,
           yoff + i * params.p,
           "right",
@@ -119,7 +119,7 @@ export const breakoutheaders = (
     const yoff = -((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
       if (i === params.left - 1) {
-        routes = getTrianglePath(
+        silkscreenTriangleRoutes = getTrianglePath(
           -params.w / 2 - outerDiameter * 1.4,
           yoff + i * params.p,
           "left",
@@ -145,7 +145,7 @@ export const breakoutheaders = (
         !params.bottom &&
         !params.right
       ) {
-        routes = getTrianglePath(
+        silkscreenTriangleRoutes = getTrianglePath(
           xoff + i * params.p,
           height / 2 + outerDiameter * 1.4,
           "top",
@@ -166,7 +166,7 @@ export const breakoutheaders = (
     const xoff = -((params.bottom - 1) / 2) * params.p
     for (let i = 0; i < params.bottom; i++) {
       if (i === 0 && !params.left) {
-        routes = getTrianglePath(
+        silkscreenTriangleRoutes = getTrianglePath(
           xoff + i * params.p,
           -height / 2 - outerDiameter * 1.4,
           "bottom",
@@ -189,7 +189,7 @@ export const breakoutheaders = (
     pcb_silkscreen_path_id: "1",
     pcb_component_id: "1",
     layer: "top",
-    route: routes,
+    route: silkscreenTriangleRoutes,
     stroke_width: 0.1,
   }
 
