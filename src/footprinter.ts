@@ -81,6 +81,10 @@ export type Footprinter = {
     | "innerhole"
     | "innerholeedgedistance"
   >
+  breakoutheaders: () => FootprinterParamsBuilder<
+    "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
+  >
+
   params: () => any
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
