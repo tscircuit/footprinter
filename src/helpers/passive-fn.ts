@@ -70,26 +70,26 @@ const sizes = [
   {
     imperial: "1210",
     metric: "3225",
-    Z_mm_min: 4.2,
-    G_mm_min: 1.2,
-    X_mm_min: 2.4,
-    C_mm_ref: 2.8,
+    Z_mm_min: 3.2,
+    G_mm_min: 1.0,
+    X_mm_min: 2.5,
+    C_mm_ref: 2.0,
   },
   {
     imperial: "2010",
     metric: "5025",
-    Z_mm_min: 6.0,
-    G_mm_min: 2.6,
-    X_mm_min: 2.4,
-    C_mm_ref: 4.4,
+    Z_mm_min: 5.0,
+    G_mm_min: 1.2,
+    X_mm_min: 2.5,
+    C_mm_ref: 3.6,
   },
   {
     imperial: "2512",
     metric: "6332",
-    Z_mm_min: 7.2,
-    G_mm_min: 3.8,
-    X_mm_min: 3.0,
-    C_mm_ref: 5.6,
+    Z_mm_min: 6.3,
+    G_mm_min: 1.2,
+    X_mm_min: 3.2,
+    C_mm_ref: 4.5,
   },
 ]
 const metricMap: Record<string, StandardSize> = sizes.reduce((acc: any, s) => {
@@ -176,6 +176,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
       silkscreenRefText,
     ]
+    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
     return [
       rectpad(["1", "left"], -p / 2, 0, pw, ph),
