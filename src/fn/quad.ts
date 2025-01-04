@@ -10,8 +10,8 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
 export const base_quad_def = z.object({
   fn: z.string(),
-  cc: z.literal(true).optional(),
-  ccw: z.literal(true).optional(),
+  cc: z.boolean().default(true).optional(),
+  ccw: z.boolean().default(true).optional(),
   startingpin: z
     .string()
     .or(z.array(pin_order_specifier))

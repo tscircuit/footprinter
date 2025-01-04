@@ -6,10 +6,10 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pushbutton_def = z.object({
   fn: z.literal("pushbutton"),
-  w: z.literal(4.5).default(4.5),
-  h: z.literal(6.5).default(6.5),
-  id: z.literal(1).default(1),
-  od: z.literal(1.2).default(1.2),
+  w: z.number().default(4.5),
+  h: z.number().default(6.5),
+  id: z.number().default(1),
+  od: z.number().default(1.2),
 })
 
 export const pushbutton = (
