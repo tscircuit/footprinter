@@ -11,7 +11,6 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
 export const axial_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(2).default(2),
   p: length.optional().default("2.54mm"),
   id: length.optional().default("0.7mm"),
   od: length.optional().default("1mm"),

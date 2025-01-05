@@ -14,7 +14,6 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
     .object({
       fn: z.string(),
-      dip: z.literal(true),
       num_pins: z.number().optional().default(6),
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
