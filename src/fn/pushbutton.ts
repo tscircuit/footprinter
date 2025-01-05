@@ -1,4 +1,4 @@
-import type { AnyCircuitElement } from "circuit-json"
+import { length, type AnyCircuitElement } from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
@@ -6,10 +6,10 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const pushbutton_def = z.object({
   fn: z.literal("pushbutton"),
-  w: z.number().default(4.5),
-  h: z.number().default(6.5),
-  id: z.number().default(1),
-  od: z.number().default(1.2),
+  w: length.default(4.5),
+  h: length.default(6.5),
+  id: length.default(1),
+  od: length.default(1.2),
 })
 
 export const pushbutton = (
