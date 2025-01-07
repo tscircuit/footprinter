@@ -9,7 +9,7 @@ export const sot457_def = z.object({
   h: z.string().default("1mm"),
   w: z.string().default("1.5mm"),
   l: z.string().default("2.9mm"),
-  pl: z.string().default("0.67mm"),
+  pl: z.string().default("0.6mm"),
   pw: z.string().default("0.3mm"),
   p: z.string().default("0.95mm"),
 })
