@@ -25,7 +25,7 @@ export const base_quad_def = z.object({
   pw: length.optional(),
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
-  legsoutside: z.boolean().optional(),
+  legsoutside: z.boolean().default(false),
 })
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
