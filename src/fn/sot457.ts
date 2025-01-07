@@ -11,7 +11,7 @@ export const sot457_def = z.object({
   l: z.string().default("2.9mm"),
   pl: z.string().default("0.67mm"),
   pw: z.string().default("0.3mm"),
-  p: z.string().default("0.95mm"),  
+  p: z.string().default("0.95mm"),
 })
 
 export const sot457 = (
@@ -103,10 +103,5 @@ export const sot457WithoutParsing = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.5, 0.3)
 
-  return [
-    ...pads,
-    silkscreenRefText,
-    silkscreenPath1,
-    silkscreenPath2,
-  ]
+  return [...pads, silkscreenRefText, silkscreenPath1, silkscreenPath2]
 }
