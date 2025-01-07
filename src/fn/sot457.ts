@@ -103,5 +103,49 @@ export const sot457WithoutParsing = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.5, 0.3)
 
-  return [...pads, silkscreenRefText, silkscreenPath1, silkscreenPath2]
+  const pin1Position = getCcwSot457Coords({
+    p: Number.parseFloat(parameters.p),
+    w: Number.parseFloat(parameters.w),
+    pn: 1,
+  })
+
+  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 2.5
+  pin1Position.y = pin1Position.y + 0
+
+  const triangleHeight = 0.4
+  const triangleWidth = 0.2
+
+  const pin1Indicator: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y + triangleWidth / 2,
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y - triangleWidth / 2,
+      },
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      },
+    ],
+    stroke_width: 0.05,
+  }
+
+  return [
+    ...pads,
+    silkscreenRefText,
+    silkscreenPath1,
+    silkscreenPath2,
+    pin1Indicator as AnyCircuitElement,
+  ]
 }
