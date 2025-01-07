@@ -84,6 +84,7 @@ export type Footprinter = {
   breakoutheaders: () => FootprinterParamsBuilder<
     "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
   >
+  sot457: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
 
   params: () => any
   /** @deprecated use circuitJson() instead */
