@@ -6,11 +6,10 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 export const sot457_def = z.object({
   fn: z.string().default("sot457"),
   num_pins: z.literal(6).default(6),
-  h: z.string().default("1mm"),
-  w: z.string().default("1.5mm"),
-  l: z.string().default("2.9mm"),
-  pl: z.string().default("0.6mm"),
-  pw: z.string().default("0.3mm"),
+  h: z.string().default("2.5mm"),
+  w: z.string().default("2.7mm"),
+  pl: z.string().default("0.8mm"),
+  pw: z.string().default("0.55mm"),
   p: z.string().default("0.95mm"),
 })
 
@@ -109,11 +108,11 @@ export const sot457WithoutParsing = (
     pn: 1,
   })
 
-  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 2.5
+  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.7
   pin1Position.y = pin1Position.y + 0
 
-  const triangleHeight = 0.4
-  const triangleWidth = 0.2
+  const triangleHeight = 0.5
+  const triangleWidth = 0.3
 
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
