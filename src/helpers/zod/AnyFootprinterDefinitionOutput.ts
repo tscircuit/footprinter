@@ -15,6 +15,7 @@ import { soic_def } from "src/fn/soic"
 import { sot23_def } from "src/fn/sot23"
 import { sot236_def } from "src/fn/sot236"
 import { sot363_def } from "src/fn/sot363"
+import { sot457_def } from "src/fn/sot457"
 import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
 import { ssop_def } from "src/fn/ssop"
@@ -38,6 +39,7 @@ export const any_footprinter_def = z.union([
   sot23_def,
   sot236_def,
   sot363_def,
+  sot457_def,
   sot563_def,
   sot723_def,
   ssop_def,
