@@ -10,7 +10,6 @@ export const sot457_def = z.object({
   h: z.string().default("2.5mm"),
   w: z.string().default("2.7mm"),
   wave: z.boolean().default(false),
-  pillr: z.string().default("0.225mm"),
   pillh: z.string().default("0.45mm"),
   pillw: z.string().default("1.45mm"),
   pl: z.string().default("0.8mm"),
@@ -18,18 +17,39 @@ export const sot457_def = z.object({
   p: z.string().default("0.95mm"),
 })
 
+export const sot457_wave = z.object({
+  fn: z.literal("sot457_wave").default("sot457_wave"),
+  num_pins: z.literal(6).default(6),
+  h: z.string().default("3mm"),
+  w: z.string().default("4mm"),
+  wave: z.boolean().default(true),
+  pillr: z.string().default("0.225mm"),
+  pillh: z.string().default("0.45mm"),
+  pillw: z.string().default("1.45mm"),
+  pl: z.string().default("1.45mm"),
+  pw: z.string().default("1.5mm"),
+  p: z.string().default("1.475mm"),
+})
+
 export const sot457 = (
   raw_params: z.input<typeof sot457_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  console.log("sot457", raw_params)
+  if (raw_params?.wave) {
+    raw_params.fn = "sot457_wave"
+    const parameters = sot457_wave.parse(raw_params)
+    console.log("SOT-457 Wave Parameters:", parameters)
+    return {
+      circuitJson: sot457WithoutParsing(parameters),
+      parameters: parameters,
+    }
+  }
+
   const parameters = sot457_def.parse(raw_params)
-  console.log("sot457", parameters)
   return {
     circuitJson: sot457WithoutParsing(parameters),
     parameters: parameters,
   }
 }
-
 export const getCcwSot457Coords = (parameters: {
   p: number
   w: number
@@ -67,7 +87,6 @@ export const sot457WithoutParsing = (
             y,
             Number.parseFloat(parameters.pillw),
             Number.parseFloat(parameters.pillh),
-            Number.parseFloat(parameters.pillr),
           ),
         )
       } else if (i === 1 || i === 2 || i === 5 || i === 6) {

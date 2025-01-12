@@ -6,7 +6,6 @@ export const pillpad = (
   y: number,
   w: number,
   h: number,
-  radius: number,
 ): PCBSMTPad => {
   return {
     type: "pcb_smtpad",
@@ -14,7 +13,7 @@ export const pillpad = (
     y,
     width: w,
     height: h,
-    radius: radius,
+    radius: h / 2,
     layer: "top",
     shape: "pill",
     pcb_smtpad_id: "",
