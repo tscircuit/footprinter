@@ -9,7 +9,8 @@ export const sot457_def = z.object({
   num_pins: z.literal(6).default(6),
   h: z.string().default("2.5mm"),
   w: z.string().default("2.7mm"),
-  wave: z.boolean().default(false),
+  wave: z.boolean().optional(),
+  reflow: z.boolean().optional(),
   pillh: z.string().default("0.45mm"),
   pillw: z.string().default("1.45mm"),
   pl: z.string().default("0.8mm"),
@@ -18,24 +19,30 @@ export const sot457_def = z.object({
 })
 
 export const sot457_wave = z.object({
-  fn: z.literal("sot457_wave").default("sot457_wave"),
+  fn: z.literal("sot457"),
   num_pins: z.literal(6).default(6),
   h: z.string().default("3mm"),
   w: z.string().default("4mm"),
-  wave: z.boolean().default(true),
   pillr: z.string().default("0.225mm"),
   pillh: z.string().default("0.45mm"),
   pillw: z.string().default("1.45mm"),
   pl: z.string().default("1.45mm"),
   pw: z.string().default("1.5mm"),
   p: z.string().default("1.475mm"),
-})
+  wave: z.boolean().optional(),
+  reflow: z.boolean().optional(),
+})  .transform((a) => ({
+  ...a,
+  wave: a.wave ?? (a.reflow === undefined ? true : !a.reflow),
+  reflow: a.reflow ?? (a.wave === undefined ? true : !a.wave),
+}));
+
 
 export const sot457 = (
   raw_params: z.input<typeof sot457_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   if (raw_params?.wave) {
-    raw_params.fn = "sot457_wave"
+    raw_params.fn = "sot457"
     const parameters = sot457_wave.parse(raw_params)
     console.log("SOT-457 Wave Parameters:", parameters)
     return {
@@ -73,40 +80,24 @@ export const sot457WithoutParsing = (
   const pads: AnyCircuitElement[] = []
 
   if (parameters.wave) {
+  const pinPositions = {
+      1: ({ pw, ph }: { pw: number; ph: number }) =>
+        rectpad(1, -Number.parseFloat(parameters.p), Number.parseFloat(parameters.p), ph, pw),
+      2: ({ pw, ph }: { pw: number; ph: number }) =>
+        rectpad(2, -Number.parseFloat(parameters.p), -Number.parseFloat(parameters.p), ph, pw),
+      3: ({ pw, ph }: { pw: number; ph: number }) =>
+        pillpad(3, -Number.parseFloat(parameters.p), 0, Number.parseFloat(parameters.pillw), Number.parseFloat(parameters.pillh)),
+      4: ({ pw, ph }: { pw: number; ph: number }) =>
+        pillpad(4, Number.parseFloat(parameters.p), 0, Number.parseFloat(parameters.pillw), Number.parseFloat(parameters.pillh)),
+      5: ({ pw, ph }: { pw: number; ph: number }) =>
+        rectpad(5, Number.parseFloat(parameters.p), Number.parseFloat(parameters.p), ph, pw),
+      6: ({ pw, ph }: { pw: number; ph: number }) =>
+        rectpad(6, Number.parseFloat(parameters.p), -Number.parseFloat(parameters.p), ph, pw),
+    };
+
     for (let i = 1; i <= parameters.num_pins; i++) {
-      if (i === 3 || i === 4) {
-        const x =
-          i === 3
-            ? -Number.parseFloat(parameters.p)
-            : Number.parseFloat(parameters.p)
-        const y = 0
-        pads.push(
-          pillpad(
-            i,
-            x,
-            y,
-            Number.parseFloat(parameters.pillw),
-            Number.parseFloat(parameters.pillh),
-          ),
-        )
-      } else if (i === 1 || i === 2 || i === 5 || i === 6) {
-        const x =
-          i <= 2
-            ? -Number.parseFloat(parameters.p)
-            : Number.parseFloat(parameters.p)
-        const y =
-          i % 2 === 1
-            ? Number.parseFloat(parameters.p)
-            : -Number.parseFloat(parameters.p)
-        pads.push(
-          rectpad(
-            i,
-            x,
-            y,
-            Number.parseFloat(parameters.pl),
-            Number.parseFloat(parameters.pw),
-          ),
-        )
+      if (pinPositions[i]) {
+        pads.push(pinPositions[i]({ pw: Number.parseFloat(parameters.pl), ph: Number.parseFloat(parameters.pw) }));
       }
     }
   } else {
