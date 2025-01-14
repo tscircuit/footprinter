@@ -18,25 +18,26 @@ export const sot457_def = z.object({
   p: z.string().default("0.95mm"),
 })
 
-export const sot457_wave = z.object({
-  fn: z.literal("sot457"),
-  num_pins: z.literal(6).default(6),
-  h: z.string().default("3mm"),
-  w: z.string().default("4mm"),
-  pillr: z.string().default("0.225mm"),
-  pillh: z.string().default("0.45mm"),
-  pillw: z.string().default("1.45mm"),
-  pl: z.string().default("1.45mm"),
-  pw: z.string().default("1.5mm"),
-  p: z.string().default("1.475mm"),
-  wave: z.boolean().optional(),
-  reflow: z.boolean().optional(),
-})  .transform((a) => ({
-  ...a,
-  wave: a.wave ?? (a.reflow === undefined ? true : !a.reflow),
-  reflow: a.reflow ?? (a.wave === undefined ? true : !a.wave),
-}));
-
+export const sot457_wave = z
+  .object({
+    fn: z.literal("sot457"),
+    num_pins: z.literal(6).default(6),
+    h: z.string().default("3mm"),
+    w: z.string().default("4mm"),
+    pillr: z.string().default("0.225mm"),
+    pillh: z.string().default("0.45mm"),
+    pillw: z.string().default("1.45mm"),
+    pl: z.string().default("1.45mm"),
+    pw: z.string().default("1.5mm"),
+    p: z.string().default("1.475mm"),
+    wave: z.boolean().optional(),
+    reflow: z.boolean().optional(),
+  })
+  .transform((a) => ({
+    ...a,
+    wave: a.wave ?? (a.reflow === undefined ? true : !a.reflow),
+    reflow: a.reflow ?? (a.wave === undefined ? true : !a.wave),
+  }))
 
 export const sot457 = (
   raw_params: z.input<typeof sot457_def>,
@@ -80,24 +81,65 @@ export const sot457WithoutParsing = (
   const pads: AnyCircuitElement[] = []
 
   if (parameters.wave) {
-  const pinPositions = {
+    const pinPositions = {
       1: ({ pw, ph }: { pw: number; ph: number }) =>
-        rectpad(1, -Number.parseFloat(parameters.p), Number.parseFloat(parameters.p), ph, pw),
+        rectpad(
+          1,
+          -Number.parseFloat(parameters.p),
+          Number.parseFloat(parameters.p),
+          ph,
+          pw,
+        ),
       2: ({ pw, ph }: { pw: number; ph: number }) =>
-        rectpad(2, -Number.parseFloat(parameters.p), -Number.parseFloat(parameters.p), ph, pw),
+        rectpad(
+          2,
+          -Number.parseFloat(parameters.p),
+          -Number.parseFloat(parameters.p),
+          ph,
+          pw,
+        ),
       3: ({ pw, ph }: { pw: number; ph: number }) =>
-        pillpad(3, -Number.parseFloat(parameters.p), 0, Number.parseFloat(parameters.pillw), Number.parseFloat(parameters.pillh)),
+        pillpad(
+          3,
+          -Number.parseFloat(parameters.p),
+          0,
+          Number.parseFloat(parameters.pillw),
+          Number.parseFloat(parameters.pillh),
+        ),
       4: ({ pw, ph }: { pw: number; ph: number }) =>
-        pillpad(4, Number.parseFloat(parameters.p), 0, Number.parseFloat(parameters.pillw), Number.parseFloat(parameters.pillh)),
+        pillpad(
+          4,
+          Number.parseFloat(parameters.p),
+          0,
+          Number.parseFloat(parameters.pillw),
+          Number.parseFloat(parameters.pillh),
+        ),
       5: ({ pw, ph }: { pw: number; ph: number }) =>
-        rectpad(5, Number.parseFloat(parameters.p), Number.parseFloat(parameters.p), ph, pw),
+        rectpad(
+          5,
+          Number.parseFloat(parameters.p),
+          Number.parseFloat(parameters.p),
+          ph,
+          pw,
+        ),
       6: ({ pw, ph }: { pw: number; ph: number }) =>
-        rectpad(6, Number.parseFloat(parameters.p), -Number.parseFloat(parameters.p), ph, pw),
-    };
+        rectpad(
+          6,
+          Number.parseFloat(parameters.p),
+          -Number.parseFloat(parameters.p),
+          ph,
+          pw,
+        ),
+    }
 
     for (let i = 1; i <= parameters.num_pins; i++) {
       if (pinPositions[i]) {
-        pads.push(pinPositions[i]({ pw: Number.parseFloat(parameters.pl), ph: Number.parseFloat(parameters.pw) }));
+        pads.push(
+          pinPositions[i]({
+            pw: Number.parseFloat(parameters.pl),
+            ph: Number.parseFloat(parameters.pw),
+          }),
+        )
       }
     }
   } else {
