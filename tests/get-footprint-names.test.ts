@@ -1,19 +1,27 @@
 import { test, expect } from "bun:test"
-import { getFootprintNames } from "../src/footprinter"
+import { getFootprintNames, getFootprintNamesByType } from "../src/footprinter"
 
-test("getFootprintNames returns correct categorization", () => {
-  const result = getFootprintNames()
+test("getFootprintNames returns all footprint names", () => {
+  const footprintNames = getFootprintNames()
+  expect(footprintNames).toContain("res")
+  expect(footprintNames).toContain("cap")
+  expect(footprintNames).toContain("dip")
+  expect(footprintNames).toContain("soic")
+})
 
-  expect(result.passiveFootprints).toContain("res")
-  expect(result.passiveFootprints).toContain("cap")
-  expect(result.passiveFootprints).toContain("diode")
-  expect(result.passiveFootprints).toContain("led")
+test("getFootprintNamesByType groups footprint names by component type", () => {
+  const { passiveFootprints, normalFootprints } = getFootprintNamesByType()
 
-  expect(result.normalFootprints).toContain("dip")
-  expect(result.normalFootprints).toContain("soic")
-  expect(result.normalFootprints).toContain("qfp")
-  expect(result.normalFootprints).not.toContain("res")
-  expect(result.normalFootprints).not.toContain("cap")
-  expect(result.normalFootprints).not.toContain("diode")
-  expect(result.normalFootprints).not.toContain("led")
+  expect(passiveFootprints).toContain("res")
+  expect(passiveFootprints).toContain("cap")
+  expect(passiveFootprints).toContain("diode")
+  expect(passiveFootprints).toContain("led")
+
+  expect(normalFootprints).toContain("dip")
+  expect(normalFootprints).toContain("soic")
+  expect(normalFootprints).toContain("qfp")
+  expect(normalFootprints).not.toContain("res")
+  expect(normalFootprints).not.toContain("cap")
+  expect(normalFootprints).not.toContain("diode")
+  expect(normalFootprints).not.toContain("led")
 })

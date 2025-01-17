@@ -119,7 +119,11 @@ export const string = (def: string): Footprinter => {
   return fp
 }
 
-export const getFootprintNames = (): {
+export const getFootprintNames = (): string[] => {
+  return Object.keys(FOOTPRINT_FN)
+}
+
+export const getFootprintNamesByType = (): {
   passiveFootprints: string[]
   normalFootprints: string[]
 } => {
