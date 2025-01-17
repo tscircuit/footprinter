@@ -127,9 +127,9 @@ export const getFootprintNamesByType = (): {
   passiveFootprintNames: string[]
   normalFootprintNames: string[]
 } => {
-  const allFootprints = Object.keys(FOOTPRINT_FN)
+  const allFootprintsNames = Object.keys(FOOTPRINT_FN)
 
-  const passiveFootprintNames = allFootprints.filter((name) => {
+  const passiveFootprintNames = allFootprintsNames.filter((name) => {
     const fn = FOOTPRINT_FN[name]
 
     return fn.toString().includes("passive(")
@@ -137,7 +137,7 @@ export const getFootprintNamesByType = (): {
 
   return {
     passiveFootprintNames,
-    normalFootprintNames: allFootprints.filter(
+    normalFootprintNames: allFootprintsNames.filter(
       (name) => !passiveFootprintNames.includes(name),
     ),
   }
