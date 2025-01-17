@@ -119,8 +119,24 @@ export const string = (def: string): Footprinter => {
   return fp
 }
 
-export const getFootprintNames = (): string[] => {
-  return Object.keys(FOOTPRINT_FN)
+export const getFootprintNames = (): {
+  passiveFootprints: string[]
+  normalFootprints: string[]
+} => {
+  const allFootprints = Object.keys(FOOTPRINT_FN)
+
+  const passiveFootprints = allFootprints.filter((name) => {
+    const fn = FOOTPRINT_FN[name]
+
+    return fn.toString().includes("passive(")
+  })
+
+  return {
+    passiveFootprints,
+    normalFootprints: allFootprints.filter(
+      (name) => !passiveFootprints.includes(name),
+    ),
+  }
 }
 
 export const footprinter = (): Footprinter & {
