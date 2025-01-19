@@ -18,7 +18,7 @@ type StandardSize = {
 // https://www.worthingtonassembly.com/perfect-0201-footprint
 // https://static1.squarespace.com/static/54982a02e4b02e9f5e5d9ca7/t/660c692f69a0d83a4afecdf0/1712089391915/Discrete+Component+Footprints.pdf
 // https://page.venkel.com/hubfs/Resources/Technical/Resistors%20Landing%20Pattern.pdf
-const sizes = [
+export const footprintSizes = [
   {
     imperial: "01005",
     metric: "0402",
@@ -92,11 +92,14 @@ const sizes = [
     C_mm_ref: 4.5,
   },
 ]
-const metricMap: Record<string, StandardSize> = sizes.reduce((acc: any, s) => {
-  acc[s.metric] = s
-  return acc
-}, {})
-const imperialMap: Record<string, StandardSize> = sizes.reduce(
+const metricMap: Record<string, StandardSize> = footprintSizes.reduce(
+  (acc: any, s) => {
+    acc[s.metric] = s
+    return acc
+  },
+  {},
+)
+const imperialMap: Record<string, StandardSize> = footprintSizes.reduce(
   (acc: any, s) => {
     acc[s.imperial] = s
     return acc
