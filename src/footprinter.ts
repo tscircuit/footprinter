@@ -3,6 +3,7 @@ import type { AnySoupElement } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 import { isNotNull } from "./helpers/is-not-null"
+import { footprintSizes } from "./helpers/passive-fn"
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | "params" | "soup"]: P extends "params" | "soup"
@@ -121,6 +122,10 @@ export const string = (def: string): Footprinter => {
 
 export const getFootprintNames = (): string[] => {
   return Object.keys(FOOTPRINT_FN)
+}
+
+export const getFootprintSizes = (): typeof footprintSizes => {
+  return footprintSizes
 }
 
 export const getFootprintNamesByType = (): {
