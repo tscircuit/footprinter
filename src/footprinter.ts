@@ -6,7 +6,10 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K | "params" | "soup" | "circuitJson"]: P extends "params" | "soup" | "circuitJson"
+  [P in K | "params" | "soup" | "circuitJson"]: P extends
+    | "params"
+    | "soup"
+    | "circuitJson"
     ? Footprinter[P]
     : (v?: number | string) => FootprinterParamsBuilder<K>
 }
