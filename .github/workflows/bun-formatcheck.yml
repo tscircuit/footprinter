@@ -1,3 +1,4 @@
+# Created using @tscircuit/plop (npm install -g @tscircuit/plop)
 name: Format Check
 
 on:
@@ -23,4 +24,3 @@ jobs:
 
       - name: Run format check
         run: bunx biome format .
-
