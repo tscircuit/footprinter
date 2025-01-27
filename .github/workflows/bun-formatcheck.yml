@@ -22,5 +22,5 @@ jobs:
         run: bun install
 
       - name: Run format check
-        run: bun run format
+        run: bunx biome format .
 
