@@ -16,7 +16,7 @@ const generate_u_curve = (
   return Array.from({ length: 9 }, (_, i) => {
     const theta = (i / 8) * Math.PI - Math.PI / 2
     return {
-      x: centerX + (direction === "left" ? -1 : 1) * Math.cos(theta) * radius,
+      x: centerX + (direction === "right" ? 1 : -1) * Math.cos(theta) * radius,
       y: centerY + Math.sin(theta) * radius,
     }
   })
@@ -60,7 +60,7 @@ export const hc49 = (
       ...rightCurve,
       { x: w / 2, y: h / 2 },
       { x: -w / 2, y: h / 2 },
-      leftCurve[0],
+      // leftCurve[0],
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
