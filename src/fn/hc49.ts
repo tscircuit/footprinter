@@ -13,15 +13,13 @@ const generate_u_curve = (
   radius: number,
   direction: "left" | "right",
 ) => {
-  const baseCurve = Array.from({ length: 9 }, (_, i) => {
+  return Array.from({ length: 9 }, (_, i) => {
     const theta = (i / 8) * Math.PI - Math.PI / 2
     return {
       x: centerX + (direction === "left" ? -1 : 1) * Math.cos(theta) * radius,
       y: centerY + Math.sin(theta) * radius,
     }
   })
-
-  return baseCurve
 }
 
 export const hc49_def = z.object({
@@ -29,7 +27,7 @@ export const hc49_def = z.object({
   p: length.optional().default("4.88mm"),
   id: length.optional().default("0.6mm"),
   od: length.optional().default("1.2mm"),
-  w: length.optional().default("5.6mm"),
+  w: length.optional().default("8.6mm"),
   h: length.optional().default("3.5mm"),
 })
 
@@ -62,7 +60,7 @@ export const hc49 = (
       ...rightCurve,
       { x: w / 2, y: h / 2 },
       { x: -w / 2, y: h / 2 },
-      { x: -w / 2, y: -h / 2 },
+      leftCurve[0],
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
