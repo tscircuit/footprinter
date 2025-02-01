@@ -27,7 +27,7 @@ export const hc49_def = z.object({
   p: length.optional().default("4.88mm"),
   id: length.optional().default("0.6mm"),
   od: length.optional().default("1.2mm"),
-  w: length.optional().default("8.6mm"),
+  w: length.optional().default("5.6mm"),
   h: length.optional().default("3.5mm"),
 })
 
