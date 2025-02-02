@@ -10,6 +10,7 @@ export const SLOP_LIST = [
   "bga48_grid8x8",
   "bga48_p2_pad0.2",
   "qfn32_p0.5mm",
+  "pad_w2_h1",
 ]
 
 describe("Slop Tests", () => {

@@ -6,7 +6,10 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K | "params" | "soup"]: P extends "params" | "soup"
+  [P in K | "params" | "soup" | "circuitJson"]: P extends
+    | "params"
+    | "soup"
+    | "circuitJson"
     ? Footprinter[P]
     : (v?: number | string) => FootprinterParamsBuilder<K>
 }
@@ -85,6 +88,11 @@ export type Footprinter = {
   breakoutheaders: () => FootprinterParamsBuilder<
     "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
   >
+  pad: () => FootprinterParamsBuilder<"w" | "h"> & {
+    params: () => any
+    soup: () => AnySoupElement[]
+    circuitJson: () => AnyCircuitElement[]
+  }
 
   params: () => any
   /** @deprecated use circuitJson() instead */

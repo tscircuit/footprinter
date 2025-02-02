@@ -6,7 +6,7 @@ import path from "node:path"
 import { fp } from "../../src/footprinter"
 
 export const getTestFixture = async (testName: string) => {
-  const outputDir = path.join(__dirname, "../output")
+  const outputDir = path.join(__dirname, "../__snapshots__")
   if (!fs.existsSync(outputDir)) {
     fs.mkdirSync(outputDir, { recursive: true })
   }
