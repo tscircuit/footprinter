@@ -19,8 +19,7 @@
     // We are not transpiling, so preserve our source code and do not emit files
     "module": "esnext",
     "noEmit": true,
-    "lib": ["esnext"],
-    "types": ["bun-types"]
+    "lib": ["esnext"]
   },
   // Include the necessary files for your project
   "include": ["**/*.ts", "**/*.tsx"],
