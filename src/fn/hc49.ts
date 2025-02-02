@@ -55,12 +55,12 @@ export const hc49 = (
     pcb_component_id: "",
     route: [
       ...leftCurve,
+      ...leftCurve.slice(1).reverse(),
       { x: -w / 2, y: -h / 2 },
       { x: w / 2, y: -h / 2 },
       ...rightCurve,
       { x: w / 2, y: h / 2 },
       { x: -w / 2, y: h / 2 },
-      // leftCurve[0],
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
