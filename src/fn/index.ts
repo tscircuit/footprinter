@@ -28,4 +28,8 @@ export { stampreceiver } from "./stampreceiver"
 export { lqfp } from "./lqfp"
 export { sot235 } from "./sot235"
 export { breakoutheaders } from "./breakoutheaders"
+<<<<<<< HEAD
 export { hc49 } from "./hc49"
+=======
+export { pad } from "./pad"
+>>>>>>> 77c16cad1b1ecb95a0e99cb5b4ece9de9174cd4b
