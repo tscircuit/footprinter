@@ -23,11 +23,11 @@ const generate_semicircle = (
 
 export const to92_def = z.object({
   fn: z.string(),
-  p: length.optional().default("2.54mm"),
-  id: length.optional().default("0.6mm"),
-  od: length.optional().default("1.2mm"),
-  w: length.optional().default("4.5mm"),
-  h: length.optional().default("4.5mm"),
+  p: length.optional().default("2mm"),
+  id: length.optional().default("0.4mm"),
+  od: length.optional().default("1mm"),
+  w: length.optional().default("6mm"),
+  h: length.optional().default("5mm"),
 })
 
 export type To92Def = z.input<typeof to92_def>
@@ -39,13 +39,12 @@ export const to92 = (
 
   const { p, id, od, w, h } = parameters
   const radius = w / 2
-
+  const holeY = h / 4
   const plated_holes = [
-    platedhole(1, -p, 0, id, od),
-    platedhole(2, 0, 0, id, od),
-    platedhole(3, p, 0, id, od),
+    platedhole(1, -p, holeY, id, od),
+    platedhole(2, 0, holeY, id, od),
+    platedhole(3, p, holeY, id, od),
   ]
-
   const semicircle = generate_semicircle(0, h / 2, radius)
 
   const silkscreenBody: PcbSilkscreenPath = {
