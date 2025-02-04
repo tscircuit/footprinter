@@ -13,8 +13,8 @@ const generate_u_curve = (
   radius: number,
   direction: "left" | "right",
 ) => {
-  return Array.from({ length: 9 }, (_, i) => {
-    const theta = (i / 8) * Math.PI - Math.PI / 2
+  return Array.from({ length: 25 }, (_, i) => {
+    const theta = (i / 24) * Math.PI - Math.PI / 2
     return {
       x: centerX + (direction === "right" ? 1 : -1) * Math.cos(theta) * radius,
       y: centerY + Math.sin(theta) * radius,
