@@ -23,11 +23,11 @@ const generate_semicircle = (
 
 export const to92_def = z.object({
   fn: z.string(),
-  p: length.optional().default("2mm"),
-  id: length.optional().default("0.4mm"),
-  od: length.optional().default("1mm"),
-  w: length.optional().default("6mm"),
-  h: length.optional().default("5mm"),
+  p: length.optional().default("1.27mm"),
+  id: length.optional().default("0.72mm"),
+  od: length.optional().default(".95mm"),
+  w: length.optional().default("4.5mm"),
+  h: length.optional().default("4.5mm"),
 })
 
 export type To92Def = z.input<typeof to92_def>
@@ -61,7 +61,7 @@ export const to92 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
 
   return {
     circuitJson: [
