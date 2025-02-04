@@ -28,6 +28,10 @@ export const to92_def = z.object({
   od: length.optional().default(".95mm"),
   w: length.optional().default("4.5mm"),
   h: length.optional().default("4.5mm"),
+  arrangement: z
+    .enum(["triangular", "inline"])
+    .optional()
+    .default("triangular"),
 })
 
 export type To92Def = z.input<typeof to92_def>
@@ -36,15 +40,23 @@ export const to92 = (
   raw_params: To92Def,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = to92_def.parse(raw_params)
-
-  const { p, id, od, w, h } = parameters
+  const { p, id, od, w, h, arrangement } = parameters
   const radius = w / 2
   const holeY = h / 2
-  const plated_holes = [
-    platedhole(1, 0, holeY, id, od),
-    platedhole(2, -p, holeY - p, id, od),
-    platedhole(3, p, holeY - p, id, od),
-  ]
+
+  const plated_holes =
+    arrangement === "triangular"
+      ? [
+          platedhole(1, 0, holeY, id, od),
+          platedhole(2, -p, holeY - p, id, od),
+          platedhole(3, p, holeY - p, id, od),
+        ]
+      : [
+          platedhole(1, -p, holeY, id, od),
+          platedhole(2, 0, holeY, id, od),
+          platedhole(3, p, holeY, id, od),
+        ]
+
   const semicircle = generate_semicircle(0, h / 2, radius)
 
   const silkscreenBody: PcbSilkscreenPath = {
