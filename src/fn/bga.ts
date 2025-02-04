@@ -118,8 +118,26 @@ export const bga = (
       }
       pin_num -= missing_pins_passed
 
-      const pad_x = (x - (grid.x - 1) / 2) * p
-      const pad_y = -(y - (grid.y - 1) / 2) * p
+      let pad_x: number, pad_y: number
+
+      switch (parameters.origin) {
+        case "tl":
+          pad_x = x * p
+          pad_y = -y * p
+          break
+        case "bl":
+          pad_x = x * p
+          pad_y = (grid.y - 1 - y) * p
+          break
+        case "tr":
+          pad_x = (grid.x - 1 - x) * p
+          pad_y = -y * p
+          break
+        case "br":
+          pad_x = (grid.x - 1 - x) * p
+          pad_y = (grid.y - 1 - y) * p
+          break
+      }
 
       // TODO handle >26 rows
       pads.push(
