@@ -39,11 +39,11 @@ export const to92 = (
 
   const { p, id, od, w, h } = parameters
   const radius = w / 2
-  const holeY = h / 4
+  const holeY = h / 2
   const plated_holes = [
-    platedhole(1, -p, holeY, id, od),
-    platedhole(2, 0, holeY, id, od),
-    platedhole(3, p, holeY, id, od),
+    platedhole(1, 0, holeY, id, od),
+    platedhole(2, -p, holeY - p, id, od),
+    platedhole(3, p, holeY - p, id, od),
   ]
   const semicircle = generate_semicircle(0, h / 2, radius)
 
@@ -61,7 +61,7 @@ export const to92 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
   return {
     circuitJson: [
