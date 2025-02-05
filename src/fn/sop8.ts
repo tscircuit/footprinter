@@ -1,68 +1,55 @@
-import {
-  length,
-  type AnySoupElement,
-  type PcbSilkscreenPath,
-} from "circuit-json"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { z } from "zod"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
+import { rectpad } from "src/helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
-export const sop8_def = z.object({
-  fn: z.string(),
-  p: length.optional().default("1.27mm"),
-  id: length.optional().default("1.26mm"),
-  od: length.optional().default("2.5mm"),
-  body_w: length.optional().default("8mm"),
-  body_h: length.optional().default("3.9mm"),
-})
-
-export type Sop8Def = z.input<typeof sop8_def>
+export const sop8_def = extendSoicDef({})
 
 export const sop8 = (
-  raw_params: Sop8Def,
+  raw_params: SoicInput,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sop8_def.parse(raw_params)
+  const pads: AnySoupElement[] = []
 
-  const { id, od, body_w, body_h } = parameters
+  for (let i = 0; i < parameters.num_pins; i++) {
+    const { x, y } = getCcwSoicCoords({
+      num_pins: parameters.num_pins,
+      pn: i + 1,
+      w: parameters.w,
+      p: parameters.p ?? 1.27,
+      pl: parameters.pl,
+      widthincludeslegs: true,
+    })
+    pads.push(
+      rectpad(i + 1, x, y, parameters.pl ?? "1.5mm", parameters.pw ?? "0.6mm"),
+    )
+  }
 
-  const plated_holes = [
-    platedhole(1, -body_w / 4, 0, id, od),
-    platedhole(2, body_w / 4, 0, id, od),
-  ]
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    sh / 2 - 0.5,
+    sh / 12,
+  )
 
-  const silkscreenOutline: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
+  const silkscreenLine: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
+    pcb_silkscreen_path_id: "",
+    type: "pcb_silkscreen_path",
     route: [
-      { x: -body_w / 2, y: -body_h / 2 },
-      { x: body_w / 2, y: -body_h / 2 },
-      { x: body_w / 2, y: body_h / 2 },
-      { x: -body_w / 2, y: body_h / 2 },
-      { x: -body_w / 2, y: -body_h / 2 },
+      { x: -parameters.w / 3, y: sh / 2 + 0.2 },
+      { x: parameters.w / 3, y: sh / 2 + 0.2 },
     ],
     stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
   }
-
-  const pin1Marker: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [{ x: -body_w / 2 - 0.5, y: body_h / 2 - 0.5 }],
-    stroke_width: 0.3,
-    pcb_silkscreen_path_id: "",
-  }
-
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, body_h / 2 + 1, 0.5)
 
   return {
     circuitJson: [
-      ...plated_holes,
-      silkscreenOutline,
-      pin1Marker,
-      silkscreenRefText as AnySoupElement,
-    ],
+      ...pads,
+      silkscreenRefText,
+      silkscreenLine,
+    ] as AnySoupElement[],
     parameters,
   }
 }
