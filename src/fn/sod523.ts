@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json" // Ensure correct import
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -38,12 +38,12 @@ export const getSodCoords = (parameters: {
 }) => {
   const { pn, pad_spacing } = parameters
 
+  // Simplified: no need for else since the first condition will return early
   if (pn === 1) {
     return { x: -pad_spacing / 2, y: 0 }
-    // biome-ignore lint/style/noUselessElse: <explanation>
-  } else {
-    return { x: pad_spacing / 2, y: 0 }
   }
+
+  return { x: pad_spacing / 2, y: 0 }
 }
 
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
@@ -64,5 +64,42 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
       ),
     )
   }
-  return pads
+
+  const pin1Position = getSodCoords({
+    pn: 1,
+    pad_spacing: Number.parseFloat(parameters.pad_spacing),
+  })
+
+  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.75
+
+  const triangleHeight = 0.7
+  const triangleWidth = 0.3
+
+  const pin1Indicator: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y + triangleWidth / 2,
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y - triangleWidth / 2,
+      },
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y,
+      },
+    ],
+    stroke_width: 0.05,
+  }
+
+  return [...pads, pin1Indicator as AnySoupElement]
 }
