@@ -1,6 +1,6 @@
 # @tscircuit/footprinter
 
-[Online Gallery](https://tscircuit.github.io/footprinter/) &middot; [discord](https://tscircuit.com/join) &middot; [main tscircuit repo](https://github.com/tscircuit/tscircuit)
+[Online Gallery](https://tscircuit.github.io/footprinter/) &middot; [discord](https://tscircuit.com/join) &middot; [main tscircuit repo](https://github.com/tscircuit/tscircuit) &middot; [List of Missing Footprints](https://jlcsearch.tscircuit.com/footprint_index/list)
 
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
 
