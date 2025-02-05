@@ -22,7 +22,7 @@ export const sod523 = (
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h) + 0.4,
+    length.parse(parameters.h),
     0.3,
   )
 
@@ -34,19 +34,19 @@ export const sod523 = (
     route: [
       {
         x: length.parse(parameters.pad_spacing) / 2,
-        y: length.parse(parameters.h) / 2 + 0.4,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
-        y: length.parse(parameters.h) / 2 + 0.4,
+        x: -length.parse(parameters.w) / 2,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
-        y: -length.parse(parameters.h) / 2 - 0.4,
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2,
       },
       {
         x: length.parse(parameters.pad_spacing) / 2,
-        y: -length.parse(parameters.h) / 2 - 0.4,
+        y: -length.parse(parameters.h) / 2,
       },
     ],
     stroke_width: 0.1,
