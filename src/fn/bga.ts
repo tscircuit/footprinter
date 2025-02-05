@@ -66,7 +66,6 @@ export const bga = (
   let { num_pins, grid, p, w, h, ball, pad, missing } = parameters
 
   ball ??= (0.75 / 1.27) * p
-
   pad ??= ball * 0.8
 
   const pads: PCBSMTPad[] = []
@@ -145,11 +144,37 @@ export const bga = (
       )
     }
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    (grid.y * p) / 2,
-    0.2,
-  )
+
+  // Calculate component dimensions
+  const width = (grid.x - 1) * p
+  const height = (grid.y - 1) * p
+
+  let refX: number, refY: number
+  const offset = -0.5
+
+  switch (parameters.origin) {
+    case "tl":
+      refX = width / 2
+      refY = -offset
+      break
+    case "bl":
+      refX = width / 2
+      refY = height + offset
+      break
+    case "tr":
+      refX = -width / 2
+      refY = -offset
+      break
+    case "br":
+      refX = -width / 2
+      refY = height + offset
+      break
+    default:
+      refX = 0
+      refY = 0
+  }
+
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(refX, refY, 0.2)
 
   return {
     circuitJson: [...pads, silkscreenRefText as AnySoupElement],
