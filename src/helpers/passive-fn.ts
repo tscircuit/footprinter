@@ -1,10 +1,11 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement, AnySoupElement, PcbSilkscreenPath } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
+import { silkscreenpath } from "./silkscreenpath"
 
 type StandardSize = {
   imperial: string
@@ -172,18 +173,35 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (pw === undefined) throw new Error("could not infer pad width")
   if (ph === undefined) throw new Error("could not infer pad width")
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0.9, 0.2)
+  
+    const silkscreenLine: PcbSilkscreenPath = {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: p/2, y: ph/2 + 0.4 },
+        { x: -p/2 - pw/2 - 0.2, y: ph/2 + 0.4 },
+        { x: -p/2 - pw/2 - 0.2, y: -ph/2 - 0.4 },
+        { x: p/2, y: -ph/2 - 0.4 }
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+  };    
+
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, ph/2 + 0.9, 0.2)
+
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      silkscreenLine,
       silkscreenRefText,
     ]
-    // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
     return [
       rectpad(["1", "left"], -p / 2, 0, pw, ph),
       rectpad(["2", "right"], p / 2, 0, pw, ph),
+      silkscreenLine,
       silkscreenRefText,
     ]
   }
