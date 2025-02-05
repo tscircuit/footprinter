@@ -1,3 +1,4 @@
+import { sop8 } from "./sop8"
 export { dip } from "./dip"
 export { diode } from "./diode"
 export { cap } from "./cap"
@@ -30,8 +31,7 @@ export { sot235 } from "./sot235"
 export { breakoutheaders } from "./breakoutheaders"
 export { hc49 } from "./hc49"
 export { pad } from "./pad"
-<<<<<<< Updated upstream
 export { to92 } from "./to92"
-=======
 export { sod523 } from "./sod523"
->>>>>>> Stashed changes
+export { sop8 } from "./sop8"
+
