@@ -23,16 +23,17 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       od: length.optional(),
     })
     .transform((v) => {
-      // Adjust hole sizes dynamically based on pin pitch
+      // Default inner diameter and outer diameter
       if (!v.id && !v.od) {
-        v.id = length.parse(v.p <= 1.27 ? "0.6mm" : "1.0mm")
-        v.od = length.parse(v.p <= 1.27 ? "1.0mm" : "1.5mm")
+        v.id = length.parse("1.0mm")
+        v.od = length.parse("1.5mm")
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
         v.od = v.id! * (1.5 / 1.0)
       }
 
+      // Default width (TODO high pin counts should probably be wide?)
       if (!v.w) {
         if (v.wide) {
           v.w = length.parse("600mil")
