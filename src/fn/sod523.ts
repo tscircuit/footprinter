@@ -37,11 +37,11 @@ export const sod523 = (
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: -length.parse(parameters.h) / 2,
       },
       {
