@@ -108,3 +108,27 @@ test("bga3x3_inline_snapshot", () => {
 ]
 `)
 })
+
+test("bga footprint with top-left origin (default)", () => {
+  const soup = fp().bga(8).grid("3x3").p(1).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_tl_origin")
+})
+
+test("bga footprint with bottom-left origin", () => {
+  const soup = fp().bga(8).grid("3x3").p(1).blorigin(true).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_bl_origin")
+})
+
+test("bga footprint with top-right origin", () => {
+  const soup = fp().bga(8).grid("3x3").p(1).trorigin(true).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_tr_origin")
+})
+
+test("bga footprint with bottom-right origin", () => {
+  const soup = fp().bga(8).grid("3x3").p(1).brorigin(true).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_br_origin")
+})
