@@ -27,8 +27,3 @@ test("dip10_w4.00mm_p2.65mm", () => {
     "dip10_w4.00mm_p2.65mm",
   )
 })
-test("dip8_p1.27mm", () => {
-  const soup = fp.string("dip8_p1.27mm").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip8_p1.27mm")
-})

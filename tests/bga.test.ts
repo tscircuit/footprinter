@@ -42,7 +42,7 @@ test("bga64_w10_h10_grid8x8_p1.27mm", () => {
   )
 })
 
-// ✅ Fixed test: Normalize y-values for snapshot comparison
+//  Fixed test: Normalize y-values for snapshot comparison
 test("bga3x3_inline_snapshot", () => {
   const soup = fp().bga(9).w("4mm").h("4mm").grid("3x3").p(1).soup()
 
@@ -54,8 +54,6 @@ test("bga3x3_inline_snapshot", () => {
       y: y.toFixed(2) + "mm",
       number,
     }))
-
-  console.log("BGA 3x3 Coordinates:", JSON.stringify(pinData, null, 2))
 
   // Verify the pin data with an inline snapshot
   expect(pinData).toMatchInlineSnapshot(`
