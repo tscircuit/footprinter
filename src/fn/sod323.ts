@@ -11,7 +11,7 @@ export const sod_def = z.object({
   h: z.string().default("1.20mm"),
   pl: z.string().default("0.59mm"),
   pw: z.string().default("0.45mm"),
-  pad_spacing: z.string().default("1.4mm"),
+  pad_spacing: z.string().default("2.2mm"),
 })
 
 export const sod323 = (
@@ -26,8 +26,6 @@ export const sod323 = (
     0.3,
   )
 
-  // Define silkscreen path that goes till half of the second pad
-  // Define silkscreen path that goes till half of the second pad
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -38,11 +36,11 @@ export const sod323 = (
         y: length.parse(parameters.h) / 2, // Reduced offset to bring closer
       },
       {
-        x: -length.parse(parameters.w) / 2, // Slightly reduced x offset
+        x: -length.parse(parameters.w) / 2 - 0.2, // Slightly reduced x offset
         y: length.parse(parameters.h) / 2, // Same y adjustment
       },
       {
-        x: -length.parse(parameters.w) / 2, // Reduced x to bring closer
+        x: -length.parse(parameters.w) / 2 - 0.2, // Reduced x to bring closer
         y: -length.parse(parameters.h) / 2, // Reduced y offset
       },
       {
