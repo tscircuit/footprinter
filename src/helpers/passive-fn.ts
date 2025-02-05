@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  AnySoupElement,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
@@ -173,22 +177,21 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (pw === undefined) throw new Error("could not infer pad width")
   if (ph === undefined) throw new Error("could not infer pad width")
 
-  
-    const silkscreenLine: PcbSilkscreenPath = {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
-        { x: p/2, y: ph/2 + 0.4 },
-        { x: -p/2 - pw/2 - 0.2, y: ph/2 + 0.4 },
-        { x: -p/2 - pw/2 - 0.2, y: -ph/2 - 0.4 },
-        { x: p/2, y: -ph/2 - 0.4 }
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-  };    
+  const silkscreenLine: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      { x: p / 2, y: ph / 2 + 0.4 },
+      { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
+      { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
+      { x: p / 2, y: -ph / 2 - 0.4 },
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, ph/2 + 0.9, 0.2)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, ph / 2 + 0.9, 0.2)
 
   if (tht) {
     return [
