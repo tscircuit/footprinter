@@ -1,4 +1,4 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json" // Ensure correct import
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -18,34 +18,66 @@ export const sod523 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
+
+  // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h) / 4 + 0.4,
     0.3,
   )
 
+  // Define silkscreen path that goes till half of the second pad
+  const silkscreenLine: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.pad_spacing) / 2,
+        y: length.parse(parameters.h) / 2 + 0.4,
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: length.parse(parameters.h) / 2 + 0.4,
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: -length.parse(parameters.h) / 2 - 0.4,
+      },
+      {
+        x: length.parse(parameters.pad_spacing) / 2,
+        y: -length.parse(parameters.h) / 2 - 0.4,
+      },
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
+
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
     parameters,
   }
 }
 
+// Get coordinates for SOD pads
 export const getSodCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
   const { pn, pad_spacing } = parameters
 
-  // Simplified: no need for else since the first condition will return early
   if (pn === 1) {
     return { x: -pad_spacing / 2, y: 0 }
+    // biome-ignore lint/style/noUselessElse: <explanation>
+  } else {
+    return { x: pad_spacing / 2, y: 0 }
   }
-
-  return { x: pad_spacing / 2, y: 0 }
 }
 
+// Function to generate SOD pads
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   const pads: AnySoupElement[] = []
 
@@ -64,42 +96,5 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
       ),
     )
   }
-
-  const pin1Position = getSodCoords({
-    pn: 1,
-    pad_spacing: Number.parseFloat(parameters.pad_spacing),
-  })
-
-  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.75
-
-  const triangleHeight = 0.7
-  const triangleWidth = 0.3
-
-  const pin1Indicator: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    pcb_silkscreen_path_id: "pin1_indicator",
-    route: [
-      {
-        x: pin1Position.x + triangleHeight / 2,
-        y: pin1Position.y,
-      },
-      {
-        x: pin1Position.x - triangleHeight / 2,
-        y: pin1Position.y + triangleWidth / 2,
-      },
-      {
-        x: pin1Position.x - triangleHeight / 2,
-        y: pin1Position.y - triangleWidth / 2,
-      },
-      {
-        x: pin1Position.x + triangleHeight / 2,
-        y: pin1Position.y,
-      },
-    ],
-    stroke_width: 0.05,
-  }
-
-  return [...pads, pin1Indicator as AnySoupElement]
+  return pads
 }
