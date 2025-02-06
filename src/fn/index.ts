@@ -36,4 +36,3 @@ export { sod523 } from "./sod523"
 export { sop8 } from "./sop8"
 export { sod723 } from "./sod723"
 export { sod128 } from "./sod128"
-
