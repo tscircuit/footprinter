@@ -33,19 +33,19 @@ export const sod723 = (
     route: [
       {
         x: length.parse(parameters.pad_spacing) / 2,
-        y: length.parse(parameters.h) / 2, // Reduced offset to bring closer
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1, // Slightly reduced x offset
-        y: length.parse(parameters.h) / 2, // Same y adjustment
+        x: -length.parse(parameters.w) / 2 - 0.1,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1, // Reduced x to bring closer
-        y: -length.parse(parameters.h) / 2, // Reduced y offset
+        x: -length.parse(parameters.w) / 2 - 0.1,
+        y: -length.parse(parameters.h) / 2,
       },
       {
         x: length.parse(parameters.pad_spacing) / 2,
-        y: -length.parse(parameters.h) / 2, // Same y adjustment
+        y: -length.parse(parameters.h) / 2,
       },
     ],
     stroke_width: 0.1,
