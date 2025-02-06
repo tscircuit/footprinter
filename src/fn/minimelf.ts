@@ -22,7 +22,7 @@ export const minimelf = (
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h)/2 +0.4,
+    length.parse(parameters.h) / 2 + 0.4,
     0.3,
   )
 
