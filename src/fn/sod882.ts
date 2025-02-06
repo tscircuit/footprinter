@@ -22,7 +22,7 @@ export const sod882 = (
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h)+0.1,
+    length.parse(parameters.h) + 0.1,
     0.3,
   )
 
@@ -34,7 +34,7 @@ export const sod882 = (
     route: [
       {
         x: length.parse(parameters.pad_spacing) / 2,
-        y: length.parse(parameters.h) / 2+0.2,
+        y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
