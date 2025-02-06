@@ -33,7 +33,7 @@ export const sod882 = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
         y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
@@ -45,7 +45,7 @@ export const sod882 = (
         y: -length.parse(parameters.h) / 2 - 0.2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
         y: -length.parse(parameters.h) / 2 - 0.2,
       },
     ],
