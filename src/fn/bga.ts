@@ -33,7 +33,6 @@ export const bga_def = z
     if (a.brorigin) origin = "br"
 
     if (!a.grid) {
-      // find the largest square for the number of pins
       const largest_square = Math.ceil(Math.sqrt(a.num_pins))
       a.grid = { x: largest_square, y: largest_square }
     }
@@ -41,7 +40,6 @@ export const bga_def = z
     if (a.missing) {
       a.missing = a.missing.map((s) => {
         if (typeof s === "number") return s
-        if (s === "center") return "center"
         if (s === "topleft") return "topleft"
         const m = s.match(/([A-Z]+)(\d+)/)
         if (!m) return s
@@ -51,9 +49,7 @@ export const bga_def = z
       })
     }
 
-    const new_def = { ...a, origin }
-
-    return new_def as NowDefined<typeof new_def, "w" | "h" | "grid">
+    return { ...a, origin } as NowDefined<typeof a, "w" | "h" | "grid">
   })
 
 export type BgaDefInput = z.input<typeof bga_def>
@@ -70,108 +66,68 @@ export const bga = (
 
   const pads: PCBSMTPad[] = []
 
-  const missing_pin_nums = (missing ?? []).filter((a) => typeof a === "number")
-  const num_pins_missing = grid.x * grid.y - num_pins
+  let missing_pin_nums = new Set<number>(
+    (missing ?? []).filter((a) => typeof a === "number"),
+  )
 
-  if (missing.length === 0 && num_pins_missing > 0) {
-    // No missing pins specified, let's see if a squared center works
-    // if num_pins_missing is a square
-    if (Math.sqrt(num_pins_missing) % 1 === 0) {
-      missing.push("center")
-    } else if (num_pins_missing === 1) {
-      missing.push("topleft")
-    }
+  if (missing?.includes("center") && num_pins < grid.x * grid.y) {
+    const center_x = Math.floor(grid.x / 2)
+    const center_y = Math.floor(grid.y / 2)
+    missing_pin_nums.add(center_y * grid.x + center_x + 1)
   }
 
-  if (missing?.includes("center")) {
-    // Find the largest square that's square is less than
-    // the number of missing pins
-    const square_size = Math.floor(Math.sqrt(num_pins_missing))
-
-    // Find the top left coordinate of the inner square, keep
-    // in mind the full grid size is grid.x x grid.y
-    const inner_square_x = Math.floor((grid.x - square_size) / 2)
-    const inner_square_y = Math.floor((grid.y - square_size) / 2)
-
-    // Add all the missing square pin numbers to missing_pin_nums
-    for (let y = inner_square_y; y < inner_square_y + square_size; y++) {
-      for (let x = inner_square_x; x < inner_square_x + square_size; x++) {
-        missing_pin_nums.push(y * grid.x + x + 1)
-      }
-    }
-  }
-
-  if (missing?.includes("topleft")) {
-    missing_pin_nums.push(1)
-  }
-
-  const missing_pin_nums_set = new Set(missing_pin_nums)
-
-  let missing_pins_passed = 0
-  for (let y = 0; y < grid.y; y++) {
-    for (let x = 0; x < grid.x; x++) {
-      let pin_num = y * grid.x + x + 1
-      if (missing_pin_nums_set.has(pin_num)) {
-        missing_pins_passed++
-        continue
-      }
-      pin_num -= missing_pins_passed
-
-      let pad_x: number, pad_y: number
-
-      switch (parameters.origin) {
-        case "tl":
-          pad_x = x * p
-          pad_y = -y * p
-          break
-        case "bl":
-          pad_x = x * p
-          pad_y = (grid.y - 1 - y) * p
-          break
-        case "tr":
-          pad_x = (grid.x - 1 - x) * p
-          pad_y = -y * p
-          break
-        case "br":
-          pad_x = (grid.x - 1 - x) * p
-          pad_y = (grid.y - 1 - y) * p
-          break
-      }
-
-      // TODO handle >26 rows
-      pads.push(
-        rectpad([pin_num, `${ALPHABET[y]}${x + 1}`], pad_x, pad_y, pad, pad),
-      )
-    }
-  }
-
-  // Calculate component dimensions
   const width = (grid.x - 1) * p
   const height = (grid.y - 1) * p
 
-  let refX: number, refY: number
-  const offset = -0.5
+  for (let physical_y = 0; physical_y < grid.y; physical_y++) {
+    for (let physical_x = 0; physical_x < grid.x; physical_x++) {
+      let pin_num: number
 
+      switch (parameters.origin) {
+        case "tl":
+          pin_num = physical_y * grid.x + physical_x + 1
+          break
+        case "bl":
+          pin_num = (grid.y - 1 - physical_y) * grid.x + physical_x + 1
+          break
+        case "tr":
+          pin_num = physical_y * grid.x + (grid.x - 1 - physical_x) + 1
+          break
+        case "br":
+          pin_num =
+            (grid.y - 1 - physical_y) * grid.x + (grid.x - 1 - physical_x) + 1
+          break
+      }
+
+      if (missing_pin_nums.has(pin_num)) continue
+      const label = `${ALPHABET[physical_y]}${physical_x + 1}`
+
+      const pad_x = physical_x * p - width / 2
+      const pad_y = height / 2 - physical_y * p
+
+      pads.push(rectpad([pin_num, label], pad_x, pad_y, pad, pad))
+    }
+  }
+
+  const offset = 0.2
+  let refX: number, refY: number
   switch (parameters.origin) {
     case "tl":
-      refX = width / 2
-      refY = -offset
+      refX = -width / 2 - offset
+      refY = height / 2 + offset
       break
     case "bl":
-      refX = width / 2
-      refY = height + offset
+      refX = -width / 2 - offset
+      refY = -height / 2 - offset
       break
     case "tr":
-      refX = -width / 2
-      refY = -offset
+      refX = width / 2 + offset
+      refY = height / 2 + offset
       break
     case "br":
-      refX = -width / 2
-      refY = height + offset
+      refX = width / 2 + offset
+      refY = -height / 2 - offset
       break
-    default:
-      refX = 0
-      refY = 0
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(refX, refY, 0.2)
