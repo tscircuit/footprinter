@@ -7,11 +7,11 @@ import { length } from "circuit-json"
 export const sod_def = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("3.0mm"),
-  h: z.string().default("1.80mm"),
-  pl: z.string().default("0.80mm"),
-  pw: z.string().default("1.20mm"),
-  pad_spacing: z.string().default("1.6mm"),
+  w: z.string().default("5.40mm"),
+  h: z.string().default("2.30mm"),
+  pl: z.string().default("1.30mm"),
+  pw: z.string().default("1.70mm"),
+  pad_spacing: z.string().default("3.5mm"),
 })
 
 export const minimelf = (
