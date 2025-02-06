@@ -71,9 +71,9 @@ test("led_hole testing .parameters for .json", async () => {
 })
 
 test("led_0402", () => {
-  const soup = fp.string("1210").circuitJson()
+  const soup = fp.string("0402").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "cap_1210")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0402")
 })
 
 test("led_0603", () => {

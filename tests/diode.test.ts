@@ -8,7 +8,7 @@ test("diode footprint", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode footprint")
 })
 
-test("diode0402", () => {
+test("diode 0402", () => {
   const soup = fp.string("0402").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode0402")
@@ -20,7 +20,7 @@ test("diode 1210", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode1210")
 })
 
-test("diode0603", () => {
+test("diode 0603", () => {
   const soup = fp().diode().imperial("0603").soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode0603")
