@@ -53,7 +53,7 @@ export const micromelf = (
   }
 
   return {
-    circuitJson: sodWithoutParsing(parameters).concat(
+    circuitJson: microMelfWithoutParsing(parameters).concat(
       silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
@@ -61,8 +61,7 @@ export const micromelf = (
   }
 }
 
-// Get coordinates for SOD pads
-export const getSodCoords = (parameters: {
+export const getMicroMelfCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
@@ -76,12 +75,13 @@ export const getSodCoords = (parameters: {
   }
 }
 
-// Function to generate SOD pads
-export const sodWithoutParsing = (parameters: z.infer<typeof micromelf_def>) => {
+export const microMelfWithoutParsing = (
+  parameters: z.infer<typeof micromelf_def>,
+) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords({
+    const { x, y } = getMicroMelfCoords({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing),
     })
