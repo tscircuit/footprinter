@@ -4,7 +4,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 
-export const sod_def = z.object({
+export const melf_def = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("7.0mm"),
@@ -15,9 +15,9 @@ export const sod_def = z.object({
 })
 
 export const melf = (
-  raw_params: z.input<typeof sod_def>,
+  raw_params: z.input<typeof melf_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = sod_def.parse(raw_params)
+  const parameters = melf_def.parse(raw_params)
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -61,7 +61,6 @@ export const melf = (
   }
 }
 
-// Get coordinates for SOD pads
 export const getSodCoords = (parameters: {
   pn: number
   pad_spacing: number
@@ -76,8 +75,7 @@ export const getSodCoords = (parameters: {
   }
 }
 
-// Function to generate SOD pads
-export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
+export const sodWithoutParsing = (parameters: z.infer<typeof melf_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
