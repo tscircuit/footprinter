@@ -61,7 +61,6 @@ export const minimelf = (
   }
 }
 
-// Get coordinates for SOD pads
 export const getSodCoords = (parameters: {
   pn: number
   pad_spacing: number
@@ -76,7 +75,6 @@ export const getSodCoords = (parameters: {
   }
 }
 
-// Function to generate SOD pads
 export const sodWithoutParsing = (parameters: z.infer<typeof minimelf_def>) => {
   const pads: AnySoupElement[] = []
 
