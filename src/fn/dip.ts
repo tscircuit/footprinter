@@ -88,6 +88,13 @@ export const dip = (raw_params: {
   od?: string | number
 }): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = dip_def.parse(raw_params)
+  if (
+    parameters.num_pins === 8 &&
+    Math.abs(parameters.p - length.parse("1.27mm")) < 0.001
+  ) {
+    parameters.id = length.parse("0.9mm")
+    parameters.od = length.parse("1.3mm")
+  }
   const platedHoles: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
