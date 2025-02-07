@@ -53,7 +53,7 @@ export const melf = (
   }
 
   return {
-    circuitJson: sodWithoutParsing(parameters).concat(
+    circuitJson: melfWithoutParsing(parameters).concat(
       silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
@@ -61,7 +61,7 @@ export const melf = (
   }
 }
 
-export const getSodCoords = (parameters: {
+export const getMelfCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
@@ -75,11 +75,11 @@ export const getSodCoords = (parameters: {
   }
 }
 
-export const sodWithoutParsing = (parameters: z.infer<typeof melf_def>) => {
+export const melfWithoutParsing = (parameters: z.infer<typeof melf_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords({
+    const { x, y } = getMelfCoords({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing),
     })
