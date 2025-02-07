@@ -53,7 +53,7 @@ export const minimelf = (
   }
 
   return {
-    circuitJson: sodWithoutParsing(parameters).concat(
+    circuitJson: miniMelfWithoutParsing(parameters).concat(
       silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
@@ -61,7 +61,7 @@ export const minimelf = (
   }
 }
 
-export const getSodCoords = (parameters: {
+export const getMiniMelfCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
@@ -75,11 +75,13 @@ export const getSodCoords = (parameters: {
   }
 }
 
-export const sodWithoutParsing = (parameters: z.infer<typeof minimelf_def>) => {
+export const miniMelfWithoutParsing = (
+  parameters: z.infer<typeof minimelf_def>,
+) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords({
+    const { x, y } = getMiniMelfCoords({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing),
     })
