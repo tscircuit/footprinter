@@ -8,7 +8,13 @@ import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
 export const to220_def = z.object({
-  fn: z.string(),
+  fn: z
+    .string()
+    .default("to220_3")
+    .refine((val) => /^to220_\d+$/.test(val), {
+      message:
+        "Invalid format. Expected 'to220_N' where N is the number of pins.",
+    }),
   p: length.optional().default("5.0mm"),
   id: length.optional().default("1.0mm"),
   od: length.optional().default("1.9mm"),
@@ -22,16 +28,20 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
+  const { fn, p, id, od, w, h } = parameters
 
-  const { p, id, od, w, h } = parameters
+  const numPins = parseInt(fn.split("_")[1], 10) || 3
   const holeY = -1
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const plated_holes = [
-    platedhole(1, -p / 2, holeY, id, od),
-    platedhole(2, p / 2, holeY, id, od),
-  ]
+  const plated_holes = Array.from({ length: numPins }, (_, i) => {
+    const x =
+      numPins % 2 === 0
+        ? (i - numPins / 2 + 0.5) * p
+        : (i - Math.floor(numPins / 2)) * p
+    return platedhole(i + 1, x, holeY, id, od)
+  })
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
