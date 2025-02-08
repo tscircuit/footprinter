@@ -9,11 +9,11 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
 export const to220_def = z.object({
   fn: z.string(),
-  p: length.optional().default("2.54mm"),
+  p: length.optional().default("5.0mm"),
   id: length.optional().default("1.0mm"),
-  od: length.optional().default("1.5mm"),
-  w: length.optional().default("15mm"),
-  h: length.optional().default("8mm"),
+  od: length.optional().default("1.9mm"),
+  w: length.optional().default("13mm"),
+  h: length.optional().default("7mm"),
 })
 
 export type To220Def = z.input<typeof to220_def>
@@ -24,7 +24,7 @@ export const to220 = (
   const parameters = to220_def.parse(raw_params)
 
   const { p, id, od, w, h } = parameters
-  const holeY = 0 // Position holes inside the silkscreen
+  const holeY = -1
   const halfWidth = w / 2
   const halfHeight = h / 2
 
@@ -48,7 +48,6 @@ export const to220 = (
     pcb_silkscreen_path_id: "",
   }
 
-  // Adding the horizontal line at 2h/3 from the top
   const yLine = -halfHeight + (2 * h) / 3
   const horizontalLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -62,7 +61,6 @@ export const to220 = (
     pcb_silkscreen_path_id: "",
   }
 
-  // Adding vertical lines to divide the horizontal line into three blocks
   const verticalLines: PcbSilkscreenPath[] = [
     {
       type: "pcb_silkscreen_path",
