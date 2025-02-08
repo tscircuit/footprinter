@@ -92,8 +92,8 @@ export const dip = (raw_params: {
     parameters.num_pins === 8 &&
     Math.abs(parameters.p - length.parse("1.27mm")) < 0.001
   ) {
-    parameters.id = length.parse("0.9mm")
-    parameters.od = length.parse("1.3mm")
+    parameters.id = length.parse("0.75mm")
+    parameters.od = length.parse("1.15mm")
   }
   const platedHoles: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
