@@ -59,11 +59,11 @@ export const sot89 = (
       },
       {
         x: length.parse(parameters.w) / 2 + 1.8,
-        y: -length.parse(parameters.h) / 2 - 0.2, 
+        y: -length.parse(parameters.h) / 2 - 0.2,
       },
       {
         x: length.parse(parameters.w) / 2 + 1.8,
-        y: -length.parse(parameters.h) / 2 + 0.9, 
+        y: -length.parse(parameters.h) / 2 + 0.9,
       },
     ],
     stroke_width: 0.1,
