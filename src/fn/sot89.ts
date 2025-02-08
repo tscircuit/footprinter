@@ -80,7 +80,7 @@ export const sot89 = (
   }
 }
 
-export const getsotCoords = (parameters: {
+export const getSotCoords = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
@@ -101,7 +101,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getsotCoords({
+    const { x, y } = getSotCoords({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing),
     })
