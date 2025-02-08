@@ -1,4 +1,3 @@
-import exp from "constants"
 import { sop8 } from "./sop8"
 export { dip } from "./dip"
 export { diode } from "./diode"
