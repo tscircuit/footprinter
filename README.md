@@ -61,6 +61,8 @@ fp.dip(4).w(7.62).socket()
 
 Watch this [getting started with footprinter contribution guide!](https://blog.tscircuit.com/p/learn-how-to-contribute-to-tscircuits?utm_campaign=post&utm_medium=web)
 
+https://github.com/user-attachments/assets/72596154-1410-4b2d-9e35-0e2d1af9415f
+
 ## Footprinter Strings
 
 A footprinter string is a string that maps to a set of builder calls.
