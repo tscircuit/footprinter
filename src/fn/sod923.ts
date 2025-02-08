@@ -9,8 +9,8 @@ export const sod_def = z.object({
   num_pins: z.literal(2).default(2),
   w: z.string().default("1.4mm"),
   h: z.string().default("0.9mm"),
-  pl: z.string().default("0.4mm"),
-  pw: z.string().default("0.5mm"),
+  pl: z.string().default("0.35mm"),
+  pw: z.string().default("0.25mm"),
   pad_spacing: z.string().default("1.2mm"),
 })
 
@@ -32,7 +32,7 @@ export const sod923 = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
+        x: length.parse(parameters.pad_spacing) / 2 + 0.15,
         y: length.parse(parameters.h) / 2,
       },
       {
@@ -44,7 +44,7 @@ export const sod923 = (
         y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
+        x: length.parse(parameters.pad_spacing) / 2 + 0.15,
         y: -length.parse(parameters.h) / 2,
       },
     ],
