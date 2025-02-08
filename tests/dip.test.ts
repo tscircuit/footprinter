@@ -8,6 +8,12 @@ test("dip footprint", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip footprint")
 })
 
+test("dip8_p1.27mm", () => {
+  const soup = fp.string("dip8_p1.27mm").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip8_p1.27mm")
+})
+
 test("dip16", () => {
   const soup = fp.string("dip16").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
