@@ -4,110 +4,75 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 
-export const sot_def = z.object({
+export const sot89_def = z.object({
   fn: z.string(),
   num_pins: z.literal(3).default(3),
-  w: z.string().default("4.80mm"),
-  h: z.string().default("4.8mm"),
-  pl: z.string().default("1.3mm"),
-  pw: z.string().default("0.9mm"),
-  pad_spacing: z.string().default("1.5mm"),
+  width: z.string().default("4.80mm"),
+  height: z.string().default("4.8mm"),
+  padLength: z.string().default("1.44mm"),
+  padWidth: z.string().default("0.9mm"),
+  padGap: z.string().default("1.5mm"),
 })
 
 export const sot89 = (
-  raw_params: z.input<typeof sot_def>,
+  rawParams: z.input<typeof sot89_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = sot_def.parse(raw_params)
+  const params = sot89_def.parse(rawParams)
+  const silkscreenLabel: SilkscreenRef = silkscreenRef(2, 0, 0.3)
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(2, 0, 0.3)
+  const createSilkscreenLine = (isTop: boolean): PcbSilkscreenPath => {
+    const yOffset = (isTop ? 1 : -1) * (length.parse(params.height) / 2 + 0.2)
+    const yInnerOffset =
+      (isTop ? 1 : -1) * (length.parse(params.height) / 2 - 0.9)
 
-  const silkscreenLineTop: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      {
-        x: length.parse(parameters.w) / 2 - 1.8,
-        y: length.parse(parameters.h) / 2 + 0.2,
-      },
-      {
-        x: length.parse(parameters.w) / 2 + 1.8,
-        y: length.parse(parameters.h) / 2 + 0.2,
-      },
-      {
-        x: length.parse(parameters.w) / 2 + 1.8,
-        y: length.parse(parameters.h) / 2 - 0.9,
-      },
-    ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
-  }
-
-  const silkscreenLineBottom: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      {
-        x: length.parse(parameters.w) / 2 - 1.8,
-        y: -length.parse(parameters.h) / 2 - 0.2,
-      },
-      {
-        x: length.parse(parameters.w) / 2 + 1.8,
-        y: -length.parse(parameters.h) / 2 - 0.2,
-      },
-      {
-        x: length.parse(parameters.w) / 2 + 1.8,
-        y: -length.parse(parameters.h) / 2 + 0.9,
-      },
-    ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
+    return {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: length.parse(params.width) / 2 - 1.6, y: yOffset },
+        { x: length.parse(params.width) / 2 + 1.6, y: yOffset },
+        { x: length.parse(params.width) / 2 + 1.6, y: yInnerOffset },
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+    }
   }
 
   return {
-    circuitJson: sotWithoutParsing(parameters).concat(
-      silkscreenLineTop as AnySoupElement,
-      silkscreenLineBottom as AnySoupElement,
-      silkscreenRefText as AnySoupElement,
+    circuitJson: generatePads(params).concat(
+      createSilkscreenLine(true) as AnySoupElement,
+      createSilkscreenLine(false) as AnySoupElement,
+      silkscreenLabel as AnySoupElement,
     ),
-    parameters,
+    parameters: params,
   }
 }
 
-export const getsotCoords = (parameters: {
-  pn: number
-  pad_spacing: number
-}) => {
-  const { pn, pad_spacing } = parameters
-
-  if (pn === 1) {
-    return { x: 0, y: -pad_spacing }
-  }
-
-  if (pn === 2) {
-    return { x: 0 + 0.1, y: 0 }
-  }
-
-  return { x: 0, y: pad_spacing }
+const calculatePadCoordinates = (pinNumber: number, gap: number) => {
+  const positions = [
+    { x: 0, y: -gap },
+    { x: 0.1, y: 0 },
+    { x: 0, y: gap },
+  ]
+  return positions[pinNumber - 1]
 }
 
-export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
-  const pads: AnySoupElement[] = []
-
-  for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getsotCoords({
-      pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
-    })
+const generatePads = (params: z.infer<typeof sot89_def>) => {
+  return Array.from({ length: params.num_pins }, (_, index) => {
+    const pin = index + 1
+    const { x, y } = calculatePadCoordinates(
+      pin,
+      Number.parseFloat(params.padGap),
+    )
 
     const padLength =
-      i === 2
-        ? Number.parseFloat(parameters.pl) + 0.2
-        : Number.parseFloat(parameters.pl)
-    const padWidth = Number.parseFloat(parameters.pw)
+      pin === 2
+        ? Number.parseFloat(params.padLength) + 0.2
+        : Number.parseFloat(params.padLength)
 
-    pads.push(rectpad(i, x, y, padLength, padWidth))
-  }
-  return pads
+    const padWidth = Number.parseFloat(params.padWidth)
+
+    return rectpad(pin, x, y, padLength, padWidth)
+  })
 }
