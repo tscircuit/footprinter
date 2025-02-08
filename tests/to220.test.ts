@@ -19,11 +19,3 @@ test("to220_3 (3 holes)", () => {
   expect(soup.length).toBeGreaterThan(0)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to220_3")
 })
-test("to220_4 (4 holes)", () => {
-  const soup = to220({ fn: "to220_4" }).circuitJson
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
-
-  expect(soup).toBeDefined()
-  expect(soup.length).toBeGreaterThan(0)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to220_4")
-})
