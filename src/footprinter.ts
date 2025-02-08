@@ -56,6 +56,7 @@ export type Footprinter = {
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
+  sot893: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
