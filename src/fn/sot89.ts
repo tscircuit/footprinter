@@ -22,6 +22,14 @@ export const sot89_def = z
   .transform((a) => {
     const match = a.fn.match(/^sot89_(\d+)$/)
     const numPads = match ? parseInt(match[1], 10) : 3
+
+    // Allow only 3 or 5 pads
+    if (![3, 5].includes(numPads)) {
+      throw new Error(
+        `Unsupported number of pads: ${numPads}. Only sot89_3 and sot89_5 are allowed.`,
+      )
+    }
+
     return {
       ...a,
       numPads,
