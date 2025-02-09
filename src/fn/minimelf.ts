@@ -11,7 +11,7 @@ export const minimelf_def = z.object({
   h: z.string().default("2.30mm"),
   pl: z.string().default("1.30mm"),
   pw: z.string().default("1.70mm"),
-  pad_spacing: z.string().default("3.5mm"),
+  p: z.string().default("3.5mm"),
 })
 
 export const minimelf = (
@@ -32,7 +32,7 @@ export const minimelf = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
@@ -44,7 +44,7 @@ export const minimelf = (
         y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2,
       },
     ],
@@ -63,15 +63,15 @@ export const minimelf = (
 
 export const getMiniMelfCoords = (parameters: {
   pn: number
-  pad_spacing: number
+  p: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 }
+    return { x: -p / 2, y: 0 }
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: pad_spacing / 2, y: 0 }
+    return { x: p / 2, y: 0 }
   }
 }
 
@@ -83,7 +83,7 @@ export const miniMelfWithoutParsing = (
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getMiniMelfCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(

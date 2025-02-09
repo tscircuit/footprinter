@@ -57,6 +57,7 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
