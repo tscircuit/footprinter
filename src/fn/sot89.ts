@@ -33,7 +33,7 @@ export const sot89 = (
   rawParams: z.input<typeof sot89_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const params = sot89_def.parse(rawParams)
-  const silkscreenLabel: SilkscreenRef = silkscreenRef(2, 0, 0.3)
+  const silkscreenLabel: SilkscreenRef = silkscreenRef(1.5, 0, 0.5)
 
   return {
     circuitJson: generatePads(params).concat(
@@ -58,17 +58,20 @@ const createCornerSilkscreen = (
 ): PcbSilkscreenPath => {
   const w = length.parse(params.width) / 2
   const h = length.parse(params.height) / 2
-  const yOffset = (isTop ? 1 : -1) * (h + 0.2)
-  const yInnerOffset = (isTop ? 1 : -1) * (h - 0.9)
+  const padLength = length.parse(params.padLength)
+  const xStart = w - padLength - 2.5
+
+  const yOffset = (isTop ? 1 : -1) * (h + 0.1)
+  const yInnerOffset = (isTop ? 1 : -1) * (h - 0.7)
 
   return {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: w - 1.6, y: yOffset },
-      { x: w + 1.6, y: yOffset },
-      { x: w + 1.6, y: yInnerOffset },
+      { x: xStart, y: yOffset },
+      { x: w, y: yOffset },
+      { x: w, y: yInnerOffset },
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
@@ -98,23 +101,24 @@ const createFullSilkscreen = (
 
 const generatePads = (params: z.infer<typeof sot89_def>) => {
   const totalPads = params.numPads
-  const padGap = length.parse(params.padGap)
   const padWidth = length.parse(params.padWidth)
   const padLength = length.parse(params.padLength)
+  const middlePadLength = padLength + 0.4
+  const padGap = middlePadLength
 
   if (totalPads === 3) {
     return [
       rectpad(1, -length.parse(params.width) / 2, padGap, padLength, padWidth),
-      rectpad(2, -length.parse(params.width) / 2, 0, padLength + 0.4, padWidth),
+      rectpad(2, -length.parse(params.width) / 2, 0, middlePadLength, padWidth),
       rectpad(3, -length.parse(params.width) / 2, -padGap, padLength, padWidth),
     ]
   } else if (totalPads === 5) {
     return [
-      rectpad(1, -padGap * 1.5, -padGap / 2, padLength, padWidth),
-      rectpad(2, -padGap * 1.5, padGap / 2, padLength, padWidth),
-      rectpad(3, 0, 0, padWidth, padLength + 0.4),
-      rectpad(4, padGap * 1.5, -padGap / 2, padLength, padWidth),
-      rectpad(5, padGap * 1.5, padGap / 2, padLength, padWidth),
+      rectpad(1, -padGap * 1.5, -padGap, padLength, padWidth),
+      rectpad(2, -padGap * 1.5, padGap, padLength, padWidth),
+      rectpad(3, 0, 0, padWidth, middlePadLength + 0.5),
+      rectpad(4, padGap * 1.5, -padGap, padLength, padWidth),
+      rectpad(5, padGap * 1.5, padGap, padLength, padWidth),
     ]
   }
 
