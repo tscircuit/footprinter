@@ -7,3 +7,15 @@ test("sot89_3", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot89_3")
 })
+
+// test("sot89_5 (5 pads)", () => {
+//   const soup = fp.string("sot89_5").circuitJson()
+//   const svgContent = convertCircuitJsonToPcbSvg(soup)
+//   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot89_5")
+// })
+
+// test("sot89_6 (6 pads)", () => {
+//   const soup = fp.string("sot89_6").circuitJson()
+//   const svgContent = convertCircuitJsonToPcbSvg(soup)
+//   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot89_6")
+// })
