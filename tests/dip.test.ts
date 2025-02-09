@@ -2,6 +2,16 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
+function zoomLeft(svgContent: string): string {
+  return svgContent.replace(
+    /<svg([^>]+?)>/,
+    (match, attrs) => {
+      const filteredAttrs = attrs.replace(/width="[^"]*"/, '').replace(/height="[^"]*"/, '');
+      return `<svg${filteredAttrs} width="400" height="600" viewBox="0 0 400 600">`;
+    }
+  );
+}
+
 test("dip footprint", () => {
   const soup = fp().dip(4).w(4).p(2).soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
@@ -10,7 +20,8 @@ test("dip footprint", () => {
 
 test("dip8_p1.27mm", () => {
   const soup = fp.string("dip8_p1.27mm").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  let svgContent = convertCircuitJsonToPcbSvg(soup)
+  svgContent = zoomLeft(svgContent)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip8_p1.27mm")
 })
 
