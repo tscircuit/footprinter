@@ -3,13 +3,12 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 function zoomLeft(svgContent: string): string {
-  return svgContent.replace(
-    /<svg([^>]+?)>/,
-    (match, attrs) => {
-      const filteredAttrs = attrs.replace(/width="[^"]*"/, '').replace(/height="[^"]*"/, '');
-      return `<svg${filteredAttrs} width="400" height="600" viewBox="0 0 400 600">`;
-    }
-  );
+  return svgContent.replace(/<svg([^>]+?)>/, (match, attrs) => {
+    const filteredAttrs = attrs
+      .replace(/width="[^"]*"/, "")
+      .replace(/height="[^"]*"/, "")
+    return `<svg${filteredAttrs} width="800" height="600" viewBox="0 230 10 20">`
+  })
 }
 
 test("dip footprint", () => {

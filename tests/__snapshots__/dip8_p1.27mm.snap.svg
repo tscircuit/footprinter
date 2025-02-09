@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><style>
+<svg xmlns="http://www.w3.org/2000/svg"   width="800" height="600" viewBox="0 230 10 20"><style>
               .boundary { fill: #000; }
               .pcb-board { fill: none; }
               .pcb-trace { fill: none; }
