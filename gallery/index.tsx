@@ -90,6 +90,7 @@ const FootprintCreator: React.FC = () => {
         <section style={styles.formSection}>
           <form onSubmit={handleGenerate} style={styles.form}>
             <textarea
+              spellcheck={false}
               placeholder="Enter footprint definition (e.g., breakoutheaders_left15_right15_w8mm_p1.54mm)"
               value={definition}
               onChange={(e) => setDefinition(e.target.value)}

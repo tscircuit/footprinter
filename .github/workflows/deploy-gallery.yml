@@ -21,7 +21,7 @@ jobs:
         run: bun install
 
       - name: Generate Gallery
-        run: bun run generate-gallery; 
+        run: bun run generate-gallery
       
       - name: Rename gallery.html to index.html
         run: cp gallery/index.html public/index.html
