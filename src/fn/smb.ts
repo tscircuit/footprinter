@@ -11,7 +11,7 @@ export const smb_def = z.object({
   h: z.string().default("4.40mm"),
   pl: z.string().default("2.50mm"),
   pw: z.string().default("2.30mm"),
-  pad_spacing: z.string().default("4.30mm"),
+  p: z.string().default("4.30mm"),
 })
 
 export const smb = (
@@ -32,7 +32,7 @@ export const smb = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
@@ -44,7 +44,7 @@ export const smb = (
         y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2,
       },
     ],
@@ -64,15 +64,15 @@ export const smb = (
 // Get coordinates for smb pads
 export const getSmbCoords = (parameters: {
   pn: number
-  pad_spacing: number
+  p: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 }
+    return { x: -p / 2, y: 0 }
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: pad_spacing / 2, y: 0 }
+    return { x: p / 2, y: 0 }
   }
 }
 
@@ -83,7 +83,7 @@ export const smbWithoutParsing = (parameters: z.infer<typeof smb_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSmbCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(
