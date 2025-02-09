@@ -10,10 +10,10 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+        uses: oven-sh/setup-bun@v2
         with:
           bun-version: latest
 
@@ -21,10 +21,10 @@ jobs:
         run: bun install
 
       - name: Generate Gallery
-        run: bun run generate-gallery
+        run: bun run generate-gallery; 
       
       - name: Rename gallery.html to index.html
-        run: mv public/gallery.html public/index.html
+        run: cp gallery/index.html public/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
