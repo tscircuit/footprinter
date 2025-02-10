@@ -117,7 +117,13 @@ const generatePads = (params: z.infer<typeof sot89_def>) => {
   if (totalPads === 3) {
     return [
       rectpad(1, -length.parse(params.width) / 2, padGap, padLength, padWidth),
-      rectpad(2, -length.parse(params.width) / 2, 0, middlePadLength, padWidth),
+      rectpad(
+        2,
+        -length.parse(params.width) / 2 + (middlePadLength - padLength) / 2,
+        0,
+        middlePadLength,
+        padWidth,
+      ),
       rectpad(3, -length.parse(params.width) / 2, -padGap, padLength, padWidth),
     ]
   } else if (totalPads === 5) {
