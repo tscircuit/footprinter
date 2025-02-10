@@ -2,7 +2,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import React, { useState, useCallback } from "react"
 import ReactDOM from "react-dom/client"
 import { fp } from "src/footprinter"
-// @ts-ignore data is build during ci
+// @ts-ignore data is built during CI
 import data from "./content"
 
 interface Footprint {
@@ -60,78 +60,106 @@ const FootprintCreator: React.FC = () => {
   }
 
   return (
-    <div style={styles.body}>
-      <header style={styles.header}>
-        <h1 style={styles.headerTitle}>
-          <a
-            href="https://github.com/tscircuit/footprinter"
-            style={styles.headerLink}
-          >
-            @tscircuit/footprinter
-          </a>
-        </h1>
-        <div style={styles.githubStars}>
-          <a
-            href="https://github.com/tscircuit/footprinter"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <img
-              alt="GitHub stars"
-              src="https://img.shields.io/github/stars/tscircuit/footprinter?style=social"
-              style={styles.githubImage}
-            />
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100">
+      {/* Header */}
+      <header className="bg-blue-600 text-white py-4 shadow-md">
+        <div className="container mx-auto px-4 flex items-center">
+          <h1 className="text-2xl font-bold">
+            <a
+              href="https://github.com/tscircuit/footprinter"
+              className="hover:underline"
+            >
+              @tscircuit/footprinter
+            </a>
+          </h1>
+          <div className="ml-auto">
+            <a
+              href="https://github.com/tscircuit/footprinter"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                alt="GitHub stars"
+                src="https://img.shields.io/github/stars/tscircuit/footprinter?style=social"
+                className="h-6"
+              />
+            </a>
+          </div>
         </div>
       </header>
 
-      <main style={styles.container}>
-        {/* Generation Form */}
-        <section style={styles.formSection}>
-          <form onSubmit={handleGenerate} style={styles.form}>
-            <textarea
-              spellcheck={false}
-              placeholder="Enter footprint definition (e.g., breakoutheaders_left15_right15_w8mm_p1.54mm)"
-              value={definition}
-              onChange={(e) => setDefinition(e.target.value)}
-              onKeyDown={handleKeyDown}
-              style={styles.textarea}
-            />
-            <button type="submit" style={styles.button} disabled={loading}>
-              {loading ? "Generating..." : "Generate Footprint"}
-            </button>
-          </form>
-          {error && <p style={styles.error}>{error}</p>}
-        </section>
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-6">
+        <div className="bg-white relative rounded-lg shadow-lg p-6">
+          {/* Responsive Left/Right Layout */}
+          <div className="grid place-items-center w-full grid-cols-1 md:grid-cols-5 gap-4 gap-6">
+            {/* Left: Form */}
+            <section className="w-full h-full grid place-items-center col-span-2">
+              <form onSubmit={handleGenerate} className="flex flex-col w-full">
+                <textarea
+                  spellCheck={false}
+                  placeholder="Enter footprint definition (e.g., breakoutheaders_left15_right15_w8mm_p1.54mm)"
+                  value={definition}
+                  onChange={(e) => setDefinition(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y min-h-[150px] text-lg font-medium"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="mt-4  bottom-4 w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
+                >
+                  {loading ? "Generating..." : "Generate Footprint"}
+                </button>
+              </form>
+              {error && (
+                <p className="mt-3 text-red-500 font-bold text-center">
+                  {error}
+                </p>
+              )}
+            </section>
 
-        {/* Generated SVG Preview */}
-        {generatedSvg && (
-          <section style={styles.previewSection}>
-            <h2 style={styles.previewTitle}>Generated Footprint</h2>
-            <div dangerouslySetInnerHTML={{ __html: generatedSvg }} />
-          </section>
-        )}
+            {/* Right: SVG Preview */}
+            <section className="w-full h-full rounded-md col-span-3 grid place-items-center shadow p-4">
+              {generatedSvg ? (
+                <>
+                  <img
+                    src={`data:image/svg+xml;base64,${btoa(generatedSvg)}`}
+                    alt="Generated Footprint"
+                    className="w-full h-full object-contain"
+                  />
+                </>
+              ) : (
+                <p className="text-gray-500">
+                  Preview will appear here once generated.
+                </p>
+              )}
+            </section>
+          </div>
+        </div>
 
-        {/* Existing Footprints Grid */}
-        <section style={styles.gallerySection}>
-          <h2 style={styles.galleryTitle}>Existing Footprints</h2>
-          <div style={styles.galleryItems}>
+        {/* Gallery Section */}
+        <section className="mt-10">
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Existing Footprints
+          </h2>
+          <div className="grid grid-cols-1  md:grid-cols-3 gap-6">
             {data.map((footprint, index) => (
               <div
                 key={index}
-                style={{
-                  ...styles.svgContainer,
-                  cursor: "pointer",
-                }}
+                className="relative grid place-items-center"
                 onClick={() => handleFootprintClick(footprint)}
               >
-                <div
-                  style={styles.svgImage}
-                  dangerouslySetInnerHTML={{
-                    __html: footprint.svgContent,
-                  }}
+                <img
+                  src={`data:image/svg+xml;base64,${btoa(
+                    footprint.svgContent,
+                  )}`}
+                  alt={`${footprint.title} Footprint SVG`}
+                  className="rounded-md shadow cursor-pointer hover:shadow-lg transition-shadow w-full h-full object-contain"
                 />
-                <div style={styles.svgTitle}>{footprint.title}</div>
+                <div className="absolute bottom-2 left-2 bg-white bg-opacity-80 px-2 py-1 text-xs rounded !break-all">
+                  {footprint.title}
+                </div>
               </div>
             ))}
           </div>
@@ -139,125 +167,6 @@ const FootprintCreator: React.FC = () => {
       </main>
     </div>
   )
-}
-
-const styles: { [key: string]: React.CSSProperties } = {
-  body: {
-    fontFamily: "Arial, sans-serif",
-    margin: 0,
-    padding: 0,
-    minHeight: "100vh",
-  },
-  header: {
-    margin: "12px 64px",
-    display: "flex",
-    alignItems: "center",
-  },
-  headerTitle: {
-    margin: 0,
-    fontSize: "24px",
-  },
-  headerLink: {
-    textDecoration: "none",
-    color: "#007bff",
-  },
-  githubStars: {
-    marginLeft: "auto",
-    display: "flex",
-    alignItems: "center",
-  },
-  githubImage: {
-    height: "24px",
-  },
-  container: {
-    maxWidth: "1200px",
-    margin: "0 auto",
-    padding: "20px",
-  },
-  formSection: {
-    textAlign: "center",
-    marginBottom: "40px",
-  },
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-  },
-  textarea: {
-    width: "100%",
-    maxWidth: "600px",
-    padding: "15px",
-    fontSize: "1rem",
-    borderRadius: "8px",
-    border: "1px solid #ccc",
-    marginBottom: "15px",
-    resize: "vertical",
-    minHeight: "100px",
-  },
-  button: {
-    padding: "12px 25px",
-    fontSize: "1rem",
-    borderRadius: "8px",
-    border: "none",
-    backgroundColor: "#007bff",
-    color: "#fff",
-    cursor: "pointer",
-  },
-  error: {
-    color: "#dc3545",
-    marginTop: "10px",
-    textAlign: "center",
-    fontWeight: "bold",
-    fontSize: "1.2rem",
-  },
-  previewSection: {
-    backgroundColor: "#fff",
-    padding: "20px",
-    borderRadius: "8px",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-    marginBottom: "40px",
-    display: "grid",
-    placeItems: "center",
-  },
-  previewTitle: {
-    margin: "0 0 20px 0",
-    fontSize: "20px",
-    textAlign: "center",
-  },
-  svgContainer: {
-    position: "relative",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
-    borderRadius: "4px",
-    width: "300px",
-    height: "225px",
-    margin: "1rem",
-  },
-  svgImage: {
-    width: "100%",
-    height: "100%",
-  },
-  svgTitle: {
-    position: "absolute",
-    bottom: "10px",
-    left: "10px",
-    backgroundColor: "rgba(255,255,255,0.7)",
-    padding: "5px",
-    fontSize: "12px",
-    wordBreak: "break-all",
-  },
-  gallerySection: {
-    marginTop: "40px",
-  },
-  galleryTitle: {
-    textAlign: "center",
-    fontSize: "24px",
-    marginBottom: "20px",
-  },
-  galleryItems: {
-    display: "flex",
-    flexWrap: "wrap",
-    justifyContent: "center",
-  },
 }
 
 const root = ReactDOM.createRoot(document.body!)
