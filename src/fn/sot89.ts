@@ -67,7 +67,7 @@ const createCornerSilkscreen = (
   const w = length.parse(params.width) / 2
   const h = length.parse(params.height) / 2
   const padLength = length.parse(params.padLength)
-  const xStart = w - padLength - 2.5
+  const xStart = w - padLength - 2.6
 
   const yOffset = (isTop ? 1 : -1) * (h + 0.1)
   const yInnerOffset = (isTop ? 1 : -1) * (h - 0.7)
