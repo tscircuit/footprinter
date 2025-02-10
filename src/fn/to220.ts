@@ -39,17 +39,21 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { fn, p, id, od, w, h, numPins } = parameters
+  const { fn, id, od, w, h, numPins } = parameters
 
   const holeY = -1
   const halfWidth = w / 2
   const halfHeight = h / 2
 
+  const maxHoleWidth = w * 0.6
+  const minPitch = 1.5
+  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
+
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
     const x =
       numPins % 2 === 0
-        ? (i - numPins / 2 + 0.5) * p
-        : (i - Math.floor(numPins / 2)) * p
+        ? (i - numPins / 2 + 0.5) * computedPitch
+        : (i - Math.floor(numPins / 2)) * computedPitch
     return platedhole(i + 1, x, holeY, id, od)
   })
 
@@ -116,6 +120,6 @@ export const to220 = (
       ...verticalLines,
       silkscreenRefText as AnySoupElement,
     ],
-    parameters,
+    parameters: { ...parameters, p: computedPitch },
   }
 }
