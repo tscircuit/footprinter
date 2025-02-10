@@ -2,7 +2,7 @@ import path from "path"
 import fs from "fs"
 
 const snapshotsDir = path.join(__dirname, "..", "tests", "__snapshots__")
-const outputFile = path.join(__dirname, "data.ts")
+const outputFile = path.join(__dirname, "content.ts")
 
 function ensureDirectoryExists(dirPath) {
   if (!fs.existsSync(dirPath)) {

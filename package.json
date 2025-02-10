@@ -12,7 +12,7 @@
     "dev": "cd previews && npm i && npm run storybook",
     "build": "tsup ./src/index.ts --format esm --dts --sourcemap",
     "format": "biome format . --write",
-    "generate-gallery": "bun run gallery/generate-data.ts"
+    "generate-gallery": "bun run gallery/generate-grid-content.ts"
   },
   "keywords": [],
   "author": "",

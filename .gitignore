@@ -5,4 +5,4 @@ dist
 *.diff.png
 package-lock.json
 public
-gallery/data.ts
+gallery/content.ts

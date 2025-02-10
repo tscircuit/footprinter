@@ -3,7 +3,7 @@ import React, { useState, useCallback } from "react"
 import ReactDOM from "react-dom/client"
 import { fp } from "src/footprinter"
 // @ts-ignore data is build during ci
-import data from "./data"
+import data from "./content"
 
 interface Footprint {
   svgContent: string
