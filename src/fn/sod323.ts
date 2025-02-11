@@ -22,7 +22,7 @@ export const sod323 = (
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h),
+    length.parse(parameters.h) - 0.5,
     0.3,
   )
 
