@@ -130,7 +130,7 @@ const generatePads = (params: z.infer<typeof sot89_def>) => {
     return [
       rectpad(1, -padGap * 1.5, -padGap, padLength, padWidth),
       rectpad(2, -padGap * 1.5, padGap, padLength, padWidth),
-      rectpad(3, 0, 0, padWidth, middlePadLength + 0.5),
+      rectpad(3, 0, 0, padWidth, middlePadLength + 0.3),
       rectpad(4, padGap * 1.5, -padGap, padLength, padWidth),
       rectpad(5, padGap * 1.5, padGap, padLength, padWidth),
     ]
