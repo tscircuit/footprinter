@@ -8,7 +8,7 @@ export const smf_def = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("4.80mm"),
-  h: z.string().default("2.15mm"),
+  h: z.string().default("2.10mm"),
   pl: z.string().default("1.30mm"),
   pw: z.string().default("1.40mm"),
   p: z.string().default("2.9mm"),
@@ -36,11 +36,11 @@ export const smf = (
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1,
+        x: -length.parse(parameters.w) / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1,
+        x: -length.parse(parameters.w) / 2,
         y: -length.parse(parameters.h) / 2,
       },
       {
