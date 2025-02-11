@@ -3,7 +3,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("sod323", () => {
-  const soup = fp.string("sod323").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = fp.string("sod323").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod323")
 })

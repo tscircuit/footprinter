@@ -7,11 +7,11 @@ import { length } from "circuit-json"
 export const sod_def = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("2.7mm"),
-  h: z.string().default("1.20mm"),
-  pl: z.string().default("0.59mm"),
+  w: z.string().default("3.30mm"),
+  h: z.string().default("1.80mm"),
+  pl: z.string().default("0.60mm"),
   pw: z.string().default("0.45mm"),
-  pad_spacing: z.string().default("2.2mm"),
+  p: z.string().default("2.1mm"),
 })
 
 export const sod323 = (
@@ -32,20 +32,20 @@ export const sod323 = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
-        y: length.parse(parameters.h) / 2, // Reduced offset to bring closer
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2, // Slightly reduced x offset
-        y: length.parse(parameters.h) / 2, // Same y adjustment
+        x: -length.parse(parameters.w) / 2,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2, // Reduced x to bring closer
-        y: -length.parse(parameters.h) / 2, // Reduced y offset
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
-        y: -length.parse(parameters.h) / 2, // Same y adjustment
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2,
       },
     ],
     stroke_width: 0.1,
@@ -64,15 +64,15 @@ export const sod323 = (
 // Get coordinates for SOD pads
 export const getSodCoords = (parameters: {
   pn: number
-  pad_spacing: number
+  p: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 }
+    return { x: -p / 2, y: 0 }
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: pad_spacing / 2, y: 0 }
+    return { x: p / 2, y: 0 }
   }
 }
 
@@ -83,7 +83,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(
