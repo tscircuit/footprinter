@@ -61,6 +61,7 @@ export type Footprinter = {
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
