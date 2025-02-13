@@ -44,8 +44,5 @@ export { minimelf } from "./minimelf"
 export { sod882d } from "./sod882d"
 export { melf } from "./melf"
 export { micromelf } from "./micromelf"
-<<<<<<< HEAD
-=======
 export { smb } from "./smb"
->>>>>>> f9d00d4f6c1f454094814b9ab0d5719ab5ffb244
 export { vssop8 } from "./vssop8"
