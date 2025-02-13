@@ -15,7 +15,7 @@ export const sot89_def = z
       }),
     width: z.string().default("4.80mm"),
     height: z.string().default("4.8mm"),
-    padLength: z.string().default("1.44mm"),
+    padLength: z.string().default("1.3mm"), // Default to 1.3mm
     padWidth: z.string().default("0.9mm"),
     padGap: z.string().default("1.5mm"),
   })
@@ -67,7 +67,7 @@ const createCornerSilkscreen = (
   const w = length.parse(params.width) / 2
   const h = length.parse(params.height) / 2
   const padLength = length.parse(params.padLength)
-  const xStart = w - padLength - 2.6
+  const xStart = w - padLength - 2.8
 
   const yOffset = (isTop ? 1 : -1) * (h + 0.1)
   const yInnerOffset = (isTop ? 1 : -1) * (h - 0.7)
@@ -99,8 +99,8 @@ const createFullSilkscreen = (
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -w, y: yOffset },
-      { x: w, y: yOffset },
+      { x: -w + 0.7, y: yOffset },
+      { x: w - 0.7, y: yOffset },
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
@@ -110,29 +110,27 @@ const createFullSilkscreen = (
 const generatePads = (params: z.infer<typeof sot89_def>) => {
   const totalPads = params.numPads
   const padWidth = length.parse(params.padWidth)
-  const padLength = length.parse(params.padLength)
-  const middlePadLength = padLength + 0.4
-  const padGap = middlePadLength
+  const padGap = length.parse(params.padGap)
 
   if (totalPads === 3) {
     return [
-      rectpad(1, -length.parse(params.width) / 2, padGap, padLength, padWidth),
+      rectpad(1, -length.parse(params.width) / 2, padGap, 1.3, padWidth), // Pad 1 (1.3mm)
       rectpad(
         2,
-        -length.parse(params.width) / 2 + (middlePadLength - padLength) / 2,
+        -length.parse(params.width) / 2 + (1.5 - 1.3) / 2,
         0,
-        middlePadLength,
+        1.5,
         padWidth,
-      ),
-      rectpad(3, -length.parse(params.width) / 2, -padGap, padLength, padWidth),
+      ), // Middle Pad (1.5mm)
+      rectpad(3, -length.parse(params.width) / 2, -padGap, 1.3, padWidth), // Pad 3 (1.3mm)
     ]
   } else if (totalPads === 5) {
     return [
-      rectpad(1, -padGap * 1.5, -padGap, padLength, padWidth),
-      rectpad(2, -padGap * 1.5, padGap, padLength, padWidth),
-      rectpad(3, 0, 0, padWidth, middlePadLength + 0.3),
-      rectpad(4, padGap * 1.5, -padGap, padLength, padWidth),
-      rectpad(5, padGap * 1.5, padGap, padLength, padWidth),
+      rectpad(1, -padGap * 1.5, -padGap, 1.5, padWidth), // Pad 1 (1.5mm)
+      rectpad(2, -padGap * 1.5, padGap, 1.5, padWidth), // Pad 2 (1.5mm)
+      rectpad(3, 0, 0, padWidth, 2), // Middle Pad (2mm)
+      rectpad(4, padGap * 1.5, -padGap, 1.5, padWidth), // Pad 4 (1.5mm)
+      rectpad(5, padGap * 1.5, padGap, 1.5, padWidth), // Pad 5 (1.5mm)
     ]
   }
 
