@@ -21,7 +21,6 @@ export const vssop8 = (
 
   const pad_spacing = length.parse(parameters.p)
 
-  // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h) / 2 + 0.5,
@@ -36,8 +35,8 @@ export const vssop8 = (
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 }, // Top-left
-      { x: silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 }, // Top-right
+      { x: -silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 },
+      { x: silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 },
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
@@ -48,8 +47,8 @@ export const vssop8 = (
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 }, // Bottom-left
-      { x: silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 }, // Bottom-right
+      { x: -silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 },
+      { x: silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 },
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
@@ -72,10 +71,8 @@ export const getVssop8PadCoord = (parameters: {
 }) => {
   const { pn, pad_spacing } = parameters
 
-  // Determine if the pin is on the left (1-4) or right (5-8)
   const col = pn <= 4 ? -1 : 1
 
-  // Vertical spacing: Distribute evenly along the Y-axis
   const row = ((pn - 1) % 4) - 1.5
 
   return {
