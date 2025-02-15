@@ -21,7 +21,7 @@ function convertMilToMm(value: string | number): number {
   return Number(value)
 }
 
-const milNumber = z
+const lengthInMm = z
   .union([z.string(), z.number()])
   .transform((val) => convertMilToMm(val))
 
@@ -32,10 +32,10 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       num_pins: z.number().optional().default(6),
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
-      w: milNumber.optional(),
-      p: milNumber.default(newDefaults.p ?? "2.54mm"),
-      id: milNumber.optional(),
-      od: milNumber.optional(),
+      w: lengthInMm.optional(),
+      p: lengthInMm.default(newDefaults.p ?? "2.54mm"),
+      id: lengthInMm.optional(),
+      od: lengthInMm.optional(),
     })
     .transform((v) => {
       if (!v.id && !v.od) {
