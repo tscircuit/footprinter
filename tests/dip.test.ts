@@ -16,7 +16,9 @@ test("dip16", () => {
 })
 
 test("dip4_w3.00mm", () => {
-  const circuitJson = fp.string("dip4_w3.00mm").circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp
+    .string("dip4_w3.00mm")
+    .circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip4_w3.00mm")
 })

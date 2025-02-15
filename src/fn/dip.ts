@@ -23,7 +23,7 @@ function parseLengthWithMils(value: string | number): number {
 
 const milNumber = z
   .union([z.string(), z.number()])
-  .transform((val) => parseLengthWithMils(val));
+  .transform((val) => parseLengthWithMils(val))
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
@@ -39,25 +39,25 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
     })
     .transform((v) => {
       if (!v.id && !v.od) {
-        v.id = parseLengthWithMils("1.0mm");
-        v.od = parseLengthWithMils("1.5mm");
+        v.id = parseLengthWithMils("1.0mm")
+        v.od = parseLengthWithMils("1.5mm")
       } else if (!v.id) {
-        v.id = v.od! * (1.0 / 1.5);
+        v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
-        v.od = v.id! * (1.5 / 1.0);
+        v.od = v.id! * (1.5 / 1.0)
       }
 
       if (!v.w) {
         if (v.wide) {
-          v.w = parseLengthWithMils("600mil");
+          v.w = parseLengthWithMils("600mil")
         } else if (v.narrow) {
-          v.w = parseLengthWithMils("300mil");
+          v.w = parseLengthWithMils("300mil")
         } else {
-          v.w = parseLengthWithMils(newDefaults.w ?? "300mil");
+          v.w = parseLengthWithMils(newDefaults.w ?? "300mil")
         }
       }
-      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">;
-    });
+      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
+    })
 
 export const dip_def = extendDipDef({})
 
