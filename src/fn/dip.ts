@@ -86,7 +86,7 @@ export const getCcwDipCoords = (
     return { x: -w / 2 - 0.4, y: h / 2 - (pn - 1) * gs }
   }
   // The y position starts at -h/2, then goes up by gap size
-  // Adding x padding (0.4) to postion the hole in the center 
+  // Adding x padding (0.4) to postion the hole in the center
   return { x: w / 2 + 0.4, y: -h / 2 + (pn - ph - 1) * gs }
 }
 
