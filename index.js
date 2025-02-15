@@ -32752,7 +32752,7 @@ var sod_def = z.object({
   h: z.string().default("1.22mm"),
   pl: z.string().default("0.9mm"),
   pw: z.string().default("0.9mm"),
-  pad_spacing: z.string().default("4.19mm")
+  p: z.string().default("4.19mm")
 });
 var sod123 = (raw_params) => {
   const parameters = sod_def.parse(raw_params);
@@ -32763,11 +32763,11 @@ var sod123 = (raw_params) => {
   };
 };
 var getSodCoords = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing = (parameters) => {
@@ -32775,7 +32775,7 @@ var sodWithoutParsing = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -33637,7 +33637,7 @@ var sod_def2 = z.object({
   h: z.string().default("1.20mm"),
   pl: z.string().default("0.5mm"),
   pw: z.string().default("0.6mm"),
-  pad_spacing: z.string().default("1.4mm")
+  p: z.string().default("1.4mm")
 });
 var sod523 = (raw_params) => {
   const parameters = sod_def2.parse(raw_params);
@@ -33648,7 +33648,7 @@ var sod523 = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -33660,7 +33660,7 @@ var sod523 = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -33673,11 +33673,11 @@ var sod523 = (raw_params) => {
   };
 };
 var getSodCoords2 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing2 = (parameters) => {
@@ -33685,7 +33685,7 @@ var sodWithoutParsing2 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords2({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -33799,7 +33799,7 @@ var sod_def4 = z.object({
   h: z.string().default("0.9mm"),
   pl: z.string().default("0.4mm"),
   pw: z.string().default("0.7mm"),
-  pad_spacing: z.string().default("0.7mm")
+  p: z.string().default("0.7mm")
 });
 var sod882 = (raw_params) => {
   const parameters = sod_def4.parse(raw_params);
@@ -33810,7 +33810,7 @@ var sod882 = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
+        x: length.parse(parameters.p) / 2 + 0.2,
         y: length.parse(parameters.h) / 2 + 0.2
       },
       {
@@ -33822,7 +33822,7 @@ var sod882 = (raw_params) => {
         y: -length.parse(parameters.h) / 2 - 0.2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.2,
+        x: length.parse(parameters.p) / 2 + 0.2,
         y: -length.parse(parameters.h) / 2 - 0.2
       }
     ],
@@ -33835,11 +33835,11 @@ var sod882 = (raw_params) => {
   };
 };
 var getSodCoords4 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing4 = (parameters) => {
@@ -33847,7 +33847,7 @@ var sodWithoutParsing4 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords4({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -33923,7 +33923,7 @@ var sod_def6 = z.object({
   h: z.string().default("2.1mm"),
   pl: z.string().default("1.2mm"),
   pw: z.string().default("1.2mm"),
-  pad_spacing: z.string().default("2.9mm")
+  p: z.string().default("2.9mm")
 });
 var sod123f = (raw_params) => {
   const parameters = sod_def6.parse(raw_params);
@@ -33934,7 +33934,7 @@ var sod123f = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -33946,7 +33946,7 @@ var sod123f = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -33959,11 +33959,11 @@ var sod123f = (raw_params) => {
   };
 };
 var getSodCoords6 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing6 = (parameters) => {
@@ -33971,7 +33971,7 @@ var sodWithoutParsing6 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords6({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -33985,7 +33985,7 @@ var sod_def7 = z.object({
   h: z.string().default("1.00mm"),
   pl: z.string().default("0.66mm"),
   pw: z.string().default("0.5mm"),
-  pad_spacing: z.string().default("0.8mm")
+  p: z.string().default("0.8mm")
 });
 var sod723 = (raw_params) => {
   const parameters = sod_def7.parse(raw_params);
@@ -33996,7 +33996,7 @@ var sod723 = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34008,7 +34008,7 @@ var sod723 = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34021,11 +34021,11 @@ var sod723 = (raw_params) => {
   };
 };
 var getSodCoords7 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing7 = (parameters) => {
@@ -34033,7 +34033,7 @@ var sodWithoutParsing7 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords7({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -34047,7 +34047,7 @@ var sod_def8 = z.object({
   h: z.string().default("3.4mm"),
   pl: z.string().default("1.4mm"),
   pw: z.string().default("2.1mm"),
-  pad_spacing: z.string().default("4.4mm")
+  p: z.string().default("4.4mm")
 });
 var sod128 = (raw_params) => {
   const parameters = sod_def8.parse(raw_params);
@@ -34058,7 +34058,7 @@ var sod128 = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34070,7 +34070,7 @@ var sod128 = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34083,11 +34083,11 @@ var sod128 = (raw_params) => {
   };
 };
 var getSodCoords8 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing8 = (parameters) => {
@@ -34095,7 +34095,7 @@ var sodWithoutParsing8 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords8({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -34261,7 +34261,7 @@ var sod_def9 = z.object({
   h: z.string().default("1.33mm"),
   pl: z.string().default("0.5mm"),
   pw: z.string().default("0.7mm"),
-  pad_spacing: z.string().default("0.8mm")
+  p: z.string().default("0.8mm")
 });
 var sod882d = (raw_params) => {
   const parameters = sod_def9.parse(raw_params);
@@ -34272,7 +34272,7 @@ var sod882d = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.1,
+        x: length.parse(parameters.p) / 2 + 0.1,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34284,7 +34284,7 @@ var sod882d = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2 + 0.1,
+        x: length.parse(parameters.p) / 2 + 0.1,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34297,11 +34297,11 @@ var sod882d = (raw_params) => {
   };
 };
 var getSodCoords9 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing9 = (parameters) => {
@@ -34309,7 +34309,7 @@ var sodWithoutParsing9 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords9({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -34323,7 +34323,7 @@ var melf_def = z.object({
   h: z.string().default("3.35mm"),
   pl: z.string().default("1.50mm"),
   pw: z.string().default("2.70mm"),
-  pad_spacing: z.string().default("4.8mm")
+  p: z.string().default("4.8mm")
 });
 var melf = (raw_params) => {
   const parameters = melf_def.parse(raw_params);
@@ -34334,7 +34334,7 @@ var melf = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34346,7 +34346,7 @@ var melf = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34359,11 +34359,11 @@ var melf = (raw_params) => {
   };
 };
 var getMelfCoords = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var melfWithoutParsing = (parameters) => {
@@ -34371,7 +34371,7 @@ var melfWithoutParsing = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getMelfCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
@@ -34385,7 +34385,7 @@ var micromelf_def = z.object({
   h: z.string().default("1.80mm"),
   pl: z.string().default("0.80mm"),
   pw: z.string().default("1.20mm"),
-  pad_spacing: z.string().default("1.6mm")
+  p: z.string().default("1.6mm")
 });
 var micromelf = (raw_params) => {
   const parameters = micromelf_def.parse(raw_params);
@@ -34396,7 +34396,7 @@ var micromelf = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34408,7 +34408,7 @@ var micromelf = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34421,11 +34421,11 @@ var micromelf = (raw_params) => {
   };
 };
 var getMicroMelfCoords = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var microMelfWithoutParsing = (parameters) => {
@@ -34433,7 +34433,7 @@ var microMelfWithoutParsing = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getMicroMelfCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
