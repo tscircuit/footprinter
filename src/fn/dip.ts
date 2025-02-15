@@ -9,7 +9,7 @@ import { platedhole } from "../helpers/platedhole"
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
-function parseLengthWithMils(value: string | number): number {
+function convertMilToMm(value: string | number): number {
   if (typeof value === "string") {
     if (value.trim().toLowerCase().endsWith("mil")) {
       // Convert mil to mm (1 mil = 0.0254 mm)
@@ -23,7 +23,7 @@ function parseLengthWithMils(value: string | number): number {
 
 const milNumber = z
   .union([z.string(), z.number()])
-  .transform((val) => parseLengthWithMils(val))
+  .transform((val) => convertMilToMm(val))
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
@@ -39,8 +39,8 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
     })
     .transform((v) => {
       if (!v.id && !v.od) {
-        v.id = parseLengthWithMils("1.0mm")
-        v.od = parseLengthWithMils("1.5mm")
+        v.id = convertMilToMm("1.0mm")
+        v.od = convertMilToMm("1.5mm")
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
@@ -49,11 +49,11 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
 
       if (!v.w) {
         if (v.wide) {
-          v.w = parseLengthWithMils("600mil")
+          v.w = convertMilToMm("600mil")
         } else if (v.narrow) {
-          v.w = parseLengthWithMils("300mil")
+          v.w = convertMilToMm("300mil")
         } else {
-          v.w = parseLengthWithMils(newDefaults.w ?? "300mil")
+          v.w = convertMilToMm(newDefaults.w ?? "300mil")
         }
       }
       return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
