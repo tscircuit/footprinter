@@ -71,6 +71,7 @@ export type Footprinter = {
   ms013: () => FootprinterParamsBuilder<"w" | "p">
   ms012: () => FootprinterParamsBuilder<"w" | "p">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
