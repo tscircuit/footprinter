@@ -20,11 +20,7 @@ export const smc = (
   const parameters = smc_def.parse(raw_params)
 
   // Define silkscreen reference text
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    length.parse(parameters.h) - 0.5,
-    0.3,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 4, 0.3)
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -36,11 +32,11 @@ export const smc = (
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.3,
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.3,
         y: -length.parse(parameters.h) / 2,
       },
       {
