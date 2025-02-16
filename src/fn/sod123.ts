@@ -11,7 +11,7 @@ export const sod_def = z.object({
   h: z.string().default("1.22mm"),
   pl: z.string().default("0.9mm"),
   pw: z.string().default("0.9mm"),
-  pad_spacing: z.string().default("4.19mm"),
+  p: z.string().default("4.19mm"),
 })
 
 export const sod123 = (
@@ -34,15 +34,15 @@ export const sod123 = (
 
 export const getSodCoords = (parameters: {
   pn: number
-  pad_spacing: number
+  p: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 }
+    return { x: -p / 2, y: 0 }
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: pad_spacing / 2, y: 0 }
+    return { x: p / 2, y: 0 }
   }
 }
 
@@ -52,7 +52,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(
