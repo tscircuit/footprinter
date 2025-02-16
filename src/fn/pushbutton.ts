@@ -22,10 +22,10 @@ export const pushbutton = (
   const holeDiameter = parameters.id
 
   const holes: AnyCircuitElement[] = [
-    platedhole(1, -width / 2, height / 2, holeDiameter, holeDiameter * 1.2),
-    platedhole(2, -width / 2, -height / 2, holeDiameter, holeDiameter * 1.2),
-    platedhole(3, width / 2, -height / 2, holeDiameter, holeDiameter * 1.2),
-    platedhole(4, width / 2, height / 2, holeDiameter, holeDiameter * 1.2),
+    platedhole(1, -width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
+    platedhole(2, -width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
+    platedhole(3, width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
+    platedhole(4, width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
   ]
 
   const silkscreenLines: AnyCircuitElement[] = [
