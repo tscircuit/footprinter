@@ -83,6 +83,7 @@ export type Footprinter = {
   sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
