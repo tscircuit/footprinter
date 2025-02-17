@@ -55,9 +55,33 @@ export type Footprinter = {
   pinrow: (num_pins?: number) => FootprinterParamsBuilder<"p" | "id" | "od">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
+  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
+  sot363: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot236: () => FootprinterParamsBuilder<"w" | "p">
+  sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl">
+
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  ms013: () => FootprinterParamsBuilder<"w" | "p">
+  ms012: () => FootprinterParamsBuilder<"w" | "p">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >

@@ -1,7 +1,7 @@
 {
   "name": "@tscircuit/footprinter",
   "type": "module",
-  "version": "0.0.111",
+  "version": "0.0.126",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -12,7 +12,7 @@
     "dev": "cd previews && npm i && npm run storybook",
     "build": "tsup ./src/index.ts --format esm --dts --sourcemap",
     "format": "biome format . --write",
-    "generate-gallery": "bun run scripts/generate-gallery-page.ts"
+    "generate-gallery": "bun run gallery/generate-grid-content.ts"
   },
   "keywords": [],
   "author": "",
@@ -20,13 +20,15 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/log-soup": "^1.0.2",
-    "@tscircuit/soup-util": "^0.0.11",
+    "@tscircuit/soup-util": "^0.0.41",
     "@types/bun": "^1.2.2",
     "@types/node": "^20.12.13",
     "bun-match-svg": "^0.0.6",
     "circuit-to-svg": "^0.0.42",
     "esbuild": "^0.21.4",
     "esbuild-register": "^3.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
