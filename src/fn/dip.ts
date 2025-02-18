@@ -39,8 +39,14 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
     })
     .transform((v) => {
       if (!v.id && !v.od) {
-        v.id = convertMilToMm("1.0mm")
-        v.od = convertMilToMm("1.5mm")
+        // Special case for 1.27mm pitch
+        if (Math.abs(v.p - 1.27) < 0.01) {
+          v.id = convertMilToMm("0.55mm") // Standard hole size for 1.27mm
+          v.od = convertMilToMm("0.95mm") // Standard pad size for 1.27mm
+        } else {
+          v.id = convertMilToMm("1.0mm")
+          v.od = convertMilToMm("1.5mm")
+        }
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
