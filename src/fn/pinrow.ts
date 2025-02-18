@@ -9,6 +9,12 @@ export const pinrow_def = z.object({
   p: length.default("0.1in").describe("pitch"),
   id: length.default("1.0mm").describe("inner diameter"),
   od: length.default("1.5mm").describe("outer diameter"),
+  male: z.boolean().optional().default(true).describe("for male pin headers"),
+  female: z
+    .boolean()
+    .optional()
+    .default(false)
+    .describe("for female pin headers"),
 })
 
 export const pinrow = (
