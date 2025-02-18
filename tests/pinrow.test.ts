@@ -13,6 +13,7 @@ test("pinrow5", () => {
     id: 1,
     od: 1.5,
     female: true,
+    male: false,
   })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5")
 })

@@ -3,19 +3,23 @@ import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
-export const pinrow_def = z.object({
-  fn: z.string(),
-  num_pins: z.number().optional().default(6),
-  p: length.default("0.1in").describe("pitch"),
-  id: length.default("1.0mm").describe("inner diameter"),
-  od: length.default("1.5mm").describe("outer diameter"),
-  male: z.boolean().optional().default(true).describe("for male pin headers"),
-  female: z
-    .boolean()
-    .optional()
-    .default(false)
-    .describe("for female pin headers"),
-})
+export const pinrow_def = z
+  .object({
+    fn: z.string(),
+    num_pins: z.number().optional().default(6),
+    p: length.default("0.1in").describe("pitch"),
+    id: length.default("1.0mm").describe("inner diameter"),
+    od: length.default("1.5mm").describe("outer diameter"),
+    female: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("for female pin headers"),
+  })
+  .transform((data) => ({
+    ...data,
+    male: data.female === true ? false : true, // Male is true only if female is not defined or false
+  }))
 
 export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
