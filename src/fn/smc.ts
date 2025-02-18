@@ -20,7 +20,7 @@ export const smc = (
   const parameters = smc_def.parse(raw_params)
 
   // Define silkscreen reference text
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 4, 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 3, 0.3)
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -29,19 +29,19 @@ export const smc = (
     route: [
       {
         x: length.parse(parameters.p) / 2,
-        y: length.parse(parameters.h) / 2,
+        y: length.parse(parameters.h) / 2 - 0.8,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.3,
-        y: length.parse(parameters.h) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.8,
+        y: length.parse(parameters.h) / 2 - 0.8,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.3,
-        y: -length.parse(parameters.h) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.8,
+        y: -length.parse(parameters.h) / 2 + 0.8,
       },
       {
         x: length.parse(parameters.p) / 2,
-        y: -length.parse(parameters.h) / 2,
+        y: -length.parse(parameters.h) / 2 + 0.8,
       },
     ],
     stroke_width: 0.1,
@@ -66,10 +66,8 @@ export const getSmcCoords = (parameters: {
 
   if (pn === 1) {
     return { x: -p / 2, y: 0 }
-    // biome-ignore lint/style/noUselessElse: <explanation>
-  } else {
-    return { x: p / 2, y: 0 }
   }
+  return { x: p / 2, y: 0 }
 }
 
 // Function to generate smc pads
