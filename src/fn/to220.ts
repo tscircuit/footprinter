@@ -29,7 +29,7 @@ export const to220_def = z
     return {
       ...a,
       numPins,
-      fn: "to220",
+      fn: a.fn,
     }
   })
 
