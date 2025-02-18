@@ -26793,6 +26793,7 @@ __export(exports_fn, {
   sod123: () => sod123,
   smf: () => smf,
   smb: () => smb,
+  sma: () => sma,
   res: () => res,
   quad: () => quad,
   qfp: () => qfp,
@@ -34456,6 +34457,67 @@ var microMelfWithoutParsing = (parameters) => {
   }
   return pads;
 };
+// src/fn/sma.ts
+var sma_def = z.object({
+  fn: z.string(),
+  num_pins: z.literal(2).default(2),
+  w: z.string().default("7.10mm"),
+  h: z.string().default("3.40mm"),
+  pl: z.string().default("2.45mm"),
+  pw: z.string().default("1.80mm"),
+  p: z.string().default("4.05mm")
+});
+var sma = (raw_params) => {
+  const parameters = sma_def.parse(raw_params);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) / 2 + 0.5, 0.3);
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.5,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.5,
+        y: -length.parse(parameters.h) / 2
+      },
+      {
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2
+      }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  return {
+    circuitJson: smaWithoutParsing(parameters).concat(silkscreenLine, silkscreenRefText),
+    parameters
+  };
+};
+var getSmaCoords = (parameters) => {
+  const { pn, p } = parameters;
+  if (pn === 1) {
+    return { x: -p / 2, y: 0 };
+  }
+  return { x: p / 2, y: 0 };
+};
+var smaWithoutParsing = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getSmaCoords({
+      pn: i,
+      p: Number.parseFloat(parameters.p)
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  return pads;
+};
 // src/fn/smf.ts
 var smf_def = z.object({
   fn: z.string(),
@@ -35823,6 +35885,22 @@ var content_default = [
               .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="267.64705882352945" y="176.4705882352942" width="264.70588235294116" height="247.0588235294117"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="302.94117647058823" y="247.05882352941182" width="105.88235294117646" height="105.88235294117646"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="479.4117647058824" y="247.05882352941182" width="105.88235294117646" height="105.88235294117646"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 532.3529411764706 176.4705882352942 L 267.64705882352945 176.4705882352942 L 267.64705882352945 423.5294117647059 L 532.3529411764706 423.5294117647059" stroke-width="17.64705882352941" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="35.29411764705882" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,444.11764705882354,88.23529411764713)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "cap_imperial0402"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="99.07120743034056" y="131.57894736842104" width="601.8575851393189" height="336.8421052631579"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="178.32817337461302" y="210.8359133126935" width="242.7244582043344" height="178.32817337461302"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="579.5665634674922" y="210.8359133126935" width="242.7244582043344" height="178.32817337461302"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 700.9287925696594 131.57894736842104 L 99.07120743034056 131.57894736842104 L 99.07120743034056 468.42105263157896 L 700.9287925696594 468.42105263157896" stroke-width="9.907120743034056" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="29.72136222910217" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,500.30959752321985,82.04334365325073)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "sma"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
