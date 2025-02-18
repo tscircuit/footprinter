@@ -4,29 +4,28 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 
-export const sod_def = z.object({
+export const smf_def = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("4.4mm"),
-  h: z.string().default("2.1mm"),
-  pl: z.string().default("1.2mm"),
-  pw: z.string().default("1.2mm"),
+  w: z.string().default("4.80mm"),
+  h: z.string().default("2.10mm"),
+  pl: z.string().default("1.30mm"),
+  pw: z.string().default("1.40mm"),
   p: z.string().default("2.9mm"),
 })
 
-export const sod123f = (
-  raw_params: z.input<typeof sod_def>,
+export const smf = (
+  raw_params: z.input<typeof smf_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = sod_def.parse(raw_params)
+  const parameters = smf_def.parse(raw_params)
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h),
+    length.parse(parameters.h) - 0.5,
     0.3,
   )
 
-  // Define silkscreen path that goes till half of the second pad
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -37,11 +36,11 @@ export const sod123f = (
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
+        x: -length.parse(parameters.w) / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
+        x: -length.parse(parameters.w) / 2,
         y: -length.parse(parameters.h) / 2,
       },
       {
@@ -54,7 +53,7 @@ export const sod123f = (
   }
 
   return {
-    circuitJson: sodWithoutParsing(parameters).concat(
+    circuitJson: smfWithoutParsing(parameters).concat(
       silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
@@ -62,8 +61,8 @@ export const sod123f = (
   }
 }
 
-// Get coordinates for SOD pads
-export const getSodCoords = (parameters: {
+// Get coordinates for smf pads
+export const getSmfCoords = (parameters: {
   pn: number
   p: number
 }) => {
@@ -77,12 +76,12 @@ export const getSodCoords = (parameters: {
   }
 }
 
-// Function to generate SOD pads
-export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
+// Function to generate smf pads
+export const smfWithoutParsing = (parameters: z.infer<typeof smf_def>) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords({
+    const { x, y } = getSmfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p),
     })
