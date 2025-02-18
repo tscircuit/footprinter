@@ -1,7 +1,7 @@
 {
   "name": "@tscircuit/footprinter",
   "type": "module",
-  "version": "0.0.121",
+  "version": "0.0.126",
   "description": "",
   "main": "dist/index.js",
   "files": [
@@ -20,7 +20,7 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@tscircuit/log-soup": "^1.0.2",
-    "@tscircuit/soup-util": "^0.0.11",
+    "@tscircuit/soup-util": "^0.0.41",
     "@types/bun": "^1.2.2",
     "@types/node": "^20.12.13",
     "bun-match-svg": "^0.0.6",

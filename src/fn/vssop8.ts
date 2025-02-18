@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnySoupElement,
+  PcbFabricationNoteText,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -7,7 +11,7 @@ import { length } from "circuit-json"
 export const vssop8_def = z.object({
   fn: z.string(),
   num_pins: z.literal(8).default(8),
-  w: z.string().default("3.6mm"),
+  w: z.string().default("3.06mm"),
   h: z.string().default("3.14mm"),
   p: z.string().default("0.65mm"),
   pl: z.string().default("1.6mm"),
@@ -54,11 +58,31 @@ export const vssop8 = (
     pcb_silkscreen_path_id: "",
   }
 
+  const pin1Position = getVssop8PadCoord({ pn: 1, pad_spacing })
+  const pin1MarkerPosition = {
+    x: pin1Position.x - 0.8,
+    y: pin1Position.y,
+  }
+  const pin1Marking: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "pin_marker_1",
+    route: [
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y + 0.3 },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y - 0.3 },
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+    ],
+    stroke_width: 0.05,
+    pcb_silkscreen_path_id: "pin_marker_1",
+  }
+
   return {
     circuitJson: getVssop8Pads(parameters, pad_spacing).concat(
       silkscreenTopLine as AnySoupElement,
       silkscreenBottomLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
+      pin1Marking as AnySoupElement,
     ),
     parameters,
   }
@@ -73,7 +97,7 @@ export const getVssop8PadCoord = (parameters: {
 
   const col = pn <= 4 ? -1 : 1
 
-  const row = ((pn - 1) % 4) - 1.5
+  const row = 1.5 - ((pn - 1) % 4)
 
   return {
     x: col * length.parse("1.8mm"),
