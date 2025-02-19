@@ -61,7 +61,6 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
       ),
     )
   }
-  console.log("parameters.h", parameters.h)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     parseInt(parameters.h),
