@@ -135,10 +135,12 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   // special case: 0402, 0603, etc.
-  if ((def.length === 4 || def.length === 5) && /^\d+$/.test(def))
-    def = `res${def}`
+  const modifiedDef =
+    (def.length === 4 || def.length === 5) && /^\d+$/.test(def)
+      ? `res${def}`
+      : def
 
-  const def_parts = def
+  const def_parts = modifiedDef
     .split("_")
     .map((s) => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
