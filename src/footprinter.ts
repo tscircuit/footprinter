@@ -63,6 +63,7 @@ export type Footprinter = {
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot236: () => FootprinterParamsBuilder<"w" | "p">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl">
+  smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
 
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -76,6 +77,7 @@ export type Footprinter = {
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  vssop8: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
