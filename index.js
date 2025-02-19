@@ -34794,9 +34794,8 @@ function isNotNull(value) {
 // src/footprinter.ts
 var string = (def) => {
   let fp = footprinter();
-  if ((def.length === 4 || def.length === 5) && /^\d+$/.test(def))
-    def = `res${def}`;
-  const def_parts = def.split("_").map((s) => {
+  const modifiedDef = (def.length === 4 || def.length === 5) && /^\d+$/.test(def) ? `res${def}` : def;
+  const def_parts = modifiedDef.split("_").map((s) => {
     const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/);
     const [_, fn, v] = m ?? [];
     if (v?.includes("?"))
