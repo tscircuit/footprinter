@@ -32572,7 +32572,7 @@ var sot23WithoutParsing = (parameters) => {
     });
     pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
-  const silkscreenRefText = silkscreenRef(0, Number(parameters.h), 0.3);
+  const silkscreenRefText = silkscreenRef(0, parseInt(parameters.h), 0.3);
   return [...pads, silkscreenRefText];
 };
 // src/helpers/corner.ts
@@ -34986,7 +34986,7 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,399.99999999999994,77.77777777777777)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,399.99999999999994,151.85185185185185)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "sot23_w3_h1.5_p0.95mm"
   },
   {
@@ -35482,7 +35482,7 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,NaN,NaN)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,399.99999999999994,3.7037037037036953)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "sot23"
   },
   {
