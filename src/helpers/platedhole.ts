@@ -9,6 +9,7 @@ export const platedhole = (
   od: number | string,
 ): PcbPlatedHole => {
   return {
+    pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
     shape: "circle",
     x,
