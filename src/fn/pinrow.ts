@@ -10,16 +10,24 @@ export const pinrow_def = z
     p: length.default("0.1in").describe("pitch"),
     id: length.default("1.0mm").describe("inner diameter"),
     od: length.default("1.5mm").describe("outer diameter"),
-    female: z
-      .boolean()
-      .optional()
-      .default(false)
-      .describe("for female pin headers"),
+    male: z.boolean().optional().describe("for male pin headers"),
+    female: z.boolean().optional().describe("for female pin headers"),
   })
   .transform((data) => ({
     ...data,
-    male: data.female === true ? false : true, // Male is true only if female is not defined or false
+    male: data.male ?? (data.female ? false : true), // Auto-set male if not explicitly provided
+    female: data.female ?? false, // Default female to false if not provided
   }))
+  .superRefine((data, ctx) => {
+    if (data.male && data.female) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "'male' and 'female' cannot both be true it should be male or female.", //Error message if male and female are both true
+        path: ["male", "female"],
+      })
+    }
+  })
 
 export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
