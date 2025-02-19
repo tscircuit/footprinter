@@ -68,12 +68,11 @@ export const getSodCoords = (parameters: {
 }) => {
   const { pn, p } = parameters
 
-  if (pn === 1) {
-    return { x: -p / 2, y: 0 }
-    // biome-ignore lint/style/noUselessElse: <explanation>
-  } else {
-    return { x: p / 2, y: 0 }
-  }
+if (pn === 1) {
+  return { x: -p / 2, y: 0 }
+}
+return { x: p / 2, y: 0 }
+
 }
 
 // Function to generate SOD pads
