@@ -65,7 +65,6 @@ export type Footprinter = {
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
 
-  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -136,10 +135,12 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   // special case: 0402, 0603, etc.
-  if ((def.length === 4 || def.length === 5) && /^\d+$/.test(def))
-    def = `res${def}`
+  const modifiedDef =
+    (def.length === 4 || def.length === 5) && /^\d+$/.test(def)
+      ? `res${def}`
+      : def
 
-  const def_parts = def
+  const def_parts = modifiedDef
     .split("_")
     .map((s) => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
