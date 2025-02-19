@@ -135,7 +135,10 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   // special case: 0402, 0603, etc.
-  const modifiedDef = (def.length === 4 || def.length === 5) && /^\d+$/.test(def) ? `res${def}` : def;
+  const modifiedDef =
+    (def.length === 4 || def.length === 5) && /^\d+$/.test(def)
+      ? `res${def}`
+      : def
 
   const def_parts = modifiedDef
     .split("_")
