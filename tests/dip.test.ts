@@ -57,3 +57,22 @@ test("dip8_p1.27mm", () => {
   let svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip8_p1.27mm")
 })
+
+test("dip14_w7.62mm_p2.54mm", () => {
+  const circuitJson = fp
+    .string("dip14_w7.62mm_p2.54mm")
+    .circuitJson() as AnyCircuitElement[]
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "dip14_w7.62mm_p2.54mm",
+  )
+})
+
+test("dip_0.1in", () => {
+  const circuitJson = fp
+    .string("dip_0.1in")
+    .circuitJson() as AnyCircuitElement[]
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip_0.1in")
+})
