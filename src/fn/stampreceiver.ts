@@ -99,32 +99,87 @@ export const stampreceiver = (
   const totalPadsNumber =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
   let routes: { x: number; y: number }[] = []
+  let padIndex = 1
 
-  // Process Right Pads first (top to bottom)
-  if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p
-    for (let i = params.right - 1; i >= 0; i--) {
-      if (i === params.right - 1) {
+  // Process Left Pads (top to bottom)
+  if (params.left) {
+    const yoff = ((params.left - 1) / 2) * params.p
+    for (let i = 0; i < params.left; i++) {
+      if (i === 0) {
         routes = getTriangleDir(
-          params.w / 2 + params.pl * 1.4,
-          yoff + i * params.p,
-          "right",
+          -params.w / 2 - params.pl / 2,
+          yoff - i * params.p,
+          "left",
         )
       }
       rectpads.push(
         rectpad(
-          i + 1,
+          padIndex,
+          -params.w / 2 + params.pl / 2,
+          yoff - i * params.p,
+          params.pl,
+          params.pw,
+        ),
+      )
+      padIndex++
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            padIndex + totalPadsNumber,
+            -params.w / 2 + params.innerholeedgedistance,
+            yoff - i * params.p,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
+    }
+  }
+
+  // Process Bottom Pads (right to left)
+  if (params.bottom) {
+    const xoff = ((params.bottom - 1) / 2) * params.p
+    for (let i = params.bottom - 1; i >= 0; i--) {
+      rectpads.push(
+        rectpad(
+          padIndex,
+          xoff - i * params.p,
+          -height / 2 + params.pl / 2,
+          params.pw,
+          params.pl,
+        ),
+      )
+      padIndex++
+      params.innerhole &&
+        holes.push(
+          platedhole(
+            padIndex + totalPadsNumber,
+            xoff - i * params.p,
+            -height / 2 + params.innerholeedgedistance,
+            innerDiameter,
+            outerDiameter,
+          ),
+        )
+    }
+  }
+
+  // Process Right Pads (bottom to top)
+  if (params.right) {
+    const yoff = -((params.right - 1) / 2) * params.p
+    for (let i = 0; i < params.right; i++) {
+      rectpads.push(
+        rectpad(
+          padIndex,
           params.w / 2 - params.pl / 2,
           yoff + i * params.p,
           params.pl,
           params.pw,
         ),
       )
-      // Inner holes for right pads
+      padIndex++
       params.innerhole &&
         holes.push(
           platedhole(
-            i + 1 + totalPadsNumber,
+            padIndex + totalPadsNumber,
             params.w / 2 - params.innerholeedgedistance,
             yoff + i * params.p,
             innerDiameter,
@@ -134,79 +189,26 @@ export const stampreceiver = (
     }
   }
 
-  // Process Left Pads (top to bottom)
-  if (params.left) {
-    const yoff = -((params.left - 1) / 2) * params.p
-    for (let i = 0; i < params.left; i++) {
-      rectpads.push(
-        rectpad(
-          params.right + i + 1, // Continue numbering after right pads
-          -params.w / 2 + params.pl / 2,
-          yoff + i * params.p,
-          params.pl,
-          params.pw,
-        ),
-      )
-      params.innerhole &&
-        holes.push(
-          platedhole(
-            params.right + i + 1 + totalPadsNumber,
-            -params.w / 2 + params.innerholeedgedistance,
-            yoff + i * params.p,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-    }
-  }
-
-  // Process Top Pads (right to left)
+  // Process Top Pads (left to right)
   if (params.top) {
     const xoff = -((params.top - 1) / 2) * params.p
-    for (let i = params.top - 1; i >= 0; i--) {
+    for (let i = 0; i < params.top; i++) {
       rectpads.push(
         rectpad(
-          params.right + params.left + (params.top - i), // Adjust numbering
+          padIndex,
           xoff + i * params.p,
           height / 2 - params.pl / 2,
           params.pw,
           params.pl,
         ),
       )
-      // Inner holes for top pads
+      padIndex++
       params.innerhole &&
         holes.push(
           platedhole(
-            params.right + params.left + (params.top - i) + totalPadsNumber,
+            padIndex + totalPadsNumber,
             xoff + i * params.p,
             height / 2 - params.innerholeedgedistance,
-            innerDiameter,
-            outerDiameter,
-          ),
-        )
-    }
-  }
-
-  // Process Bottom Pads (left to right)
-  if (params.bottom) {
-    const xoff = -((params.bottom - 1) / 2) * params.p
-    for (let i = 0; i < params.bottom; i++) {
-      rectpads.push(
-        rectpad(
-          params.right + params.left + params.top + i + 1,
-          xoff + i * params.p,
-          -height / 2 + params.pl / 2,
-          params.pw,
-          params.pl,
-        ),
-      )
-      // Inner holes for bottom pads
-      params.innerhole &&
-        holes.push(
-          platedhole(
-            params.right + params.left + params.top + i + 1 + totalPadsNumber,
-            xoff + i * params.p,
-            -height / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
           ),
