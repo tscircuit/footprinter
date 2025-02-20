@@ -32664,7 +32664,21 @@ var pinrow_def = z.object({
   num_pins: z.number().optional().default(6),
   p: length.default("0.1in").describe("pitch"),
   id: length.default("1.0mm").describe("inner diameter"),
-  od: length.default("1.5mm").describe("outer diameter")
+  od: length.default("1.5mm").describe("outer diameter"),
+  male: z.boolean().optional().describe("for male pin headers"),
+  female: z.boolean().optional().describe("for female pin headers")
+}).transform((data) => ({
+  ...data,
+  male: data.male ?? (data.female ? false : true),
+  female: data.female ?? false
+})).superRefine((data, ctx) => {
+  if (data.male && data.female) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "'male' and 'female' cannot both be true it should be male or female.",
+      path: ["male", "female"]
+    });
+  }
 });
 var pinrow = (raw_params) => {
   const parameters = pinrow_def.parse(raw_params);
