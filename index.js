@@ -26791,6 +26791,7 @@ __export(exports_fn, {
   sod323f: () => sod323f,
   sod323: () => sod323,
   sod128: () => sod128,
+  sod123w: () => sod123w,
   sod123f: () => sod123f,
   sod123: () => sod123,
   smf: () => smf,
@@ -33750,17 +33751,17 @@ var sop8 = (raw_params) => {
     parameters
   };
 };
-// src/fn/sod323.ts
+// src/fn/sod123w.ts
 var sod_def3 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("3.30mm"),
-  h: z.string().default("1.80mm"),
-  pl: z.string().default("0.60mm"),
-  pw: z.string().default("0.45mm"),
-  p: z.string().default("2.1mm")
+  w: z.string().default("4.4mm"),
+  h: z.string().default("2.1mm"),
+  pl: z.string().default("1.2mm"),
+  pw: z.string().default("1.2mm"),
+  p: z.string().default("2.9mm")
 });
-var sod323 = (raw_params) => {
+var sod123w = (raw_params) => {
   const parameters = sod_def3.parse(raw_params);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) - 0.5, 0.3);
   const silkscreenLine = {
@@ -33773,11 +33774,11 @@ var sod323 = (raw_params) => {
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: -length.parse(parameters.h) / 2
       },
       {
@@ -33811,8 +33812,69 @@ var sodWithoutParsing3 = (parameters) => {
   }
   return pads;
 };
-// src/fn/sod923.ts
+// src/fn/sod323.ts
 var sod_def4 = z.object({
+  fn: z.string(),
+  num_pins: z.literal(2).default(2),
+  w: z.string().default("3.30mm"),
+  h: z.string().default("1.80mm"),
+  pl: z.string().default("0.60mm"),
+  pw: z.string().default("0.45mm"),
+  p: z.string().default("2.1mm")
+});
+var sod323 = (raw_params) => {
+  const parameters = sod_def4.parse(raw_params);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) - 0.5, 0.3);
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2
+      },
+      {
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2
+      }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  return {
+    circuitJson: sodWithoutParsing4(parameters).concat(silkscreenLine, silkscreenRefText),
+    parameters
+  };
+};
+var getSodCoords4 = (parameters) => {
+  const { pn, p } = parameters;
+  if (pn === 1) {
+    return { x: -p / 2, y: 0 };
+  }
+  return { x: p / 2, y: 0 };
+};
+var sodWithoutParsing4 = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getSodCoords4({
+      pn: i,
+      p: Number.parseFloat(parameters.p)
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  return pads;
+};
+// src/fn/sod923.ts
+var sod_def5 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("1.4mm"),
@@ -33822,7 +33884,7 @@ var sod_def4 = z.object({
   p: z.string().default("1.2mm")
 });
 var sod923 = (raw_params) => {
-  const parameters = sod_def4.parse(raw_params);
+  const parameters = sod_def5.parse(raw_params);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
@@ -33844,68 +33906,6 @@ var sod923 = (raw_params) => {
       {
         x: length.parse(parameters.p) / 2 + 0.15,
         y: -length.parse(parameters.h) / 2
-      }
-    ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: ""
-  };
-  return {
-    circuitJson: sodWithoutParsing4(parameters).concat(silkscreenLine, silkscreenRefText),
-    parameters
-  };
-};
-var getSodCoords4 = (parameters) => {
-  const { pn, p } = parameters;
-  if (pn === 1) {
-    return { x: -p / 2, y: 0 };
-  } else {
-    return { x: p / 2, y: 0 };
-  }
-};
-var sodWithoutParsing4 = (parameters) => {
-  const pads = [];
-  for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords4({
-      pn: i,
-      p: Number.parseFloat(parameters.p)
-    });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
-  }
-  return pads;
-};
-// src/fn/sod882.ts
-var sod_def5 = z.object({
-  fn: z.string(),
-  num_pins: z.literal(2).default(2),
-  w: z.string().default("1.3mm"),
-  h: z.string().default("0.9mm"),
-  pl: z.string().default("0.4mm"),
-  pw: z.string().default("0.7mm"),
-  p: z.string().default("0.7mm")
-});
-var sod882 = (raw_params) => {
-  const parameters = sod_def5.parse(raw_params);
-  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) + 0.1, 0.3);
-  const silkscreenLine = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      {
-        x: length.parse(parameters.p) / 2 + 0.2,
-        y: length.parse(parameters.h) / 2 + 0.2
-      },
-      {
-        x: -length.parse(parameters.w) / 2 - 0.2,
-        y: length.parse(parameters.h) / 2 + 0.2
-      },
-      {
-        x: -length.parse(parameters.w) / 2 - 0.2,
-        y: -length.parse(parameters.h) / 2 - 0.2
-      },
-      {
-        x: length.parse(parameters.p) / 2 + 0.2,
-        y: -length.parse(parameters.h) / 2 - 0.2
       }
     ],
     stroke_width: 0.1,
@@ -33935,39 +33935,39 @@ var sodWithoutParsing5 = (parameters) => {
   }
   return pads;
 };
-// src/fn/sod323f.ts
+// src/fn/sod882.ts
 var sod_def6 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("3,05mm"),
-  h: z.string().default("1.65mm"),
-  pl: z.string().default("0.6mm"),
-  pw: z.string().default("0.6mm"),
-  pad_spacing: z.string().default("2.2mm")
+  w: z.string().default("1.3mm"),
+  h: z.string().default("0.9mm"),
+  pl: z.string().default("0.4mm"),
+  pw: z.string().default("0.7mm"),
+  p: z.string().default("0.7mm")
 });
-var sod323f = (raw_params) => {
+var sod882 = (raw_params) => {
   const parameters = sod_def6.parse(raw_params);
-  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) + 0.1, 0.3);
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
-        y: length.parse(parameters.h) / 2
+        x: length.parse(parameters.p) / 2 + 0.2,
+        y: length.parse(parameters.h) / 2 + 0.2
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: length.parse(parameters.h) / 2
+        y: length.parse(parameters.h) / 2 + 0.2
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: -length.parse(parameters.h) / 2
+        y: -length.parse(parameters.h) / 2 - 0.2
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
-        y: -length.parse(parameters.h) / 2
+        x: length.parse(parameters.p) / 2 + 0.2,
+        y: -length.parse(parameters.h) / 2 - 0.2
       }
     ],
     stroke_width: 0.1,
@@ -33979,11 +33979,11 @@ var sod323f = (raw_params) => {
   };
 };
 var getSodCoords6 = (parameters) => {
-  const { pn, pad_spacing } = parameters;
+  const { pn, p } = parameters;
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 };
+    return { x: -p / 2, y: 0 };
   } else {
-    return { x: pad_spacing / 2, y: 0 };
+    return { x: p / 2, y: 0 };
   }
 };
 var sodWithoutParsing6 = (parameters) => {
@@ -33991,23 +33991,23 @@ var sodWithoutParsing6 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords6({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+      p: Number.parseFloat(parameters.p)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
-// src/fn/sod123f.ts
+// src/fn/sod323f.ts
 var sod_def7 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("4.4mm"),
-  h: z.string().default("2.1mm"),
-  pl: z.string().default("1.2mm"),
-  pw: z.string().default("1.2mm"),
-  p: z.string().default("2.9mm")
+  w: z.string().default("3,05mm"),
+  h: z.string().default("1.65mm"),
+  pl: z.string().default("0.6mm"),
+  pw: z.string().default("0.6mm"),
+  pad_spacing: z.string().default("2.2mm")
 });
-var sod123f = (raw_params) => {
+var sod323f = (raw_params) => {
   const parameters = sod_def7.parse(raw_params);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
   const silkscreenLine = {
@@ -34016,7 +34016,7 @@ var sod123f = (raw_params) => {
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.p) / 2,
+        x: length.parse(parameters.pad_spacing) / 2,
         y: length.parse(parameters.h) / 2
       },
       {
@@ -34028,7 +34028,7 @@ var sod123f = (raw_params) => {
         y: -length.parse(parameters.h) / 2
       },
       {
-        x: length.parse(parameters.p) / 2,
+        x: length.parse(parameters.pad_spacing) / 2,
         y: -length.parse(parameters.h) / 2
       }
     ],
@@ -34041,11 +34041,11 @@ var sod123f = (raw_params) => {
   };
 };
 var getSodCoords7 = (parameters) => {
-  const { pn, p } = parameters;
+  const { pn, pad_spacing } = parameters;
   if (pn === 1) {
-    return { x: -p / 2, y: 0 };
+    return { x: -pad_spacing / 2, y: 0 };
   } else {
-    return { x: p / 2, y: 0 };
+    return { x: pad_spacing / 2, y: 0 };
   }
 };
 var sodWithoutParsing7 = (parameters) => {
@@ -34053,23 +34053,23 @@ var sodWithoutParsing7 = (parameters) => {
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords7({
       pn: i,
-      p: Number.parseFloat(parameters.p)
+      pad_spacing: Number.parseFloat(parameters.pad_spacing)
     });
     pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
-// src/fn/sod723.ts
+// src/fn/sod123f.ts
 var sod_def8 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("1.80mm"),
-  h: z.string().default("1.00mm"),
-  pl: z.string().default("0.66mm"),
-  pw: z.string().default("0.5mm"),
-  p: z.string().default("0.8mm")
+  w: z.string().default("4.4mm"),
+  h: z.string().default("2.1mm"),
+  pl: z.string().default("1.2mm"),
+  pw: z.string().default("1.2mm"),
+  p: z.string().default("2.9mm")
 });
-var sod723 = (raw_params) => {
+var sod123f = (raw_params) => {
   const parameters = sod_def8.parse(raw_params);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
   const silkscreenLine = {
@@ -34082,11 +34082,11 @@ var sod723 = (raw_params) => {
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.1,
+        x: -length.parse(parameters.w) / 2 - 0.2,
         y: -length.parse(parameters.h) / 2
       },
       {
@@ -34121,19 +34121,19 @@ var sodWithoutParsing8 = (parameters) => {
   }
   return pads;
 };
-// src/fn/sod128.ts
+// src/fn/sod723.ts
 var sod_def9 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("6.2mm"),
-  h: z.string().default("3.4mm"),
-  pl: z.string().default("1.4mm"),
-  pw: z.string().default("2.1mm"),
-  p: z.string().default("4.4mm")
+  w: z.string().default("1.80mm"),
+  h: z.string().default("1.00mm"),
+  pl: z.string().default("0.66mm"),
+  pw: z.string().default("0.5mm"),
+  p: z.string().default("0.8mm")
 });
-var sod128 = (raw_params) => {
+var sod723 = (raw_params) => {
   const parameters = sod_def9.parse(raw_params);
-  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) / 2 + 0.4, 0.3);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -34144,11 +34144,11 @@ var sod128 = (raw_params) => {
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
+        x: -length.parse(parameters.w) / 2 - 0.1,
         y: length.parse(parameters.h) / 2
       },
       {
-        x: -length.parse(parameters.w) / 2 - 0.2,
+        x: -length.parse(parameters.w) / 2 - 0.1,
         y: -length.parse(parameters.h) / 2
       },
       {
@@ -34176,6 +34176,68 @@ var sodWithoutParsing9 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords9({
+      pn: i,
+      p: Number.parseFloat(parameters.p)
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  return pads;
+};
+// src/fn/sod128.ts
+var sod_def10 = z.object({
+  fn: z.string(),
+  num_pins: z.literal(2).default(2),
+  w: z.string().default("6.2mm"),
+  h: z.string().default("3.4mm"),
+  pl: z.string().default("1.4mm"),
+  pw: z.string().default("2.1mm"),
+  p: z.string().default("4.4mm")
+});
+var sod128 = (raw_params) => {
+  const parameters = sod_def10.parse(raw_params);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) / 2 + 0.4, 0.3);
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: -length.parse(parameters.h) / 2
+      },
+      {
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2
+      }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  return {
+    circuitJson: sodWithoutParsing10(parameters).concat(silkscreenLine, silkscreenRefText),
+    parameters
+  };
+};
+var getSodCoords10 = (parameters) => {
+  const { pn, p } = parameters;
+  if (pn === 1) {
+    return { x: -p / 2, y: 0 };
+  } else {
+    return { x: p / 2, y: 0 };
+  }
+};
+var sodWithoutParsing10 = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getSodCoords10({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -34336,7 +34398,7 @@ var miniMelfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sod882d.ts
-var sod_def10 = z.object({
+var sod_def11 = z.object({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("1.90mm"),
@@ -34346,7 +34408,7 @@ var sod_def10 = z.object({
   p: z.string().default("0.8mm")
 });
 var sod882d = (raw_params) => {
-  const parameters = sod_def10.parse(raw_params);
+  const parameters = sod_def11.parse(raw_params);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h) + 0.1, 0.3);
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
@@ -34374,11 +34436,11 @@ var sod882d = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   return {
-    circuitJson: sodWithoutParsing10(parameters).concat(silkscreenLine, silkscreenRefText),
+    circuitJson: sodWithoutParsing11(parameters).concat(silkscreenLine, silkscreenRefText),
     parameters
   };
 };
-var getSodCoords10 = (parameters) => {
+var getSodCoords11 = (parameters) => {
   const { pn, p } = parameters;
   if (pn === 1) {
     return { x: -p / 2, y: 0 };
@@ -34386,10 +34448,10 @@ var getSodCoords10 = (parameters) => {
     return { x: p / 2, y: 0 };
   }
 };
-var sodWithoutParsing10 = (parameters) => {
+var sodWithoutParsing11 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords10({
+    const { x, y } = getSodCoords11({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -34939,6 +35001,22 @@ var fp = footprinter;
 
 // gallery/content.ts
 var content_default = [
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="136.75213675213666" y="156.4102564102564" width="526.4957264957266" height="287.1794871794872"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="184.61538461538458" y="217.94871794871796" width="164.1025641025641" height="164.1025641025641"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="581.1965811965811" y="217.94871794871796" width="164.1025641025641" height="164.1025641025641"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 663.2478632478632 156.4102564102564 L 136.75213675213666 156.4102564102564 L 136.75213675213666 443.5897435897436 L 663.2478632478632 443.5897435897436" stroke-width="13.675213675213676" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="41.02564102564102" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,464.9572649572649,81.19658119658118)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "sod123w"
+  },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
               .boundary { fill: #000; }
