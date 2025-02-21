@@ -1,45 +1,32 @@
 import {
-  length,
-  type AnySoupElement,
+  type AnyCircuitElement,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
-export const to220_def = z
-  .object({
-    fn: z
-      .string()
-      .default("to220_3")
-      .refine((val) => /^to220_\d+$/.test(val), {
-        message:
-          "Invalid format. Expected 'to220_N' where N is the number of pins.",
-      }),
-    p: length.optional().default("5.0mm"),
-    id: length.optional().default("1.0mm"),
-    od: length.optional().default("1.9mm"),
-    w: length.optional().default("13mm"),
-    h: length.optional().default("7mm"),
-  })
-  .transform((a) => {
-    const match = a.fn.match(/^to220_(\d+)$/)
-    const numPins = match ? parseInt(match[1], 10) : 3
-
-    return {
-      ...a,
-      numPins,
-      fn: "to220",
-    }
-  })
+export const to220_def = z.object({
+  fn: z.string(),
+  p: length.optional().default("5.0mm"),
+  id: length.optional().default("1.0mm"),
+  od: length.optional().default("1.9mm"),
+  w: length.optional().default("13mm"),
+  h: length.optional().default("7mm"),
+  num_pins: z.number().optional(),
+  string: z.string().optional(),
+})
 
 export type To220Def = z.input<typeof to220_def>
 
 export const to220 = (
   raw_params: To220Def,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { fn, id, od, w, h, numPins } = parameters
+  const { fn, id, od, w, h, string } = parameters
+
+  const numPins = Number.parseInt(string?.split("_")[1] ?? "3")
 
   const holeY = -1
   const halfWidth = w / 2
@@ -118,7 +105,7 @@ export const to220 = (
       silkscreenBody,
       horizontalLine,
       ...verticalLines,
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
     ],
     parameters: { ...parameters, p: computedPitch },
   }
