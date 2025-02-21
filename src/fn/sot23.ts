@@ -1,21 +1,29 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sot23_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(3).default(3),
+  num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
   pl: z.string().default("0.8mm"),
   pw: z.string().default("0.764mm"),
+  string: z.string().optional(),
 })
 
 export const sot23 = (
   raw_params: z.input<typeof sot23_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = sot23_def.parse(raw_params)
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  const match = raw_params.string?.match(/^sot23_(\d+)/)
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+
+  const parameters = sot23_def.parse({
+    ...raw_params,
+    num_pins: numPins,
+  })
+
   return {
     circuitJson: sot23WithoutParsing(parameters),
     parameters: parameters,
@@ -33,15 +41,16 @@ export const getCcwSot23Coords = (parameters: {
 
   if (pn === 1) {
     return { x: -1.7, y: 0 }
-  } else if (pn === 2) {
-    return { x: 1.7, y: -0.95 }
-  } else {
-    return { x: 1.7, y: 0.95 }
   }
+  if (pn === 2) {
+    return { x: 1.7, y: -0.95 }
+  }
+
+  return { x: 1.7, y: 0.95 }
 }
 
 export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23Coords({
@@ -63,8 +72,8 @@ export const sot23WithoutParsing = (parameters: z.infer<typeof sot23_def>) => {
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    parseInt(parameters.h),
+    Number.parseInt(parameters.h),
     0.3,
   )
-  return [...pads, silkscreenRefText as AnySoupElement]
+  return [...pads, silkscreenRefText as AnyCircuitElement]
 }
