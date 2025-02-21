@@ -32,8 +32,8 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const maxHoleWidth = w * 0.6
-  const minPitch = 1.5
+  const minPitch = 2.5
+  const maxHoleWidth = w * 0.4
   const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
 
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
