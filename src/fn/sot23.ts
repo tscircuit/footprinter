@@ -21,7 +21,6 @@ export const sot23_6_or_8_def = extendSoicDef({
   legsoutside: true,
 })
 
-
 export const sot23 = (
   raw_params: z.input<typeof sot23_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -29,7 +28,10 @@ export const sot23 = (
   const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
   if (numPins === 6 || numPins === 8) {
-    const parameters = sot23_6_or_8_def.parse({ ...raw_params, num_pins: numPins })
+    const parameters = sot23_6_or_8_def.parse({
+      ...raw_params,
+      num_pins: numPins,
+    })
     return {
       circuitJson: soicWithoutParsing(parameters),
       parameters: parameters,
@@ -127,9 +129,7 @@ export const getCcwSot235Coords = (parameters: {
   throw new Error("Invalid pin number")
 }
 
-export const sot23_5 = (
-  parameters: z.infer<typeof sot23_def>,
-) => {
+export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({

@@ -23,12 +23,8 @@ test("sot23_3", () => {
   expect(smtpad.length).toBe(3)
 
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "sot23_3",
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_3")
 })
-
 
 test("sot23_5", () => {
   const circuitJson = fp.string("sot23_5").circuitJson()
@@ -49,8 +45,5 @@ test("sot23_6", () => {
   expect(smtpad.length).toBe(6)
 
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "sot23_6",
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_6")
 })
