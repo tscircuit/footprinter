@@ -26778,8 +26778,6 @@ __export(exports_fn, {
   sot723: () => sot723,
   sot563: () => sot563,
   sot363: () => sot363,
-  sot236: () => sot236,
-  sot235: () => sot235,
   sot23: () => sot23,
   sop8: () => sop8,
   soic: () => soic,
@@ -32506,19 +32504,6 @@ var tssop = (raw_params) => {
     parameters
   };
 };
-// src/fn/sot236.ts
-var sot236_def = extendSoicDef({
-  p: "0.95mm",
-  w: "1.6mm",
-  legsoutside: true
-});
-var sot236 = (raw_params) => {
-  const parameters = sot236_def.parse({ ...raw_params, num_pins: 6 });
-  return {
-    circuitJson: soicWithoutParsing(parameters),
-    parameters
-  };
-};
 // src/fn/sot363.ts
 var sot363_def = extendSoicDef({});
 var sot363 = (raw_params) => {
@@ -32539,30 +32524,61 @@ var sot363 = (raw_params) => {
 // src/fn/sot23.ts
 var sot23_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(3).default(3),
+  num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
   pl: z.string().default("0.8mm"),
-  pw: z.string().default("0.764mm")
+  pw: z.string().default("0.764mm"),
+  p: z.string().default("0.95mm"),
+  string: z.string().optional()
+});
+var sot23_6_or_8_def = extendSoicDef({
+  p: "0.95mm",
+  w: "1.6mm",
+  legsoutside: true
 });
 var sot23 = (raw_params) => {
-  const parameters = sot23_def.parse(raw_params);
-  return {
-    circuitJson: sot23WithoutParsing(parameters),
-    parameters
-  };
+  const match = raw_params.string?.match(/^sot23_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1], 10) : 3;
+  if (numPins === 6 || numPins === 8) {
+    const parameters2 = sot23_6_or_8_def.parse({
+      ...raw_params,
+      num_pins: numPins
+    });
+    return {
+      circuitJson: soicWithoutParsing(parameters2),
+      parameters: parameters2
+    };
+  }
+  const parameters = sot23_def.parse({
+    ...raw_params,
+    num_pins: numPins
+  });
+  if (parameters.num_pins === 3) {
+    return {
+      circuitJson: sot23_3(parameters),
+      parameters
+    };
+  }
+  if (parameters.num_pins === 5) {
+    return {
+      circuitJson: sot23_5(parameters),
+      parameters
+    };
+  }
+  throw new Error("Invalid number of pins");
 };
 var getCcwSot23Coords = (parameters) => {
   const { pn, w, h, pl } = parameters;
   if (pn === 1) {
     return { x: -1.7, y: 0 };
-  } else if (pn === 2) {
-    return { x: 1.7, y: -0.95 };
-  } else {
-    return { x: 1.7, y: 0.95 };
   }
+  if (pn === 2) {
+    return { x: 1.7, y: -0.95 };
+  }
+  return { x: 1.7, y: 0.95 };
 };
-var sot23WithoutParsing = (parameters) => {
+var sot23_3 = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23Coords({
@@ -32574,8 +32590,103 @@ var sot23WithoutParsing = (parameters) => {
     });
     pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
-  const silkscreenRefText = silkscreenRef(0, parseInt(parameters.h), 0.3);
+  const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h), 0.3);
   return [...pads, silkscreenRefText];
+};
+var getCcwSot235Coords = (parameters) => {
+  const { p, h, pn } = parameters;
+  if (pn === 1) {
+    return { x: -h / 2 - 0.5, y: p };
+  }
+  if (pn === 2) {
+    return { x: -h / 2 - 0.5, y: 0 };
+  }
+  if (pn === 3) {
+    return { x: -h / 2 - 0.5, y: -p };
+  }
+  if (pn === 4) {
+    return { x: h / 2 + 0.5, y: -p };
+  }
+  if (pn === 5) {
+    return { x: h / 2 + 0.5, y: p };
+  }
+  throw new Error("Invalid pin number");
+};
+var sot23_5 = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getCcwSot235Coords({
+      h: Number.parseFloat(parameters.h),
+      p: Number.parseFloat(parameters.p),
+      pn: i
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  const width = (parameters.num_pins + 1) / 2 * Number.parseFloat(parameters.p);
+  const height = Number.parseFloat(parameters.h);
+  const silkscreenPath1 = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
+      { x: width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 }
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.05
+  };
+  const silkscreenPath2 = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
+      { x: width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 }
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.05
+  };
+  const silkscreenRefText = silkscreenRef(0, height + 0.3, 0.3);
+  const pin1Position = getCcwSot235Coords({
+    h: Number.parseFloat(parameters.h),
+    p: Number.parseFloat(parameters.p),
+    pn: 1
+  });
+  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5;
+  const triangleHeight = 0.7;
+  const triangleWidth = 0.3;
+  const pin1Indicator = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y + triangleWidth / 2
+      },
+      {
+        x: pin1Position.x - triangleHeight / 2,
+        y: pin1Position.y - triangleWidth / 2
+      },
+      {
+        x: pin1Position.x + triangleHeight / 2,
+        y: pin1Position.y
+      }
+    ],
+    stroke_width: 0.05
+  };
+  return [
+    ...pads,
+    silkscreenRefText,
+    silkscreenPath1,
+    silkscreenPath2,
+    pin1Indicator
+  ];
 };
 // src/helpers/corner.ts
 var CORNERS = [
@@ -33278,117 +33389,6 @@ var stampreceiver = (raw_params) => {
 var lqfp = (parameters) => {
   parameters.legsoutside = true;
   return quad(parameters);
-};
-// src/fn/sot235.ts
-var sot235_def = z.object({
-  fn: z.string(),
-  num_pins: z.literal(5).default(5),
-  h: z.string().default("1.6mm"),
-  pl: z.string().default("1mm"),
-  pw: z.string().default("0.7mm"),
-  p: z.string().default("0.95mm")
-});
-var sot235 = (raw_params) => {
-  const parameters = sot235_def.parse(raw_params);
-  return {
-    circuitJson: sot23_5WithoutParsing(parameters),
-    parameters
-  };
-};
-var getCcwSot235Coords = (parameters) => {
-  const { p, h, pn } = parameters;
-  if (pn === 1) {
-    return { x: -h / 2 - 0.5, y: p };
-  }
-  if (pn === 2) {
-    return { x: -h / 2 - 0.5, y: 0 };
-  }
-  if (pn === 3) {
-    return { x: -h / 2 - 0.5, y: -p };
-  }
-  if (pn === 4) {
-    return { x: h / 2 + 0.5, y: -p };
-  }
-  if (pn === 5) {
-    return { x: h / 2 + 0.5, y: p };
-  }
-  throw new Error("Invalid pin number");
-};
-var sot23_5WithoutParsing = (parameters) => {
-  const pads = [];
-  for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getCcwSot235Coords({
-      h: Number.parseFloat(parameters.h),
-      p: Number.parseFloat(parameters.p),
-      pn: i
-    });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
-  }
-  const width = (parameters.num_pins + 1) / 2 * Number.parseFloat(parameters.p);
-  const height = Number.parseFloat(parameters.h);
-  const silkscreenPath1 = {
-    layer: "top",
-    pcb_component_id: "",
-    pcb_silkscreen_path_id: "silkscreen_path_1",
-    route: [
-      { x: -width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
-      { x: width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 }
-    ],
-    type: "pcb_silkscreen_path",
-    stroke_width: 0.05
-  };
-  const silkscreenPath2 = {
-    layer: "top",
-    pcb_component_id: "",
-    pcb_silkscreen_path_id: "silkscreen_path_2",
-    route: [
-      { x: -width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
-      { x: width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 }
-    ],
-    type: "pcb_silkscreen_path",
-    stroke_width: 0.05
-  };
-  const silkscreenRefText = silkscreenRef(0, height + 0.3, 0.3);
-  const pin1Position = getCcwSot235Coords({
-    h: Number.parseFloat(parameters.h),
-    p: Number.parseFloat(parameters.p),
-    pn: 1
-  });
-  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5;
-  const triangleHeight = 0.7;
-  const triangleWidth = 0.3;
-  const pin1Indicator = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    pcb_silkscreen_path_id: "pin1_indicator",
-    route: [
-      {
-        x: pin1Position.x + triangleHeight / 2,
-        y: pin1Position.y
-      },
-      {
-        x: pin1Position.x - triangleHeight / 2,
-        y: pin1Position.y + triangleWidth / 2
-      },
-      {
-        x: pin1Position.x - triangleHeight / 2,
-        y: pin1Position.y - triangleWidth / 2
-      },
-      {
-        x: pin1Position.x + triangleHeight / 2,
-        y: pin1Position.y
-      }
-    ],
-    stroke_width: 0.05
-  };
-  return [
-    ...pads,
-    silkscreenRefText,
-    silkscreenPath1,
-    silkscreenPath2,
-    pin1Indicator
-  ];
 };
 // src/fn/breakoutheaders.ts
 var breakoutheaders_def = z.object({
@@ -35021,6 +35021,38 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="148.1481481481481" y="159.25925925925927" width="503.70370370370364" height="281.4814814814815"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="243.4074074074074" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="384.14814814814815" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="102.66666666666667" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,399.99999999999994,3.7037037037036953)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "sot23_3"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="243.2160804020101" y="120.60301507537687" width="313.5678391959799" height="358.7939698492462"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="149.2462311557789" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="263.81909547738695" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="378.391959798995" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="378.391959798995" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="263.81909547738695" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="149.2462311557789" width="120.60301507537689" height="72.36180904522612"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 315.5778894472362 479.3969849246231 L 315.5778894472362 120.60301507537687 L 371.8592964824121 120.60301507537687 L 374.0013799896322 131.3719960866558 L 380.1015177153535 140.50149736002342 L 389.23101898872113 146.60163508574476 L 400.00000000000006 148.74371859296483 L 410.768981011279 146.60163508574476 L 419.8984822846466 140.50149736002342 L 425.9986200103679 131.3719960866558 L 428.140703517588 120.60301507537687 L 484.4221105527639 120.60301507537687 L 484.4221105527639 479.3969849246231 L 315.5778894472362 479.3969849246231 Z" stroke-width="12.06030150753769" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="29.899497487437188" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400.00000000000006,72.3618090452261)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "sot23_6"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="136.75213675213666" y="156.4102564102564" width="526.4957264957266" height="287.1794871794872"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="184.61538461538458" y="217.94871794871796" width="164.1025641025641" height="164.1025641025641"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="581.1965811965811" y="217.94871794871796" width="164.1025641025641" height="164.1025641025641"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 663.2478632478632 156.4102564102564 L 136.75213675213666 156.4102564102564 L 136.75213675213666 443.5897435897436 L 663.2478632478632 443.5897435897436" stroke-width="13.675213675213676" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="41.02564102564102" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,464.9572649572649,81.19658119658118)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "sod123w"
   },
@@ -36333,8 +36365,8 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="243.2160804020101" y="120.60301507537687" width="313.5678391959799" height="358.7939698492462"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="149.2462311557789" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="263.81909547738695" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="182.91457286432166" y="378.391959798995" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="378.391959798995" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="263.81909547738695" width="120.60301507537689" height="72.36180904522612"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.48241206030156" y="149.2462311557789" width="120.60301507537689" height="72.36180904522612"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 315.5778894472362 479.3969849246231 L 315.5778894472362 120.60301507537687 L 371.8592964824121 120.60301507537687 L 374.0013799896322 131.3719960866558 L 380.1015177153535 140.50149736002342 L 389.23101898872113 146.60163508574476 L 400.00000000000006 148.74371859296483 L 410.768981011279 146.60163508574476 L 419.8984822846466 140.50149736002342 L 425.9986200103679 131.3719960866558 L 428.140703517588 120.60301507537687 L 484.4221105527639 120.60301507537687 L 484.4221105527639 479.3969849246231 L 315.5778894472362 479.3969849246231 Z" stroke-width="12.06030150753769" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="29.899497487437188" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400.00000000000006,72.3618090452261)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
-    title: "sot236"
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="188.4615384615385" y="153.84615384615384" width="423.07692307692304" height="292.3076923076924"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="219.2307692307693" y="215.3846153846154" width="169.23076923076923" height="169.23076923076923"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="526.9230769230769" y="215.3846153846154" width="169.23076923076923" height="169.23076923076923"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 611.5384615384615 153.84615384615384 L 188.4615384615385 153.84615384615384 L 188.4615384615385 446.1538461538462 L 611.5384615384615 446.1538461538462" stroke-width="15.384615384615385" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="30.76923076923077" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,457.69230769230774,76.9230769230769)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "cap_1210"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
@@ -36349,8 +36381,8 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="188.4615384615385" y="153.84615384615384" width="423.07692307692304" height="292.3076923076924"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="219.2307692307693" y="215.3846153846154" width="169.23076923076923" height="169.23076923076923"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="526.9230769230769" y="215.3846153846154" width="169.23076923076923" height="169.23076923076923"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 611.5384615384615 153.84615384615384 L 188.4615384615385 153.84615384615384 L 188.4615384615385 446.1538461538462 L 611.5384615384615 446.1538461538462" stroke-width="15.384615384615385" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="30.76923076923077" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,457.69230769230774,76.9230769230769)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
-    title: "cap_1210"
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="146.7080129000248" y="96.7501860580501" width="506.5839741999503" height="406.49962788389985"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="252.74621681964777" y="171.12875217067727" width="77.40014884644009" height="73.91714214835028"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="252.74621681964777" y="263.04142892582485" width="77.40014884644009" height="73.91714214835028"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="252.74621681964777" y="354.9541056809724" width="77.40014884644009" height="73.91714214835028"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="614.5919126767551" y="354.9541056809724" width="77.40014884644009" height="73.91714214835028"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="614.5919126767551" y="171.12875217067727" width="77.40014884644009" height="73.91714214835028"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 380.4564624162739 96.7501860580501 L 564.281815926569 96.7501860580501" stroke-width="4.837509302902506" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 380.4564624162739 503.2498139419499 L 564.281815926569 503.2498139419499" stroke-width="4.837509302902506" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_2"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 214.43314314065992 208.0873232448524 L 146.7080129000248 193.57479533614492 L 146.7080129000248 222.59985115355994 L 214.43314314065992 208.0873232448524 Z" stroke-width="4.837509302902506" data-pcb-component-id="" data-pcb-silkscreen-path-id="pin1_indicator"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="29.02505581741503" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,472.36913917142147,5.879434383527666)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
+    title: "sot23_5"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
