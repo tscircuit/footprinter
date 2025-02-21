@@ -36,7 +36,6 @@ export const any_footprinter_def = z.union([
   sod_def,
   soic_def,
   sot23_def,
-  sot236_def,
   sot363_def,
   sot563_def,
   sot723_def,
