@@ -15,7 +15,7 @@ export const to220_def = z.object({
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
-  string: z.string().optional()
+  string: z.string().optional(),
 })
 
 export type To220Def = z.input<typeof to220_def>
