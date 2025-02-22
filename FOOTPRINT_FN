@@ -1,0 +1,8 @@
+const otherFootprints = {}; // Define otherFootprints
+
+const sot223 = {}; // Initialize sot223
+
+export const FOOTPRINT_FN = {
+  ...otherFootprints,  // Keep existing footprints
+  sot223, 
+};
