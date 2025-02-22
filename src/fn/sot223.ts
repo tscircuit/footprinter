@@ -7,7 +7,7 @@ import { extendSoicDef, soicWithoutParsing } from "./soic"
 export const sot223_def = z.object({
   fn: z.string(),
   num_pins: z.number().default(4),
-  w: z.string().default("8.90mm"),
+  w: z.string().default("8.50mm"),
   h: z.string().default("6.90mm"),
   pl: z.string().default("2mm"),
   pw: z.string().default("1.5mm"),
@@ -70,19 +70,19 @@ export const get2CcwSot223Coords = (parameters: {
   // Adjust coordinates based on pinout for SOT-223-4
   if (pn === 1) {
     // Pin 1 is on the left side, at the bottom-left
-    return { x: -w / 2, y: p }
+    return { x: -w / 2 + 1.1, y: p }
   }
   if (pn === 2) {
     // Pin 2 is on the left side, middle-left
-    return { x: -w / 2, y: 0 }
+    return { x: -w / 2 + 1.1, y: 0 }
   }
   if (pn === 3) {
     // Pin 3 is on the left side, at the top-left
-    return { x: -w / 2, y: -p }
+    return { x: -w / 2 + 1.1, y: -p }
   }
 
   // Pin 4 is on the right side (adjusted width and placement)
-  return { x: w / 2, y: 0 }
+  return { x: w / 2 - 1.1, y: 0 }
 }
 
 export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
@@ -115,7 +115,39 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  return [...pads, silkscreenRefText as AnyCircuitElement]
+  const width = Number.parseFloat(parameters.w) / 2 - 2.4
+  const height = Number.parseFloat(parameters.h) / 2
+  const silkscreenPath1: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -width, y: height },
+      { x: width, y: height },
+      { x: width, y: height / 2 + 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+  const silkscreenPath2: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width, y: -height },
+      { x: width, y: -height },
+      { x: width, y: -height / 2 - 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+
+  return [
+    ...pads,
+    silkscreenPath1,
+    silkscreenPath2,
+    silkscreenRefText as AnyCircuitElement,
+  ]
 }
 
 export const sot223_8_def = extendSoicDef({
@@ -132,19 +164,19 @@ export const get2CcwSot2235Coords = (parameters: {
 }) => {
   const { p, h, pn, w } = parameters
   if (pn === 1) {
-    return { x: -w / 2 - 0.5, y: p / 2 + p }
+    return { x: -w / 2 + 1.2, y: p / 2 + p }
   }
   if (pn === 2) {
-    return { x: -w / 2 - 0.5, y: p / 2 }
+    return { x: -w / 2 + 1.2, y: p / 2 }
   }
   if (pn === 3) {
-    return { x: -w / 2 - 0.5, y: -p / 2 }
+    return { x: -w / 2 + 1.2, y: -p / 2 }
   }
   if (pn === 4) {
-    return { x: -w / 2 - 0.5, y: -p / 2 - p }
+    return { x: -w / 2 + 1.2, y: -p / 2 - p }
   }
   if (pn === 5) {
-    return { x: w / 2 + 0.5, y: 0 }
+    return { x: w / 2 - 1, y: 0 }
   }
   throw new Error("Invalid pin number")
 }
@@ -183,9 +215,36 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
     )
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0)
+  const width = Number.parseFloat(parameters.w) / 2 - 2.4
+  const height = Number.parseFloat(parameters.h) / 2
+  const silkscreenPath1: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -width, y: height },
+      { x: width, y: height },
+      { x: width, y: height / 2 + 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+  const silkscreenPath2: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width, y: -height },
+      { x: width, y: -height },
+      { x: width, y: -height / 2 - 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
 
-  return [...pads, silkscreenRefText]
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
+
+  return [...pads, silkscreenPath1, silkscreenPath2, silkscreenRefText]
 }
 
 export const get2CcwSot2236Coords = (parameters: {
@@ -196,22 +255,22 @@ export const get2CcwSot2236Coords = (parameters: {
 }) => {
   const { p, h, pn, w } = parameters
   if (pn === 1) {
-    return { x: -w / 2 - 0.5, y: 2 * p }
+    return { x: -w / 2 + 1.2, y: 2 * p }
   }
   if (pn === 2) {
-    return { x: -w / 2 - 0.5, y: p }
+    return { x: -w / 2 + 1.2, y: p }
   }
   if (pn === 3) {
-    return { x: -w / 2 - 0.5, y: 0 }
+    return { x: -w / 2 + 1.2, y: 0 }
   }
   if (pn === 4) {
-    return { x: -w / 2 - 0.5, y: -p }
+    return { x: -w / 2 + 1.2, y: -p }
   }
   if (pn === 5) {
-    return { x: -w / 2 - 0.5, y: -2 * p }
+    return { x: -w / 2 + 1.2, y: -2 * p }
   }
   if (pn === 6) {
-    return { x: w / 2 + 0.5, y: 0 }
+    return { x: w / 2 - 1.175, y: 0 }
   }
   throw new Error("Invalid pin number")
 }
@@ -223,7 +282,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       h: Number.parseFloat(parameters.h),
       p: 1.3,
       pn: i,
-      w: Number.parseFloat(parameters.w),
+      w: 8.7,
     })
 
     // Apply pin width and pad length for each pin
@@ -250,7 +309,34 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
     )
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0)
+  const width = Number.parseFloat(parameters.w) / 2 - 2.4
+  const height = Number.parseFloat(parameters.h) / 2
+  const silkscreenPath1: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -width, y: height },
+      { x: width, y: height },
+      { x: width, y: height / 2 + 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+  const silkscreenPath2: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width, y: -height },
+      { x: width, y: -height },
+      { x: width, y: -height / 2 - 0.5 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
 
-  return [...pads, silkscreenRefText]
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
+
+  return [...pads, silkscreenPath1, silkscreenPath2, silkscreenRefText]
 }
