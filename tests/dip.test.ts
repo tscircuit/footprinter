@@ -37,16 +37,26 @@ test("dip4", () => {
   const circuitJson = fp.string("dip4").circuitJson() as AnyCircuitElement[]
   const json = fp.string("dip4").json()
 
-  expect(json).toMatchInlineSnapshot(`
+  expect(json).toMatchInlineSnapshot(
     {
-      "fn": "dip",
-      "id": 1,
-      "num_pins": 4,
-      "od": 1.5,
-      "p": 2.54,
-      "w": 7.62,
-    }
-  `)
+      fn: "dip",
+      id: 1,
+      num_pins: 4,
+      od: 1.5,
+      p: 2.54,
+      w: 7.62,
+    },
+    `
+{
+  "fn": "dip",
+  "id": 1,
+  "num_pins": 4,
+  "od": 1.5,
+  "p": 2.54,
+  "w": 7.62,
+}
+`,
+  )
 
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip4")
