@@ -11,12 +11,13 @@ export const pinrow_def = z
       .union([z.string(), z.number()])
       .transform((val) => Number(val))
       .optional()
-      .default(1),
-    p: length.default("0.1in"),
-    id: length.default("1.0mm"),
-    od: length.default("1.5mm"),
-    male: z.boolean().optional(),
-    female: z.boolean().optional(),
+      .default(1)
+      .describe("number of rows"),
+    p: length.default("0.1in").describe("pitch"),
+    id: length.default("1.0mm").describe("inner diameter"),
+    od: length.default("1.5mm").describe("outer diameter"),
+    male: z.boolean().optional().describe("for male pin headers"),
+    female: z.boolean().optional().describe("for female pin headers"),
   })
   .transform((data) => ({
     ...data,

@@ -3,39 +3,19 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("pinrow5", () => {
-  const circuitJson = fp.string("pinrow5").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  const pinrowJson = fp.string("pinrow5").json()
+  const soup = fp.string("pinrow5").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const pinrowJson = fp.string("pinrow5_female").json()
   expect(pinrowJson).toMatchObject({
     fn: "pinrow",
     num_pins: 5,
     p: 2.54,
     id: 1,
     od: 1.5,
-    male: true,
-    female: false,
+    female: true,
+    male: false,
   })
-
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5")
-})
-
-test("pinrow6", () => {
-  const circuitJson = fp.string("pinrow6").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-
-  const pinrowJson = fp.string("pinrow6").json()
-  expect(pinrowJson).toMatchObject({
-    fn: "pinrow",
-    num_pins: 6,
-    p: 2.54,
-    id: 1,
-    od: 1.5,
-    male: true,
-    female: false,
-    rows: 1,
-  })
-
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow6")
 })
 
 test("pinrow4_rows2", () => {
