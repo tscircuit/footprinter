@@ -67,28 +67,22 @@ export const get2CcwSot223Coords = (parameters: {
 }) => {
   const { pn, w, h, pl, p } = parameters
 
-  // Adjust coordinates based on pinout for SOT-223-4
   if (pn === 1) {
-    // Pin 1 is on the left side, at the bottom-left
     return { x: -w / 2 + 1.1, y: p }
   }
   if (pn === 2) {
-    // Pin 2 is on the left side, middle-left
     return { x: -w / 2 + 1.1, y: 0 }
   }
   if (pn === 3) {
-    // Pin 3 is on the left side, at the top-left
     return { x: -w / 2 + 1.1, y: -p }
   }
 
-  // Pin 4 is on the right side (adjusted width and placement)
   return { x: w / 2 - 1.1, y: 0 }
 }
 
 export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
 
-  // Update to handle SOT-223-4 specific pinout
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = get2CcwSot223Coords({
       num_pins: parameters.num_pins,
@@ -99,18 +93,9 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
       p: Number.parseFloat(parameters.p),
     })
 
-    // Apply 3.80mm pin width for pin 4 (i === 3) as per your instructions
     const pinWidth = i === 3 ? 3.8 : Number.parseFloat(parameters.pw)
 
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        pinWidth, // Dynamically use pin width based on pin number
-      ),
-    )
+    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), pinWidth))
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
@@ -191,12 +176,10 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       w: Number.parseFloat(parameters.w),
     })
 
-    // Apply pin width and pad length for each pin
     let pinWidth = Number.parseFloat(parameters.pw)
     let pinLength = Number.parseFloat(parameters.pl)
 
     if (i === 5) {
-      // Special handling for pin 5
       pinWidth = 3.4
       pinLength = 1.8
     } else {
@@ -204,15 +187,7 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       pinLength = 2.2
     }
 
-    pads.push(
-      rectpad(
-        i,
-        x,
-        y,
-        pinLength, // Dynamic pin length based on pin number
-        pinWidth, // Dynamic pin width based on pin number
-      ),
-    )
+    pads.push(rectpad(i, x, y, pinLength, pinWidth))
   }
 
   const width = Number.parseFloat(parameters.w) / 2 - 2.4
@@ -285,12 +260,10 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       w: 8.7,
     })
 
-    // Apply pin width and pad length for each pin
     let pinWidth = Number.parseFloat(parameters.pw)
     let pinLength = Number.parseFloat(parameters.pl)
 
     if (i === 6) {
-      // Special handling for pin 5
       pinWidth = 3.4
       pinLength = 2.15
     } else {
@@ -298,15 +271,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       pinLength = 2.2
     }
 
-    pads.push(
-      rectpad(
-        i,
-        x,
-        y,
-        pinLength, // Dynamic pin length based on pin number
-        pinWidth, // Dynamic pin width based on pin number
-      ),
-    )
+    pads.push(rectpad(i, x, y, pinLength, pinWidth))
   }
 
   const width = Number.parseFloat(parameters.w) / 2 - 2.4
