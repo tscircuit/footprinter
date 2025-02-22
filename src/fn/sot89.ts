@@ -3,10 +3,9 @@ import { rectpad } from "../helpers/rectpad"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
-// SOT89 Default Definition
 export const sot89_def = z.object({
   fn: z.string(),
-  num_pins: z.union([z.literal(3), z.literal(5)]).default(3), // Allow either 3 or 5 pins
+  num_pins: z.union([z.literal(3), z.literal(5)]).default(3),
   w: z.string().default("4.80mm"),
   h: z.string().default("4.80mm"),
   pl: z.string().default("1.3mm"),
@@ -15,7 +14,6 @@ export const sot89_def = z.object({
   string: z.string().optional(),
 })
 
-// Function to generate pads for 3 pins SOT89
 export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   const pads: AnyCircuitElement[] = []
 
@@ -23,11 +21,10 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
 
-  // Pads for the 3 pins
   pads.push(
-    rectpad(1, -length / 2, padGap, 1.3, padWidth), // Pad 1 (1.3mm)
-    rectpad(2, -length / 2 + (1.5 - 1.3) / 2, 0, 1.5, padWidth), // Middle Pad (1.5mm)
-    rectpad(3, -length / 2, -padGap, 1.3, padWidth), // Pad 3 (1.3mm)
+    rectpad(1, -length / 2, padGap, 1.3, padWidth),
+    rectpad(2, -length / 2 + (1.5 - 1.3) / 2, 0, 1.5, padWidth),
+    rectpad(3, -length / 2, -padGap, 1.3, padWidth),
   )
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
@@ -67,7 +64,6 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   ]
 }
 
-// Function to generate pads for 5 pins SOT89
 export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   const pads: AnyCircuitElement[] = []
 
@@ -75,13 +71,12 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
 
-  // Pads for the 5 pins
   pads.push(
-    rectpad(1, -1.85, -1.5, 1.5, 0.7), // Pad 1 (1.5mm)
-    rectpad(2, -1.85, 1.5, 1.5, 0.7), // Pad 2 (1.5mm)
-    rectpad(3, 0, 0, padWidth, 2), // Middle Pad (2mm)
-    rectpad(4, 1.85, -1.5, 1.5, 0.7), // Pad 4 (1.5mm)
-    rectpad(5, 1.85, 1.5, 1.5, 0.7), // Pad 5 (1.5mm)
+    rectpad(1, -1.85, -1.5, 1.5, 0.7),
+    rectpad(2, -1.85, 1.5, 1.5, 0.7),
+    rectpad(3, 0, 0, padWidth, 2),
+    rectpad(4, 1.85, -1.5, 1.5, 0.7),
+    rectpad(5, 1.85, 1.5, 1.5, 0.7),
   )
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -123,7 +118,6 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   ]
 }
 
-// SOT89 Component Generator Function
 export const sot89 = (
   raw_params: z.input<typeof sot89_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
