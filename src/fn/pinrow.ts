@@ -68,8 +68,18 @@ export const pinrow = (
     }
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 2, 0.5)
-
+  if (rows === 1) {
+    const silkscreenRefText: SilkscreenRef = silkscreenRef(0, rows * p, 0.5)
+    return {
+      circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
+      parameters,
+    }
+  }
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    ((num_pins / rows - 1) * p) / 2, // Center the silkscreen horizontally
+    rows * p, // Keep it at the top vertically
+    0.5,
+  )
   return {
     circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
     parameters,
