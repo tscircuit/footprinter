@@ -11,7 +11,7 @@ export const melf_def = z.object({
   h: z.string().default("3.35mm"),
   pl: z.string().default("1.50mm"),
   pw: z.string().default("2.70mm"),
-  pad_spacing: z.string().default("4.8mm"),
+  p: z.string().default("4.8mm"),
 })
 
 export const melf = (
@@ -32,7 +32,7 @@ export const melf = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
@@ -44,7 +44,7 @@ export const melf = (
         y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: length.parse(parameters.p) / 2,
         y: -length.parse(parameters.h) / 2,
       },
     ],
@@ -63,15 +63,15 @@ export const melf = (
 
 export const getMelfCoords = (parameters: {
   pn: number
-  pad_spacing: number
+  p: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -pad_spacing / 2, y: 0 }
+    return { x: -p / 2, y: 0 }
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: pad_spacing / 2, y: 0 }
+    return { x: p / 2, y: 0 }
   }
 }
 
@@ -81,7 +81,7 @@ export const melfWithoutParsing = (parameters: z.infer<typeof melf_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getMelfCoords({
       pn: i,
-      pad_spacing: Number.parseFloat(parameters.pad_spacing),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(

@@ -3,12 +3,27 @@ import type {
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { u_curve } from "../helpers/u-curve"
-import { platedhole } from "../helpers/platedhole"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
-import { length } from "circuit-json"
+import { platedhole } from "../helpers/platedhole"
+import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+
+function convertMilToMm(value: string | number): number {
+  if (typeof value === "string") {
+    if (value.trim().toLowerCase().endsWith("mil")) {
+      // Convert mil to mm (1 mil = 0.0254 mm)
+      const num = Number.parseFloat(value)
+      return num * 0.0254
+    }
+    return Number.parseFloat(value)
+  }
+  return Number(value)
+}
+
+const lengthInMm = z
+  .union([z.string(), z.number()])
+  .transform((val) => convertMilToMm(val))
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   z
@@ -17,30 +32,34 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       num_pins: z.number().optional().default(6),
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
-      w: length.optional(),
-      p: length.default(length.parse(newDefaults.p ?? "2.54mm")),
-      id: length.optional(),
-      od: length.optional(),
+      w: lengthInMm.optional(),
+      p: lengthInMm.default(newDefaults.p ?? "2.54mm"),
+      id: lengthInMm.optional(),
+      od: lengthInMm.optional(),
     })
     .transform((v) => {
-      // Default inner diameter and outer diameter
       if (!v.id && !v.od) {
-        v.id = length.parse("1.0mm")
-        v.od = length.parse("1.5mm")
+        // Special case for 1.27mm pitch
+        if (Math.abs(v.p - 1.27) < 0.01) {
+          v.id = convertMilToMm("0.55mm") // Standard hole size for 1.27mm
+          v.od = convertMilToMm("0.95mm") // Standard pad size for 1.27mm
+        } else {
+          v.id = convertMilToMm("1.0mm")
+          v.od = convertMilToMm("1.5mm")
+        }
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
       } else if (!v.od) {
         v.od = v.id! * (1.5 / 1.0)
       }
 
-      // Default width (TODO high pin counts should probably be wide?)
       if (!v.w) {
         if (v.wide) {
-          v.w = length.parse("600mil")
+          v.w = convertMilToMm("600mil")
         } else if (v.narrow) {
-          v.w = length.parse("300mil")
+          v.w = convertMilToMm("300mil")
         } else {
-          v.w = length.parse(newDefaults.w ?? "300mil")
+          v.w = convertMilToMm(newDefaults.w ?? "300mil")
         }
       }
       return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
@@ -69,11 +88,12 @@ export const getCcwDipCoords = (
   if (isLeft) {
     // The y position starts at h/2, then goes down by gap size
     // for each pin
-    return { x: -w / 2, y: h / 2 - (pn - 1) * gs }
-  } else {
-    // The y position starts at -h/2, then goes up by gap size
-    return { x: w / 2, y: -h / 2 + (pn - ph - 1) * gs }
+    // Adding x padding (0.4) to postion the hole in the center
+    return { x: -w / 2 - 0.4, y: h / 2 - (pn - 1) * gs }
   }
+  // The y position starts at -h/2, then goes up by gap size
+  // Adding x padding (0.4) to postion the hole in the center
+  return { x: w / 2 + 0.4, y: -h / 2 + (pn - ph - 1) * gs }
 }
 
 /**
