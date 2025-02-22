@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="54.42176870748301" y="265.4421768707483" width="691.156462585034" height="69.11564625850338"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="27.2108843537415" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,265.4421768707483)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="54.42176870748301" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="54.42176870748301" cy="334.5578231292517" r="27.2108843537415"/></g><g><circle class="pcb-hole-outer" cx="192.6530612244898" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="192.6530612244898" cy="334.5578231292517" r="27.2108843537415"/></g><g><circle class="pcb-hole-outer" cx="330.8843537414966" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="330.8843537414966" cy="334.5578231292517" r="27.2108843537415"/></g><g><circle class="pcb-hole-outer" cx="469.11564625850343" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="469.11564625850343" cy="334.5578231292517" r="27.2108843537415"/></g><g><circle class="pcb-hole-outer" cx="607.3469387755102" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="607.3469387755102" cy="334.5578231292517" r="27.2108843537415"/></g><g><circle class="pcb-hole-outer" cx="745.578231292517" cy="334.5578231292517" r="40.816326530612244"/><circle class="pcb-hole-inner" cx="745.578231292517" cy="334.5578231292517" r="27.2108843537415"/></g></svg>
