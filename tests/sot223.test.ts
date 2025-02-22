@@ -26,5 +26,5 @@ test("sot223_6", () => {
 test("sot223_8", () => {
   const circuitJson = fp.string("sot223_8").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot223_8")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot223_8_new")
 })
