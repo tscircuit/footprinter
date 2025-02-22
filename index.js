@@ -33484,6 +33484,7 @@ var dfn = (raw_params) => {
 var pinrow_def = z.object({
   fn: z.string(),
   num_pins: z.number().optional().default(6),
+  rows: z.union([z.string(), z.number()]).transform((val27) => Number(val27)).optional().default(1).describe("number of rows"),
   p: length.default("0.1in").describe("pitch"),
   id: length.default("1.0mm").describe("inner diameter"),
   od: length.default("1.5mm").describe("outer diameter"),
@@ -33497,21 +33498,45 @@ var pinrow_def = z.object({
   if (data.male && data.female) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: "'male' and 'female' cannot both be true it should be male or female.",
+      message: "'male' and 'female' cannot both be true; it should be male or female.",
       path: ["male", "female"]
     });
   }
 });
 var pinrow = (raw_params) => {
   const parameters = pinrow_def.parse(raw_params);
-  const { p, id, od } = parameters;
+  const { p, id, od, rows } = parameters;
   const holes = [];
-  const ns = parameters.num_pins - 1;
-  const xoff = -(ns / 2) * p;
-  for (let i = 0;i < parameters.num_pins; i++) {
-    holes.push(platedhole(i + 1, xoff + i * p, 0, id, od));
+  const num_pins = parameters.num_pins;
+  if (rows > 1) {
+    const num_pins_per_row = Math.ceil(num_pins / rows);
+    const ySpacing = p;
+    for (let row = 0;row < rows; row++) {
+      const yoff = row * ySpacing;
+      const startPin = row * num_pins_per_row;
+      for (let pinIndex = 0;pinIndex < num_pins_per_row; pinIndex++) {
+        const pinNumber = startPin + pinIndex + 1;
+        if (pinNumber > num_pins)
+          break;
+        const xoff = pinIndex * p;
+        holes.push(platedhole(pinNumber, xoff, yoff, id, od));
+      }
+    }
+  } else {
+    const num_spaces = num_pins - 1;
+    const xoff = -(num_spaces / 2) * p;
+    for (let i = 0;i < num_pins; i++) {
+      holes.push(platedhole(i + 1, xoff + i * p, 0, id, od));
+    }
   }
-  const silkscreenRefText = silkscreenRef(0, p / 2, 0.5);
+  if (rows === 1) {
+    const silkscreenRefText2 = silkscreenRef(0, rows * p, 0.5);
+    return {
+      circuitJson: [...holes, silkscreenRefText2],
+      parameters
+    };
+  }
+  const silkscreenRefText = silkscreenRef((num_pins / rows - 1) * p / 2, rows * p, 0.5);
   return {
     circuitJson: [...holes, silkscreenRefText],
     parameters
@@ -36471,6 +36496,22 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="184.74576271186442" y="84.74576271186447" width="430.5084745762711" height="430.50847457627117"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="42.3728813559322" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,84.74576271186447)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="184.74576271186442" cy="515.2542372881356" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="184.74576271186442" cy="515.2542372881356" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="400" cy="515.2542372881356" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="400" cy="515.2542372881356" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="615.2542372881355" cy="515.2542372881356" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="615.2542372881355" cy="515.2542372881356" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="184.74576271186442" cy="300.00000000000006" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="184.74576271186442" cy="300.00000000000006" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="400" cy="300.00000000000006" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="400" cy="300.00000000000006" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="615.2542372881355" cy="300.00000000000006" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="615.2542372881355" cy="300.00000000000006" r="42.3728813559322"/></g></svg>`,
+    title: "pinrow6_female_rows2"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="146.13834788448625" y="80.59100067159162" width="507.72330423102744" height="438.8179986568167"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="105.84284754869041" y="138.41504365345864" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="105.84284754869041" y="240.76561450638005" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="105.84284754869041" y="343.1161853593015" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="105.84284754869041" y="445.4667562122229" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="613.5661517797179" y="445.4667562122229" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="613.5661517797179" y="343.1161853593015" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="613.5661517797179" y="240.76561450638005" width="80.59100067159167" height="48.354600402955"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="613.5661517797179" y="138.41504365345864" width="80.59100067159167" height="48.354600402955"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 194.49294828744124 519.4089993284083 L 194.49294828744124 112.82740094022827 L 331.4976494291471 112.82740094022827 L 336.71208037867615 139.04211558175894 L 351.56152338413176 161.26587755609657 L 373.78528535846937 176.11532056155215 L 400 181.3297515110812 L 426.2147146415307 176.11532056155215 L 448.43847661586824 161.26587755609654 L 463.28791962132385 139.04211558175894 L 468.5023505708529 112.82740094022827 L 605.5070517125588 112.82740094022827 L 605.5070517125588 519.4089993284083 L 194.49294828744124 519.4089993284083 Z" stroke-width="8.059100067159168" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="33.881799865681664" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,80.59100067159162)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "tssop8_w5.3mm_p1.27mm"
   },
@@ -36665,6 +36706,22 @@ var content_default = [
               .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="192.30769230769232" y="92.30769230769232" width="415.3846153846153" height="415.38461538461536"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 607.6923076923076 300 L 605.9154712084068 272.89071392352776 L 600.6153639215757 246.24527524793803 L 591.8826721369595 220.51959481648134 L 579.8668146321527 196.15384615384613 L 564.7733860604873 173.56493397511184 L 546.8606391695138 153.13936083048628 L 526.4350660248881 135.22661393951267 L 503.84615384615387 120.13318536784732 L 479.48040518351866 108.11732786304043 L 453.754724752062 99.38463607842425 L 427.1092860764723 94.08452879159319 L 400 92.30769230769232 L 372.8907139235278 94.08452879159319 L 346.24527524793797 99.38463607842425 L 320.51959481648134 108.11732786304043 L 296.1538461538462 120.13318536784732 L 273.5649339751119 135.22661393951267 L 253.13936083048628 153.13936083048623 L 235.22661393951273 173.56493397511179 L 220.13318536784735 196.15384615384613 L 208.11732786304046 220.51959481648134 L 199.3846360784243 246.2452752479379 L 194.08452879159324 272.89071392352776 L 192.30769230769232 299.99999999999994 L 192.30769230769232 507.6923076923077 L 607.6923076923076 507.6923076923077 L 607.6923076923076 300 Z" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="46.15384615384615" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,207.69230769230768)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="400" cy="300" r="43.84615384615385"/><circle class="pcb-hole-inner" cx="400" cy="300" r="33.230769230769226"/></g><g><circle class="pcb-hole-outer" cx="282.7692307692308" cy="417.2307692307692" r="43.84615384615385"/><circle class="pcb-hole-inner" cx="282.7692307692308" cy="417.2307692307692" r="33.230769230769226"/></g><g><circle class="pcb-hole-outer" cx="517.2307692307693" cy="417.2307692307692" r="43.84615384615385"/><circle class="pcb-hole-inner" cx="517.2307692307693" cy="417.2307692307692" r="33.230769230769226"/></g></svg>`,
     title: "to92"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="241.58004158004158" y="62.37006237006244" width="316.8399168399169" height="475.25987525987523"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="31.185031185031182" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,62.37006237006244)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="241.58004158004158" cy="537.6299376299377" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="241.58004158004158" cy="537.6299376299377" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="400" cy="537.6299376299377" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="400" cy="537.6299376299377" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="558.4199584199584" cy="537.6299376299377" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="558.4199584199584" cy="537.6299376299377" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="241.58004158004158" cy="379.2099792099792" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="241.58004158004158" cy="379.2099792099792" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="400" cy="379.2099792099792" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="400" cy="379.2099792099792" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="558.4199584199584" cy="379.2099792099792" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="558.4199584199584" cy="379.2099792099792" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="241.58004158004158" cy="220.79002079002083" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="241.58004158004158" cy="220.79002079002083" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="400" cy="220.79002079002083" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="400" cy="220.79002079002083" r="31.185031185031182"/></g><g><circle class="pcb-hole-outer" cx="558.4199584199584" cy="220.79002079002083" r="46.777546777546775"/><circle class="pcb-hole-inner" cx="558.4199584199584" cy="220.79002079002083" r="31.185031185031182"/></g></svg>`,
+    title: "pinrow9_male_rows3"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
@@ -36889,6 +36946,22 @@ var content_default = [
               .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="143.4782608695652" y="86.95652173913038" width="513.0434782608695" height="426.0869565217391"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="173.91304347826082" y="221.73913043478257" width="217.3913043478261" height="200"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="547.8260869565217" y="221.73913043478257" width="217.3913043478261" height="200"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 656.5217391304348 130.4347826086956 L 143.4782608695652 130.4347826086956 L 143.4782608695652 513.0434782608695 L 656.5217391304348 513.0434782608695" stroke-width="8.695652173913045" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" font-family="Arial, sans-serif" font-size="26.08695652173913" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,469.5652173913043,86.95652173913038)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "smb"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="292.37288135593224" y="84.74576271186447" width="215.25423728813558" height="430.50847457627117"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="42.3728813559322" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,84.74576271186447)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="292.37288135593224" cy="515.2542372881356" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="292.37288135593224" cy="515.2542372881356" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="507.6271186440678" cy="515.2542372881356" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="507.6271186440678" cy="515.2542372881356" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="292.37288135593224" cy="300.00000000000006" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="292.37288135593224" cy="300.00000000000006" r="42.3728813559322"/></g><g><circle class="pcb-hole-outer" cx="507.6271186440678" cy="300.00000000000006" r="63.5593220338983"/><circle class="pcb-hole-inner" cx="507.6271186440678" cy="300.00000000000006" r="42.3728813559322"/></g></svg>`,
+    title: "pinrow4_rows2"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
@@ -37367,7 +37440,7 @@ var content_default = [
               .pcb-silkscreen-top { stroke: #f2eda1; }
               .pcb-silkscreen-bottom { stroke: #f2eda1; }
               .pcb-silkscreen-text { fill: #f2eda1; }
-            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="65.78947368421058" y="258.22368421052636" width="668.4210526315787" height="83.55263157894734"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="32.89473684210526" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,258.22368421052636)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="65.78947368421058" cy="341.7763157894737" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="65.78947368421058" cy="341.7763157894737" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="232.8947368421053" cy="341.7763157894737" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="232.8947368421053" cy="341.7763157894737" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="400" cy="341.7763157894737" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="400" cy="341.7763157894737" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="567.1052631578947" cy="341.7763157894737" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="567.1052631578947" cy="341.7763157894737" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="734.2105263157894" cy="341.7763157894737" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="734.2105263157894" cy="341.7763157894737" r="32.89473684210526"/></g></svg>`,
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="65.78947368421058" y="216.4473684210527" width="668.4210526315787" height="167.1052631578947"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="32.89473684210526" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,216.4473684210527)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="65.78947368421058" cy="383.5526315789474" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="65.78947368421058" cy="383.5526315789474" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="232.8947368421053" cy="383.5526315789474" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="232.8947368421053" cy="383.5526315789474" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="400" cy="383.5526315789474" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="400" cy="383.5526315789474" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="567.1052631578947" cy="383.5526315789474" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="567.1052631578947" cy="383.5526315789474" r="32.89473684210526"/></g><g><circle class="pcb-hole-outer" cx="734.2105263157894" cy="383.5526315789474" r="49.34210526315789"/><circle class="pcb-hole-inner" cx="734.2105263157894" cy="383.5526315789474" r="32.89473684210526"/></g></svg>`,
     title: "pinrow5"
   },
   {
@@ -37433,6 +37506,22 @@ var content_default = [
               .pcb-silkscreen-text { fill: #f2eda1; }
             </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="180.02369923516108" y="84.0245610255306" width="439.95260152967785" height="431.9508779489389"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="272.1146181191425" y="227.53851125713675" width="67.21964882042442" height="64.19476462350532"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="272.1146181191425" y="307.36184423139076" width="67.21964882042442" height="64.19476462350532"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="272.1146181191425" y="387.1851772056448" width="67.21964882042442" height="64.19476462350532"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="586.3664763546267" y="387.1851772056448" width="67.21964882042442" height="64.19476462350532"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="586.3664763546267" y="227.53851125713675" width="67.21964882042442" height="64.19476462350532"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 383.0270386728429 162.94301411181735 L 542.6737046213508 162.94301411181735" stroke-width="4.2012280512765265" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 383.0270386728429 515.9754389744695 L 542.6737046213508 515.9754389744695" stroke-width="4.2012280512765265" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_2"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 238.84089195303244 259.6358935688894 L 180.02369923516108 247.03220941505984 L 180.02369923516108 272.239577722719 L 238.84089195303244 259.6358935688894 Z" stroke-width="4.2012280512765265" data-pcb-component-id="" data-pcb-silkscreen-path-id="pin1_indicator"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="25.20736830765916" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,462.85037164709684,84.0245610255306)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text></svg>`,
     title: "sot23_5"
+  },
+  {
+    svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
+              .boundary { fill: #000; }
+              .pcb-board { fill: none; }
+              .pcb-trace { fill: none; }
+              .pcb-hole-outer { fill: rgb(200, 52, 52); }
+              .pcb-hole-inner { fill: rgb(255, 38, 226); }
+              .pcb-pad { }
+              .pcb-boundary { fill: none; stroke: #fff; stroke-width: 0.3; }
+              .pcb-silkscreen { fill: none; }
+              .pcb-silkscreen-top { stroke: #f2eda1; }
+              .pcb-silkscreen-bottom { stroke: #f2eda1; }
+              .pcb-silkscreen-text { fill: #f2eda1; }
+            </style><rect class="boundary" x="0" y="0" width="800" height="600"/><rect class="pcb-boundary" x="337.3355263157895" y="49.34210526315786" width="125.32894736842104" height="501.3157894736842"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="24.67105263157895" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,400,49.34210526315786)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1">{REF}</text><g><circle class="pcb-hole-outer" cx="337.3355263157895" cy="550.6578947368421" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="337.3355263157895" cy="550.6578947368421" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="462.6644736842105" cy="550.6578947368421" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="462.6644736842105" cy="550.6578947368421" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="337.3355263157895" cy="425.32894736842104" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="337.3355263157895" cy="425.32894736842104" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="462.6644736842105" cy="425.32894736842104" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="462.6644736842105" cy="425.32894736842104" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="337.3355263157895" cy="300" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="337.3355263157895" cy="300" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="462.6644736842105" cy="300" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="462.6644736842105" cy="300" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="337.3355263157895" cy="174.6710526315789" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="337.3355263157895" cy="174.6710526315789" r="24.67105263157895"/></g><g><circle class="pcb-hole-outer" cx="462.6644736842105" cy="174.6710526315789" r="37.006578947368425"/><circle class="pcb-hole-inner" cx="462.6644736842105" cy="174.6710526315789" r="24.67105263157895"/></g></svg>`,
+    title: "pinrow8_rows4"
   },
   {
     svgContent: `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style>
