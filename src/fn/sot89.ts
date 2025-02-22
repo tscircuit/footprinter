@@ -20,11 +20,12 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   const padGap = Number.parseFloat(parameters.p)
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
+  const padHeight = Number.parseFloat(parameters.pl)
 
   pads.push(
-    rectpad(1, -length / 2, padGap, 1.3, padWidth),
+    rectpad(1, -length / 2, padGap, padHeight, padWidth),
     rectpad(2, -length / 2 + (1.5 - 1.3) / 2, 0, 1.5, padWidth),
-    rectpad(3, -length / 2, -padGap, 1.3, padWidth),
+    rectpad(3, -length / 2, -padGap, padHeight, padWidth),
   )
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
@@ -74,7 +75,7 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   pads.push(
     rectpad(1, -1.85, -1.5, 1.5, 0.7),
     rectpad(2, -1.85, 1.5, 1.5, 0.7),
-    rectpad(3, 0, 0, padWidth, 2),
+    rectpad(3, 0, 0, 0.8, 2),
     rectpad(4, 1.85, -1.5, 1.5, 0.7),
     rectpad(5, 1.85, 1.5, 1.5, 0.7),
   )
