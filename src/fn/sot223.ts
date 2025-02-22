@@ -19,8 +19,6 @@ export const sot223 = (
   raw_params: z.input<typeof sot223_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot223_(\d+)/)
-  console.log("params", raw_params)
-  console.log("match", match)
   const numPins = match ? Number.parseInt(match[1]!, 10) : 4
 
   if (numPins === 8) {
