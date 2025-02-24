@@ -52,12 +52,41 @@ export type Footprinter = {
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
-  pinrow: (num_pins?: number) => FootprinterParamsBuilder<"p" | "id" | "od">
+  pinrow: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"p" | "id" | "od" | "male" | "female" | "rows">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
-  sot235: () => FootprinterParamsBuilder<"h" | "p" | "pl" | "pw">
-  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  sot363: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
+  smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  ms013: () => FootprinterParamsBuilder<"w" | "p">
+  ms012: () => FootprinterParamsBuilder<"w" | "p">
   lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  vssop8: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
+  sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
@@ -108,10 +137,12 @@ export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
   // special case: 0402, 0603, etc.
-  if ((def.length === 4 || def.length === 5) && /^\d+$/.test(def))
-    def = `res${def}`
+  const modifiedDef =
+    (def.length === 4 || def.length === 5) && /^\d+$/.test(def)
+      ? `res${def}`
+      : def
 
-  const def_parts = def
+  const def_parts = modifiedDef
     .split("_")
     .map((s) => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)

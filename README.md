@@ -1,6 +1,6 @@
 # @tscircuit/footprinter
 
-[Online Gallery](https://tscircuit.github.io/footprinter/) &middot; [discord](https://tscircuit.com/join) &middot; [main tscircuit repo](https://github.com/tscircuit/tscircuit)
+[Online Gallery](https://tscircuit.github.io/footprinter/) &middot; [discord](https://tscircuit.com/join) &middot; [main tscircuit repo](https://github.com/tscircuit/tscircuit) &middot; [List of Missing Footprints](https://jlcsearch.tscircuit.com/footprint_index/list)
 
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
 
@@ -60,6 +60,8 @@ fp.dip(4).w(7.62).socket()
 ## Contributing
 
 Watch this [getting started with footprinter contribution guide!](https://blog.tscircuit.com/p/learn-how-to-contribute-to-tscircuits?utm_campaign=post&utm_medium=web)
+
+https://github.com/user-attachments/assets/72596154-1410-4b2d-9e35-0e2d1af9415f
 
 ## Footprinter Strings
 
