@@ -75,6 +75,7 @@ export type Footprinter = {
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  vson8ep: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   vssop8: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -145,7 +146,7 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split("_")
     .map((s) => {
-      const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
+      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       const [_, fn, v] = m ?? []
       if (v?.includes("?")) return null
       return { fn: m?.[1]!, v: m?.[2]! }
@@ -157,7 +158,7 @@ export const string = (def: string): Footprinter => {
   }
 
   fp.setString(def)
-
+  
   return fp
 }
 
