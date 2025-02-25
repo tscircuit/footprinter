@@ -48,13 +48,21 @@ export const vson8ep = (
     pcb_component_id: "",
     route: [
       { x: length.parse(parameters.w) / 2, y: -length.parse(parameters.h) / 2 },
-      { x: -length.parse(parameters.w) / 2, y: -length.parse(parameters.h) / 2 },
+      {
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2,
+      },
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "silkscreen_path_2",
   }
 
-  const pin1Position = getVson8epArrowCoords({ pn: 1, p: pad_spacing, w: length.parse(parameters.w), h: length.parse(parameters.h) })
+  const pin1Position = getVson8epArrowCoords({
+    pn: 1,
+    p: pad_spacing,
+    w: length.parse(parameters.w),
+    h: length.parse(parameters.h),
+  })
   const pin1MarkerPosition = {
     x: pin1Position.x - 0.4,
     y: pin1Position.y,
@@ -86,31 +94,42 @@ export const vson8ep = (
 }
 
 // Get coordinates for the 8 pins
-export const getVson8epCoords = (parameters: { pn: number; p: number; w: number }) => {
+export const getVson8epCoords = (parameters: {
+  pn: number
+  p: number
+  w: number
+}) => {
   const { pn, p, w } = parameters
   const isLeftSide = pn <= 4
-  const yOffset = ((pn - 1) % 4 - (w / 2)) * p // Arrange 4 pins on each side
+  const yOffset = (((pn - 1) % 4) - w / 2) * p // Arrange 4 pins on each side
 
   return {
-    x: isLeftSide ? -(w / 2) : (w / 2),
+    x: isLeftSide ? -(w / 2) : w / 2,
     y: yOffset,
   }
 }
 
 // get coordinates for the arrow marker
-export const getVson8epArrowCoords = (parameters: { pn: number; p: number; w: number; h: number }) => {
+export const getVson8epArrowCoords = (parameters: {
+  pn: number
+  p: number
+  w: number
+  h: number
+}) => {
   const { pn, p, w, h } = parameters
   const isLeftSide = pn <= 4
-  const yOffset = ((pn - 1) % 4 + (h / 2)) * p // Arrange 4 pins on each side
+  const yOffset = (((pn - 1) % 4) + h / 2) * p // Arrange 4 pins on each side
 
   return {
-    x: isLeftSide ? -(w / 2) : (w / 2),
+    x: isLeftSide ? -(w / 2) : w / 2,
     y: yOffset,
   }
 }
 
 // Function to generate 8 signal pads + exposed pad + thermal vias
-export const vson8epWithoutParsing = (parameters: z.infer<typeof vson8ep_def>) => {
+export const vson8epWithoutParsing = (
+  parameters: z.infer<typeof vson8ep_def>,
+) => {
   const pads: AnyCircuitElement[] = []
 
   // Create 8 signal pads
@@ -147,16 +166,16 @@ export const vson8epWithoutParsing = (parameters: z.infer<typeof vson8ep_def>) =
   const ep_w = Number.parseInt(parameters.ep_w)
   const ep_h = Number.parseInt(parameters.ep_h)
   const hd = 0.2
-    if (parameters.ThermalVias) {
-        pads.push(
-        platedhole(1, -(ep_w / 2), (ep_h / 2), hd, hd),
-        platedhole(2, -(ep_w / 2), 0, hd, hd),
-        platedhole(3, -(ep_w / 2), -(ep_h / 2), hd, hd),
-        platedhole(4, (ep_w / 2), (ep_h / 2), hd, hd),
-        platedhole(5, (ep_w / 2), 0, hd, hd),
-        platedhole(6, (ep_w / 2), -(ep_h / 2), hd, hd),
-        )
-    }
+  if (parameters.ThermalVias) {
+    pads.push(
+      platedhole(1, -(ep_w / 2), ep_h / 2, hd, hd),
+      platedhole(2, -(ep_w / 2), 0, hd, hd),
+      platedhole(3, -(ep_w / 2), -(ep_h / 2), hd, hd),
+      platedhole(4, ep_w / 2, ep_h / 2, hd, hd),
+      platedhole(5, ep_w / 2, 0, hd, hd),
+      platedhole(6, ep_w / 2, -(ep_h / 2), hd, hd),
+    )
+  }
 
   return pads
 }

@@ -158,7 +158,7 @@ export const string = (def: string): Footprinter => {
   }
 
   fp.setString(def)
-  
+
   return fp
 }
 

@@ -9,9 +9,7 @@ test("vson8ep", () => {
 })
 
 test("vson8ep_w3mm_h3mm_p0.65mm", () => {
-  const circuitJson = fp
-    .string("vson8ep_w3mm_h3mm_p0.65mm")
-    .circuitJson()
+  const circuitJson = fp.string("vson8ep_w3mm_h3mm_p0.65mm").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
@@ -20,7 +18,12 @@ test("vson8ep_w3mm_h3mm_p0.65mm", () => {
 })
 
 test("vson8ep_3x3mm_P0.65mm_EP1.65x2.4mm_ThermalVias", () => {
-  const circuitJson = fp.string("vson8ep_3x3mm_P0.65mm_EP1.65x2.4mm_ThermalVias").circuitJson()
+  const circuitJson = fp
+    .string("vson8ep_3x3mm_P0.65mm_EP1.65x2.4mm_ThermalVias")
+    .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vson8ep_3x3mm_P0.65mm_EP1.65x2.4mm_ThermalVias")
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "vson8ep_3x3mm_P0.65mm_EP1.65x2.4mm_ThermalVias",
+  )
 })
