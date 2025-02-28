@@ -1,17 +1,25 @@
-import {
-  length,
-  type AnySoupElement,
-  type PcbSilkscreenPath,
-} from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
-const generate_semicircle = (
+export const to92_def = z.object({
+  fn: z.string(),
+  num_pins: z.union([z.literal(3), z.literal(2)]).default(3),
+  p: z.string().default("1.27mm"),
+  id: z.string().default("0.72mm"),
+  od: z.string().default("0.95mm"),
+  w: z.string().default("4.5mm"),
+  h: z.string().default("4.5mm"),
+  inline: z.boolean().default(false),
+  string: z.string().optional(),
+})
+
+const generateSemicircle = (
   centerX: number,
   centerY: number,
   radius: number,
-) => {
+): { x: number; y: number }[] => {
   return Array.from({ length: 25 }, (_, i) => {
     const theta = (i / 24) * Math.PI
     return {
@@ -21,39 +29,60 @@ const generate_semicircle = (
   })
 }
 
-export const to92_def = z.object({
-  fn: z.string(),
-  p: length.optional().default("1.27mm"),
-  id: length.optional().default("0.72mm"),
-  od: length.optional().default(".95mm"),
-  w: length.optional().default("4.5mm"),
-  h: length.optional().default("4.5mm"),
-  inline: z.boolean().optional().default(false),
-})
-
-export type To92Def = z.input<typeof to92_def>
-
-export const to92 = (
-  raw_params: To92Def,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = to92_def.parse(raw_params)
+export const to92_3 = (parameters: z.infer<typeof to92_def>) => {
   const { p, id, od, w, h, inline } = parameters
-  const radius = w / 2
-  const holeY = h / 2
+  const holeY = Number.parseFloat(h) / 2
+  const padSpacing = Number.parseFloat(p)
 
-  const plated_holes = inline
+  return inline
     ? [
-        platedhole(1, -p, holeY - p, id, od),
-        platedhole(2, 0, holeY - p, id, od),
-        platedhole(3, p, holeY - p, id, od),
+        platedhole(1, -padSpacing, holeY - padSpacing, id, od),
+        platedhole(2, 0, holeY - padSpacing, id, od),
+        platedhole(3, padSpacing, holeY - padSpacing, id, od),
       ]
     : [
         platedhole(1, 0, holeY, id, od),
-        platedhole(2, -p, holeY - p, id, od),
-        platedhole(3, p, holeY - p, id, od),
+        platedhole(2, -padSpacing, holeY - padSpacing, id, od),
+        platedhole(3, padSpacing, holeY - padSpacing, id, od),
       ]
+}
 
-  const semicircle = generate_semicircle(0, h / 2, radius)
+export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
+  const { p, id, od, h } = parameters
+  const holeY = Number.parseFloat(h) / 2
+  const padSpacing = Number.parseFloat(p)
+
+  return [
+    platedhole(1, -padSpacing, holeY - padSpacing, id, od),
+    platedhole(2, padSpacing, holeY - padSpacing, id, od),
+  ]
+}
+
+export const to92 = (
+  raw_params: z.input<typeof to92_def>,
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  const match = raw_params.string?.match(/^to92_(\d+)/)
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+
+  const parameters = to92_def.parse({
+    ...raw_params,
+    num_pins: numPins,
+  })
+
+  let platedHoles: AnyCircuitElement[] = []
+
+  if (parameters.num_pins === 3) {
+    platedHoles = to92_3(parameters)
+  } else if (parameters.num_pins === 2) {
+    platedHoles = to92_2(parameters)
+  } else {
+    throw new Error("Invalid number of pins for TO-92")
+  }
+
+  const radius = Number.parseFloat(parameters.w) / 2
+  const holeY = Number.parseFloat(parameters.h) / 2
+
+  const semicircle = generateSemicircle(0, holeY, radius)
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -69,13 +98,13 @@ export const to92 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
   return {
     circuitJson: [
-      ...plated_holes,
+      ...platedHoles,
       silkscreenBody,
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
     ],
     parameters,
   }
