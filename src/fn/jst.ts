@@ -6,12 +6,14 @@ import {
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 
 export const jst_def = z.object({
   fn: z.string(),
   p: length.optional().default("2.2mm"),
   id: length.optional().default("0.70mm"),
-  od: length.optional().default("1.20mm"),
+  pw: length.optional().default("1.20mm"),
+  pl: length.optional().default("1.20mm"),
   w: length.optional().default("6mm"),
   h: length.optional().default("5mm"),
 })
@@ -22,13 +24,13 @@ export const jst = (
   raw_params: jstDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = jst_def.parse(raw_params)
-  const { p, id, od, h } = parameters
+  const { p, id, pw, pl, h } = parameters
 
   const half_p = p / 2
 
   const plated_holes = [
-    platedhole(1, -half_p, 2, id, od),
-    platedhole(2, half_p, 2, id, od),
+    platedHoleWithRectPad(1, -half_p, 2, id, pw, pl),
+    platedHoleWithRectPad(2, half_p, 2, id, pw, pl),
   ]
 
   const silkscreenBody: PcbSilkscreenPath = {
