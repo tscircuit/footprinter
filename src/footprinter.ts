@@ -66,6 +66,7 @@ export type Footprinter = {
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  jst: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "pw" | "pl">
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   ms013: () => FootprinterParamsBuilder<"w" | "p">
   ms012: () => FootprinterParamsBuilder<"w" | "p">
@@ -87,6 +88,7 @@ export type Footprinter = {
   sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
+  to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
