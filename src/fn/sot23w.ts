@@ -6,11 +6,11 @@ import { rectpad } from "../helpers/rectpad"
 export const sot23w_def = z.object({
   fn: z.string(),
   num_pins: z.number().default(3),
-  w: z.string().default("5.40mm"),
+  w: z.string().default("3.40mm"),
   h: z.string().default("3.30mm"),
-  pl: z.string().default("2mm"),
+  pl: z.string().default("1mm"),
   pw: z.string().default("0.7mm"),
-  p: z.string().default("3.40mm"),
+  p: z.string().default("1.2mm"),
   string: z.string().optional(),
 })
 
@@ -46,13 +46,13 @@ export const getCcwSot23wCoords = (parameters: {
   const { pn, w, h, pl, p } = parameters
 
   if (pn === 1) {
-    return { x: -p / 2, y: 0.95 }
+    return { x: -p, y: 0.95 }
   }
   if (pn === 2) {
-    return { x: -p / 2, y: -0.95 }
+    return { x: -p, y: -0.95 }
   }
 
-  return { x: p / 2, y: 0 }
+  return { x: p, y: 0 }
 }
 
 export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
@@ -91,9 +91,9 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
     route: [
-      { x: -width + 1.2, y: height },
-      { x: width / 2 + 0.3, y: height },
-      { x: width / 2 + 0.3, y: height / 2 },
+      { x: -width, y: height },
+      { x: width + 0.3, y: height },
+      { x: width + 0.3, y: height / 2 },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
@@ -103,9 +103,9 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_2",
     route: [
-      { x: -width + 1.2, y: -height },
-      { x: width / 2 + 0.3, y: -height },
-      { x: width / 2 + 0.3, y: -height / 2 },
+      { x: -width, y: -height },
+      { x: width + 0.3, y: -height },
+      { x: width + 0.3, y: -height / 2 },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
