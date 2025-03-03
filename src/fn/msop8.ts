@@ -10,18 +10,25 @@ import { length } from "circuit-json"
 
 export const msop8_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(8).default(8),
+  num_pins: z.union([z.literal(6), z.literal(8), z.literal(10)]).default(8),
   w: z.string().default("3.10mm"),
   h: z.string().default("3.32mm"),
   p: z.string().default("0.65mm"),
   pl: z.string().default("1.63mm"),
   pw: z.string().default("0.4mm"),
+  string: z.string().optional(),
 })
 
 export const msop8 = (
   raw_params: z.input<typeof msop8_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = msop8_def.parse(raw_params)
+  const match = raw_params.string?.match(/^msop8_(\d+)/)
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 8
+
+  const parameters = msop8_def.parse({
+    ...raw_params,
+    num_pins: numPins,
+  })
 
   const pad_spacing = length.parse(parameters.p)
 
@@ -58,7 +65,12 @@ export const msop8 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getMsop8PadCoord({ pn: 1, pad_spacing })
+  const pin1Position = getMsop8PadCoord({
+    pn: 1,
+    pad_spacing,
+    num_pins: parameters.num_pins,
+  })
+
   const pin1MarkerPosition = {
     x: pin1Position.x - 0.8,
     y: pin1Position.y,
@@ -93,12 +105,24 @@ export const msop8 = (
 export const getMsop8PadCoord = (parameters: {
   pn: number
   pad_spacing: number
+  num_pins: number
 }) => {
-  const { pn, pad_spacing } = parameters
+  const { pn, pad_spacing, num_pins } = parameters
 
-  const col = pn <= 4 ? -1 : 1
+  let col: number
+  let row: number
 
-  const row = 1.5 - ((pn - 1) % 4)
+  if (num_pins === 6) {
+    col = pn <= 3 ? -1 : 1
+    const rowIndex = (pn - 1) % 3
+    row = 1 - rowIndex
+  } else if (num_pins === 8) {
+    col = pn <= 4 ? -1 : 1
+    const rowIndex = (pn - 1) % 4
+    row = 1.5 - rowIndex
+  } else {
+    throw new Error("Invalid num_pins for MSOP package")
+  }
 
   return {
     x: col * length.parse("2mm"),
@@ -117,6 +141,7 @@ export const getMsop8Pads = (
     const { x, y } = getMsop8PadCoord({
       pn: i,
       pad_spacing,
+      num_pins: parameters.num_pins,
     })
     pads.push(
       rectpad(

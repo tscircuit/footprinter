@@ -23,13 +23,19 @@ test("msop8_p0.75mm", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "msop8_p0.75mm")
 })
 
-test("msop8_h3.32mm_pl1.63mm_pw0.4mm_p1mm", () => {
+test("msop8_h3.32mm_pl1.63mm_pw0.4mm_p0.8mm", () => {
   const circuitJson = fp
-    .string("msop8_h3.32mm_pl1.63mm_pw0.4mm_p1mm")
+    .string("msop8_h3.32mm_pl1.63mm_pw0.4mm_p0.8mm")
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "msop8_h3.32mm_pl1.63mm_pw0.4mm_p1mm",
+    "msop8_h3.32mm_pl1.63mm_pw0.4mm_p0.8mm",
   )
+})
+
+test("msop8_6", () => {
+  const circuitJson = fp.string("msop8_6").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "msop8_6")
 })
