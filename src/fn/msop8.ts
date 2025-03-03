@@ -102,6 +102,37 @@ export const msop8 = (
 }
 
 // Get coordinates for MSOP-8 pads
+// export const getMsop8PadCoord = (parameters: {
+//   pn: number
+//   pad_spacing: number
+//   num_pins: number
+// }) => {
+//   const { pn, pad_spacing, num_pins } = parameters
+//   const half=num_pins/2
+//   let col: number
+//   let row: number
+//   col = pn <= half ? -1 : 1
+//     const rowIndex = (pn - 1) % half
+//     row = 1.5 - rowIndex
+
+//   // if (num_pins === 6) {
+//   //   col = pn <= 3 ? -1 : 1
+//   //   const rowIndex = (pn - 1) % 3
+//   //   row = 1 - rowIndex
+//   // } else if (num_pins === 8) {
+//   //   col = pn <= 4 ? -1 : 1
+//   //   const rowIndex = (pn - 1) % 4
+//   //   row = 1.5 - rowIndex
+//   // } else {
+//   //   throw new Error("Invalid num_pins for MSOP package")
+//   // }
+
+//   return {
+//     x: col * length.parse("2mm"),
+//     y: row * pad_spacing,
+//   }
+// }
+
 export const getMsop8PadCoord = (parameters: {
   pn: number
   pad_spacing: number
@@ -109,20 +140,12 @@ export const getMsop8PadCoord = (parameters: {
 }) => {
   const { pn, pad_spacing, num_pins } = parameters
 
-  let col: number
-  let row: number
+  const half = num_pins / 2
+  const rowIndex = (pn - 1) % half
+  const rowOffset = num_pins < 8 ? 1 : 1.5
 
-  if (num_pins === 6) {
-    col = pn <= 3 ? -1 : 1
-    const rowIndex = (pn - 1) % 3
-    row = 1 - rowIndex
-  } else if (num_pins === 8) {
-    col = pn <= 4 ? -1 : 1
-    const rowIndex = (pn - 1) % 4
-    row = 1.5 - rowIndex
-  } else {
-    throw new Error("Invalid num_pins for MSOP package")
-  }
+  const col = pn <= half ? -1 : 1
+  const row = rowOffset - rowIndex
 
   return {
     x: col * length.parse("2mm"),
