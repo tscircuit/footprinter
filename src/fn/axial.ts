@@ -4,7 +4,6 @@ import {
   type PcbSilkscreenLine,
   type PcbSilkscreenPath,
 } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
