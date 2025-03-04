@@ -38,8 +38,8 @@ test("msop8_h3.32mm_pl1.63mm_pw0.4mm_p0.8mm", () => {
 test("msop10", () => {
   const circuitJson = fp()
     .msop(10)
-    .w("3.10mm")
     .p("0.5mm")
+    .pw("0.33mm")
     .circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "msop10")
@@ -48,8 +48,10 @@ test("msop10", () => {
 test("msop12", () => {
   const circuitJson = fp()
     .msop(12)
-    .w("3.10mm")
-    .h("5mm")
+    .h("4mm")
+    .w("3mm")
+    .pl("0.88mm")
+    .pw("0.4mm")
     .circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "msop12")
@@ -58,9 +60,11 @@ test("msop12", () => {
 test("msop16", () => {
   const circuitJson = fp()
     .msop(16)
-    .w("3.10mm")
-    .h("5mm")
+    .h("4mm")
+    .w("3mm")
     .p("0.5mm")
+    .pl("0.88mm")
+    .pw("0.3mm")
     .circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "msop16")
