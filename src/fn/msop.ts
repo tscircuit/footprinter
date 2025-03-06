@@ -4,16 +4,53 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 
+const getDefaultValues = (num_pins: number) => {
+  switch (num_pins) {
+    case 10:
+      return {
+        w: "3.10mm",
+        h: "3.32mm",
+        p: "0.5mm",
+        pl: "1.63mm",
+        pw: "0.33mm",
+      }
+    case 12:
+      return {
+        w: "3mm",
+        h: "4mm",
+        p: "0.65mm",
+        pl: "0.88mm",
+        pw: "0.4mm",
+      }
+    case 16:
+      return {
+        w: "3.10mm",
+        h: "4mm",
+        p: "0.5mm",
+        pl: "0.88mm",
+        pw: "0.3mm",
+      }
+    default:
+      return {
+        w: "3.10mm",
+        h: "3.32mm",
+        p: "0.65mm",
+        pl: "1.63mm",
+        pw: "0.4mm",
+      }
+  }
+}
+
 export const msop_def = z.object({
   fn: z.string(),
   num_pins: z
     .union([z.literal(8), z.literal(10), z.literal(12), z.literal(16)])
     .default(8),
-  w: z.string().default("3.10mm"),
-  h: z.string().default("3.32mm"),
-  p: z.string().default("0.65mm"),
-  pl: z.string().default("1.63mm"),
-  pw: z.string().default("0.4mm"),
+  w: z.string().optional(),
+  h: z.string().optional(),
+  p: z.string().optional(),
+  pl: z.string().optional(),
+  pw: z.string().optional(),
   string: z.string().optional(),
 })
 
@@ -33,28 +70,23 @@ export const msop = (
   raw_params: z.input<typeof msop_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = msop_def.parse(raw_params)
+  const defaults = getDefaultValues(parameters.num_pins)
+
+  const w = length.parse(parameters.w || defaults.w)
+  const h = length.parse(parameters.h || defaults.h)
+  const p = length.parse(parameters.p || defaults.p)
+  const pl = length.parse(parameters.pl || defaults.pl)
+  const pw = length.parse(parameters.pw || defaults.pw)
+
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getMsopCoords(
-      parameters.num_pins,
-      i + 1,
-      length.parse(parameters.w),
-      length.parse(parameters.p),
-    )
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        length.parse(parameters.pl),
-        length.parse(parameters.pw),
-      ),
-    )
+    const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p)
+    pads.push(rectpad(i + 1, x, y, pl, pw))
   }
 
-  const silkscreenBoxWidth = length.parse(parameters.w)
-  const silkscreenBoxHeight = length.parse(parameters.h)
+  const silkscreenBoxWidth = w
+  const silkscreenBoxHeight = h
 
   const silkscreenTopLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -84,7 +116,7 @@ export const msop = (
     parameters.num_pins,
     1,
     silkscreenBoxWidth,
-    length.parse(parameters.p),
+    p,
   )
 
   const pin1MarkerPosition = {
