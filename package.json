@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "test": "bun test",
+    "doc":"bun src/index.ts",
     "dev": "cd previews && npm i && npm run storybook",
     "build": "tsup ./src/index.ts --format esm --dts --sourcemap",
     "format": "biome format . --write",
@@ -37,6 +38,10 @@
   },
   "dependencies": {
     "@tscircuit/mm": "^0.0.8",
+    "dotenv": "^16.4.7",
+    "fs-extra": "^11.3.0",
+    "groq-sdk": "^0.15.0",
+    "openai": "^4.86.1",
     "zod": "^3.23.8"
   },
   "peerDependencies": {
