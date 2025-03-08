@@ -40,7 +40,7 @@ export const bga_def = z
     if (a.missing) {
       a.missing = a.missing.map((s) => {
         if (typeof s === "number") return s
-        if (s === "topleft") return "topleft"
+        if (s === "center") return "center"
         const m = s.match(/([A-Z]+)(\d+)/)
         if (!m) return s
         const Y = ALPHABET.indexOf(m[1]!)
