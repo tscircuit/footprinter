@@ -42,14 +42,14 @@ test("bga64_w10_h10_grid8x8_p1.27mm", () => {
   )
 })
 
-// test("bga footprint with top-left origin (default)", () => {
-//   const circuitJson = fp().bga(8).grid("3x3").p(1).soup()
-//   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-//   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_tl_origin")
-// })
+test("bga footprint with top-left origin (default)", () => {
+  const circuitJson = fp().bga(8).grid("3x3").p(1).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_tl_origin")
+})
 
-// test("bga footprint with bottom-right origin", () => {
-//   const circuitJson = fp().bga(8).grid("3x3").p(1).brorigin(true).soup()
-//   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-//   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_br_origin")
-// })
+test("bga footprint with bottom-right origin", () => {
+  const circuitJson = fp().bga(8).grid("3x3").p(1).brorigin(true).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_br_origin")
+})
