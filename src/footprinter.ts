@@ -82,6 +82,7 @@ export type Footprinter = {
   sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
