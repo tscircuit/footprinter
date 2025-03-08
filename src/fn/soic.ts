@@ -109,7 +109,13 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       legsoutside: parameters.legsoutside,
     })
     pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1.78mm", parameters.pw ?? "0.72mm"),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        parameters.pl ?? "1.78mm",
+        parameters.pw ?? "0.72mm",
+      ),
     )
   }
 
