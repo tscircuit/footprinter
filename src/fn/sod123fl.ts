@@ -11,7 +11,7 @@ export const sod123FL_def = z.object({
   h: z.string().default("2.1mm"),
   pl: z.string().default("0.91mm"),
   pw: z.string().default("1.22mm"),
-  p: z.string().default("2.815mm"),
+  p: z.string().default("3.146mm"),
 })
 
 export const sod123fl = (
