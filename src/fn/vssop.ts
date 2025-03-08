@@ -8,7 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 
-export const vssop10_def = z.object({
+export const vssop_def = z.object({
   fn: z.string(),
   num_pins: z.literal(10).default(10),
   w: z.string().default("3.10mm"),
@@ -19,9 +19,9 @@ export const vssop10_def = z.object({
 })
 
 export const vssop = (
-  raw_params: z.input<typeof vssop10_def>,
+  raw_params: z.input<typeof vssop_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
-  const parameters = vssop10_def.parse(raw_params)
+  const parameters = vssop_def.parse(raw_params)
 
   const pad_spacing = length.parse(parameters.p)
 
@@ -58,7 +58,7 @@ export const vssop = (
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getVssop10PadCoord({ pn: 1, pad_spacing })
+  const pin1Position = getVssopPadCoord({ pn: 1, pad_spacing })
   const pin1MarkerPosition = {
     x: pin1Position.x - 0.8,
     y: pin1Position.y,
@@ -78,7 +78,7 @@ export const vssop = (
   }
 
   return {
-    circuitJson: getVssop10Pads(parameters, pad_spacing).concat(
+    circuitJson: getVssopPads(parameters, pad_spacing).concat(
       silkscreenTopLine as AnySoupElement,
       silkscreenBottomLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
@@ -88,8 +88,8 @@ export const vssop = (
   }
 }
 
-// Get coordinates for VSSOP-10 pads
-export const getVssop10PadCoord = (parameters: {
+// Get coordinates for VSSOP pads
+export const getVssopPadCoord = (parameters: {
   pn: number
   pad_spacing: number
 }) => {
@@ -105,15 +105,15 @@ export const getVssop10PadCoord = (parameters: {
   }
 }
 
-// Generate pads for VSSOP-10
-export const getVssop10Pads = (
-  parameters: z.infer<typeof vssop10_def>,
+// Generate pads for VSSOP
+export const getVssopPads = (
+  parameters: z.infer<typeof vssop_def>,
   pad_spacing: number,
 ) => {
   const pads: AnySoupElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
-    const { x, y } = getVssop10PadCoord({
+    const { x, y } = getVssopPadCoord({
       pn: i,
       pad_spacing,
     })
