@@ -111,24 +111,25 @@ export const bga = (
     }
   }
 
-  const offset = 0.2
+  const ref_offset = Math.max(p * 0.5, 0.2)
   let refX: number, refY: number
+
   switch (parameters.origin) {
     case "tl":
-      refX = -width / 2 - offset
-      refY = height / 2 + offset
+      refX = -width / 2
+      refY = height / 2 + ref_offset
       break
     case "bl":
-      refX = -width / 2 - offset
-      refY = -height / 2 - offset
+      refX = -width / 2
+      refY = -height / 2 - ref_offset
       break
     case "tr":
-      refX = width / 2 + offset
-      refY = height / 2 + offset
+      refX = width / 2
+      refY = height / 2 + ref_offset
       break
     case "br":
-      refX = width / 2 + offset
-      refY = -height / 2 - offset
+      refX = width / 2
+      refY = -height / 2 - ref_offset
       break
   }
 
