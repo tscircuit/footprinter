@@ -10,3 +10,11 @@ test("soic8_w5.3mm_p1.27mm", () => {
     "soic8_w5.3mm_p1.27mm",
   )
 })
+test("soic8", () => {
+  const soup = fp.string("soic8").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "soic8",
+  )
+})

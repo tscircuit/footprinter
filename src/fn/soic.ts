@@ -16,7 +16,7 @@ export const extendSoicDef = (newDefaults: {
     .object({
       fn: z.string(),
       num_pins: z.number().optional().default(8),
-      w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
+      w: length.default(length.parse(newDefaults.w ?? "6.46mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.optional(),
       pl: length.optional(),
@@ -28,12 +28,12 @@ export const extendSoicDef = (newDefaults: {
     .transform((v) => {
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
-        v.pw = length.parse("0.6mm")
-        v.pl = length.parse("1.0mm")
+        v.pw = length.parse("0.72mm")
+        v.pl = length.parse("1.78mm")
       } else if (!v.pw) {
-        v.pw = v.pl! * (0.6 / 1.0)
+        v.pw = v.pl! * (0.72 / 1.78)
       } else if (!v.pl) {
-        v.pl = v.pw! * (1.0 / 0.6)
+        v.pl = v.pw! * (1.78 / 0.72)
       }
 
       return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl">
@@ -109,7 +109,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       legsoutside: parameters.legsoutside,
     })
     pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
+      rectpad(i + 1, x, y, parameters.pl ?? "1.78mm", parameters.pw ?? "0.72mm"),
     )
   }
 
