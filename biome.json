@@ -3,6 +3,9 @@
   "organizeImports": {
     "enabled": true
   },
+  "files": {
+    "maxSize": 3000000
+  },
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
