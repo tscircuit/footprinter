@@ -48,7 +48,7 @@ export const vssop_def = z.object({
   pw: z.string().optional(),
   string: z.string().optional(),
 })
- 
+
 export const vssop = (
   raw_params: z.input<typeof vssop_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
