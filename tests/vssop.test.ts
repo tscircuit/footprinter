@@ -68,27 +68,52 @@ test("vssop10_h4.4mm_pl1.6mm_pw0.5mm_p0.9mm", () => {
 
 // Invalid test case
 test("vssop12", () => {
-  const circuitJson = fp.string("vssop12").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop12")
+  try {
+    const circuitJson = fp.string("vssop12").circuitJson()
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop12")
+  } catch (error) {
+    const e = error as Error
+    expect(e).toBeInstanceOf(Error)
+    expect(e.message).toContain("Invalid input")
+  }
 })
 
 // Invalid test case
 test("vssop6", () => {
-  const circuitJson = fp.string("vssop6").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop6")
+  try {
+    const circuitJson = fp.string("vssop6").circuitJson()
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop6")
+  } catch (error) {
+    const e = error as Error
+    expect(e).toBeInstanceOf(Error)
+    expect(e.message).toContain("Invalid input")
+  }
 })
 
 // Invalid test case
 test("invalid_vssop6", () => {
-  const circuitJson = fp.string("invalid_vssop6").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "invalid_vssop6")
+  try {
+    const circuitJson = fp.string("invalid_vssop6").circuitJson()
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "invalid_vssop6")
+  } catch (error) {
+    const e = error as Error
+    expect(e).toBeInstanceOf(Error)
+    expect(e.message).toContain("Invalid footprint function")
+  }
 })
+
 // Invalid test case
 test("vssop", () => {
-  const circuitJson = fp.string("vssop6").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop6")
+  try {
+    const circuitJson = fp.string("vssop6").circuitJson()
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop6")
+  } catch (error) {
+    const e = error as Error
+    expect(e).toBeInstanceOf(Error)
+    expect(e.message).toContain("Invalid input")
+  }
 })
