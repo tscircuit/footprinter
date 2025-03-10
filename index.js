@@ -32682,6 +32682,7 @@ __export(exports_fn, {
   sod323: () => sod323,
   sod128: () => sod128,
   sod123w: () => sod123w,
+  sod123fl: () => sod123fl,
   sod123f: () => sod123f,
   sod123: () => sod123,
   sod110: () => sod110,
@@ -35419,6 +35420,68 @@ var sodWithoutParsing8 = (parameters) => {
   }
   return pads;
 };
+// src/fn/sod123fl.ts
+var sod123FL_def = z.object({
+  fn: z.string(),
+  num_pins: z.literal(2).default(2),
+  w: z.string().default("4.4mm"),
+  h: z.string().default("2.1mm"),
+  pl: z.string().default("0.91mm"),
+  pw: z.string().default("1.22mm"),
+  p: z.string().default("3.146mm")
+});
+var sod123fl = (raw_params) => {
+  const parameters = sod123FL_def.parse(raw_params);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: -length.parse(parameters.h) / 2
+      },
+      {
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2
+      }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  return {
+    circuitJson: sodWithoutParsing9(parameters).concat(silkscreenLine, silkscreenRefText),
+    parameters
+  };
+};
+var getSodCoords9 = (parameters) => {
+  const { pn, p } = parameters;
+  if (pn === 1) {
+    return { x: -p / 2, y: 0 };
+  } else {
+    return { x: p / 2, y: 0 };
+  }
+};
+var sodWithoutParsing9 = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getSodCoords9({
+      pn: i,
+      p: Number.parseFloat(parameters.p)
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  return pads;
+};
 // src/fn/sod723.ts
 var sod_def9 = z.object({
   fn: z.string(),
@@ -35458,11 +35521,11 @@ var sod723 = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   return {
-    circuitJson: sodWithoutParsing9(parameters).concat(silkscreenLine, silkscreenRefText),
+    circuitJson: sodWithoutParsing10(parameters).concat(silkscreenLine, silkscreenRefText),
     parameters
   };
 };
-var getSodCoords9 = (parameters) => {
+var getSodCoords10 = (parameters) => {
   const { pn, p } = parameters;
   if (pn === 1) {
     return { x: -p / 2, y: 0 };
@@ -35470,10 +35533,10 @@ var getSodCoords9 = (parameters) => {
     return { x: p / 2, y: 0 };
   }
 };
-var sodWithoutParsing9 = (parameters) => {
+var sodWithoutParsing10 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords9({
+    const { x, y } = getSodCoords10({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -35520,11 +35583,11 @@ var sod128 = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   return {
-    circuitJson: sodWithoutParsing10(parameters).concat(silkscreenLine, silkscreenRefText),
+    circuitJson: sodWithoutParsing11(parameters).concat(silkscreenLine, silkscreenRefText),
     parameters
   };
 };
-var getSodCoords10 = (parameters) => {
+var getSodCoords11 = (parameters) => {
   const { pn, p } = parameters;
   if (pn === 1) {
     return { x: -p / 2, y: 0 };
@@ -35532,10 +35595,10 @@ var getSodCoords10 = (parameters) => {
     return { x: p / 2, y: 0 };
   }
 };
-var sodWithoutParsing10 = (parameters) => {
+var sodWithoutParsing11 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords10({
+    const { x, y } = getSodCoords11({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -35838,11 +35901,11 @@ var sod882d = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   return {
-    circuitJson: sodWithoutParsing11(parameters).concat(silkscreenLine, silkscreenRefText),
+    circuitJson: sodWithoutParsing12(parameters).concat(silkscreenLine, silkscreenRefText),
     parameters
   };
 };
-var getSodCoords11 = (parameters) => {
+var getSodCoords12 = (parameters) => {
   const { pn, p } = parameters;
   if (pn === 1) {
     return { x: -p / 2, y: 0 };
@@ -35850,10 +35913,10 @@ var getSodCoords11 = (parameters) => {
     return { x: p / 2, y: 0 };
   }
 };
-var sodWithoutParsing11 = (parameters) => {
+var sodWithoutParsing12 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords11({
+    const { x, y } = getSodCoords12({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -36821,21 +36884,21 @@ var sod110 = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   return {
-    circuitJson: sodWithoutParsing12(parameters).concat(silkscreenLine, silkscreenRefText),
+    circuitJson: sodWithoutParsing13(parameters).concat(silkscreenLine, silkscreenRefText),
     parameters
   };
 };
-var getSodCoords12 = (parameters) => {
+var getSodCoords13 = (parameters) => {
   const { pn, p } = parameters;
   if (pn === 1) {
     return { x: -p / 2, y: 0 };
   }
   return { x: p / 2, y: 0 };
 };
-var sodWithoutParsing12 = (parameters) => {
+var sodWithoutParsing13 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords12({
+    const { x, y } = getSodCoords13({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
@@ -37193,6 +37256,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="151.61290322580646" y="129.03225806451613" width="496.7741935483872" height="341.9354838709678"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="196.77419354838713" y="258.06451612903226" width="154.83870967741936" height="154.83870967741936"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="570.967741935484" y="258.06451612903226" width="154.83870967741936" height="154.83870967741936"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 648.3870967741937 200 L 151.61290322580646 200 L 151.61290322580646 470.9677419354839 L 648.3870967741937 470.9677419354839" fill="none" stroke="#f2eda1" stroke-width="12.903225806451614" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="38.70967741935484" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,461.29032258064524,129.03225806451613)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
     title: "sod123w"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="168.56310679611647" y="116.50485436893203" width="462.87378640776706" height="366.9902912621359"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="211.90291262135923" y="290.09708737864077" width="106.01941747572815" height="142.13592233009706"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="578.4271844660194" y="290.09708737864077" width="106.01941747572815" height="142.13592233009706"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 631.4368932038835 238.83495145631065 L 168.56310679611647 238.83495145631065 L 168.56310679611647 483.49514563106794 L 631.4368932038835 483.49514563106794" fill="none" stroke="#f2eda1" stroke-width="11.650485436893204" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="34.95145631067961" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,448.1747572815534,116.50485436893203)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
+    title: "sod123fl"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="212.50000000000003" y="136.3636363636364" width="375" height="327.27272727272725"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="239.77272727272725" y="259.0909090909091" width="150" height="150"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="512.5" y="259.0909090909091" width="150" height="150"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 587.5 204.5454545454546 L 212.50000000000003 204.5454545454546 L 212.50000000000003 463.6363636363636 L 587.5 463.6363636363636" fill="none" stroke="#f2eda1" stroke-width="13.636363636363635" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.27272727272727" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,451.1363636363636,136.3636363636364)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
