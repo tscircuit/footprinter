@@ -184,8 +184,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
     };
     var eventemitter3 = createCommonjsModule(function(module2) {
       var has = Object.prototype.hasOwnProperty, prefix = "~";
-      function Events() {
-      }
+      function Events() {}
       if (Object.create) {
         Events.prototype = Object.create(null);
         if (!new Events().__proto__)
@@ -370,8 +369,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       }
       return obj;
     }
-    var noop = function noop() {
-    };
+    var noop = function noop() {};
     var State = {
       data: "state-data",
       cdata: "state-cdata",
@@ -840,8 +838,7 @@ var require_react_development = __commonJS((exports, module) => {
       this.refs = emptyObject;
       this.updater = updater || ReactNoopUpdateQueue;
     }
-    function ComponentDummy() {
-    }
+    function ComponentDummy() {}
     function PureComponent(props, context, updater) {
       this.props = props;
       this.context = context;
@@ -905,16 +902,14 @@ var require_react_development = __commonJS((exports, module) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {
-            }
+            } catch (x) {}
         }
       return null;
     }
     function isValidElementType(type) {
       return typeof type === "string" || typeof type === "function" || type === REACT_FRAGMENT_TYPE || type === REACT_PROFILER_TYPE || type === REACT_STRICT_MODE_TYPE || type === REACT_SUSPENSE_TYPE || type === REACT_SUSPENSE_LIST_TYPE || type === REACT_OFFSCREEN_TYPE || typeof type === "object" && type !== null && (type.$$typeof === REACT_LAZY_TYPE || type.$$typeof === REACT_MEMO_TYPE || type.$$typeof === REACT_CONTEXT_TYPE || type.$$typeof === REACT_CONSUMER_TYPE || type.$$typeof === REACT_FORWARD_REF_TYPE || type.$$typeof === REACT_CLIENT_REFERENCE$1 || type.getModuleId !== undefined) ? true : false;
     }
-    function disabledLog() {
-    }
+    function disabledLog() {}
     function disableLogs() {
       if (disabledDepth === 0) {
         prevLog = console.log;
@@ -1018,8 +1013,7 @@ var require_react_development = __commonJS((exports, module) => {
                 } catch (x$1) {
                   control = x$1;
                 }
-                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {
-                });
+                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {});
               }
             } catch (sample) {
               if (sample && control && typeof sample.stack === "string")
@@ -1092,8 +1086,7 @@ var require_react_development = __commonJS((exports, module) => {
             type = type._init;
             try {
               return describeUnknownElementTypeFrameInDEV(type(prototype));
-            } catch (x) {
-            }
+            } catch (x) {}
         }
       return "";
     }
@@ -1210,8 +1203,7 @@ Check the top-level render call using <` + parentType + ">.");
     function getElementKey(element, index) {
       return typeof element === "object" && element !== null && element.key != null ? (checkKeyStringCoercion(element.key), escape("" + element.key)) : index.toString(36);
     }
-    function noop$1() {
-    }
+    function noop$1() {}
     function resolveThenable(thenable) {
       switch (thenable.status) {
         case "fulfilled":
@@ -1324,8 +1316,7 @@ Your code should look like:
 See https://react.dev/link/invalid-hook-call for tips about how to debug and fix this problem.`);
       return dispatcher;
     }
-    function noop() {
-    }
+    function noop() {}
     function enqueueTask(task) {
       if (enqueueTaskImpl === null)
         try {
@@ -1788,8 +1779,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
 // node_modules/react/index.js
 var require_react = __commonJS((exports, module) => {
   var react_development = __toESM(require_react_development(), 1);
-  if (false) {
-  } else {
+  if (false) {} else {
     module.exports = react_development;
   }
 });
@@ -1987,10 +1977,8 @@ var require_scheduler_development = __commonJS((exports) => {
         currentPriorityLevel = previousPriorityLevel;
       }
     };
-    exports.unstable_pauseExecution = function() {
-    };
-    exports.unstable_requestPaint = function() {
-    };
+    exports.unstable_pauseExecution = function() {};
+    exports.unstable_requestPaint = function() {};
     exports.unstable_runWithPriority = function(priorityLevel, eventHandler) {
       switch (priorityLevel) {
         case 1:
@@ -2061,8 +2049,7 @@ var require_scheduler_development = __commonJS((exports) => {
 // node_modules/scheduler/index.js
 var require_scheduler = __commonJS((exports, module) => {
   var scheduler_development = __toESM(require_scheduler_development(), 1);
-  if (false) {
-  } else {
+  if (false) {} else {
     module.exports = scheduler_development;
   }
 });
@@ -2071,8 +2058,7 @@ var require_scheduler = __commonJS((exports, module) => {
 var require_react_dom_development = __commonJS((exports) => {
   var React = __toESM(require_react(), 1);
   (function() {
-    function noop() {
-    }
+    function noop() {}
     function testStringCoercion(value) {
       return "" + value;
     }
@@ -2254,8 +2240,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
 // node_modules/react-dom/index.js
 var require_react_dom = __commonJS((exports, module) => {
   var react_dom_development = __toESM(require_react_dom_development(), 1);
-  if (false) {
-  } else {
+  if (false) {} else {
     module.exports = react_dom_development;
   }
 });
@@ -2317,10 +2302,8 @@ var require_react_dom_client_development = __commonJS((exports) => {
     function warnInvalidContextAccess() {
       console.error("Context can only be read while React is rendering. In classes, you can read it in the render method or getDerivedStateFromProps. In function components, you can read it directly in the function body, but not inside Hooks like useReducer() or useMemo().");
     }
-    function noop$2() {
-    }
-    function warnForMissingKey() {
-    }
+    function noop$2() {}
+    function warnForMissingKey() {}
     function setToSortedString(set) {
       var array = [];
       set.forEach(function(value) {
@@ -2391,8 +2374,7 @@ var require_react_dom_client_development = __commonJS((exports) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {
-            }
+            } catch (x) {}
         }
       return null;
     }
@@ -2461,8 +2443,7 @@ var require_react_dom_client_development = __commonJS((exports) => {
       }
       return null;
     }
-    function disabledLog() {
-    }
+    function disabledLog() {}
     function disableLogs() {
       if (disabledDepth === 0) {
         prevLog = console.log;
@@ -2566,8 +2547,7 @@ var require_react_dom_client_development = __commonJS((exports) => {
                 } catch (x$1) {
                   control = x$1;
                 }
-                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {
-                });
+                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {});
               }
             } catch (sample) {
               if (sample && control && typeof sample.stack === "string")
@@ -4387,8 +4367,7 @@ This will cause a hydration error.%s`, parentTag, warnKey);
           var event = this.nativeEvent;
           event && (event.stopPropagation ? event.stopPropagation() : typeof event.cancelBubble !== "unknown" && (event.cancelBubble = true), this.isPropagationStopped = functionThatReturnsTrue);
         },
-        persist: function() {
-        },
+        persist: function() {},
         isPersistent: functionThatReturnsTrue
       });
       return SyntheticBaseEvent;
@@ -5041,8 +5020,7 @@ It can also happen if the client has a browser extension installed which messes 
       thenable = thenable.status;
       return thenable === "fulfilled" || thenable === "rejected";
     }
-    function noop$3() {
-    }
+    function noop$3() {}
     function trackUsedThenable(thenableState2, thenable, index) {
       ReactSharedInternals.actQueue !== null && (ReactSharedInternals.didUsePromise = true);
       var trackedThenables = thenableState2.thenables;
@@ -6500,8 +6478,7 @@ Incoming: %s`, currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + next
         } else
           dispatchSetStateInternal(fiber, queue, finishedState, requestUpdateLane(fiber));
       } catch (error) {
-        dispatchSetStateInternal(fiber, queue, { then: function() {
-        }, status: "rejected", reason: error }, requestUpdateLane(fiber));
+        dispatchSetStateInternal(fiber, queue, { then: function() {}, status: "rejected", reason: error }, requestUpdateLane(fiber));
       } finally {
         ReactDOMSharedInternals.p = previousPriority, ReactSharedInternals.T = prevTransition, prevTransition === null && currentTransition._updatedFibers && (fiber = currentTransition._updatedFibers.size, currentTransition._updatedFibers.clear(), 10 < fiber && console.warn("Detected a large number of updates inside startTransition. If this is due to a subscription please re-write it to use React provided hooks. Otherwise concurrent mode guarantees are off the table."));
       }
@@ -6655,8 +6632,7 @@ Incoming: %s`, currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + next
             update.eagerState = eagerState;
             if (objectIs(eagerState, currentState))
               return enqueueUpdate$1(fiber, queue, update, 0), workInProgressRoot === null && finishQueueingConcurrentUpdates(), false;
-          } catch (error) {
-          } finally {
+          } catch (error) {} finally {
             ReactSharedInternals.H = prevDispatcher;
           }
         }
@@ -11506,8 +11482,7 @@ This ensures that you're testing the behavior the user would see in the browser.
       clientText = normalizeMarkupForTextOrAttribute(clientText);
       return normalizeMarkupForTextOrAttribute(serverText) === clientText ? true : false;
     }
-    function noop$1() {
-    }
+    function noop$1() {}
     function setProp(domElement, tag, key, value, props, prevValue) {
       switch (key) {
         case "children":
@@ -13182,8 +13157,7 @@ This ensures that you're testing the behavior the user would see in the browser.
     function preloadResource(resource) {
       return resource.type === "stylesheet" && (resource.state.loading & Settled) === NotLoaded ? false : true;
     }
-    function noop() {
-    }
+    function noop() {}
     function suspendResource(hoistableRoot, resource, props) {
       if (suspendedState === null)
         throw Error("Internal React Error: suspendedState null when it was expected to exists. Please report this as a React bug.");
@@ -14751,16 +14725,11 @@ Check the render method of %s.`, getComponentNameFromFiber(current2) || "Unknown
     var ANIMATION_END = getVendorPrefixedEventName("animationend"), ANIMATION_ITERATION = getVendorPrefixedEventName("animationiteration"), ANIMATION_START = getVendorPrefixedEventName("animationstart"), TRANSITION_RUN = getVendorPrefixedEventName("transitionrun"), TRANSITION_START = getVendorPrefixedEventName("transitionstart"), TRANSITION_CANCEL = getVendorPrefixedEventName("transitioncancel"), TRANSITION_END = getVendorPrefixedEventName("transitionend"), topLevelEventsToReactNames = new Map, simpleEventPluginEvents = "abort auxClick beforeToggle cancel canPlay canPlayThrough click close contextMenu copy cut drag dragEnd dragEnter dragExit dragLeave dragOver dragStart drop durationChange emptied encrypted ended error gotPointerCapture input invalid keyDown keyPress keyUp load loadedData loadedMetadata loadStart lostPointerCapture mouseDown mouseMove mouseOut mouseOver mouseUp paste pause play playing pointerCancel pointerDown pointerMove pointerOut pointerOver pointerUp progress rateChange reset resize seeked seeking stalled submit suspend timeUpdate touchCancel touchEnd touchStart volumeChange scroll scrollEnd toggle touchMove waiting wheel".split(" "), OffscreenVisible = 1, OffscreenDetached = 2, OffscreenPassiveEffectsConnected = 4, concurrentQueues = [], concurrentQueuesIndex = 0, concurrentlyUpdatedLanes = 0, emptyContextObject = {};
     Object.freeze(emptyContextObject);
     var resolveFamily = null, failedBoundaries = null, NoMode = 0, ConcurrentMode = 1, ProfileMode = 2, StrictLegacyMode = 8, StrictEffectsMode = 16, NoStrictPassiveEffectsMode = 64, now = Scheduler.unstable_now, renderStartTime = -0, commitStartTime = -0, profilerStartTime = -1.1, profilerEffectDuration = -0, currentUpdateIsNested = false, nestedUpdateScheduled = false, ReactStrictModeWarnings = {
-      recordUnsafeLifecycleWarnings: function() {
-      },
-      flushPendingUnsafeLifecycleWarnings: function() {
-      },
-      recordLegacyContextWarning: function() {
-      },
-      flushLegacyContextWarning: function() {
-      },
-      discardPendingWarnings: function() {
-      }
+      recordUnsafeLifecycleWarnings: function() {},
+      flushPendingUnsafeLifecycleWarnings: function() {},
+      recordLegacyContextWarning: function() {},
+      flushLegacyContextWarning: function() {},
+      discardPendingWarnings: function() {}
     }, pendingComponentWillMountWarnings = [], pendingUNSAFE_ComponentWillMountWarnings = [], pendingComponentWillReceivePropsWarnings = [], pendingUNSAFE_ComponentWillReceivePropsWarnings = [], pendingComponentWillUpdateWarnings = [], pendingUNSAFE_ComponentWillUpdateWarnings = [], didWarnAboutUnsafeLifecycles = new Set;
     ReactStrictModeWarnings.recordUnsafeLifecycleWarnings = function(fiber, instance) {
       didWarnAboutUnsafeLifecycles.has(fiber.type) || (typeof instance.componentWillMount === "function" && instance.componentWillMount.__suppressDeprecationWarning !== true && pendingComponentWillMountWarnings.push(fiber), fiber.mode & StrictLegacyMode && typeof instance.UNSAFE_componentWillMount === "function" && pendingUNSAFE_ComponentWillMountWarnings.push(fiber), typeof instance.componentWillReceiveProps === "function" && instance.componentWillReceiveProps.__suppressDeprecationWarning !== true && pendingComponentWillReceivePropsWarnings.push(fiber), fiber.mode & StrictLegacyMode && typeof instance.UNSAFE_componentWillReceiveProps === "function" && pendingUNSAFE_ComponentWillReceivePropsWarnings.push(fiber), typeof instance.componentWillUpdate === "function" && instance.componentWillUpdate.__suppressDeprecationWarning !== true && pendingComponentWillUpdateWarnings.push(fiber), fiber.mode & StrictLegacyMode && typeof instance.UNSAFE_componentWillUpdate === "function" && pendingUNSAFE_ComponentWillUpdateWarnings.push(fiber));
@@ -16435,8 +16404,7 @@ You might need to use a local HTTP server (instead of file://): https://react.de
 // node_modules/react-dom/client.js
 var require_client = __commonJS((exports, module) => {
   var react_dom_client_development = __toESM(require_react_dom_client_development(), 1);
-  if (false) {
-  } else {
+  if (false) {} else {
     module.exports = react_dom_client_development;
   }
 });
@@ -16484,8 +16452,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {
-            }
+            } catch (x) {}
         }
       return null;
     }
@@ -16507,8 +16474,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
         return testStringCoercion(value);
       }
     }
-    function disabledLog() {
-    }
+    function disabledLog() {}
     function disableLogs() {
       if (disabledDepth === 0) {
         prevLog = console.log;
@@ -16612,8 +16578,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
                 } catch (x$1) {
                   control = x$1;
                 }
-                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {
-                });
+                (Fake = fn()) && typeof Fake.catch === "function" && Fake.catch(function() {});
               }
             } catch (sample) {
               if (sample && control && typeof sample.stack === "string")
@@ -16686,8 +16651,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
             type = type._init;
             try {
               return describeUnknownElementTypeFrameInDEV(type(prototype));
-            } catch (x) {
-            }
+            } catch (x) {}
         }
       return "";
     }
@@ -16854,8 +16818,7 @@ Check the top-level render call using <` + parentType + ">.");
 // node_modules/react/jsx-dev-runtime.js
 var require_jsx_dev_runtime = __commonJS((exports, module) => {
   var react_jsx_dev_runtime_development = __toESM(require_react_jsx_dev_runtime_development(), 1);
-  if (false) {
-  } else {
+  if (false) {} else {
     module.exports = react_jsx_dev_runtime_development;
   }
 });
@@ -17355,8 +17318,7 @@ __export(exports_dist, {
 var util;
 (function(util2) {
   util2.assertEqual = (val) => val;
-  function assertIs(_arg) {
-  }
+  function assertIs(_arg) {}
   util2.assertIs = assertIs;
   function assertNever(_x) {
     throw new Error;
@@ -21479,8 +21441,7 @@ var supplier_name = z.enum([
   "mouser",
   "lcsc"
 ]);
-var expectTypesMatch = (shouldBe) => {
-};
+var expectTypesMatch = (shouldBe) => {};
 expectTypesMatch("extra props b");
 expectTypesMatch("missing props b");
 expectTypesMatch(true);
@@ -32678,6 +32639,7 @@ __export(exports_fn, {
   sod882: () => sod882,
   sod723: () => sod723,
   sod523: () => sod523,
+  sod323fl: () => sod323fl,
   sod323f: () => sod323f,
   sod323: () => sod323,
   sod128: () => sod128,
@@ -37030,6 +36992,68 @@ var msop = (raw_params) => {
     parameters
   };
 };
+// src/fn/sod323fl.ts
+var sod323FL_def = z.object({
+  fn: z.string(),
+  num_pins: z.literal(2).default(2),
+  w: z.string().default("3.20mm"),
+  h: z.string().default("1.65mm"),
+  pl: z.string().default("0.8mm"),
+  pw: z.string().default("0.9mm"),
+  pad_spacing: z.string().default("2.1mm")
+});
+var sod323fl = (raw_params) => {
+  const parameters = sod323FL_def.parse(raw_params);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.3);
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.pad_spacing) / 2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: length.parse(parameters.h) / 2
+      },
+      {
+        x: -length.parse(parameters.w) / 2 - 0.2,
+        y: -length.parse(parameters.h) / 2
+      },
+      {
+        x: length.parse(parameters.pad_spacing) / 2,
+        y: -length.parse(parameters.h) / 2
+      }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  return {
+    circuitJson: sodWithoutParsing14(parameters).concat(silkscreenLine, silkscreenRefText),
+    parameters
+  };
+};
+var getSodCoords14 = (parameters) => {
+  const { pn, pad_spacing } = parameters;
+  if (pn === 1) {
+    return { x: -pad_spacing / 2, y: 0 };
+  } else {
+    return { x: pad_spacing / 2, y: 0 };
+  }
+};
+var sodWithoutParsing14 = (parameters) => {
+  const pads = [];
+  for (let i = 1;i <= parameters.num_pins; i++) {
+    const { x, y } = getSodCoords14({
+      pn: i,
+      pad_spacing: Number.parseFloat(parameters.pad_spacing)
+    });
+    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+  }
+  return pads;
+};
 // src/helpers/is-not-null.ts
 function isNotNull(value) {
   return value !== null;
@@ -37104,8 +37128,7 @@ var footprinter = () => {
             }
           }
         } else {
-          if (!v && ["w", "h", "p"].includes(prop)) {
-          } else {
+          if (!v && ["w", "h", "p"].includes(prop)) {} else {
             target[prop] = v ?? true;
           }
         }
@@ -37168,6 +37191,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="207.14285714285717" y="142.85714285714283" width="385.7142857142857" height="314.2857142857143"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="250.00000000000003" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="550" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 592.8571428571429 199.99999999999997 L 207.14285714285717 199.99999999999997 L 207.14285714285717 457.1428571428571 L 592.8571428571429 457.1428571428571" fill="none" stroke="#f2eda1" stroke-width="14.285714285714286" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="42.857142857142854" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,442.8571428571429,142.85714285714283)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
     title: "sod323"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="208.9385474860335" y="134.07821229050282" width="382.12290502793303" height="331.8435754189944"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="255.86592178770948" y="294.97206703910615" width="107.26256983240224" height="120.67039106145252"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="537.4301675977654" y="294.97206703910615" width="107.26256983240224" height="120.67039106145252"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 591.0614525139665 244.6927374301676 L 208.9385474860335 244.6927374301676 L 208.9385474860335 465.9217877094972 L 591.0614525139665 465.9217877094972" fill="none" stroke="#f2eda1" stroke-width="13.40782122905028" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="40.22346368715083" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,450.27932960893855,134.07821229050282)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
+    title: "sod323fl"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="206.1538461538462" y="92.30769230769226" width="387.69230769230774" height="415.38461538461536"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="224.61538461538467" y="256.1538461538461" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="224.61538461538467" y="293.07692307692304" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="224.61538461538467" y="329.99999999999994" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="224.61538461538467" y="366.9230769230769" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="342.3076923076923" y="470.7692307692307" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="379.2307692307693" y="470.7692307692307" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="416.1538461538462" y="470.7692307692307" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="453.07692307692315" y="470.7692307692307" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="556.923076923077" y="366.9230769230769" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="556.923076923077" y="329.99999999999994" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="556.923076923077" y="293.07692307692304" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="556.923076923077" y="256.1538461538461" width="36.92307692307693" height="23.076923076923077"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="453.07692307692315" y="138.46153846153842" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="416.1538461538462" y="138.46153846153842" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="379.2307692307693" y="138.46153846153842" width="23.076923076923077" height="36.92307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="342.3076923076923" y="138.46153846153842" width="23.076923076923077" height="36.92307692307693"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 270.76923076923083 138.46153846153842 L 247.69230769230774 138.46153846153842" fill="none" stroke="#f2eda1" stroke-width="0" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_top-left_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 224.61538461538467 161.5384615384615 L 224.61538461538467 184.61538461538458" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_top-left_2"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 206.1538461538462 119.99999999999994 L 224.61538461538467 138.46153846153842 L 243.07692307692312 119.99999999999994 L 206.1538461538462 119.99999999999994 Z" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_top-left_3"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 270.76923076923083 507.6923076923076 L 224.61538461538467 507.6923076923076 L 224.61538461538467 461.5384615384615" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_bottom-left"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 547.6923076923077 507.6923076923076 L 593.8461538461539 507.6923076923076 L 593.8461538461539 461.5384615384615" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_bottom-right"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 547.6923076923077 138.46153846153842 L 593.8461538461539 138.46153846153842 L 593.8461538461539 184.61538461538458" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" data-pcb-component-id="" data-pcb-silkscreen-path-id="pcb_silkscreen_path_top-right"/><text x="0" y="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.69230769230769" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,409.2307692307693,92.30769230769226)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1" stroke-width="0">{REF}</text></svg>',
