@@ -63,6 +63,7 @@ export type Footprinter = {
   sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
+  sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -76,20 +77,29 @@ export type Footprinter = {
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  vssop8: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod123fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  vssop: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  msop: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
