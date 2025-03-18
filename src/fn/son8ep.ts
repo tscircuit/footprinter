@@ -7,8 +7,8 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 export const son8ep_def = z.object({
   fn: z.string(),
   num_pins: z.literal(8).default(8),
-  w: z.string().default("3.08mm"),
-  h: z.string().default("2.48mm"),
+  w: z.string().default("3mm"),
+  h: z.string().default("3mm"),
   p: z.string().default("0.5mm"),
   pl: z.string().default("0.53mm"),
   pw: z.string().default("0.35mm"),
