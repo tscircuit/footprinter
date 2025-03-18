@@ -96,7 +96,9 @@ export type Footprinter = {
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  vson8ep: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "epw" | "eph">
+  vson8ep: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph"
+  >
   msop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">

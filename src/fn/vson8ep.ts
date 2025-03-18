@@ -1,4 +1,4 @@
-import { string } from './../footprinter';
+import { string } from "./../footprinter"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -17,15 +17,14 @@ export const vson8ep_def = z.object({
   epw: z.string().default("1.65mm"),
   eph: z.string().default("2.4mm"),
   ThermalVias: z.boolean().default(false),
-  string: z.string().optional()
+  string: z.string().optional(),
 })
 
 export const vson8ep = (
   raw_params: z.input<typeof vson8ep_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-
-    if ((raw_params.string ?? "").includes("ThermalVias")) {
-    raw_params.ThermalVias = true;
+  if ((raw_params.string ?? "").includes("ThermalVias")) {
+    raw_params.ThermalVias = true
   }
 
   const parameters = vson8ep_def.parse(raw_params)
@@ -100,7 +99,7 @@ export const vson8ep = (
   }
 }
 
-// Get coordinates for the 8 pins
+// Get coordinates
 export const getVson8epCoords = (parameters: {
   pn: number
   p: number
@@ -108,7 +107,7 @@ export const getVson8epCoords = (parameters: {
 }) => {
   const { pn, p, w } = parameters
   const isLeftSide = pn <= 4
-  const yOffset = (((pn - 1) % 4) - w / 2) * p // Arrange 4 pins on each side
+  const yOffset = (((pn - 1) % 4) - w / 2) * p
 
   return {
     x: isLeftSide ? -(w / 2) : w / 2,
@@ -125,7 +124,7 @@ export const getVson8epArrowCoords = (parameters: {
 }) => {
   const { pn, p, w, h } = parameters
   const isLeftSide = pn <= 4
-  const yOffset = (((pn - 1) % 4) + h / 2) * p // Arrange 4 pins on each side
+  const yOffset = (((pn - 1) % 4) + h / 2) * p
 
   return {
     x: isLeftSide ? -(w / 2) : w / 2,
@@ -135,56 +134,54 @@ export const getVson8epArrowCoords = (parameters: {
 
 // Function to generate 8 signal pads + exposed pad + thermal vias
 export const vson8epWithoutParsing = (
-    parameters: z.infer<typeof vson8ep_def>,
-  ) => {
-    const pads: AnyCircuitElement[] = []
-  
-    // Create 8 signal pads
-    for (let i = 1; i <= parameters.num_pins; i++) {
-      const { x, y } = getVson8epCoords({
-        pn: i,
-        p: Number.parseFloat(parameters.p),
-        w: Number.parseInt(parameters.w),
-      })
-      pads.push(
-        rectpad(
-          i,
-          x,
-          y,
-          Number.parseFloat(parameters.pl),
-          Number.parseFloat(parameters.pw),
-        ),
-      )
-    }
-  
-    // Create exposed pad (EP)
+  parameters: z.infer<typeof vson8ep_def>,
+) => {
+  const pads: AnyCircuitElement[] = []
+
+  for (let i = 1; i <= parameters.num_pins; i++) {
+    const { x, y } = getVson8epCoords({
+      pn: i,
+      p: Number.parseFloat(parameters.p),
+      w: Number.parseInt(parameters.w),
+    })
     pads.push(
       rectpad(
-        parameters.num_pins + 1,
-        0,
-        0,
-        Number.parseFloat(parameters.epw),
-        Number.parseFloat(parameters.eph),
+        i,
+        x,
+        y,
+        Number.parseFloat(parameters.pl),
+        Number.parseFloat(parameters.pw),
       ),
     )
-  
-    const epw = Number.parseFloat(parameters.epw)
-    const eph = Number.parseFloat(parameters.eph)
-    const hd = 0.2
-    const gap = 1.2
-    const offsetX = (epw - gap) / 2 // Horizontal offset for the thermal vias inside the exposed pad
-    const offsetY = 0.20 // Vertical offset for the thermal vias inside the exposed pad
-  
-    if (parameters.ThermalVias) {
-      pads.push(
-        platedhole(1, -(epw / 2 - offsetX), eph / 2 - offsetY, hd, hd),
-        platedhole(2, -(epw / 2 - offsetX), 0, hd, hd),
-        platedhole(3, -(epw / 2 - offsetX), -(eph / 2 - offsetY), hd, hd),
-        platedhole(4, epw / 2 - offsetX, eph / 2 - offsetY, hd, hd),
-        platedhole(5, epw / 2 - offsetX, 0, hd, hd),
-        platedhole(6, epw / 2 - offsetX, -(eph / 2 - offsetY), hd, hd),
-      )
-    }
-  
-    return pads
   }
+
+  pads.push(
+    rectpad(
+      parameters.num_pins + 1,
+      0,
+      0,
+      Number.parseFloat(parameters.epw),
+      Number.parseFloat(parameters.eph),
+    ),
+  )
+
+  const epw = Number.parseFloat(parameters.epw)
+  const eph = Number.parseFloat(parameters.eph)
+  const hd = 0.2
+  const gap = 1.2
+  const offsetX = (epw - gap) / 2
+  const offsetY = 0.2
+
+  if (parameters.ThermalVias) {
+    pads.push(
+      platedhole(1, -(epw / 2 - offsetX), eph / 2 - offsetY, hd, hd),
+      platedhole(2, -(epw / 2 - offsetX), 0, hd, hd),
+      platedhole(3, -(epw / 2 - offsetX), -(eph / 2 - offsetY), hd, hd),
+      platedhole(4, epw / 2 - offsetX, eph / 2 - offsetY, hd, hd),
+      platedhole(5, epw / 2 - offsetX, 0, hd, hd),
+      platedhole(6, epw / 2 - offsetX, -(eph / 2 - offsetY), hd, hd),
+    )
+  }
+
+  return pads
+}
