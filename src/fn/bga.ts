@@ -111,19 +111,48 @@ export const bga = (
   let missing_pins_passed = 0
   for (let y = 0; y < grid.y; y++) {
     for (let x = 0; x < grid.x; x++) {
-      let pin_num = y * grid.x + x + 1
+      // Calculate physical pad position (always centered around origin)
+      const pad_x = (x - (grid.x - 1) / 2) * p
+      const pad_y = (y - (grid.y - 1) / 2) * p
+
+      // Calculate pin number based on origin
+      let pin_x = x
+      let pin_y = y
+      switch (parameters.origin) {
+        case "bl":
+          pin_x = x
+          pin_y = grid.y - 1 - y
+          break
+        case "br":
+          pin_x = grid.x - 1 - x
+          pin_y = grid.y - 1 - y
+          break
+        case "tr":
+          pin_x = grid.x - 1 - x
+          pin_y = y
+          break
+        case "tl":
+        default:
+          // Keep original x,y for pin numbering
+          break
+      }
+
+      let pin_num = pin_y * grid.x + pin_x + 1
       if (missing_pin_nums_set.has(pin_num)) {
         missing_pins_passed++
         continue
       }
       pin_num -= missing_pins_passed
 
-      const pad_x = (x - (grid.x - 1) / 2) * p
-      const pad_y = -(y - (grid.y - 1) / 2) * p
-
       // TODO handle >26 rows
       pads.push(
-        rectpad([pin_num, `${ALPHABET[y]}${x + 1}`], pad_x, pad_y, pad, pad),
+        rectpad(
+          [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`],
+          pad_x,
+          pad_y,
+          pad,
+          pad,
+        ),
       )
     }
   }

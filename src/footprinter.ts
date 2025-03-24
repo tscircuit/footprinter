@@ -11,7 +11,7 @@ export type FootprinterParamsBuilder<K extends string> = {
     | "soup"
     | "circuitJson"
     ? Footprinter[P]
-    : (v?: number | string) => FootprinterParamsBuilder<K>
+    : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -44,7 +44,17 @@ export type Footprinter = {
   bga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
+    | "grid"
+    | "p"
+    | "w"
+    | "h"
+    | "ball"
+    | "pad"
+    | "missing"
+    | "tlorigin"
+    | "blorigin"
+    | "trorigin"
+    | "brorigin"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
