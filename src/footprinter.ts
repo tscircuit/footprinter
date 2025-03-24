@@ -1,4 +1,3 @@
-import { son8ep } from "./fn/son8ep"
 import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
@@ -94,7 +93,7 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  son8ep: () => FootprinterParamsBuilder<
+  son8: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph"
   >
   vssop: (
