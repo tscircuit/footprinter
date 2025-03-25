@@ -7,6 +7,7 @@ import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
 import type { NowDefined } from "src/helpers/zod/now-defined"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { type PcbSilkscreenPath } from "circuit-json"
 
 export const bga_def = z
   .object({
@@ -162,8 +163,61 @@ export const bga = (
     0.2,
   )
 
+  // Add pin 1 marker
+  const pin1MarkerSize = p / 6 // Make marker smaller, more proportional
+
+  // Calculate marker position and route based on origin
+  let markerRoute: Array<{ x: number; y: number }>
+  const edgeX = (grid.x * p) / 2
+  const edgeY = (grid.y * p) / 2
+
+  switch (parameters.origin) {
+    case "bl":
+      markerRoute = [
+        { x: -edgeX, y: -edgeY }, // Start at corner
+        { x: -edgeX, y: -edgeY - pin1MarkerSize }, // Up
+        { x: -edgeX - pin1MarkerSize, y: -edgeY }, // Left
+        { x: -edgeX, y: -edgeY }, // Back to start
+      ]
+      break
+    case "br":
+      markerRoute = [
+        { x: edgeX, y: -edgeY }, // Start at corner
+        { x: edgeX, y: -edgeY - pin1MarkerSize }, // Up
+        { x: edgeX + pin1MarkerSize, y: -edgeY }, // Right
+        { x: edgeX, y: -edgeY }, // Back to start
+      ]
+      break
+    case "tr":
+      markerRoute = [
+        { x: edgeX, y: edgeY }, // Start at corner
+        { x: edgeX, y: edgeY + pin1MarkerSize }, // Down
+        { x: edgeX + pin1MarkerSize, y: edgeY }, // Right
+        { x: edgeX, y: edgeY }, // Back to start
+      ]
+      break
+    case "tl":
+    default:
+      markerRoute = [
+        { x: -edgeX, y: edgeY }, // Start at corner
+        { x: -edgeX, y: edgeY + pin1MarkerSize }, // Down
+        { x: -edgeX - pin1MarkerSize, y: edgeY }, // Left
+        { x: -edgeX, y: edgeY }, // Back to start
+      ]
+      break
+  }
+
+  const pin1Marker: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_marker",
+    route: markerRoute,
+    stroke_width: 0.05,
+  }
+
   return {
-    circuitJson: [...pads, silkscreenRefText as AnySoupElement],
+    circuitJson: [...pads, silkscreenRefText, pin1Marker as AnySoupElement],
     parameters,
   }
 }
