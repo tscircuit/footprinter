@@ -200,12 +200,12 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
       silkscreenLine,
       silkscreenRefText,
     ]
-  } else {
-    return [
-      rectpad(["1", "left"], -p / 2, 0, pw, ph),
-      rectpad(["2", "right"], p / 2, 0, pw, ph),
-      silkscreenLine,
-      silkscreenRefText,
-    ]
   }
+
+  return [
+    rectpad(["1"], -p / 2, 0, pw, ph),
+    rectpad(["2"], p / 2, 0, pw, ph),
+    silkscreenLine,
+    silkscreenRefText,
+  ]
 }
