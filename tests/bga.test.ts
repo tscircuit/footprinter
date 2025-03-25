@@ -51,6 +51,11 @@ test("bga origin parameters", () => {
 
   // Test bottom-left origin (pin 1 at bottom-left)
   const soupBl = fp().bga(4).grid("2x2").p(1).blorigin(true).soup()
+  const svgContentBl = convertCircuitJsonToPcbSvg(soupBl)
+  expect(svgContentBl).toMatchSvgSnapshot(
+    import.meta.path,
+    "bga_2x2_bottom_left_origin",
+  )
   const firstPadBl = soupBl.find(
     (el): el is PCBSMTPad =>
       el.type === "pcb_smtpad" &&
@@ -62,6 +67,11 @@ test("bga origin parameters", () => {
 
   // Test bottom-right origin (pin 1 at bottom-right)
   const soupBr = fp().bga(4).grid("2x2").p(1).brorigin(true).soup()
+  const svgContentBr = convertCircuitJsonToPcbSvg(soupBr)
+  expect(svgContentBr).toMatchSvgSnapshot(
+    import.meta.path,
+    "bga_2x2_bottom_right_origin",
+  )
   const firstPadBr = soupBr.find(
     (el): el is PCBSMTPad =>
       el.type === "pcb_smtpad" &&
@@ -73,6 +83,11 @@ test("bga origin parameters", () => {
 
   // Test top-right origin (pin 1 at top-right)
   const soupTr = fp().bga(4).grid("2x2").p(1).trorigin(true).soup()
+  const svgContentTr = convertCircuitJsonToPcbSvg(soupTr)
+  expect(svgContentTr).toMatchSvgSnapshot(
+    import.meta.path,
+    "bga_2x2_top_right_origin",
+  )
   const firstPadTr = soupTr.find(
     (el): el is PCBSMTPad =>
       el.type === "pcb_smtpad" &&
@@ -84,6 +99,11 @@ test("bga origin parameters", () => {
 
   // Test top-left origin (default, pin 1 at top-left)
   const soupTl = fp().bga(4).grid("2x2").p(1).soup()
+  const svgContentTl = convertCircuitJsonToPcbSvg(soupTl)
+  expect(svgContentTl).toMatchSvgSnapshot(
+    import.meta.path,
+    "bga_2x2_top_left_origin",
+  )
   const firstPadTl = soupTl.find(
     (el): el is PCBSMTPad =>
       el.type === "pcb_smtpad" &&
