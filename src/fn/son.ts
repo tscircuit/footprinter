@@ -10,10 +10,10 @@ export const son_def = z.object({
   w: z.string().default("3mm"),
   h: z.string().default("3mm"),
   p: z.string().default("0.5mm"),
-  pl: z.string().default("0.53mm"),
+  pl: z.string().default("0.52mm"),
   pw: z.string().default("0.35mm"),
   epw: z.string().default("1.40mm"),
-  eph: z.string().default("1.62mm"),
+  eph: z.string().default("1.60mm"),
   string: z.string().optional(),
   ep: z.boolean().default(false),
 })
