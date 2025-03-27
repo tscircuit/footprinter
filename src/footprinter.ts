@@ -95,7 +95,7 @@ export type Footprinter = {
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   son: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "epw" | "eph">
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep">
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
