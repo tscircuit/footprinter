@@ -147,6 +147,7 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  jumper: (num_pins?: number) => FootprinterParamsBuilder<"bridged">
 
   params: () => any
   /** @deprecated use circuitJson() instead */
