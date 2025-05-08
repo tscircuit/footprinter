@@ -83,38 +83,38 @@ test("solderjumper 3-pin bridge 1-2-3", () => {
 })
 
 test("solderjumper 2-pin no bridge snapshot", () => {
-  const soup = solderjumper({ num_pins: 2 }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 2 }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2")
 })
 
 test("solderjumper 3-pin no bridge snapshot", () => {
-  const soup = solderjumper({ num_pins: 3 }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 3 }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3")
 })
 
 test("solderjumper 3-pin bridge 1-2 snapshot", () => {
-  const soup = solderjumper({ num_pins: 3, bridged: "12" }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 3, bridged: "12" }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged12")
 })
 
 test("solderjumper 3-pin bridge 1-2-3 snapshot", () => {
-  const soup = solderjumper({ num_pins: 3, bridged: "123" }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 3, bridged: "123" }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged123")
 })
 
 test("solderjumper 2-pin bridge 1-2 snapshot", () => {
-  const soup = solderjumper({ num_pins: 2, bridged: "12" }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 2, bridged: "12" }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2bridged12")
 })
 
 test("solderjumper 3-pin bridge 2-3 snapshot", () => {
-  const soup = solderjumper({ num_pins: 3, bridged: "23" }).circuitJson
-  const svg = convertCircuitJsonToPcbSvg(soup)
+  const circuitJson = solderjumper({ num_pins: 3, bridged: "23" }).circuitJson
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged23")
 })
 
