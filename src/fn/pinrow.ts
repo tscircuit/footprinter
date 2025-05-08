@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
 
 export const pinrow_def = z
   .object({
@@ -47,7 +48,9 @@ export const pinrow = (
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
     holes.push(platedhole(pinNumber, xoff, yoff, id, od))
-    holes.push(silkscreenRef(xoff, yoff + p / 2, od / 5))
+    holes.push(
+      silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
+    )
   }
 
   if (rows > 1) {
