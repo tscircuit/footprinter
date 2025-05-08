@@ -1,25 +1,25 @@
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { jumper } from "../src/fn/jumper"
+import { solderjumper } from "../src/fn/solderjumper"
 
-test("jumper 2-pin no bridge", () => {
-  const result = jumper({ num_pins: 2 })
+test("solderjumper 2-pin no bridge", () => {
+  const result = solderjumper({ num_pins: 2 })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     2,
   )
   expect(result.circuitJson.find((e) => e.type === "pcb_trace")).toBeUndefined()
 })
 
-test("jumper 3-pin no bridge", () => {
-  const result = jumper({ num_pins: 3 })
+test("solderjumper 3-pin no bridge", () => {
+  const result = solderjumper({ num_pins: 3 })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     3,
   )
   expect(result.circuitJson.find((e) => e.type === "pcb_trace")).toBeUndefined()
 })
 
-test("jumper 2-pin bridge 1-2", () => {
-  const result = jumper({ num_pins: 2, bridged: "12" })
+test("solderjumper 2-pin bridge 1-2", () => {
+  const result = solderjumper({ num_pins: 2, bridged: "12" })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     2,
   )
@@ -31,8 +31,8 @@ test("jumper 2-pin bridge 1-2", () => {
   }
 })
 
-test("jumper 3-pin bridge 1-2", () => {
-  const result = jumper({ num_pins: 3, bridged: "12" })
+test("solderjumper 3-pin bridge 1-2", () => {
+  const result = solderjumper({ num_pins: 3, bridged: "12" })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     3,
   )
@@ -44,8 +44,8 @@ test("jumper 3-pin bridge 1-2", () => {
   }
 })
 
-test("jumper 3-pin bridge 2-3", () => {
-  const result = jumper({ num_pins: 3, bridged: "23" })
+test("solderjumper 3-pin bridge 2-3", () => {
+  const result = solderjumper({ num_pins: 3, bridged: "23" })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     3,
   )
@@ -57,8 +57,8 @@ test("jumper 3-pin bridge 2-3", () => {
   }
 })
 
-test("jumper 3-pin bridge 1-2-3", () => {
-  const result = jumper({ num_pins: 3, bridged: "123" })
+test("solderjumper 3-pin bridge 1-2-3", () => {
+  const result = solderjumper({ num_pins: 3, bridged: "123" })
   expect(result.circuitJson.filter((e) => e.type === "pcb_smtpad").length).toBe(
     3,
   )
@@ -81,38 +81,38 @@ test("jumper 3-pin bridge 1-2-3", () => {
   }
 })
 
-test("jumper 2-pin no bridge snapshot", () => {
-  const soup = jumper({ num_pins: 2 }).circuitJson
+test("solderjumper 2-pin no bridge snapshot", () => {
+  const soup = solderjumper({ num_pins: 2 }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper2")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2")
 })
 
-test("jumper 3-pin no bridge snapshot", () => {
-  const soup = jumper({ num_pins: 3 }).circuitJson
+test("solderjumper 3-pin no bridge snapshot", () => {
+  const soup = solderjumper({ num_pins: 3 }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper3")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3")
 })
 
-test("jumper 3-pin bridge 1-2 snapshot", () => {
-  const soup = jumper({ num_pins: 3, bridged: "12" }).circuitJson
+test("solderjumper 3-pin bridge 1-2 snapshot", () => {
+  const soup = solderjumper({ num_pins: 3, bridged: "12" }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper3bridged12")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged12")
 })
 
-test("jumper 3-pin bridge 1-2-3 snapshot", () => {
-  const soup = jumper({ num_pins: 3, bridged: "123" }).circuitJson
+test("solderjumper 3-pin bridge 1-2-3 snapshot", () => {
+  const soup = solderjumper({ num_pins: 3, bridged: "123" }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper3bridged123")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged123")
 })
 
-test("jumper 2-pin bridge 1-2 snapshot", () => {
-  const soup = jumper({ num_pins: 2, bridged: "12" }).circuitJson
+test("solderjumper 2-pin bridge 1-2 snapshot", () => {
+  const soup = solderjumper({ num_pins: 2, bridged: "12" }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper2bridged12")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2bridged12")
 })
 
-test("jumper 3-pin bridge 2-3 snapshot", () => {
-  const soup = jumper({ num_pins: 3, bridged: "23" }).circuitJson
+test("solderjumper 3-pin bridge 2-3 snapshot", () => {
+  const soup = solderjumper({ num_pins: 3, bridged: "23" }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
-  expect(svg).toMatchSvgSnapshot(import.meta.path, "jumper3bridged23")
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged23")
 })

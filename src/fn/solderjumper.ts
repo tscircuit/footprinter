@@ -3,17 +3,17 @@ import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement } from "circuit-json"
 
 /**
- * Jumper footprint generator
+ * Solderjumper footprint generator
  * @param params { num_pins: 2 | 3, bridged?: string }
  * - num_pins: 2 or 3
  * - bridged: e.g. "12" or "123" (which pins are connected)
  *
  * Examples:
- *   jumper({ num_pins: 2 }) // no pads connected
- *   jumper({ num_pins: 3, bridged: "12" }) // pads 1 and 2 connected
- *   jumper({ num_pins: 3, bridged: "123" }) // all pads connected
+ *   solderjumper({ num_pins: 2 }) // no pads connected
+ *   solderjumper({ num_pins: 3, bridged: "12" }) // pads 1 and 2 connected
+ *   solderjumper({ num_pins: 3, bridged: "123" }) // all pads connected
  */
-export const jumper = (params: { num_pins: 2 | 3; bridged?: string }) => {
+export const solderjumper = (params: { num_pins: 2 | 3; bridged?: string }) => {
   const { num_pins, bridged } = params
   const padSpacing = 2.54
   const padSize = 1.5
