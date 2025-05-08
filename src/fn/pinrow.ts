@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
 
 export const pinrow_def = z
   .object({
@@ -40,48 +41,52 @@ export const pinrow = (
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
   const { p, id, od, rows } = parameters
+  const numPins = parameters.num_pins
 
   const holes: any[] = []
-  const num_pins = parameters.num_pins
+
+  // Helper to add plated hole and silkscreen label
+  const addPin = (pinNumber: number, xoff: number, yoff: number) => {
+    holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    holes.push(
+      silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
+    )
+  }
 
   if (rows > 1) {
-    const num_pins_per_row = Math.ceil(num_pins / rows)
+    const numPinsPerRow = Math.ceil(numPins / rows)
     const ySpacing = p
 
     for (let row = 0; row < rows; row++) {
       const yoff = row * ySpacing
-      const startPin = row * num_pins_per_row
+      const startPin = row * numPinsPerRow
+      const xStart = -((numPinsPerRow - 1) / 2) * p
 
-      for (let pinIndex = 0; pinIndex < num_pins_per_row; pinIndex++) {
-        const pinNumber = startPin + pinIndex + 1
-        if (pinNumber > num_pins) break
-
-        const xoff = pinIndex * p
-        holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+      for (let i = 0; i < numPinsPerRow; i++) {
+        const pinNumber = startPin + i + 1
+        if (pinNumber > numPins) break
+        const xoff = xStart + i * p
+        addPin(pinNumber, xoff, yoff)
       }
     }
   } else {
-    const num_spaces = num_pins - 1
-    const xoff = -(num_spaces / 2) * p
-    for (let i = 0; i < num_pins; i++) {
-      holes.push(platedhole(i + 1, xoff + i * p, 0, id, od))
+    const xStart = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const pinNumber = i + 1
+      const xoff = xStart + i * p
+      addPin(pinNumber, xoff, 0)
     }
   }
 
-  if (rows === 1) {
-    const silkscreenRefText: SilkscreenRef = silkscreenRef(0, rows * p, 0.5)
-    return {
-      circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
-      parameters,
-    }
-  }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    ((num_pins / rows - 1) * p) / 2, // Center the silkscreen horizontally
-    rows * p, // Keep it at the top vertically
-    0.5,
-  )
+  // Compute group reference position centered horizontally
+  const perRow = rows > 1 ? Math.ceil(numPins / rows) : numPins
+  const xStartGroup = -((perRow - 1) / 2) * p
+  const groupTextX = xStartGroup + ((perRow - 1) / 2) * p
+  const groupTextY = rows * p
+  const refText: SilkscreenRef = silkscreenRef(groupTextX, groupTextY, 0.5)
+
   return {
-    circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
+    circuitJson: [...holes, refText],
     parameters,
   }
 }
