@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { solderjumper } from "../src/fn/solderjumper"
+import { fp } from "src"
 
 test("solderjumper 2-pin no bridge", () => {
   const result = solderjumper({ num_pins: 2 })
@@ -115,4 +116,31 @@ test("solderjumper 3-pin bridge 2-3 snapshot", () => {
   const soup = solderjumper({ num_pins: 3, bridged: "23" }).circuitJson
   const svg = convertCircuitJsonToPcbSvg(soup)
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3bridged23")
+})
+
+test("solderjumper 2-pin custom pitch", () => {
+  const circuitJson = solderjumper({
+    num_pins: 2,
+    bridged: "12",
+    p: 3.0,
+  }).circuitJson
+  const trace = circuitJson.find((e) => e.type === "pcb_trace")
+  expect(trace).toBeDefined()
+  if (trace && Array.isArray(trace.route) && trace.route[0] && trace.route[1]) {
+    expect(trace.route[0].x).toBe(0)
+    expect(trace.route[1].x).toBe(3.0)
+  }
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2bridged12p3")
+})
+
+test("solderjumper 2-pin custom pad size", () => {
+  const circuitJson = fp.string("solderjumper2_bridged12_pw2_ph1").circuitJson()
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads.length).toBe(2)
+  const svg = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svg).toMatchSvgSnapshot(
+    import.meta.path,
+    "solderjumper2bridged12pw2ph1",
+  )
 })
