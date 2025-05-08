@@ -10,7 +10,6 @@ export const silkscreenRef: (
     pcb_silkscreen_text_id: "silkscreen_text_1",
     font: "tscircuit2024",
     font_size: font_size,
-    stroke_width: font_size / 100,
     pcb_component_id: "pcb_component_1",
     text: "{REF}",
     layer: "top",
