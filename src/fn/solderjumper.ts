@@ -48,24 +48,10 @@ export const solderjumper = (params: {
           !isNaN(to)
         ) {
           traces.push({
-            type: "pcb_trace",
-            pcb_trace_id: "",
-            route: [
-              {
-                x: (from - 1) * padSpacing,
-                y: 0,
-                width: 0.5,
-                layer: "top",
-                route_type: "wire",
-              },
-              {
-                x: (to - 1) * padSpacing,
-                y: 0,
-                width: 0.5,
-                layer: "top",
-                route_type: "wire",
-              },
-            ],
+            type: "source_trace",
+            source_trace_id: `footprinter_source_trace`,
+            connected_source_port_ids: [`pin${from}`, `pin${to}`],
+            connected_source_net_ids: [],
           })
         }
       }
