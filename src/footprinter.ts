@@ -69,6 +69,18 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot457: () => FootprinterParamsBuilder<
+    | "w"
+    | "p"
+    | "h"
+    | "pl"
+    | "pw"
+    | "wave"
+    | "reform"
+    | "pillr"
+    | "pillh"
+    | "pillw"
+  >
   sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
   sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
