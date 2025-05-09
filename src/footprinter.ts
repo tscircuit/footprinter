@@ -76,7 +76,7 @@ export type Footprinter = {
     | "pl"
     | "pw"
     | "wave"
-    | "reform"
+    | "reflow"
     | "pillr"
     | "pillh"
     | "pillw"

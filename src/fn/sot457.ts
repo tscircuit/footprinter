@@ -40,8 +40,8 @@ const sot457WaveSchema = z
   })
   .transform((data) => ({
     ...data,
-    wave: data.wave ?? !data.reflow ?? true,
-    reflow: data.reflow ?? !data.wave ?? true,
+    wave: data.wave ?? (data.reflow === undefined ? true : !data.reflow),
+    reflow: data.reflow ?? (data.wave === undefined ? false : !data.wave),
   }))
 
 // Type definitions
