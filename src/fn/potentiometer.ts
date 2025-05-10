@@ -76,19 +76,6 @@ export const potentiometer = (
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
-  const silkscreenBody3: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      { x: 0, y: od },
-      { x: -x, y: -y },
-      { x: 0, y: -y },
-      { x: 0, y: -y + 1.75 },
-    ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
-  }
   const W = Number.parseFloat(parameters.w) / 2
   const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5)
 
