@@ -20,19 +20,19 @@ export const potentiometer_acp = (
   parameters: z.infer<typeof potentiometer_def>,
 ) => {
   const { p, id, od, h, ca } = parameters
-  const Y = Number.parseFloat(h)
+  const y = Number.parseFloat(h)
   const caliper = Number.parseFloat(ca)
   return [
     platedhole(1, 0, caliper / 4 + 0.3, id, od),
-    platedhole(2, Y, 0, id, od),
+    platedhole(2, y, 0, id, od),
     platedhole(3, 0, -caliper / 4 - 0.3, id, od),
   ]
 }
 export const potentiometer = (
   raw_params: z.input<typeof potentiometer_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const match = raw_params.string?.match(/^potentiometer_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const match = raw_params.string?.match(/potentiometer_.*?(?:h(\d+)|(\d+))/)
+  const numPins = match ? Number.parseInt(match[1] || match[2]!, 10) : 3
 
   const parameters = potentiometer_def.parse({
     ...raw_params,
