@@ -55,7 +55,6 @@ export const solderjumper = (params: {
           const x1 = xCenterFrom + directionMult * (padWidth / 2)
           const x2 = xCenterTo - directionMult * (padWidth / 2)
 
-
           traces.push({
             type: "pcb_trace",
             pcb_trace_id: "",
