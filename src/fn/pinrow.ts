@@ -55,7 +55,7 @@ export const pinrow = (
 
   if (rows > 1) {
     const numPinsPerRow = Math.ceil(numPins / rows)
-    const ySpacing = p
+    const ySpacing = -p
 
     for (let row = 0; row < rows; row++) {
       const yoff = row * ySpacing
@@ -79,11 +79,7 @@ export const pinrow = (
   }
 
   // Compute group reference position centered horizontally
-  const perRow = rows > 1 ? Math.ceil(numPins / rows) : numPins
-  const xStartGroup = -((perRow - 1) / 2) * p
-  const groupTextX = xStartGroup + ((perRow - 1) / 2) * p
-  const groupTextY = rows * p
-  const refText: SilkscreenRef = silkscreenRef(groupTextX, groupTextY, 0.5)
+  const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
 
   return {
     circuitJson: [...holes, refText],
