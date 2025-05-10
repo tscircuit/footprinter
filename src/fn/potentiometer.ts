@@ -9,7 +9,7 @@ export const potentiometer_def = z.object({
   p: z.string().default("3.8mm"),
   id: z.string().default("1.25mm"),
   od: z.string().default("2.35mm"),
-  ca: z.string().default("14mm").describe("Caliper diameter (width or diameter of the potentiometer body or adjustment knob)"),  w: z.string().default("5.35mm"),
+  ca: z.string().default("14mm").describe("Caliper axis (width or diameter of the potentiometer body or adjustment knob)"),  w: z.string().default("5.35mm"),
   h: z.string().default("4mm"),
   string: z.string().optional(),
 })
