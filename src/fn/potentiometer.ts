@@ -12,7 +12,7 @@ export const potentiometer_def = z.object({
   ca: z.string().default("14mm"),
   w: z.string().default("5.35mm"),
   h: z.string().default("4mm"),
-  acp: z.string().optional(),
+  acp: z.boolean().default(false),
   string: z.string().optional(),
 })
 
