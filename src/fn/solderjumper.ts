@@ -29,11 +29,11 @@ export const solderjumper = (params: {
   const padSpacing = p
   const padWidth = pw
   const padHeight = ph
+  const traceWidth = Math.min(padHeight / 4, 0.5)
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < num_pins; i++) {
     pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight))
   }
-  // Add PCB trace if bridged
   let traces: AnyCircuitElement[] = []
   if (bridged) {
     const pins = bridged.split("").map(Number)
@@ -47,21 +47,29 @@ export const solderjumper = (params: {
           !isNaN(from) &&
           !isNaN(to)
         ) {
+          const xCenterFrom = (from - 1) * padSpacing
+          const xCenterTo = (to - 1) * padSpacing
+
+          const directionMult = Math.sign(xCenterTo - xCenterFrom)
+
+          const x1 = xCenterFrom + directionMult * (padWidth / 2)
+          const x2 = xCenterTo - directionMult * (padWidth / 2)
+
           traces.push({
             type: "pcb_trace",
             pcb_trace_id: "",
             route: [
               {
-                x: (from - 1) * padSpacing,
+                x: x1,
                 y: 0,
-                width: 0.5,
+                width: traceWidth,
                 layer: "top",
                 route_type: "wire",
               },
               {
-                x: (to - 1) * padSpacing,
+                x: x2,
                 y: 0,
-                width: 0.5,
+                width: traceWidth,
                 layer: "top",
                 route_type: "wire",
               },
