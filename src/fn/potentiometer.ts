@@ -31,9 +31,8 @@ export const potentiometer_acp = (
 export const potentiometer = (
   raw_params: z.input<typeof potentiometer_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const match = raw_params.string?.match(/potentiometer_.*?(?:h(\d+)|(\d+))/)
-  const numPins = match ? Number.parseInt(match[1] || match[2]!, 10) : 3
-
+  const match = raw_params.string?.match(/^potentiometer_(\d+)/)
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
   const parameters = potentiometer_def.parse({
     ...raw_params,
     num_pins: numPins,
@@ -43,8 +42,6 @@ export const potentiometer = (
 
   if (parameters.num_pins === 3) {
     platedHoles = potentiometer_acp(parameters)
-  } else {
-    throw new Error("Invalid number of pins for Potentiometer")
   }
 
   const y = Number.parseFloat(parameters.ca) / 2 + 0.15
