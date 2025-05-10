@@ -40,10 +40,11 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows } = parameters
-  const numPins = parameters.num_pins
+  const { p, id, od, rows, num_pins } = parameters
 
-  const holes: any[] = []
+  const holes: AnySoupElement[] = []
+  const numPinsPerRow = Math.ceil(num_pins / rows)
+  const ySpacing = -p
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
@@ -53,32 +54,89 @@ export const pinrow = (
     )
   }
 
-  if (rows > 1) {
-    const numPinsPerRow = Math.ceil(numPins / rows)
-    const ySpacing = -p
+  // Track used positions to prevent overlaps
+  const usedPositions = new Set<string>()
 
-    for (let row = 0; row < rows; row++) {
-      const yoff = row * ySpacing
-      const startPin = row * numPinsPerRow
-      const xStart = -((numPinsPerRow - 1) / 2) * p
-
-      for (let i = 0; i < numPinsPerRow; i++) {
-        const pinNumber = startPin + i + 1
-        if (pinNumber > numPins) break
-        const xoff = xStart + i * p
-        addPin(pinNumber, xoff, yoff)
-      }
-    }
-  } else {
-    const xStart = -((numPins - 1) / 2) * p
-    for (let i = 0; i < numPins; i++) {
+  // Generate pin assignments
+  if (rows === 1) {
+    // Single row: left to right, pin 1 to num_pins
+    const xStart = -((num_pins - 1) / 2) * p
+    for (let i = 0; i < num_pins; i++) {
       const pinNumber = i + 1
       const xoff = xStart + i * p
+      const posKey = `${xoff},${0}`
+      if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+      usedPositions.add(posKey)
       addPin(pinNumber, xoff, 0)
+    }
+  } else {
+    // Multi-row: counterclockwise spiral traversal
+    const xStart = -((numPinsPerRow - 1) / 2) * p
+    let currentPin = 1
+    let top = 0
+    let bottom = rows - 1
+    let left = 0
+    let right = numPinsPerRow - 1
+
+    while (currentPin <= num_pins && top <= bottom && left <= right) {
+      // Top row: left to right
+      for (let col = left; col <= right && currentPin <= num_pins; col++) {
+        const xoff = xStart + col * p
+        const yoff = top * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
+      }
+      top++
+
+      // Right column: top to bottom
+      for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
+        const xoff = xStart + right * p
+        const yoff = row * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
+      }
+      right--
+
+      if (top <= bottom) {
+        // Bottom row: right to left
+        for (let col = right; col >= left && currentPin <= num_pins; col--) {
+          const xoff = xStart + col * p
+          const yoff = bottom * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        bottom--
+      }
+
+      if (left <= right) {
+        // Left column: bottom to top
+        for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
+          const xoff = xStart + left * p
+          const yoff = row * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        left++
+      }
+    }
+
+    // Verify all pins were assigned
+    if (currentPin - 1 < num_pins) {
+      throw new Error(
+        `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
+      )
     }
   }
 
-  // Compute group reference position centered horizontally
+  // Add centered silkscreen reference text
   const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
 
   return {
