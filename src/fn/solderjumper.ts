@@ -60,7 +60,7 @@ export const solderjumper = (params: {
             pcb_trace_id: "",
             route: [
               {
-                start_pcb_port_id: `${from}`,
+                start_pcb_port_id: `pin${from}`,
                 x: x1,
                 y: 0,
                 width: traceWidth,
@@ -68,7 +68,7 @@ export const solderjumper = (params: {
                 route_type: "wire",
               },
               {
-                end_pcb_port_id: `${to}`,
+                end_pcb_port_id: `pin${to}`,
                 x: x2,
                 y: 0,
                 width: traceWidth,
