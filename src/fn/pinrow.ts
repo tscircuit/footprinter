@@ -57,7 +57,9 @@ export const pinrow = (
   // Track used positions to prevent overlaps
   const usedPositions = new Set<string>()
 
-  // Generate pin assignments
+  // Check if BGA-style numbering should be used
+  const useBGAStyle = rows > 2 && numPinsPerRow > 2
+
   if (rows === 1) {
     // Single row: left to right, pin 1 to num_pins
     const xStart = -((num_pins - 1) / 2) * p
@@ -69,6 +71,20 @@ export const pinrow = (
       usedPositions.add(posKey)
       addPin(pinNumber, xoff, 0)
     }
+  } else if (useBGAStyle) {
+    // BGA-style: row-major numbering (left to right, top to bottom)
+    const xStart = -((numPinsPerRow - 1) / 2) * p
+    let currentPin = 1
+    for (let row = 0; row < rows && currentPin <= num_pins; row++) {
+      for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
+        const xoff = xStart + col * p
+        const yoff = row * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
+      }
+    }
   } else {
     // Multi-row: counterclockwise spiral traversal
     const xStart = -((numPinsPerRow - 1) / 2) * p
@@ -79,52 +95,52 @@ export const pinrow = (
     let right = numPinsPerRow - 1
 
     while (currentPin <= num_pins && top <= bottom && left <= right) {
-      // Top row: left to right
-      for (let col = left; col <= right && currentPin <= num_pins; col++) {
-        const xoff = xStart + col * p
-        const yoff = top * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
-      }
-      top++
-
-      // Right column: top to bottom
+      // Left column: top to bottom
       for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
-        const xoff = xStart + right * p
+        const xoff = xStart + left * p
         const yoff = row * ySpacing
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
         addPin(currentPin++, xoff, yoff)
       }
-      right--
+      left++
 
-      if (top <= bottom) {
-        // Bottom row: right to left
-        for (let col = right; col >= left && currentPin <= num_pins; col--) {
-          const xoff = xStart + col * p
-          const yoff = bottom * ySpacing
-          const posKey = `${xoff},${yoff}`
-          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-          usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
-        }
-        bottom--
+      // Bottom row: left to right
+      for (let col = left; col <= right && currentPin <= num_pins; col++) {
+        const xoff = xStart + col * p
+        const yoff = bottom * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
       }
+      bottom--
 
       if (left <= right) {
-        // Left column: bottom to top
+        // Right column: bottom to top
         for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
-          const xoff = xStart + left * p
+          const xoff = xStart + right * p
           const yoff = row * ySpacing
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
           addPin(currentPin++, xoff, yoff)
         }
-        left++
+        right--
+      }
+
+      if (top <= bottom) {
+        // Top row: right to left
+        for (let col = right; col >= left && currentPin <= num_pins; col--) {
+          const xoff = xStart + col * p
+          const yoff = top * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        top++
       }
     }
 
