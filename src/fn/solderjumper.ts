@@ -87,10 +87,6 @@ export const solderjumper = (params: {
   const outlineCenterX = ((num_pins - 1) * padSpacing) / 2
   const outlineCenterY = 0
 
-  console.log("outlineWidth", outlineWidth)
-  console.log("outlineHeight", outlineHeight)
-  console.log("outlineCenterX", outlineCenterX)
-  console.log("outlineCenterY", outlineCenterY)
   const silkscreenRect = {
     type: "pcb_silkscreen_path",
     layer: "top",
