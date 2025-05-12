@@ -1,6 +1,7 @@
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement } from "circuit-json"
+import { length } from "circuit-json"
 
 /**
  * Solderjumper footprint generator
@@ -26,9 +27,9 @@ export const solderjumper = (params: {
   ph?: number
 }) => {
   const { num_pins, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
-  const padSpacing = p
-  const padWidth = pw
-  const padHeight = ph
+  const padSpacing = length.parse(p)
+  const padWidth = length.parse(pw)
+  const padHeight = length.parse(ph)
   const traceWidth = Math.min(padHeight / 4, 0.5)
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < num_pins; i++) {
@@ -81,14 +82,47 @@ export const solderjumper = (params: {
       }
     }
   }
-  // Add silkscreen ref
-  const silk = silkscreenRef(
-    ((num_pins - 1) * padSpacing) / 2,
-    Number(padHeight) + 0.1,
-    0.4,
-  )
+  const outlineWidth = (num_pins - 1) * padSpacing + padWidth + 0.7
+  const outlineHeight = padHeight + 1.0
+  const outlineCenterX = ((num_pins - 1) * padSpacing) / 2
+  const outlineCenterY = 0
+
+  const silkscreenRect = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "outline",
+    route: [
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX + outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX + outlineWidth / 2,
+        y: outlineCenterY + outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY + outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+    ],
+    stroke_width: 0.15,
+  }
+
+  const refOffset = 0.6
+  const refY = outlineCenterY + outlineHeight / 2 + refOffset
+  const silk = silkscreenRef(outlineCenterX, refY, 0.4)
+
   return {
-    circuitJson: [...pads, ...traces, silk],
+    circuitJson: [...pads, ...traces, silkscreenRect, silk],
     parameters: params,
   }
 }

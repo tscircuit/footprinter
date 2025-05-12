@@ -227,7 +227,6 @@ export const footprinter = (): Footprinter & {
     {},
     {
       get: (target: any, prop: string) => {
-        // console.log(prop, target)
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
