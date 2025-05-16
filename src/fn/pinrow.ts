@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
 
 export const pinrow_def = z
   .object({
@@ -39,49 +40,123 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows } = parameters
+  const { p, id, od, rows, num_pins } = parameters
 
-  const holes: any[] = []
-  const num_pins = parameters.num_pins
+  const holes: AnySoupElement[] = []
+  const numPinsPerRow = Math.ceil(num_pins / rows)
+  const ySpacing = -p
 
-  if (rows > 1) {
-    const num_pins_per_row = Math.ceil(num_pins / rows)
-    const ySpacing = p
+  // Helper to add plated hole and silkscreen label
+  const addPin = (pinNumber: number, xoff: number, yoff: number) => {
+    holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    holes.push(
+      silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
+    )
+  }
 
-    for (let row = 0; row < rows; row++) {
-      const yoff = row * ySpacing
-      const startPin = row * num_pins_per_row
+  // Track used positions to prevent overlaps
+  const usedPositions = new Set<string>()
 
-      for (let pinIndex = 0; pinIndex < num_pins_per_row; pinIndex++) {
-        const pinNumber = startPin + pinIndex + 1
-        if (pinNumber > num_pins) break
+  // Check if BGA-style numbering should be used
+  const useBGAStyle = rows > 2 && numPinsPerRow > 2
 
-        const xoff = pinIndex * p
-        holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+  if (rows === 1) {
+    // Single row: left to right, pin 1 to num_pins
+    const xStart = -((num_pins - 1) / 2) * p
+    for (let i = 0; i < num_pins; i++) {
+      const pinNumber = i + 1
+      const xoff = xStart + i * p
+      const posKey = `${xoff},${0}`
+      if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+      usedPositions.add(posKey)
+      addPin(pinNumber, xoff, 0)
+    }
+  } else if (useBGAStyle) {
+    // BGA-style: row-major numbering (left to right, top to bottom)
+    const xStart = -((numPinsPerRow - 1) / 2) * p
+    let currentPin = 1
+    for (let row = 0; row < rows && currentPin <= num_pins; row++) {
+      for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
+        const xoff = xStart + col * p
+        const yoff = row * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
       }
     }
   } else {
-    const num_spaces = num_pins - 1
-    const xoff = -(num_spaces / 2) * p
-    for (let i = 0; i < num_pins; i++) {
-      holes.push(platedhole(i + 1, xoff + i * p, 0, id, od))
+    // Multi-row: counterclockwise spiral traversal
+    const xStart = -((numPinsPerRow - 1) / 2) * p
+    let currentPin = 1
+    let top = 0
+    let bottom = rows - 1
+    let left = 0
+    let right = numPinsPerRow - 1
+
+    while (currentPin <= num_pins && top <= bottom && left <= right) {
+      // Left column: top to bottom
+      for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
+        const xoff = xStart + left * p
+        const yoff = row * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
+      }
+      left++
+
+      // Bottom row: left to right
+      for (let col = left; col <= right && currentPin <= num_pins; col++) {
+        const xoff = xStart + col * p
+        const yoff = bottom * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(currentPin++, xoff, yoff)
+      }
+      bottom--
+
+      if (left <= right) {
+        // Right column: bottom to top
+        for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
+          const xoff = xStart + right * p
+          const yoff = row * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        right--
+      }
+
+      if (top <= bottom) {
+        // Top row: right to left
+        for (let col = right; col >= left && currentPin <= num_pins; col--) {
+          const xoff = xStart + col * p
+          const yoff = top * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        top++
+      }
+    }
+
+    // Verify all pins were assigned
+    if (currentPin - 1 < num_pins) {
+      throw new Error(
+        `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
+      )
     }
   }
 
-  if (rows === 1) {
-    const silkscreenRefText: SilkscreenRef = silkscreenRef(0, rows * p, 0.5)
-    return {
-      circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
-      parameters,
-    }
-  }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    ((num_pins / rows - 1) * p) / 2, // Center the silkscreen horizontally
-    rows * p, // Keep it at the top vertically
-    0.5,
-  )
+  // Add centered silkscreen reference text
+  const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
+
   return {
-    circuitJson: [...holes, silkscreenRefText] as AnySoupElement[],
+    circuitJson: [...holes, refText],
     parameters,
   }
 }

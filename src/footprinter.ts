@@ -11,7 +11,7 @@ export type FootprinterParamsBuilder<K extends string> = {
     | "soup"
     | "circuitJson"
     ? Footprinter[P]
-    : (v?: number | string) => FootprinterParamsBuilder<K>
+    : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -44,7 +44,17 @@ export type Footprinter = {
   bga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "grid" | "p" | "w" | "h" | "ball" | "pad" | "missing"
+    | "grid"
+    | "p"
+    | "w"
+    | "h"
+    | "ball"
+    | "pad"
+    | "missing"
+    | "tlorigin"
+    | "blorigin"
+    | "trorigin"
+    | "brorigin"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
@@ -75,6 +85,10 @@ export type Footprinter = {
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  potentiometer: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
+  >
+  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -142,6 +156,9 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  solderjumper: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
 
   params: () => any
   /** @deprecated use circuitJson() instead */
@@ -216,7 +233,6 @@ export const footprinter = (): Footprinter & {
     {},
     {
       get: (target: any, prop: string) => {
-        // console.log(prop, target)
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
