@@ -88,6 +88,7 @@ export type Footprinter = {
   potentiometer: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
   >
+  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
