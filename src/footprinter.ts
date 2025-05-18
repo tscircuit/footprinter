@@ -107,6 +107,11 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  son: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
+  >
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
