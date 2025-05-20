@@ -1,8 +1,10 @@
 import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad" // Import the new function
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { mm } from "@tscircuit/mm"
 
 export const pinrow_def = z
   .object({
@@ -19,6 +21,19 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    squareplating: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("use rectangular pad for pin 1"),
+    rw: length
+      .optional()
+      .default("1.5mm")
+      .describe("rectangular pad width for pin 1"),
+    rl: length
+      .optional()
+      .default("1.5mm")
+      .describe("rectangular pad height for pin 1"),
   })
   .transform((data) => ({
     ...data,
@@ -40,7 +55,7 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows, num_pins } = parameters
+  const { p, id, od, rows, num_pins, squareplating, rw, rl } = parameters
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
@@ -48,7 +63,13 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    if (pinNumber === 1 && squareplating) {
+      // Pin 1 with rectangular pad and circular hole
+      holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id, rw, rl))
+    } else {
+      // Other pins with standard circular pad
+      holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    }
     holes.push(
       silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
     )

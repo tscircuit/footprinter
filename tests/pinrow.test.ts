@@ -74,3 +74,31 @@ test("pinrow6_female_rows2", () => {
     "pinrow6_female_rows2",
   )
 })
+
+test("pinrow6_squareplating", () => {
+  const circuitJson = fp.string("pinrow6_squareplating").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+
+  const pinrowJson = fp.string("pinrow6_squareplating").json()
+
+  // Verify parsed parameters
+  expect(pinrowJson).toMatchObject({
+    fn: "pinrow",
+    num_pins: 6,
+    p: 2.54,
+    id: 1,
+    od: 1.5,
+    male: true,
+    female: false,
+    rows: 1,
+    squareplating: true,
+    rw: 1.5,
+    rl: 1.5,
+  })
+
+  // Verify SVG snapshot
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow6_squareplating",
+  )
+})
