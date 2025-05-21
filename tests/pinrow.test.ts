@@ -15,21 +15,21 @@ test("pinrow5", () => {
     female: true,
     male: false,
   })
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
 
 test("pinrow4_rows2", () => {
   const circuitJson = fp.string("pinrow4_rows2").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
 
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow4_rows2")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow4_rows2_1")
 })
 
 test("pinrow8_rows4", () => {
   const circuitJson = fp.string("pinrow8_rows4").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
 
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow8_rows4")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow8_rows4_1")
 })
 
 test("pinrow9_male_rows3", () => {
@@ -49,7 +49,7 @@ test("pinrow9_male_rows3", () => {
     rows: 3,
   })
 
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow9_male_rows3")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow9_male_rows3_1")
 })
 
 test("pinrow6_female_rows2", () => {
@@ -71,7 +71,7 @@ test("pinrow6_female_rows2", () => {
 
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "pinrow6_female_rows2",
+    "pinrow6_female_rows2_1",
   )
 })
 
@@ -97,6 +97,6 @@ test("pinrow6_nosquareplating", () => {
   // Verify SVG snapshot
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "pinrow6_nosquareplating",
+    "pinrow6_nosquareplating_1",
   )
 })
