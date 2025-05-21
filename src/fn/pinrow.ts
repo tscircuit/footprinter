@@ -77,7 +77,7 @@ export const pinrow = (
     od,
     rows,
     num_pins,
-    resolvedPinLabelPosition, // Use the resolved position
+    resolvedPinLabelPosition,
     pinlabelparallel,
     pinlabelinverted,
   } = parameters
