@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad" // Import the new function
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
@@ -25,7 +25,7 @@ export const pinrow_def = z
       .boolean()
       .optional()
       .default(false)
-      .describe("use rectangular pad for pin 1"), // No longer necessary
+      .describe("do not use rectangular pad for pin 1"),
   })
   .transform((data) => ({
     ...data,
