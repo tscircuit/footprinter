@@ -74,3 +74,19 @@ test("pinrow6_female_rows2", () => {
     "pinrow6_female_rows2",
   )
 })
+
+const labelPositions = ["Up", "Down", "Left", "Right"]
+const labelRotations = [0, 90, 180, 270]
+for (const pos of labelPositions) {
+  for (const rot of labelRotations) {
+    test(`pinrow5 labelposition=${pos} labelrotation=${rot}`, () => {
+      const def = `pinrow5_labelposition${pos}_labelrotation${rot}`
+      const soup = fp.string(def).circuitJson()
+      const svgContent = convertCircuitJsonToPcbSvg(soup)
+      expect(svgContent).toMatchSvgSnapshot(
+        import.meta.path,
+        `pinrow5_labelposition${pos}_labelrotation${rot}`,
+      )
+    })
+  }
+}

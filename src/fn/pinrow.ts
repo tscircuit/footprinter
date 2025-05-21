@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { length, type AnySoupElement } from "circuit-json"
+import { length, rotation, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
@@ -19,9 +19,15 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    labelrotation: z.enum(["0", "90", "180", "270"]).optional().default("0"),
+    labelposition: z
+      .enum(["Up", "Down", "Left", "Right"])
+      .optional()
+      .default("Up"),
   })
   .transform((data) => ({
     ...data,
+    labelrotation: Number(data.labelrotation),
     male: data.male ?? (data.female ? false : true),
     female: data.female ?? false,
   }))
@@ -40,17 +46,63 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows, num_pins } = parameters
+  const { p, id, od, rows, num_pins, labelrotation, labelposition } = parameters
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
   const ySpacing = -p
 
+  const calculateAnchorPosition = (
+    xoff: number,
+    yoff: number,
+    od: number,
+    labelposition: "Up" | "Down" | "Left" | "Right",
+  ): { anchor_x: number; anchor_y: number } => {
+    let dx = 0,
+      dy = 0
+    const offset = od * 0.75
+    switch (labelposition) {
+      case "Right":
+        dx = offset
+        dy = 0
+        break
+      case "Up":
+        dx = 0
+        dy = offset
+        break
+      case "Down":
+        dx = 0
+        dy = -offset
+        break
+      case "Left":
+        dx = -offset
+        dy = 0
+        break
+      default:
+        dx = 0
+        dy = 0
+    }
+    return { anchor_x: xoff + dx, anchor_y: yoff + dy }
+  }
+
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
     holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    const { anchor_x, anchor_y } = calculateAnchorPosition(
+      xoff,
+      yoff,
+      od,
+      labelposition,
+    )
     holes.push(
-      silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
+      silkscreenPin({
+        fs: od / 5,
+        pn: pinNumber,
+        rotation: labelrotation,
+        anchor_x,
+        anchor_y,
+        labelposition: labelposition,
+      }),
     )
   }
 
