@@ -194,17 +194,14 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split("_")
     .map((s) => {
-      const m = s.match(/^([a-z]+)([A-Z].*|\d.*)?$/)
-      if (!m) return null
-      const [, fn, v] = m
-      if (!fn) return null
+      const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
+      const [_, fn, v] = m ?? []
       if (v?.includes("?")) return null
-      return { fn, v: v || undefined }
+      return { fn: m?.[1]!, v: m?.[2]! }
     })
     .filter(isNotNull)
 
   for (const { fn, v } of def_parts) {
-    if (!fn) continue
     fp = fp[fn](v)
   }
 
