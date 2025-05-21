@@ -5,8 +5,8 @@ export const dim2d = z
   .transform((a) => {
     const [x, y] = a.split(/[x ]/)
     return {
-      x: parseFloat(x),
-      y: parseFloat(y),
+      x: parseFloat(x || ""),
+      y: parseFloat(y || ""),
     }
   })
   .pipe(

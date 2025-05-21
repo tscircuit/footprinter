@@ -15,6 +15,7 @@ export const silkscreenRef: (
     layer: "top",
     anchor_position: { x: x, y: y },
     anchor_alignment: "center",
+    stroke_width: 1,
   }
 }
 export type SilkscreenRef = ReturnType<typeof silkscreenRef>

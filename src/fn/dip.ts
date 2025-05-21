@@ -167,7 +167,7 @@ export const dip = (raw_params: {
       anchor_alignment: "top-left",
     }
 
-    silkscreenPins.push(silkscreenPin)
+    silkscreenPins.push(silkscreenPin as any)
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 

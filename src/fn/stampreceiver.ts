@@ -136,6 +136,7 @@ export const stampreceiver = (
         font_size: 0.7,
         font: "tscircuit2024",
         anchor_alignment: "center",
+        stroke_width: 1,
       })
       padIndex++
       params.innerhole &&
@@ -177,6 +178,7 @@ export const stampreceiver = (
         font_size: 0.7,
         font: "tscircuit2024",
         anchor_alignment: "center",
+        stroke_width: 1,
       })
       padIndex++
       params.innerhole &&
@@ -218,6 +220,7 @@ export const stampreceiver = (
         font_size: 0.7,
         font: "tscircuit2024",
         anchor_alignment: "center",
+        stroke_width: 1,
       })
       padIndex++
       params.innerhole &&
@@ -259,6 +262,7 @@ export const stampreceiver = (
         font_size: 0.7,
         font: "tscircuit2024",
         anchor_alignment: "center",
+        stroke_width: 1,
       })
       padIndex++
       params.innerhole &&
