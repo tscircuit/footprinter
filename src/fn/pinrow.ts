@@ -1,8 +1,10 @@
 import { z } from "zod"
 import { length, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad" // Import the new function
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { mm } from "@tscircuit/mm"
 
 export const pinrow_def = z
   .object({
@@ -19,6 +21,11 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    nosquareplating: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("use rectangular pad for pin 1"), // No longer necessary
   })
   .transform((data) => ({
     ...data,
@@ -48,7 +55,13 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    if (pinNumber === 1 && !parameters.nosquareplating) {
+      // Always use square plating for pin 1 (no need to check nosquareplating anymore)
+      holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id, od, od))
+    } else {
+      // Other pins with standard circular pad
+      holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    }
     holes.push(
       silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
     )
