@@ -49,7 +49,10 @@ test("pinrow9_male_rows3", () => {
     rows: 3,
   })
 
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow9_male_rows3_1")
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow9_male_rows3_1",
+  )
 })
 
 test("pinrow6_female_rows2", () => {
