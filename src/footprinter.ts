@@ -85,6 +85,10 @@ export type Footprinter = {
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  potentiometer: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
+  >
+  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -227,7 +231,6 @@ export const footprinter = (): Footprinter & {
     {},
     {
       get: (target: any, prop: string) => {
-        // console.log(prop, target)
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
