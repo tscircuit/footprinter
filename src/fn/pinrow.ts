@@ -1,8 +1,10 @@
 import { z } from "zod"
 import { length, rotation, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { mm } from "@tscircuit/mm"
 
 export const pinrow_def = z
   .object({
@@ -25,6 +27,11 @@ export const pinrow_def = z
     pinlabelpositionright: z.boolean().optional().default(false),
     pinlabelparallel: z.boolean().optional().default(false),
     pinlabelinverted: z.boolean().optional().default(false),
+    nosquareplating: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("do not use rectangular pad for pin 1"),
   })
   .transform((data) => {
     let resolvedPinLabelPosition: "up" | "down" | "left" | "right"
@@ -121,7 +128,13 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    if (pinNumber === 1 && !parameters.nosquareplating) {
+      // Always use square plating for pin 1 (no need to check nosquareplating anymore)
+      holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id, od, od))
+    } else {
+      // Other pins with standard circular pad
+      holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+    }
     const { anchor_x, anchor_y } = calculateAnchorPosition(
       xoff,
       yoff,

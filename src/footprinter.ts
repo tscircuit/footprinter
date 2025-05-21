@@ -77,6 +77,7 @@ export type Footprinter = {
     | "pinlabelpositionright"
     | "pinlabelparallel"
     | "pinlabelinverted"
+    | "nosquareplating"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
