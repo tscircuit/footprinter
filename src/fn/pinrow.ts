@@ -19,18 +19,43 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
-    labelrotation: z.enum(["0", "90", "180", "270"]).optional().default("0"),
-    labelposition: z
-      .enum(["Up", "Down", "Left", "Right"])
-      .optional()
-      .default("Up"),
+    pinlabelpositionup: z.boolean().optional().default(false),
+    pinlabelpositiondown: z.boolean().optional().default(false),
+    pinlabelpositionleft: z.boolean().optional().default(false),
+    pinlabelpositionright: z.boolean().optional().default(false),
+    pinlabelparallel: z.boolean().optional().default(false),
+    pinlabelinverted: z.boolean().optional().default(false),
   })
-  .transform((data) => ({
-    ...data,
-    labelrotation: Number(data.labelrotation),
-    male: data.male ?? (data.female ? false : true),
-    female: data.female ?? false,
-  }))
+  .transform((data) => {
+    let resolvedPinLabelPosition: "up" | "down" | "left" | "right"
+    const {
+      pinlabelpositionup,
+      pinlabelpositiondown,
+      pinlabelpositionleft,
+      pinlabelpositionright,
+    } = data
+
+    const truePositionFlags: ("up" | "down" | "left" | "right")[] = []
+    if (pinlabelpositionup) truePositionFlags.push("up")
+    if (pinlabelpositiondown) truePositionFlags.push("down")
+    if (pinlabelpositionleft) truePositionFlags.push("left")
+    if (pinlabelpositionright) truePositionFlags.push("right")
+
+    if (truePositionFlags.includes("up")) {
+      resolvedPinLabelPosition = "up"
+    } else if (truePositionFlags.length === 1) {
+      resolvedPinLabelPosition = truePositionFlags[0]!
+    } else {
+      resolvedPinLabelPosition = "up"
+    }
+
+    return {
+      ...data,
+      resolvedPinLabelPosition,
+      male: data.male ?? (data.female ? false : true),
+      female: data.female ?? false,
+    }
+  })
   .superRefine((data, ctx) => {
     if (data.male && data.female) {
       ctx.addIssue({
@@ -46,7 +71,16 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows, num_pins, labelrotation, labelposition } = parameters
+  const {
+    p,
+    id,
+    od,
+    rows,
+    num_pins,
+    resolvedPinLabelPosition, // Use the resolved position
+    pinlabelparallel,
+    pinlabelinverted,
+  } = parameters
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
@@ -56,25 +90,25 @@ export const pinrow = (
     xoff: number,
     yoff: number,
     od: number,
-    labelposition: "Up" | "Down" | "Left" | "Right",
+    resolvedPinLabelPosition: "up" | "down" | "left" | "right",
   ): { anchor_x: number; anchor_y: number } => {
     let dx = 0,
       dy = 0
     const offset = od * 0.75
-    switch (labelposition) {
-      case "Right":
+    switch (resolvedPinLabelPosition) {
+      case "right":
         dx = offset
         dy = 0
         break
-      case "Up":
+      case "up":
         dx = 0
         dy = offset
         break
-      case "Down":
+      case "down":
         dx = 0
         dy = -offset
         break
-      case "Left":
+      case "left":
         dx = -offset
         dy = 0
         break
@@ -92,16 +126,17 @@ export const pinrow = (
       xoff,
       yoff,
       od,
-      labelposition,
+      resolvedPinLabelPosition,
     )
     holes.push(
       silkscreenPin({
         fs: od / 5,
         pn: pinNumber,
-        rotation: labelrotation,
         anchor_x,
         anchor_y,
-        labelposition: labelposition,
+        pinlabelposition: resolvedPinLabelPosition,
+        pinlabelparallel: pinlabelparallel,
+        pinlabelinverted: pinlabelinverted,
       }),
     )
   }
