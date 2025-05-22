@@ -141,7 +141,7 @@ const FootprintCreator: React.FC = () => {
         {/* Gallery Section */}
         <section className="mt-10">
           <h2 className="text-2xl font-bold text-center mb-6">
-            Existing Footprints
+            Example Footprints
           </h2>
           <div className="grid grid-cols-1  md:grid-cols-3 gap-6">
             {data.map((footprint, index) => (
