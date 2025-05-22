@@ -39288,7 +39288,7 @@ var FootprintCreator = () => {
             children: [
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("h2", {
                 className: "text-2xl font-bold text-center mb-6",
-                children: "Existing Footprints"
+                children: "Example Footprints"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
                 className: "grid grid-cols-1  md:grid-cols-3 gap-6",
