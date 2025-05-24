@@ -35796,7 +35796,18 @@ var pad = (params) => {
   };
 };
 // src/fn/to92.ts
-var generate_semicircle = (centerX, centerY, radius) => {
+var to92_def = z.object({
+  fn: z.string(),
+  num_pins: z.union([z.literal(3), z.literal(2)]).default(3),
+  p: z.string().default("1.27mm"),
+  id: z.string().default("0.72mm"),
+  od: z.string().default("0.95mm"),
+  w: z.string().default("4.5mm"),
+  h: z.string().default("4.5mm"),
+  inline: z.boolean().default(false),
+  string: z.string().optional()
+});
+var generateSemicircle = (centerX, centerY, radius) => {
   return Array.from({ length: 25 }, (_, i) => {
     const theta = i / 24 * Math.PI;
     return {
@@ -35805,30 +35816,43 @@ var generate_semicircle = (centerX, centerY, radius) => {
     };
   });
 };
-var to92_def = z.object({
-  fn: z.string(),
-  p: length.optional().default("1.27mm"),
-  id: length.optional().default("0.72mm"),
-  od: length.optional().default(".95mm"),
-  w: length.optional().default("4.5mm"),
-  h: length.optional().default("4.5mm"),
-  inline: z.boolean().optional().default(false)
-});
-var to92 = (raw_params) => {
-  const parameters = to92_def.parse(raw_params);
-  const { p, id, od, w, h, inline } = parameters;
-  const radius = w / 2;
-  const holeY = h / 2;
-  const plated_holes = inline ? [
-    platedhole(1, -p, holeY - p, id, od),
-    platedhole(2, 0, holeY - p, id, od),
-    platedhole(3, p, holeY - p, id, od)
-  ] : [
-    platedhole(1, 0, holeY, id, od),
-    platedhole(2, -p, holeY - p, id, od),
-    platedhole(3, p, holeY - p, id, od)
+var to92_2 = (parameters) => {
+  const { p, id, od, h } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
+  return [
+    platedhole(1, -padSpacing, holeY - padSpacing, id, od),
+    platedhole(2, padSpacing, holeY - padSpacing, id, od)
   ];
-  const semicircle = generate_semicircle(0, h / 2, radius);
+};
+var to92 = (raw_params) => {
+  const match = raw_params.string?.match(/^to92_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1], 10) : 3;
+  const parameters = to92_def.parse({
+    ...raw_params,
+    num_pins: numPins
+  });
+  const { p, id, od, w, h, inline } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
+  let platedHoles = [];
+  if (parameters.num_pins === 3) {
+    platedHoles = inline ? [
+      platedhole(1, -padSpacing, holeY - padSpacing, id, od),
+      platedhole(2, 0, holeY - padSpacing, id, od),
+      platedhole(3, padSpacing, holeY - padSpacing, id, od)
+    ] : [
+      platedhole(1, 0, holeY, id, od),
+      platedhole(2, -padSpacing, holeY - padSpacing, id, od),
+      platedhole(3, padSpacing, holeY - padSpacing, id, od)
+    ];
+  } else if (parameters.num_pins === 2) {
+    platedHoles = to92_2(parameters);
+  } else {
+    throw new Error("Invalid number of pins for TO-92");
+  }
+  const radius = Number.parseFloat(w) / 2;
+  const semicircle = generateSemicircle(0, holeY, radius);
   const silkscreenBody = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -35842,10 +35866,10 @@ var to92 = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const silkscreenRefText = silkscreenRef(0, h / 2 + 1, 0.5);
+  const silkscreenRefText = silkscreenRef(0, holeY + 1, 0.5);
   return {
     circuitJson: [
-      ...plated_holes,
+      ...platedHoles,
       silkscreenBody,
       silkscreenRefText
     ],
@@ -38811,6 +38835,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="148.1481481481481" y="155.55555555555554" width="503.70370370370364" height="288.8888888888889"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="88.88888888888883" y="247.1111111111111" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="387.85185185185185" width="118.51851851851853" height="113.18518518518519"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="592.5925925925925" y="106.37037037037037" width="118.51851851851853" height="113.18518518518519"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="44.44444444444444" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,399.99999999999994,155.55555555555554)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1">{REF}</text></svg>',
     title: "sot23_w3_h1.5_p0.95mm"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="192.30769230769232" y="92.30769230769232" width="415.3846153846153" height="415.38461538461536"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 607.6923076923076 300 L 605.9154712084068 272.89071392352776 L 600.6153639215757 246.24527524793803 L 591.8826721369595 220.51959481648134 L 579.8668146321527 196.15384615384613 L 564.7733860604873 173.56493397511184 L 546.8606391695138 153.13936083048623 L 526.4350660248881 135.22661393951267 L 503.84615384615387 120.13318536784732 L 479.48040518351866 108.11732786304043 L 453.754724752062 99.38463607842425 L 427.1092860764723 94.08452879159319 L 400 92.30769230769232 L 372.8907139235278 94.08452879159319 L 346.24527524793797 99.38463607842425 L 320.51959481648134 108.11732786304043 L 296.1538461538462 120.13318536784732 L 273.5649339751119 135.22661393951267 L 253.13936083048628 153.13936083048623 L 235.22661393951273 173.56493397511179 L 220.13318536784735 196.15384615384613 L 208.11732786304046 220.51959481648134 L 199.3846360784243 246.2452752479379 L 194.08452879159324 272.89071392352776 L 192.30769230769232 299.99999999999994 L 192.30769230769232 507.6923076923077 L 607.6923076923076 507.6923076923077 L 607.6923076923076 300 Z" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="46.15384615384615" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,207.69230769230768)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1">{REF}</text><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="282.7692307692308" cy="417.2307692307692" r="43.84615384615385"/><circle class="pcb-hole-inner" fill="rgb(255, 38, 226)" cx="282.7692307692308" cy="417.2307692307692" r="33.230769230769226"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="517.2307692307693" cy="417.2307692307692" r="43.84615384615385"/><circle class="pcb-hole-inner" fill="rgb(255, 38, 226)" cx="517.2307692307693" cy="417.2307692307692" r="33.230769230769226"/></g></svg>',
+    title: "to92_2"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="207.14285714285717" y="142.85714285714283" width="385.7142857142857" height="314.2857142857143"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="250.00000000000003" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="550" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 592.8571428571429 199.99999999999997 L 207.14285714285717 199.99999999999997 L 207.14285714285717 457.1428571428571 L 592.8571428571429 457.1428571428571" fill="none" stroke="#f2eda1" stroke-width="14.285714285714286" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="42.857142857142854" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,442.8571428571429,142.85714285714283)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="#f2eda1">{REF}</text></svg>',
