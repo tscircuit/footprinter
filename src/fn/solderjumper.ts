@@ -1,6 +1,7 @@
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement } from "circuit-json"
+import { length } from "circuit-json"
 
 /**
  * Solderjumper footprint generator
@@ -26,14 +27,14 @@ export const solderjumper = (params: {
   ph?: number
 }) => {
   const { num_pins, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
-  const padSpacing = p
-  const padWidth = pw
-  const padHeight = ph
+  const padSpacing = length.parse(p)
+  const padWidth = length.parse(pw)
+  const padHeight = length.parse(ph)
+  const traceWidth = Math.min(padHeight / 4, 0.5)
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < num_pins; i++) {
     pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight))
   }
-  // Add PCB trace if bridged
   let traces: AnyCircuitElement[] = []
   if (bridged) {
     const pins = bridged.split("").map(Number)
@@ -47,21 +48,31 @@ export const solderjumper = (params: {
           !isNaN(from) &&
           !isNaN(to)
         ) {
+          const xCenterFrom = (from - 1) * padSpacing
+          const xCenterTo = (to - 1) * padSpacing
+
+          const directionMult = Math.sign(xCenterTo - xCenterFrom)
+
+          const x1 = xCenterFrom + directionMult * (padWidth / 2)
+          const x2 = xCenterTo - directionMult * (padWidth / 2)
+
           traces.push({
             type: "pcb_trace",
             pcb_trace_id: "",
             route: [
               {
-                x: (from - 1) * padSpacing,
+                start_pcb_port_id: `{PIN${from}}`,
+                x: x1,
                 y: 0,
-                width: 0.5,
+                width: traceWidth,
                 layer: "top",
                 route_type: "wire",
               },
               {
-                x: (to - 1) * padSpacing,
+                end_pcb_port_id: `{PIN${to}}`,
+                x: x2,
                 y: 0,
-                width: 0.5,
+                width: traceWidth,
                 layer: "top",
                 route_type: "wire",
               },
@@ -71,14 +82,47 @@ export const solderjumper = (params: {
       }
     }
   }
-  // Add silkscreen ref
-  const silk = silkscreenRef(
-    ((num_pins - 1) * padSpacing) / 2,
-    Number(padHeight) + 0.1,
-    0.4,
-  )
+  const outlineWidth = (num_pins - 1) * padSpacing + padWidth + 0.7
+  const outlineHeight = padHeight + 1.0
+  const outlineCenterX = ((num_pins - 1) * padSpacing) / 2
+  const outlineCenterY = 0
+
+  const silkscreenRect = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "outline",
+    route: [
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX + outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX + outlineWidth / 2,
+        y: outlineCenterY + outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY + outlineHeight / 2,
+      },
+      {
+        x: outlineCenterX - outlineWidth / 2,
+        y: outlineCenterY - outlineHeight / 2,
+      },
+    ],
+    stroke_width: 0.15,
+  }
+
+  const refOffset = 0.6
+  const refY = outlineCenterY + outlineHeight / 2 + refOffset
+  const silk = silkscreenRef(outlineCenterX, refY, 0.4)
+
   return {
-    circuitJson: [...pads, ...traces, silk],
+    circuitJson: [...pads, ...traces, silkscreenRect, silk],
     parameters: params,
   }
 }

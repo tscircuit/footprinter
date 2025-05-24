@@ -64,7 +64,9 @@ export type Footprinter = {
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   pinrow: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"p" | "id" | "od" | "male" | "female" | "rows">
+  ) => FootprinterParamsBuilder<
+    "p" | "id" | "od" | "male" | "female" | "rows" | "nosquareplating"
+  >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
@@ -97,6 +99,10 @@ export type Footprinter = {
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  potentiometer: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
+  >
+  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -115,6 +121,11 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  son: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
+  >
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -236,7 +247,6 @@ export const footprinter = (): Footprinter & {
     {},
     {
       get: (target: any, prop: string) => {
-        // console.log(prop, target)
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => FOOTPRINT_FN[target.fn](target).circuitJson
