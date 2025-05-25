@@ -165,9 +165,9 @@ const generateSot457Elements = (
 
   // Pin 1 indicator triangle
   const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 })
-  pin1Position.x -= padWidth * 1.7
-  const triangleHeight = 0.5
-  const triangleWidth = 0.3
+  const triangleHeight = params.wave ? 1 : 0.5
+  const triangleWidth = params.wave ? 0.7 : 0.3
+  pin1Position.x -= params.wave ? padWidth : padWidth * 1.7
 
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
