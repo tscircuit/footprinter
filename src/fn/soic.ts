@@ -1,5 +1,4 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
-import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
@@ -9,6 +8,8 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 export const extendSoicDef = (newDefaults: {
   w?: string
   p?: string
+  pw?: string
+  pl?: string
   num_pins?: number
   legsoutside?: boolean
 }) =>
@@ -16,10 +17,10 @@ export const extendSoicDef = (newDefaults: {
     .object({
       fn: z.string(),
       num_pins: z.number().optional().default(8),
-      w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
+      w: length.default(length.parse(newDefaults.w ?? "6.46mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
-      pw: length.optional(),
-      pl: length.optional(),
+      pw: length.default(length.parse(newDefaults.pw ?? "0.72mm")),
+      pl: length.default(length.parse(newDefaults.pl ?? "1.78mm")),
       legsoutside: z
         .boolean()
         .optional()
@@ -73,10 +74,9 @@ export const getCcwSoicCoords = (parameters: {
     // The y position starts at h/2, then goes down by gap size
     // for each pin
     return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs }
-  } else {
-    // The y position starts at -h/2, then goes up by gap size
-    return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
   }
+  // The y position starts at -h/2, then goes up by gap size
+  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
 }
 
 /**
@@ -89,7 +89,7 @@ export const soic = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: any } => {
+}): { circuitJson: AnySoupElement[]; parameters: SoicInput } => {
   const parameters = soic_def.parse(raw_params)
   return {
     circuitJson: soicWithoutParsing(parameters) as AnySoupElement[],
@@ -104,13 +104,11 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
-      p: parameters.p ?? 1.27,
+      p: parameters.p,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
-    pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
-    )
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
   }
 
   /** silkscreen width */
