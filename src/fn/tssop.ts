@@ -2,8 +2,10 @@ import type { AnySoupElement } from "circuit-json"
 import { extendSoicDef, soicWithoutParsing, type SoicInput } from "./soic"
 
 export const tssop_def = extendSoicDef({
-  w: "6.1mm",
+  w: "7.1mm",
   p: "0.65mm",
+  pl: "1.35mm",
+  pw: "0.40mm",
   legsoutside: true,
 })
 
