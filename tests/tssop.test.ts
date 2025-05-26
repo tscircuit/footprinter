@@ -20,7 +20,7 @@ test("tssop20_w6.5mm_p0.65mm", () => {
   )
 })
 
-test("tssop", () => {
+test("tssop8", () => {
   const soup = fp.string("tssop8").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tssop8")
