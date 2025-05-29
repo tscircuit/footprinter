@@ -21,12 +21,12 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
-    pinlabelpositionup: z.boolean().optional().default(false),
-    pinlabelpositiondown: z.boolean().optional().default(false),
-    pinlabelpositionleft: z.boolean().optional().default(false),
-    pinlabelpositionright: z.boolean().optional().default(false),
+    pinlabeltop: z.boolean().optional().default(false),
+    pinlabelbottom: z.boolean().optional().default(false),
+    pinlabelleft: z.boolean().optional().default(false),
+    pinlabelright: z.boolean().optional().default(false),
     pinlabelparallel: z.boolean().optional().default(false),
-    pinlabelinverted: z.boolean().optional().default(false),
+    pinlabelorthogonal: z.boolean().optional().default(false),
     nosquareplating: z
       .boolean()
       .optional()
@@ -34,26 +34,21 @@ export const pinrow_def = z
       .describe("do not use rectangular pad for pin 1"),
   })
   .transform((data) => {
-    let resolvedPinLabelPosition: "up" | "down" | "left" | "right"
-    const {
-      pinlabelpositionup,
-      pinlabelpositiondown,
-      pinlabelpositionleft,
-      pinlabelpositionright,
-    } = data
+    let resolvedPinLabelPosition: "top" | "bottom" | "left" | "right"
+    const { pinlabeltop, pinlabelbottom, pinlabelleft, pinlabelright } = data
 
-    const truePositionFlags: ("up" | "down" | "left" | "right")[] = []
-    if (pinlabelpositionup) truePositionFlags.push("up")
-    if (pinlabelpositiondown) truePositionFlags.push("down")
-    if (pinlabelpositionleft) truePositionFlags.push("left")
-    if (pinlabelpositionright) truePositionFlags.push("right")
+    const truePositionFlags: ("top" | "bottom" | "left" | "right")[] = []
+    if (pinlabeltop) truePositionFlags.push("top")
+    if (pinlabelbottom) truePositionFlags.push("bottom")
+    if (pinlabelleft) truePositionFlags.push("left")
+    if (pinlabelright) truePositionFlags.push("right")
 
-    if (truePositionFlags.includes("up")) {
-      resolvedPinLabelPosition = "up"
+    if (truePositionFlags.includes("top")) {
+      resolvedPinLabelPosition = "top"
     } else if (truePositionFlags.length === 1) {
       resolvedPinLabelPosition = truePositionFlags[0]!
     } else {
-      resolvedPinLabelPosition = "up"
+      resolvedPinLabelPosition = "top"
     }
 
     return {
@@ -86,7 +81,7 @@ export const pinrow = (
     num_pins,
     resolvedPinLabelPosition,
     pinlabelparallel,
-    pinlabelinverted,
+    pinlabelorthogonal,
   } = parameters
 
   const holes: AnySoupElement[] = []
@@ -97,7 +92,7 @@ export const pinrow = (
     xoff: number,
     yoff: number,
     od: number,
-    resolvedPinLabelPosition: "up" | "down" | "left" | "right",
+    resolvedPinLabelPosition: "top" | "bottom" | "left" | "right",
   ): { anchor_x: number; anchor_y: number } => {
     let dx = 0,
       dy = 0
@@ -107,11 +102,11 @@ export const pinrow = (
         dx = offset
         dy = 0
         break
-      case "up":
+      case "top":
         dx = 0
         dy = offset
         break
-      case "down":
+      case "bottom":
         dx = 0
         dy = -offset
         break
@@ -149,7 +144,7 @@ export const pinrow = (
         anchor_y,
         pinlabelposition: resolvedPinLabelPosition,
         pinlabelparallel: pinlabelparallel,
-        pinlabelinverted: pinlabelinverted,
+        pinlabelorthogonal: pinlabelorthogonal,
       }),
     )
   }

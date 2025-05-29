@@ -14,12 +14,12 @@ test("pinrow5", () => {
     od: 1.5,
     female: true,
     male: false,
-    pinlabelpositionup: false,
-    pinlabelpositiondown: false,
-    pinlabelpositionleft: false,
-    pinlabelpositionright: false,
+    pinlabeltop: false,
+    pinlabelbottom: false,
+    pinlabelleft: false,
+    pinlabelright: false,
     pinlabelparallel: false,
-    pinlabelinverted: false,
+    pinlabelorthogonal: false,
   })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
@@ -53,12 +53,12 @@ test("pinrow9_male_rows3", () => {
     male: true,
     female: false,
     rows: 3,
-    pinlabelpositionup: false,
-    pinlabelpositiondown: false,
-    pinlabelpositionleft: false,
-    pinlabelpositionright: false,
+    pinlabeltop: false,
+    pinlabelbottom: false,
+    pinlabelleft: false,
+    pinlabelright: false,
     pinlabelparallel: false,
-    pinlabelinverted: false,
+    pinlabelorthogonal: false,
   })
 
   expect(svgContent).toMatchSvgSnapshot(
@@ -82,12 +82,12 @@ test("pinrow6_female_rows2", () => {
     male: false,
     female: true,
     rows: 2,
-    pinlabelpositionup: false,
-    pinlabelpositiondown: false,
-    pinlabelpositionleft: false,
-    pinlabelpositionright: false,
+    pinlabeltop: false,
+    pinlabelbottom: false,
+    pinlabelleft: false,
+    pinlabelright: false,
     pinlabelparallel: false,
-    pinlabelinverted: false,
+    pinlabelorthogonal: false,
   })
 
   expect(svgContent).toMatchSvgSnapshot(
@@ -122,40 +122,32 @@ test("pinrow6_nosquareplating", () => {
   )
 })
 
-const pinLabelEffectivePositions = ["Up", "Down", "Left", "Right"] as const
+const pinLabelSides = ["top", "bottom", "left", "right"] as const
 const rotationConfigs = [
-  { parallel: false, inverted: false, rotation: 0 },
-  { parallel: true, inverted: false, rotation: 90 },
-  { parallel: false, inverted: true, rotation: 180 },
-  { parallel: true, inverted: true, rotation: 270 },
+  { parallel: false, orthogonal: false, rotationSuffix: "" }, // Default rotation (0 deg)
+  { parallel: true, orthogonal: false, rotationSuffix: "_pinlabelparallel" }, // 90 deg
+  { parallel: false, orthogonal: true, rotationSuffix: "_pinlabelorthogonal" }, // 180 deg
+  {
+    parallel: true,
+    orthogonal: true,
+    rotationSuffix: "_pinlabelparallel_pinlabelorthogonal",
+  }, // 270 deg
 ]
 
-for (const effectivePos of pinLabelEffectivePositions) {
+for (const side of pinLabelSides) {
   for (const rotConfig of rotationConfigs) {
     let def = `pinrow5`
 
-    if (effectivePos === "Up") {
-      def += "_pinlabelpositionup"
-    } else if (effectivePos === "Down") {
-      def += "_pinlabelpositiondown"
-    } else if (effectivePos === "Left") {
-      def += "_pinlabelpositionleft"
-    } else if (effectivePos === "Right") {
-      def += "_pinlabelpositionright"
+    if (!(side === "top" && !rotConfig.parallel && !rotConfig.orthogonal)) {
+      def += `_pinlabel${side}`
     }
+    def += rotConfig.rotationSuffix
 
-    if (rotConfig.parallel) {
-      def += "_pinlabelparallel"
-    }
-    if (rotConfig.inverted) {
-      def += "_pinlabelinverted"
-    }
+    const snapshotName = def
 
-    test(`pinrow5 ${def} (effectivePos: ${effectivePos}, rotation: ${rotConfig.rotation})`, () => {
+    test(`Test: ${snapshotName}`, () => {
       const soup = fp.string(def).circuitJson()
       const svgContent = convertCircuitJsonToPcbSvg(soup)
-      // Snapshot name uses the effective position and conceptual rotation
-      const snapshotName = `pinrow5_labelposition${effectivePos}_labelrotation${rotConfig.rotation}`
       expect(svgContent).toMatchSvgSnapshot(import.meta.path, snapshotName)
     })
   }

@@ -71,12 +71,12 @@ export type Footprinter = {
     | "male"
     | "female"
     | "rows"
-    | "pinlabelpositionup"
-    | "pinlabelpositiondown"
-    | "pinlabelpositionleft"
-    | "pinlabelpositionright"
+    | "pinlabeltop"
+    | "pinlabelbottom"
+    | "pinlabelleft"
+    | "pinlabelright"
     | "pinlabelparallel"
-    | "pinlabelinverted"
+    | "pinlabelorthogonal"
     | "nosquareplating"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
