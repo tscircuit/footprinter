@@ -65,7 +65,19 @@ export type Footprinter = {
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "p" | "id" | "od" | "male" | "female" | "rows" | "nosquareplating"
+    | "p"
+    | "id"
+    | "od"
+    | "male"
+    | "female"
+    | "rows"
+    | "pinlabeltop"
+    | "pinlabelbottom"
+    | "pinlabelleft"
+    | "pinlabelright"
+    | "pinlabelparallel"
+    | "pinlabelorthogonal"
+    | "nosquareplating"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
