@@ -25,7 +25,7 @@ export const pinrow_def = z
     pinlabelbottom: z.boolean().optional().default(false),
     pinlabelleft: z.boolean().optional().default(false),
     pinlabelright: z.boolean().optional().default(false),
-    pinlabelparallel: z.boolean().optional().default(false),
+    pinlabelverticallyinverted: z.boolean().optional().default(false),
     pinlabelorthogonal: z.boolean().optional().default(false),
     nosquareplating: z
       .boolean()
@@ -80,7 +80,7 @@ export const pinrow = (
     rows,
     num_pins,
     resolvedPinLabelPosition,
-    pinlabelparallel,
+    pinlabelverticallyinverted,
     pinlabelorthogonal,
   } = parameters
 
@@ -143,8 +143,8 @@ export const pinrow = (
         anchor_x,
         anchor_y,
         pinlabelposition: resolvedPinLabelPosition,
-        pinlabelparallel: pinlabelparallel,
-        pinlabelorthogonal: pinlabelorthogonal,
+        pinlabelparallel: pinlabelorthogonal,
+        pinlabelorthogonal: pinlabelverticallyinverted,
       }),
     )
   }

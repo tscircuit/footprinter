@@ -18,7 +18,7 @@ test("pinrow5", () => {
     pinlabelbottom: false,
     pinlabelleft: false,
     pinlabelright: false,
-    pinlabelparallel: false,
+    pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
@@ -57,7 +57,7 @@ test("pinrow9_male_rows3", () => {
     pinlabelbottom: false,
     pinlabelleft: false,
     pinlabelright: false,
-    pinlabelparallel: false,
+    pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
 
@@ -86,7 +86,7 @@ test("pinrow6_female_rows2", () => {
     pinlabelbottom: false,
     pinlabelleft: false,
     pinlabelright: false,
-    pinlabelparallel: false,
+    pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
 
@@ -124,24 +124,33 @@ test("pinrow6_nosquareplating", () => {
 
 const pinLabelSides = ["top", "bottom", "left", "right"] as const
 const rotationConfigs = [
-  { parallel: false, orthogonal: false, rotationSuffix: "" }, // Default rotation (0 deg)
-  { parallel: true, orthogonal: false, rotationSuffix: "_pinlabelparallel" }, // 90 deg
-  { parallel: false, orthogonal: true, rotationSuffix: "_pinlabelorthogonal" }, // 180 deg
+  // Default: 0 deg
+  { orthogonal: false, verticallyinverted: false, rotationSuffix: "" },
+  // Orthogonal: 90 deg rotation
   {
-    parallel: true,
     orthogonal: true,
-    rotationSuffix: "_pinlabelparallel_pinlabelorthogonal",
-  }, // 270 deg
+    verticallyinverted: false,
+    rotationSuffix: "_pinlabelorthogonal",
+  },
+  // Vertically Inverted: 180 deg flip
+  {
+    orthogonal: false,
+    verticallyinverted: true,
+    rotationSuffix: "_pinlabelverticallyinverted",
+  },
+  // Orthogonal AND Vertically Inverted: 90 deg rotation + 180 deg flip (effectively 270 deg or -90 deg)
+  {
+    orthogonal: true,
+    verticallyinverted: true,
+    rotationSuffix: "_pinlabelorthogonal_pinlabelverticallyinverted",
+  },
 ]
 
 for (const side of pinLabelSides) {
   for (const rotConfig of rotationConfigs) {
     let def = `pinrow5`
 
-    if (!(side === "top" && !rotConfig.parallel && !rotConfig.orthogonal)) {
-      def += `_pinlabel${side}`
-    }
-    def += rotConfig.rotationSuffix
+    def += `_pinlabel${side}${rotConfig.rotationSuffix}`
 
     const snapshotName = def
 
