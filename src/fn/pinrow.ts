@@ -5,6 +5,7 @@ import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
+import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
 
 export const pinrow_def = z
   .object({
@@ -33,46 +34,7 @@ export const pinrow_def = z
       .describe("do not use rectangular pad for pin 1"),
   })
   .transform((data) => {
-    const {
-      pinlabeltextalignleft,
-      pinlabeltextalignright,
-      pinlabelverticallyinverted,
-      pinlabelorthogonal,
-    } = data
-    let pinlabelAnchorSide: "top" | "bottom" | "left" | "right" = "top"
-    // Default to center if no alignment specified
-    if (pinlabelorthogonal && pinlabelverticallyinverted) {
-      pinlabelAnchorSide = "left"
-    } else if (pinlabelorthogonal) {
-      pinlabelAnchorSide = "right"
-    } else if (pinlabelverticallyinverted) {
-      pinlabelAnchorSide = "bottom"
-    } else {
-      pinlabelAnchorSide = "top"
-    }
-    if (pinlabeltextalignleft) {
-      if (pinlabelorthogonal && pinlabelverticallyinverted) {
-        pinlabelAnchorSide = "top"
-      } else if (pinlabelorthogonal) {
-        pinlabelAnchorSide = "bottom"
-      } else if (pinlabelverticallyinverted) {
-        pinlabelAnchorSide = "left"
-      } else {
-        pinlabelAnchorSide = "right"
-      }
-    }
-    if (pinlabeltextalignright) {
-      if (pinlabelorthogonal && pinlabelverticallyinverted) {
-        pinlabelAnchorSide = "bottom"
-      } else if (pinlabelorthogonal) {
-        pinlabelAnchorSide = "top"
-      } else if (pinlabelverticallyinverted) {
-        pinlabelAnchorSide = "right"
-      } else {
-        pinlabelAnchorSide = "left"
-      }
-    }
-
+    const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
     return {
       ...data,
       pinlabelAnchorSide,
