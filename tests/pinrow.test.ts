@@ -14,10 +14,9 @@ test("pinrow5", () => {
     od: 1.5,
     female: true,
     male: false,
-    pinlabeltop: false,
-    pinlabelbottom: false,
-    pinlabelleft: false,
-    pinlabelright: false,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
     pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
@@ -53,10 +52,9 @@ test("pinrow9_male_rows3", () => {
     male: true,
     female: false,
     rows: 3,
-    pinlabeltop: false,
-    pinlabelbottom: false,
-    pinlabelleft: false,
-    pinlabelright: false,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
     pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
@@ -82,10 +80,9 @@ test("pinrow6_female_rows2", () => {
     male: false,
     female: true,
     rows: 2,
-    pinlabeltop: false,
-    pinlabelbottom: false,
-    pinlabelleft: false,
-    pinlabelright: false,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
     pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
@@ -122,42 +119,43 @@ test("pinrow6_nosquareplating", () => {
   )
 })
 
-const pinLabelSides = ["top", "bottom", "left", "right"] as const
-const rotationConfigs = [
-  // Default: 0 deg
-  { orthogonal: false, verticallyinverted: false, rotationSuffix: "" },
-  // Orthogonal: 90 deg rotation
-  {
-    orthogonal: true,
-    verticallyinverted: false,
-    rotationSuffix: "_pinlabelorthogonal",
-  },
-  // Vertically Inverted: 180 deg flip
-  {
-    orthogonal: false,
-    verticallyinverted: true,
-    rotationSuffix: "_pinlabelverticallyinverted",
-  },
-  // Orthogonal AND Vertically Inverted: 90 deg rotation + 180 deg flip (effectively 270 deg or -90 deg)
-  {
-    orthogonal: true,
-    verticallyinverted: true,
-    rotationSuffix: "_pinlabelorthogonal_pinlabelverticallyinverted",
-  },
-]
+const textAlignments = ["left", "center", "right"] as const
+const orthogonalStates = [
+  { name: "", value: false },
+  { name: "_orthogonal", value: true },
+] as const
+const invertedStates = [
+  { name: "", value: false },
+  { name: "_verticallyinverted", value: true },
+] as const
 
-for (const side of pinLabelSides) {
-  for (const rotConfig of rotationConfigs) {
-    let def = `pinrow5`
+for (const textAlign of textAlignments) {
+  for (const orthoState of orthogonalStates) {
+    for (const invertedState of invertedStates) {
+      let def = `pinrow5_pinlabeltextalign${textAlign}`
+      if (orthoState.value) {
+        def += "_pinlabelorthogonal"
+      }
+      if (invertedState.value) {
+        def += "_pinlabelverticallyinverted"
+      }
 
-    def += `_pinlabel${side}${rotConfig.rotationSuffix}`
+      // Construct snapshot name similar to the definition string but more readable for file names
+      let snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
 
-    const snapshotName = def
+      test(`Test: ${def} (Snapshot: ${snapshotName})`, () => {
+        const soup = fp.string(def).circuitJson()
+        const svgContent = convertCircuitJsonToPcbSvg(soup)
 
-    test(`Test: ${snapshotName}`, () => {
-      const soup = fp.string(def).circuitJson()
-      const svgContent = convertCircuitJsonToPcbSvg(soup)
-      expect(svgContent).toMatchSvgSnapshot(import.meta.path, snapshotName)
-    })
+        const pinrowJson = fp.string(def).json() as any
+        expect(pinrowJson.pinlabeltextalignleft).toBe(textAlign === "left")
+        expect(pinrowJson.pinlabeltextaligncenter).toBe(textAlign === "center")
+        expect(pinrowJson.pinlabeltextalignright).toBe(textAlign === "right")
+        expect(pinrowJson.pinlabelorthogonal).toBe(orthoState.value)
+        expect(pinrowJson.pinlabelverticallyinverted).toBe(invertedState.value)
+
+        expect(svgContent).toMatchSvgSnapshot(import.meta.path, snapshotName)
+      })
+    }
   }
 }
