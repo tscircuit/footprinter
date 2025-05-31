@@ -1,23 +1,8 @@
 import type { PcbSilkscreenText } from "circuit-json"
 
-type PinLabelPositionType = "top" | "bottom" | "left" | "right"
+type TextAlignType = "left" | "center" | "right"
+type AnchorPlacementType = "top" | "bottom" | "left" | "right"
 type RotationType = 0 | 90 | 180 | 270
-type AnchorAlignmentType = PcbSilkscreenText["anchor_alignment"]
-
-const fullyExplicitAlignmentMap: Record<
-  PinLabelPositionType,
-  Record<RotationType, AnchorAlignmentType>
-> = {
-  top: { 0: "center", 90: "center_right", 180: "center", 270: "center_left" },
-  bottom: {
-    0: "center",
-    90: "center_left",
-    180: "center",
-    270: "center_right",
-  },
-  left: { 0: "center_right", 90: "center", 180: "center_left", 270: "center" },
-  right: { 0: "center_left", 90: "center", 180: "center_right", 270: "center" },
-}
 
 // fs is font size // pn is pin number
 export const silkscreenPin = ({
@@ -25,31 +10,37 @@ export const silkscreenPin = ({
   pn,
   anchor_x,
   anchor_y,
-  pinlabelposition = "top",
-  pinlabelparallel = false,
-  pinlabelorthogonal = false,
+  textalign = "center",
+  orthogonal = false,
+  verticallyinverted = false,
 }: {
   fs: number
   pn: number
   anchor_x: number
   anchor_y: number
-  pinlabelposition?: PinLabelPositionType
-  pinlabelparallel?: boolean
-  pinlabelorthogonal?: boolean
+  textalign?: TextAlignType
+  anchorplacement?: AnchorPlacementType
+  orthogonal?: boolean
+  verticallyinverted?: boolean
 }): PcbSilkscreenText => {
   let ccw_rotation: RotationType = 0
-  if (!pinlabelparallel && !pinlabelorthogonal) {
-    ccw_rotation = 0
-  } else if (pinlabelparallel && !pinlabelorthogonal) {
-    ccw_rotation = 90
-  } else if (!pinlabelparallel && pinlabelorthogonal) {
-    ccw_rotation = 180
-  } else if (pinlabelparallel && pinlabelorthogonal) {
+  if (orthogonal && verticallyinverted) {
     ccw_rotation = 270
+  } else if (verticallyinverted) {
+    ccw_rotation = 180
+  } else if (orthogonal) {
+    ccw_rotation = 90
+  } else {
+    ccw_rotation = 0
   }
 
-  const anchor_alignment: AnchorAlignmentType =
-    fullyExplicitAlignmentMap[pinlabelposition][ccw_rotation]
+  let anchor_alignment: PcbSilkscreenText["anchor_alignment"] = "center"
+  if (textalign === "left") {
+    anchor_alignment = "center_left"
+  }
+  if (textalign === "right") {
+    anchor_alignment = "center_right"
+  }
 
   return {
     type: "pcb_silkscreen_text",
@@ -64,4 +55,3 @@ export const silkscreenPin = ({
     ccw_rotation: ccw_rotation,
   }
 }
-export type SilkscreenRef = ReturnType<typeof silkscreenPin>

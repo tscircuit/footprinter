@@ -5,6 +5,7 @@ import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
+import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
 
 export const pinrow_def = z
   .object({
@@ -21,11 +22,10 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
-    pinlabeltop: z.boolean().optional().default(false),
-    pinlabelbottom: z.boolean().optional().default(false),
-    pinlabelleft: z.boolean().optional().default(false),
-    pinlabelright: z.boolean().optional().default(false),
-    pinlabelparallel: z.boolean().optional().default(false),
+    pinlabeltextalignleft: z.boolean().optional().default(false),
+    pinlabeltextaligncenter: z.boolean().optional().default(false),
+    pinlabeltextalignright: z.boolean().optional().default(false),
+    pinlabelverticallyinverted: z.boolean().optional().default(false),
     pinlabelorthogonal: z.boolean().optional().default(false),
     nosquareplating: z
       .boolean()
@@ -34,26 +34,10 @@ export const pinrow_def = z
       .describe("do not use rectangular pad for pin 1"),
   })
   .transform((data) => {
-    let resolvedPinLabelPosition: "top" | "bottom" | "left" | "right"
-    const { pinlabeltop, pinlabelbottom, pinlabelleft, pinlabelright } = data
-
-    const truePositionFlags: ("top" | "bottom" | "left" | "right")[] = []
-    if (pinlabeltop) truePositionFlags.push("top")
-    if (pinlabelbottom) truePositionFlags.push("bottom")
-    if (pinlabelleft) truePositionFlags.push("left")
-    if (pinlabelright) truePositionFlags.push("right")
-
-    if (truePositionFlags.includes("top")) {
-      resolvedPinLabelPosition = "top"
-    } else if (truePositionFlags.length === 1) {
-      resolvedPinLabelPosition = truePositionFlags[0]!
-    } else {
-      resolvedPinLabelPosition = "top"
-    }
-
+    const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
     return {
       ...data,
-      resolvedPinLabelPosition,
+      pinlabelAnchorSide,
       male: data.male ?? (data.female ? false : true),
       female: data.female ?? false,
     }
@@ -79,44 +63,47 @@ export const pinrow = (
     od,
     rows,
     num_pins,
-    resolvedPinLabelPosition,
-    pinlabelparallel,
+    pinlabelAnchorSide,
+    pinlabelverticallyinverted,
     pinlabelorthogonal,
+    pinlabeltextalignleft,
+    pinlabeltextalignright,
   } = parameters
+  let pinlabelTextAlign: "center" | "left" | "right" = "center"
+  if (pinlabeltextalignleft) pinlabelTextAlign = "left"
+  else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
   const ySpacing = -p
 
-  const calculateAnchorPosition = (
-    xoff: number,
-    yoff: number,
-    od: number,
-    resolvedPinLabelPosition: "top" | "bottom" | "left" | "right",
-  ): { anchor_x: number; anchor_y: number } => {
+  const calculateAnchorPosition = ({
+    xoff,
+    yoff,
+    od,
+    anchorSide,
+  }: {
+    xoff: number
+    yoff: number
+    od: number
+    anchorSide: "top" | "bottom" | "left" | "right"
+  }): { anchor_x: number; anchor_y: number } => {
     let dx = 0,
       dy = 0
     const offset = od * 0.75
-    switch (resolvedPinLabelPosition) {
+    switch (anchorSide) {
       case "right":
         dx = offset
-        dy = 0
         break
       case "top":
-        dx = 0
         dy = offset
         break
       case "bottom":
-        dx = 0
         dy = -offset
         break
       case "left":
         dx = -offset
-        dy = 0
         break
-      default:
-        dx = 0
-        dy = 0
     }
     return { anchor_x: xoff + dx, anchor_y: yoff + dy }
   }
@@ -130,21 +117,22 @@ export const pinrow = (
       // Other pins with standard circular pad
       holes.push(platedhole(pinNumber, xoff, yoff, id, od))
     }
-    const { anchor_x, anchor_y } = calculateAnchorPosition(
+    const { anchor_x, anchor_y } = calculateAnchorPosition({
       xoff,
       yoff,
       od,
-      resolvedPinLabelPosition,
-    )
+      anchorSide: pinlabelAnchorSide,
+    })
     holes.push(
       silkscreenPin({
         fs: od / 5,
         pn: pinNumber,
         anchor_x,
         anchor_y,
-        pinlabelposition: resolvedPinLabelPosition,
-        pinlabelparallel: pinlabelparallel,
-        pinlabelorthogonal: pinlabelorthogonal,
+        anchorplacement: pinlabelAnchorSide,
+        textalign: pinlabelTextAlign,
+        orthogonal: pinlabelorthogonal,
+        verticallyinverted: pinlabelverticallyinverted,
       }),
     )
   }
