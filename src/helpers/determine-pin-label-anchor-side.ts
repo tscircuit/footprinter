@@ -13,7 +13,7 @@ export function determinePinlabelAnchorSide({
   let pinlabelAnchorSide: "top" | "bottom" | "left" | "right" = "top"
   // Default to center if no alignment specified
   if (pinlabelorthogonal) {
-    pinlabelAnchorSide = "right"
+    pinlabelAnchorSide = "left"
   } else {
     pinlabelAnchorSide = "top"
   }
