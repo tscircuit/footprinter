@@ -36,10 +36,12 @@ export const silkscreenPin = ({
 
   let anchor_alignment: PcbSilkscreenText["anchor_alignment"] = "center"
   if (textalign === "left") {
-    anchor_alignment = "center_left"
+    if (verticallyinverted) anchor_alignment = "center_right"
+    else anchor_alignment = "center_left"
   }
   if (textalign === "right") {
-    anchor_alignment = "center_right"
+    if (verticallyinverted) anchor_alignment = "center_left"
+    else anchor_alignment = "center_right"
   }
 
   return {
