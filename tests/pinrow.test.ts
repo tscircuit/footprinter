@@ -14,6 +14,11 @@ test("pinrow5", () => {
     od: 1.5,
     female: true,
     male: false,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
+    pinlabelverticallyinverted: false,
+    pinlabelorthogonal: false,
   })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
@@ -47,6 +52,11 @@ test("pinrow9_male_rows3", () => {
     male: true,
     female: false,
     rows: 3,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
+    pinlabelverticallyinverted: false,
+    pinlabelorthogonal: false,
   })
 
   expect(svgContent).toMatchSvgSnapshot(
@@ -70,6 +80,11 @@ test("pinrow6_female_rows2", () => {
     male: false,
     female: true,
     rows: 2,
+    pinlabeltextalignleft: false,
+    pinlabeltextaligncenter: false,
+    pinlabeltextalignright: false,
+    pinlabelverticallyinverted: false,
+    pinlabelorthogonal: false,
   })
 
   expect(svgContent).toMatchSvgSnapshot(
@@ -103,3 +118,44 @@ test("pinrow6_nosquareplating", () => {
     "pinrow6_nosquareplating_1",
   )
 })
+
+const textAlignments = ["left", "center", "right"] as const
+const orthogonalStates = [
+  { name: "", value: false },
+  { name: "_orthogonal", value: true },
+] as const
+const invertedStates = [
+  { name: "", value: false },
+  { name: "_verticallyinverted", value: true },
+] as const
+
+for (const textAlign of textAlignments) {
+  for (const orthoState of orthogonalStates) {
+    for (const invertedState of invertedStates) {
+      let def = `pinrow5_pinlabeltextalign${textAlign}`
+      if (orthoState.value) {
+        def += "_pinlabelorthogonal"
+      }
+      if (invertedState.value) {
+        def += "_pinlabelverticallyinverted"
+      }
+
+      // Construct snapshot name similar to the definition string but more readable for file names
+      let snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
+
+      test(`Test: ${def} (Snapshot: ${snapshotName})`, () => {
+        const soup = fp.string(def).circuitJson()
+        const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+        const pinrowJson = fp.string(def).json() as any
+        expect(pinrowJson.pinlabeltextalignleft).toBe(textAlign === "left")
+        expect(pinrowJson.pinlabeltextaligncenter).toBe(textAlign === "center")
+        expect(pinrowJson.pinlabeltextalignright).toBe(textAlign === "right")
+        expect(pinrowJson.pinlabelorthogonal).toBe(orthoState.value)
+        expect(pinrowJson.pinlabelverticallyinverted).toBe(invertedState.value)
+
+        expect(svgContent).toMatchSvgSnapshot(import.meta.path, snapshotName)
+      })
+    }
+  }
+}

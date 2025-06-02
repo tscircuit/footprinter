@@ -1,10 +1,11 @@
 import { z } from "zod"
-import { length, type AnySoupElement } from "circuit-json"
+import { length, rotation, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
+import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
 
 export const pinrow_def = z
   .object({
@@ -21,17 +22,26 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    pinlabeltextalignleft: z.boolean().optional().default(false),
+    pinlabeltextaligncenter: z.boolean().optional().default(false),
+    pinlabeltextalignright: z.boolean().optional().default(false),
+    pinlabelverticallyinverted: z.boolean().optional().default(false),
+    pinlabelorthogonal: z.boolean().optional().default(false),
     nosquareplating: z
       .boolean()
       .optional()
       .default(false)
       .describe("do not use rectangular pad for pin 1"),
   })
-  .transform((data) => ({
-    ...data,
-    male: data.male ?? (data.female ? false : true),
-    female: data.female ?? false,
-  }))
+  .transform((data) => {
+    const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
+    return {
+      ...data,
+      pinlabelAnchorSide,
+      male: data.male ?? (data.female ? false : true),
+      female: data.female ?? false,
+    }
+  })
   .superRefine((data, ctx) => {
     if (data.male && data.female) {
       ctx.addIssue({
@@ -47,11 +57,56 @@ export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
-  const { p, id, od, rows, num_pins } = parameters
+  const {
+    p,
+    id,
+    od,
+    rows,
+    num_pins,
+    pinlabelAnchorSide,
+    pinlabelverticallyinverted,
+    pinlabelorthogonal,
+    pinlabeltextalignleft,
+    pinlabeltextalignright,
+  } = parameters
+  let pinlabelTextAlign: "center" | "left" | "right" = "center"
+  if (pinlabeltextalignleft) pinlabelTextAlign = "left"
+  else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
   const ySpacing = -p
+
+  const calculateAnchorPosition = ({
+    xoff,
+    yoff,
+    od,
+    anchorSide,
+  }: {
+    xoff: number
+    yoff: number
+    od: number
+    anchorSide: "top" | "bottom" | "left" | "right"
+  }): { anchor_x: number; anchor_y: number } => {
+    let dx = 0,
+      dy = 0
+    const offset = od * 0.75
+    switch (anchorSide) {
+      case "right":
+        dx = offset
+        break
+      case "top":
+        dy = offset
+        break
+      case "bottom":
+        dy = -offset
+        break
+      case "left":
+        dx = -offset
+        break
+    }
+    return { anchor_x: xoff + dx, anchor_y: yoff + dy }
+  }
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
@@ -62,8 +117,23 @@ export const pinrow = (
       // Other pins with standard circular pad
       holes.push(platedhole(pinNumber, xoff, yoff, id, od))
     }
+    const { anchor_x, anchor_y } = calculateAnchorPosition({
+      xoff,
+      yoff,
+      od,
+      anchorSide: pinlabelAnchorSide,
+    })
     holes.push(
-      silkscreenPin({ x: xoff, y: yoff + p / 2, fs: od / 5, pn: pinNumber }),
+      silkscreenPin({
+        fs: od / 5,
+        pn: pinNumber,
+        anchor_x,
+        anchor_y,
+        anchorplacement: pinlabelAnchorSide,
+        textalign: pinlabelTextAlign,
+        orthogonal: pinlabelorthogonal,
+        verticallyinverted: pinlabelverticallyinverted,
+      }),
     )
   }
 
