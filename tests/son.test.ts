@@ -63,3 +63,8 @@ test("son8_ep_h3.0mm_pl0.7mm_epw1.5mm_eph1.7mm", () => {
     "son8_ep_h3.0mm_pl0.7mm_epw1.5mm_eph1.7mm",
   )
 })
+test("son6", () => {
+  const circuitJson = fp.string("son6").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "son6")
+})
