@@ -6,7 +6,7 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 
 export const son_def = z.object({
   fn: z.string(),
-  num_pins: z.literal(8).default(8),
+  num_pins: z.union([z.literal(6), z.literal(8)]).default(8),
   w: z.string().default("3mm"),
   h: z.string().default("3mm"),
   p: z.string().default("0.5mm"),
@@ -25,7 +25,15 @@ export const son = (
     raw_params.ep = true
   }
 
-  const parameters = son_def.parse(raw_params)
+  const match = raw_params.string?.match(/^son_(\d+)/)
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : raw_params.num_pins || 8
+
+  const parameters = son_def.parse({
+    ...raw_params,
+    num_pins: numPins as 6 | 8,
+  })
 
   const w = length.parse(parameters.w)
   const h = length.parse(parameters.h)
@@ -117,7 +125,6 @@ export const son = (
   }
 }
 
-// Get coordinates for SON-8 pads
 export const getSonPadCoord = (
   num_pins: number,
   pn: number,
