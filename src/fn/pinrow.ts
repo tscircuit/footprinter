@@ -32,6 +32,11 @@ export const pinrow_def = z
       .optional()
       .default(false)
       .describe("do not use rectangular pad for pin 1"),
+    doublesidedpinlabel: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("add silkscreen pins in top and bottom layers"),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -68,6 +73,7 @@ export const pinrow = (
     pinlabelorthogonal,
     pinlabeltextalignleft,
     pinlabeltextalignright,
+    doublesidedpinlabel,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -133,8 +139,24 @@ export const pinrow = (
         textalign: pinlabelTextAlign,
         orthogonal: pinlabelorthogonal,
         verticallyinverted: pinlabelverticallyinverted,
+        layer: "top",
       }),
     )
+    if (doublesidedpinlabel) {
+      holes.push(
+        silkscreenPin({
+          fs: od / 5,
+          pn: pinNumber,
+          anchor_x,
+          anchor_y,
+          anchorplacement: pinlabelAnchorSide,
+          textalign: pinlabelTextAlign,
+          orthogonal: pinlabelorthogonal,
+          verticallyinverted: pinlabelverticallyinverted,
+          layer: "bottom",
+        }),
+      )
+    }
   }
 
   // Track used positions to prevent overlaps
