@@ -1,4 +1,4 @@
-import type { PcbSilkscreenText } from "circuit-json"
+import type { LayerRef, PcbSilkscreenText } from "circuit-json"
 
 type TextAlignType = "left" | "center" | "right"
 type AnchorPlacementType = "top" | "bottom" | "left" | "right"
@@ -13,6 +13,7 @@ export const silkscreenPin = ({
   textalign = "center",
   orthogonal = false,
   verticallyinverted = false,
+  layer = "top",
 }: {
   fs: number
   pn: number
@@ -22,6 +23,7 @@ export const silkscreenPin = ({
   anchorplacement?: AnchorPlacementType
   orthogonal?: boolean
   verticallyinverted?: boolean
+  layer?: LayerRef
 }): PcbSilkscreenText => {
   let ccw_rotation: RotationType = 0
   if (orthogonal && verticallyinverted) {
@@ -44,6 +46,14 @@ export const silkscreenPin = ({
     else anchor_alignment = "center_right"
   }
 
+  if (layer === "bottom") {
+    if (anchor_alignment === "center_left") {
+      anchor_alignment = "center_right"
+    } else if (anchor_alignment === "center_right") {
+      anchor_alignment = "center_left"
+    }
+  }
+
   return {
     type: "pcb_silkscreen_text",
     pcb_silkscreen_text_id: "silkscreen_text_1",
@@ -51,7 +61,7 @@ export const silkscreenPin = ({
     font_size: fs,
     pcb_component_id: "pcb_component_1",
     text: `{PIN${pn}}`,
-    layer: "top",
+    layer: layer,
     anchor_position: { x: anchor_x, y: anchor_y },
     anchor_alignment: anchor_alignment,
     ccw_rotation: ccw_rotation,

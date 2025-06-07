@@ -159,3 +159,17 @@ for (const textAlign of textAlignments) {
     }
   }
 }
+
+test("pinrow5_doublesidedpinlabel", () => {
+  const def = "pinrow5_doublesidedpinlabel"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  const pinrowJson = fp.string(def).json() as any
+  expect(pinrowJson.doublesidedpinlabel).toBe(true)
+
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow5_doublesidedpinlabel",
+  )
+})
