@@ -179,6 +179,29 @@ export type Footprinter = {
   breakoutheaders: () => FootprinterParamsBuilder<
     "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
   >
+  smtpad: () => FootprinterParamsBuilder<
+    | "circle"
+    | "rect"
+    | "square"
+    | "d"
+    | "pd"
+    | "diameter"
+    | "r"
+    | "pr"
+    | "radius"
+    | "w"
+    | "pw"
+    | "width"
+    | "h"
+    | "ph"
+    | "height"
+    | "s"
+    | "size"
+  > & {
+    params: () => any
+    soup: () => AnySoupElement[]
+    circuitJson: () => AnyCircuitElement[]
+  }
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
     params: () => any
     soup: () => AnySoupElement[]
