@@ -15,3 +15,14 @@ test("platedhole_r0.6", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "platedhole_r0.6")
 })
+
+test("platedhole_squarepad", () => {
+  const soup = fp.string("platedhole_squarepad").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const platedholeJson = fp.string("platedhole_squarepad").json() as any
+  expect(platedholeJson.squarepad).toBe(true)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "platedhole_squarepad",
+  )
+})

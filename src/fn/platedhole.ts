@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
 import { platedhole as makePlatedHole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import { mm } from "@tscircuit/mm"
 
@@ -14,6 +15,7 @@ export const platedhole_def = z
     hr: length.optional(),
     pd: length.optional(),
     pr: length.optional(),
+    squarepad: z.boolean().optional().default(false),
   })
   .transform((v) => {
     let holeD: number | undefined
@@ -32,6 +34,7 @@ export const platedhole_def = z
       fn: v.fn,
       d: holeD,
       pd: padD,
+      squarepad: v.squarepad ?? false,
     }
   })
 
@@ -41,11 +44,13 @@ export const platedhole = (
   raw_params: PlatedholeDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const params = platedhole_def.parse(raw_params)
-  const { d, pd } = params
+  const { d, pd, squarepad } = params
 
   return {
     circuitJson: [
-      makePlatedHole(1, 0, 0, d, pd),
+      squarepad
+        ? (platedHoleWithRectPad(1, 0, 0, d, pd, pd) as AnyCircuitElement)
+        : (makePlatedHole(1, 0, 0, d, pd) as AnyCircuitElement),
       silkscreenRef(0, pd / 2 + 0.5, 0.2) as AnyCircuitElement,
     ],
     parameters: params,
