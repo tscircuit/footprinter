@@ -9,112 +9,110 @@ import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
-import { silkscreenpath } from "./silkscreenpath"
 
 type StandardSize = {
   imperial: string
   metric: string
-  Z_mm_min: number
-  G_mm_min: number
-  X_mm_min: number
-  C_mm_ref: number
+  p_mm_min: number // pad-to-pad spacing
+  ph_mm_min: number // pad height
+  pw_mm_min: number // pad width
+  h_mm_min: number // body height
+  w_mm_min: number // body width
 }
 
-// https://www.worthingtonassembly.com/perfect-0201-footprint
-// https://static1.squarespace.com/static/54982a02e4b02e9f5e5d9ca7/t/660c692f69a0d83a4afecdf0/1712089391915/Discrete+Component+Footprints.pdf
-// https://page.venkel.com/hubfs/Resources/Technical/Resistors%20Landing%20Pattern.pdf
-export const footprintSizes = [
+// Updated footprint sizes
+export const footprintSizes: StandardSize[] = [
   {
     imperial: "01005",
     metric: "0402",
-    Z_mm_min: 0.58,
-    G_mm_min: 0.18,
-    X_mm_min: 0.21,
-    C_mm_ref: 0.038,
+    p_mm_min: 0.038,
+    pw_mm_min: 0.2,
+    ph_mm_min: 0.2,
+    w_mm_min: 0.58,
+    h_mm_min: 0.21,
   },
   {
     imperial: "0201",
     metric: "0603",
-    Z_mm_min: 0.9,
-    G_mm_min: 0.3,
-    X_mm_min: 0.3,
-    C_mm_ref: 0.6,
+    p_mm_min: 0.6,
+    pw_mm_min: 0.3,
+    ph_mm_min: 0.3,
+    w_mm_min: 0.9,
+    h_mm_min: 0.3,
   },
   {
     imperial: "0402",
     metric: "1005",
-    Z_mm_min: 1.6,
-    G_mm_min: 0.4,
-    X_mm_min: 0.7,
-    C_mm_ref: 1,
+    p_mm_min: 1.0,
+    pw_mm_min: 0.6,
+    ph_mm_min: 0.6,
+    w_mm_min: 1.6,
+    h_mm_min: 0.7,
   },
   {
     imperial: "0603",
     metric: "1608",
-    Z_mm_min: 2.6,
-    G_mm_min: 0.6,
-    X_mm_min: 1.0,
-    C_mm_ref: 1.7,
+    p_mm_min: 1.6,
+    pw_mm_min: 0.85,
+    ph_mm_min: 0.95,
+    w_mm_min: 2.6,
+    h_mm_min: 1.0,
   },
   {
     imperial: "0805",
     metric: "2012",
-    Z_mm_min: 3.0,
-    G_mm_min: 0.6,
-    X_mm_min: 1.2,
-    C_mm_ref: 1.9,
+    p_mm_min: 2.15,
+    pw_mm_min: 0.85,
+    ph_mm_min: 1.2,
+    w_mm_min: 3.0,
+    h_mm_min: 1.2,
   },
   {
     imperial: "1206",
     metric: "3216",
-    Z_mm_min: 4.2,
-    G_mm_min: 1.2,
-    X_mm_min: 1.4,
-    C_mm_ref: 2.8,
+    p_mm_min: 3.2,
+    pw_mm_min: 1,
+    ph_mm_min: 1.9,
+    w_mm_min: 4.2,
+    h_mm_min: 2.5,
   },
   {
     imperial: "1210",
     metric: "3225",
-    Z_mm_min: 3.2,
-    G_mm_min: 1.0,
-    X_mm_min: 2.5,
-    C_mm_ref: 2.0,
+    p_mm_min: 2.0,
+    pw_mm_min: 1.1,
+    ph_mm_min: 1.1,
+    w_mm_min: 3.2,
+    h_mm_min: 2.5,
   },
   {
     imperial: "2010",
     metric: "5025",
-    Z_mm_min: 5.0,
-    G_mm_min: 1.2,
-    X_mm_min: 2.5,
-    C_mm_ref: 3.6,
+    p_mm_min: 3.6,
+    pw_mm_min: 1.2,
+    ph_mm_min: 1.2,
+    w_mm_min: 5.0,
+    h_mm_min: 2.5,
   },
   {
     imperial: "2512",
     metric: "6332",
-    Z_mm_min: 6.3,
-    G_mm_min: 1.2,
-    X_mm_min: 3.2,
-    C_mm_ref: 4.5,
+    p_mm_min: 4.5,
+    pw_mm_min: 1.6,
+    ph_mm_min: 1.6,
+    w_mm_min: 6.3,
+    h_mm_min: 3.2,
   },
 ]
-const metricMap: Record<string, StandardSize> = footprintSizes.reduce(
-  (acc: any, s) => {
-    acc[s.metric] = s
-    return acc
-  },
-  {},
-)
-const imperialMap: Record<string, StandardSize> = footprintSizes.reduce(
-  (acc: any, s) => {
-    acc[s.imperial] = s
-    return acc
-  },
-  {},
+
+const metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]))
+const imperialMap = Object.fromEntries(
+  footprintSizes.map((s) => [s.imperial, s]),
 )
 
 export const passive_def = z.object({
   tht: z.boolean(),
-  p: length,
+  p: length.optional(),
   pw: length.optional(),
   ph: length.optional(),
   metric: distance.optional(),
@@ -125,11 +123,6 @@ export const passive_def = z.object({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-const deriveXFromH = (h: number) => 0.079 * h ** 2 + 0.94 * h - 0.009
-const deriveZFromW = (w: number) => 1.09 * w + 0.6
-const deriveGFromW = (w: number) => 0.59 * w - 0.31
-const deriveCFromW = (w: number) => -0.01 * w ** 2 + 0.94 * w + 0.03
-
 export const passive = (params: PassiveDef): AnySoupElement[] => {
   let { tht, p, pw, ph, metric, imperial, w, h } = params
 
@@ -139,43 +132,27 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
   if (typeof pw === "string") pw = mm(pw)
   if (typeof ph === "string") ph = mm(ph)
 
-  if (h! > w!) {
+  if (h !== undefined && w !== undefined && h > w) {
     throw new Error(
       "height cannot be greater than width (rotated footprint not yet implemented)",
     )
   }
 
-  /** standard size */
   let sz: StandardSize | undefined
-  if (metric) {
-    sz = metricMap[metric]
-  }
-
-  if (imperial) {
-    sz = imperialMap[imperial]
-  }
-
-  if (!sz && w && h && !pw && !ph) {
-    sz = {
-      imperial: "custom",
-      metric: "custom",
-      Z_mm_min: deriveZFromW(w),
-      G_mm_min: deriveGFromW(w),
-      X_mm_min: deriveXFromH(h),
-      C_mm_ref: deriveCFromW(w),
-    }
-  }
+  if (metric) sz = metricMap[metric]
+  if (imperial) sz = imperialMap[imperial]
 
   if (sz) {
-    w = sz.Z_mm_min
-    h = sz.X_mm_min
-    p = sz.C_mm_ref
-    pw = (sz.Z_mm_min - sz.G_mm_min) / 2
-    ph = (sz.Z_mm_min - sz.G_mm_min) / 2
+    w = sz.w_mm_min
+    h = sz.h_mm_min
+    p = sz.p_mm_min
+    pw = sz.pw_mm_min
+    ph = sz.ph_mm_min
   }
 
-  if (pw === undefined) throw new Error("could not infer pad width")
-  if (ph === undefined) throw new Error("could not infer pad width")
+  if (p === undefined || pw === undefined || ph === undefined) {
+    throw new Error("Could not determine required pad dimensions (p, pw, ph)")
+  }
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
