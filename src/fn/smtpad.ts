@@ -85,7 +85,7 @@ export const smtpad = (
       silkscreenRef(
         0,
         shape === "circle" ? radius! + 0.5 : height! / 2 + 0.5,
-        0.2
+        0.2,
       ) as AnyCircuitElement,
     ],
     parameters: params,
