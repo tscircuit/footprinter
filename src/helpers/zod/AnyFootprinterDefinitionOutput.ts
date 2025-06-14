@@ -20,6 +20,7 @@ import { ssop_def } from "src/fn/ssop"
 import { tssop_def } from "src/fn/tssop"
 import { passive_def } from "../passive-fn"
 import { pad_def } from "../../fn/pad"
+import { smtpad_def } from "../../fn/smtpad"
 
 export const any_footprinter_def = z.union([
   axial_def,
@@ -43,6 +44,7 @@ export const any_footprinter_def = z.union([
   tssop_def,
   passive_def,
   pad_def,
+  smtpad_def,
 ])
 
 export type AnyFootprinterDefinitionOutput = z.infer<typeof any_footprinter_def>
