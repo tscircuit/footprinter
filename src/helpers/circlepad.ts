@@ -1,11 +1,9 @@
-import type { PCBSMTPad } from "circuit-json"
+import type { PcbSmtPad } from "circuit-json"
 
 export const circlepad = (
   pn: number | Array<string | number>,
-  x: number,
-  y: number,
-  radius: number,
-): PCBSMTPad => {
+  { x, y, radius }: { x: number; y: number; radius: number },
+): PcbSmtPad => {
   return {
     type: "pcb_smtpad",
     x,

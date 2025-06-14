@@ -80,7 +80,7 @@ export const smtpad = (
   return {
     circuitJson: [
       shape === "circle"
-        ? (circlepad(1, 0, 0, radius!) as AnyCircuitElement)
+        ? (circlepad(1, { x: 0, y: 0, radius: radius! }) as AnyCircuitElement)
         : (rectpad(1, 0, 0, width!, height!) as AnyCircuitElement),
       silkscreenRef(
         0,
