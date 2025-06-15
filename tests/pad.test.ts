@@ -37,6 +37,8 @@ test("pad footprint", async () => {
 ]
 `)
   snapshotSoup(soup)
+  const params = fp().pad().w(2).h(1).json()
+  expect(params).toMatchObject({ w: 2, h: 1 })
 })
 
 test("pad footprint with different dimensions", async () => {
@@ -74,4 +76,6 @@ test("pad footprint with different dimensions", async () => {
 ]
 `)
   snapshotSoup(soup)
+  const params = fp().pad().w(3).h(2).json()
+  expect(params).toMatchObject({ w: 3, h: 2 })
 })
