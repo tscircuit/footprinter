@@ -12,7 +12,9 @@ export const pad_def = z.object({
 
 export type PadDef = z.input<typeof pad_def>
 
-export const pad = (params: PadDef): { circuitJson: AnySoupElement[] } => {
+export const pad = (
+  params: PadDef,
+): { circuitJson: AnySoupElement[]; parameters: PadDef } => {
   const { w, h } = params
   const width = mm(w)
   const height = mm(h)
@@ -22,5 +24,6 @@ export const pad = (params: PadDef): { circuitJson: AnySoupElement[] } => {
       rectpad(1, 0, 0, width, height),
       silkscreenRef(0, height / 2 + 0.5, 0.2),
     ],
+    parameters: params,
   }
 }
