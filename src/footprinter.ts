@@ -185,6 +185,9 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  smtpad: () => FootprinterParamsBuilder<
+    "rect" | "circle" | "d" | "diameter" | "w" | "h"
+  >
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
