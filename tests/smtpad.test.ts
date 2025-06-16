@@ -3,11 +3,11 @@ import { fp } from "../src/footprinter"
 import { getTestFixture } from "./fixtures/get-test-fixture"
 
 const expectPad = (
-  soup: any[],
+  circuitJson: any[],
   shape: string,
   size: number | { width: number; height: number },
 ) => {
-  const pad = soup[0]
+  const pad = circuitJson[0]
   expect(pad.type).toBe("pcb_smtpad")
   expect(pad.layer).toBe("top")
   expect(pad.shape).toBe(shape)
@@ -22,44 +22,44 @@ const expectPad = (
 
 test("smtpad circle diameter", async () => {
   const { snapshotSoup } = await getTestFixture("smtpad_circle_d1.2")
-  const soup = fp().smtpad().circle().d("1.2mm").circuitJson()
-  expectPad(soup, "circle", 0.6)
-  snapshotSoup(soup)
+  const circuitJson = fp().smtpad().circle().d("1.2mm").circuitJson()
+  expectPad(circuitJson, "circle", 0.6)
+  snapshotSoup(circuitJson)
 })
 
 test("smtpad circle radius alias", () => {
-  const soup = fp().smtpad().circle().radius("0.6mm").circuitJson()
-  expectPad(soup, "circle", 0.6)
+  const circuitJson = fp().smtpad().circle().radius("0.6mm").circuitJson()
+  expectPad(circuitJson, "circle", 0.6)
 })
 
 test("smtpad circle default size", () => {
-  const soup = fp().smtpad().circle().circuitJson()
-  expectPad(soup, "circle", 0.5)
+  const circuitJson = fp().smtpad().circle().circuitJson()
+  expectPad(circuitJson, "circle", 0.5)
 })
 
 test("smtpad rect w/h", async () => {
   const { snapshotSoup } = await getTestFixture("smtpad_rect_w2_h1")
-  const soup = fp().smtpad().rect().w("2mm").h("1mm").circuitJson()
-  expectPad(soup, "rect", { width: 2, height: 1 })
-  snapshotSoup(soup)
+  const circuitJson = fp().smtpad().rect().w("2mm").h("1mm").circuitJson()
+  expectPad(circuitJson, "rect", { width: 2, height: 1 })
+  snapshotSoup(circuitJson)
 })
 
 test("smtpad rect w only defaults square", () => {
-  const soup = fp().smtpad().rect().w("2mm").circuitJson()
-  expectPad(soup, "rect", { width: 2, height: 2 })
+  const circuitJson = fp().smtpad().rect().w("2mm").circuitJson()
+  expectPad(circuitJson, "rect", { width: 2, height: 2 })
 })
 
 test("smtpad square width", () => {
-  const soup = fp().smtpad().square().w("1.5mm").circuitJson()
-  expectPad(soup, "rect", { width: 1.5, height: 1.5 })
+  const circuitJson = fp().smtpad().square().w("1.5mm").circuitJson()
+  expectPad(circuitJson, "rect", { width: 1.5, height: 1.5 })
 })
 
 test("smtpad square size alias", () => {
-  const soup = fp().smtpad().square().size("1.5mm").circuitJson()
-  expectPad(soup, "rect", { width: 1.5, height: 1.5 })
+  const circuitJson = fp().smtpad().square().size("1.5mm").circuitJson()
+  expectPad(circuitJson, "rect", { width: 1.5, height: 1.5 })
 })
 
 test("smtpad from string", () => {
-  const soup = fp.string("smtpad_circle_d1.2").circuitJson()
-  expectPad(soup, "circle", 0.6)
+  const circuitJson = fp.string("smtpad_circle_d1.2").circuitJson()
+  expectPad(circuitJson, "circle", 0.6)
 })
