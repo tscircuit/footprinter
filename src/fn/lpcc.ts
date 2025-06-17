@@ -10,8 +10,8 @@ export const lpcc_def = z.object({
   w: z.string().default("9.0mm"),
   h: z.string().default("9.0mm"),
   p: z.string().default("0.8mm"),
-  pl: z.string().default("0.57mm"),
-  pw: z.string().default("0.34mm"),
+  pl: z.string().default("0.85mm"),
+  pw: z.string().default("0.45mm"),
 })
 export const lpcc = (raw_params: z.input<typeof lpcc_def>) => {
   const params = lpcc_def.parse(raw_params)
