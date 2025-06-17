@@ -148,6 +148,9 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  lpcc: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
