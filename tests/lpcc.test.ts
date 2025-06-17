@@ -38,15 +38,9 @@ test("lpcc36_h10mm_pl0.7mm_pw0.4mm_p0.9mm", () => {
 })
 
 test("lpcc28", () => {
-  try {
-    const circuitJson = fp.string("lpcc28").circuitJson()
-    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "lpcc28")
-  } catch (error) {
-    const e = error as Error
-    expect(e).toBeInstanceOf(Error)
-    expect(e.message).toContain("Invalid input")
-  }
+  const circuitJson = fp.string("lpcc28").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "lpcc28")
 })
 
 // Invalid test case
