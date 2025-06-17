@@ -1,4 +1,4 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -15,7 +15,7 @@ export const lpcc_def = z.object({
 })
 export const lpcc = (raw_params: z.input<typeof lpcc_def>) => {
   const params = lpcc_def.parse(raw_params)
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
   const w = length.parse(params.w)
   const h = length.parse(params.h)
   const p = length.parse(params.p)
