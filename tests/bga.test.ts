@@ -134,3 +134,17 @@ test("bga origin parameters", () => {
     expect(padsTl[i]!.y).toBe(padsTr[i]!.y)
   }
 })
+
+test("bga circular pads", () => {
+  const soup = fp().bga(4).grid("2x2").p(1).pad(1).circularpads(true).soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_circular_pads")
+  const firstPad = soup.find(
+    (el): el is PCBSMTPad =>
+      el.type === "pcb_smtpad" &&
+      el.port_hints !== undefined &&
+      el.port_hints[0] === "1",
+  )
+  expect(firstPad?.shape).toBe("circle")
+  expect(firstPad?.radius).toBeCloseTo(0.5)
+})

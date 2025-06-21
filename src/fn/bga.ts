@@ -1,5 +1,6 @@
 import type { AnySoupElement, PCBSMTPad } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
+import { circlepad } from "../helpers/circlepad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
@@ -19,6 +20,8 @@ export const bga_def = z
     h: length.optional(),
     ball: length.optional().describe("ball diameter"),
     pad: length.optional().describe("pad width/height"),
+
+    circularpads: z.boolean().optional().describe("use circular pads"),
 
     tlorigin: z.boolean().optional(),
     blorigin: z.boolean().optional(),
@@ -146,14 +149,15 @@ export const bga = (
       pin_num -= missing_pins_passed
 
       // TODO handle >26 rows
+      const portHints = [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`]
       pads.push(
-        rectpad(
-          [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`],
-          pad_x,
-          pad_y,
-          pad,
-          pad,
-        ),
+        parameters.circularpads
+          ? circlepad(portHints, {
+              x: pad_x,
+              y: pad_y,
+              radius: pad / 2,
+            })
+          : rectpad(portHints, pad_x, pad_y, pad, pad),
       )
     }
   }
