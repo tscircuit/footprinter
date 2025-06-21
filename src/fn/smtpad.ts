@@ -11,7 +11,6 @@ export const smtpad_def = z
     fn: z.string(),
     circle: z.boolean().optional(),
     rect: z.boolean().optional(),
-    square: z.boolean().optional(),
     d: length.optional(),
     pd: length.optional(),
     diameter: length.optional(),
@@ -29,9 +28,8 @@ export const smtpad_def = z
     string: z.string().optional(),
   })
   .transform((v) => {
-    let shape: "circle" | "rect" | "square" = "rect"
+    let shape: "circle" | "rect" = "rect"
     if (v.circle) shape = "circle"
-    if (v.square) shape = "square"
     if (v.rect) shape = "rect"
 
     let radius: number | undefined
