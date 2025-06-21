@@ -49,15 +49,6 @@ test("smtpad rect w only defaults square", () => {
   expectPad(circuitJson, "rect", { width: 2, height: 2 })
 })
 
-test("smtpad square width", () => {
-  const circuitJson = fp().smtpad().square().w("1.5mm").circuitJson()
-  expectPad(circuitJson, "rect", { width: 1.5, height: 1.5 })
-})
-
-test("smtpad square size alias", () => {
-  const circuitJson = fp().smtpad().square().size("1.5mm").circuitJson()
-  expectPad(circuitJson, "rect", { width: 1.5, height: 1.5 })
-})
 
 test("smtpad from string", () => {
   const circuitJson = fp.string("smtpad_circle_d1.2").circuitJson()

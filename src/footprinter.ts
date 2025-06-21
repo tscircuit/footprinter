@@ -184,7 +184,6 @@ export type Footprinter = {
   smtpad: () => FootprinterParamsBuilder<
     | "circle"
     | "rect"
-    | "square"
     | "d"
     | "pd"
     | "diameter"
