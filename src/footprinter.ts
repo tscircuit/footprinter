@@ -55,6 +55,7 @@ export type Footprinter = {
     | "blorigin"
     | "trorigin"
     | "brorigin"
+    | "circularpads"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od">
@@ -98,6 +99,7 @@ export type Footprinter = {
   sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
   sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -179,6 +181,29 @@ export type Footprinter = {
   breakoutheaders: () => FootprinterParamsBuilder<
     "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
   >
+  smtpad: () => FootprinterParamsBuilder<
+    | "circle"
+    | "rect"
+    | "square"
+    | "d"
+    | "pd"
+    | "diameter"
+    | "r"
+    | "pr"
+    | "radius"
+    | "w"
+    | "pw"
+    | "width"
+    | "h"
+    | "ph"
+    | "height"
+    | "s"
+    | "size"
+  > & {
+    params: () => any
+    soup: () => AnySoupElement[]
+    circuitJson: () => AnyCircuitElement[]
+  }
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
     params: () => any
     soup: () => AnySoupElement[]
