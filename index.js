@@ -46178,87 +46178,90 @@ var footprintSizes = [
   {
     imperial: "01005",
     metric: "0402",
-    Z_mm_min: 0.58,
-    G_mm_min: 0.18,
-    X_mm_min: 0.21,
-    C_mm_ref: 0.038
+    p_mm_min: 0.038,
+    pw_mm_min: 0.2,
+    ph_mm_min: 0.2,
+    w_mm_min: 0.58,
+    h_mm_min: 0.21
   },
   {
     imperial: "0201",
     metric: "0603",
-    Z_mm_min: 0.9,
-    G_mm_min: 0.3,
-    X_mm_min: 0.3,
-    C_mm_ref: 0.6
+    p_mm_min: 0.6,
+    pw_mm_min: 0.3,
+    ph_mm_min: 0.3,
+    w_mm_min: 0.9,
+    h_mm_min: 0.3
   },
   {
     imperial: "0402",
     metric: "1005",
-    Z_mm_min: 1.6,
-    G_mm_min: 0.4,
-    X_mm_min: 0.7,
-    C_mm_ref: 1
+    p_mm_min: 1,
+    pw_mm_min: 0.6,
+    ph_mm_min: 0.6,
+    w_mm_min: 1.6,
+    h_mm_min: 0.7
   },
   {
     imperial: "0603",
     metric: "1608",
-    Z_mm_min: 2.6,
-    G_mm_min: 0.6,
-    X_mm_min: 1,
-    C_mm_ref: 1.7
+    p_mm_min: 1.6,
+    pw_mm_min: 0.85,
+    ph_mm_min: 0.95,
+    w_mm_min: 2.6,
+    h_mm_min: 1
   },
   {
     imperial: "0805",
     metric: "2012",
-    Z_mm_min: 3,
-    G_mm_min: 0.6,
-    X_mm_min: 1.2,
-    C_mm_ref: 1.9
+    p_mm_min: 2.15,
+    pw_mm_min: 0.85,
+    ph_mm_min: 1.2,
+    w_mm_min: 3,
+    h_mm_min: 1.2
   },
   {
     imperial: "1206",
     metric: "3216",
-    Z_mm_min: 4.2,
-    G_mm_min: 1.2,
-    X_mm_min: 1.4,
-    C_mm_ref: 2.8
+    p_mm_min: 3.2,
+    pw_mm_min: 1,
+    ph_mm_min: 1.9,
+    w_mm_min: 4.2,
+    h_mm_min: 2.5
   },
   {
     imperial: "1210",
     metric: "3225",
-    Z_mm_min: 3.2,
-    G_mm_min: 1,
-    X_mm_min: 2.5,
-    C_mm_ref: 2
+    p_mm_min: 2,
+    pw_mm_min: 1.1,
+    ph_mm_min: 1.1,
+    w_mm_min: 3.2,
+    h_mm_min: 2.5
   },
   {
     imperial: "2010",
     metric: "5025",
-    Z_mm_min: 5,
-    G_mm_min: 1.2,
-    X_mm_min: 2.5,
-    C_mm_ref: 3.6
+    p_mm_min: 3.6,
+    pw_mm_min: 1.2,
+    ph_mm_min: 1.2,
+    w_mm_min: 5,
+    h_mm_min: 2.5
   },
   {
     imperial: "2512",
     metric: "6332",
-    Z_mm_min: 6.3,
-    G_mm_min: 1.2,
-    X_mm_min: 3.2,
-    C_mm_ref: 4.5
+    p_mm_min: 4.5,
+    pw_mm_min: 1.6,
+    ph_mm_min: 1.6,
+    w_mm_min: 6.3,
+    h_mm_min: 3.2
   }
 ];
-var metricMap = footprintSizes.reduce((acc, s) => {
-  acc[s.metric] = s;
-  return acc;
-}, {});
-var imperialMap = footprintSizes.reduce((acc, s) => {
-  acc[s.imperial] = s;
-  return acc;
-}, {});
+var metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]));
+var imperialMap = Object.fromEntries(footprintSizes.map((s) => [s.imperial, s]));
 var passive_def = exports_external.object({
   tht: exports_external.boolean(),
-  p: length,
+  p: length.optional(),
   pw: length.optional(),
   ph: length.optional(),
   metric: distance2.optional(),
@@ -46266,10 +46269,6 @@ var passive_def = exports_external.object({
   w: length.optional(),
   h: length.optional()
 });
-var deriveXFromH = (h) => 0.079 * h ** 2 + 0.94 * h - 0.009;
-var deriveZFromW = (w) => 1.09 * w + 0.6;
-var deriveGFromW = (w) => 0.59 * w - 0.31;
-var deriveCFromW = (w) => -0.01 * w ** 2 + 0.94 * w + 0.03;
 var passive = (params) => {
   let { tht, p, pw, ph, metric, imperial, w, h } = params;
   if (typeof w === "string")
@@ -46282,37 +46281,24 @@ var passive = (params) => {
     pw = mm_default(pw);
   if (typeof ph === "string")
     ph = mm_default(ph);
-  if (h > w) {
+  if (h !== undefined && w !== undefined && h > w) {
     throw new Error("height cannot be greater than width (rotated footprint not yet implemented)");
   }
   let sz;
-  if (metric) {
+  if (metric)
     sz = metricMap[metric];
-  }
-  if (imperial) {
+  if (imperial)
     sz = imperialMap[imperial];
-  }
-  if (!sz && w && h && !pw && !ph) {
-    sz = {
-      imperial: "custom",
-      metric: "custom",
-      Z_mm_min: deriveZFromW(w),
-      G_mm_min: deriveGFromW(w),
-      X_mm_min: deriveXFromH(h),
-      C_mm_ref: deriveCFromW(w)
-    };
-  }
   if (sz) {
-    w = sz.Z_mm_min;
-    h = sz.X_mm_min;
-    p = sz.C_mm_ref;
-    pw = (sz.Z_mm_min - sz.G_mm_min) / 2;
-    ph = (sz.Z_mm_min - sz.G_mm_min) / 2;
+    w = sz.w_mm_min;
+    h = sz.h_mm_min;
+    p = sz.p_mm_min;
+    pw = sz.pw_mm_min;
+    ph = sz.ph_mm_min;
   }
-  if (pw === undefined)
-    throw new Error("could not infer pad width");
-  if (ph === undefined)
-    throw new Error("could not infer pad width");
+  if (p === undefined || pw === undefined || ph === undefined) {
+    throw new Error("Could not determine required pad dimensions (p, pw, ph)");
+  }
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -52117,7 +52103,7 @@ var content_default = [
     title: "pushbutton"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="165.625" y="125" width="468.75" height="350"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="190.625" y="237.5" width="187.5" height="187.5"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="540.625" y="237.5" width="187.5" height="187.5"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 634.375 187.5 L 165.625 187.5 L 165.625 475 L 634.375 475" fill="none" stroke="#f2eda1" stroke-width="12.5" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="25" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,459.375,125)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="174.99999999999994" y="115.38461538461533" width="450.00000000000006" height="369.2307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="198.07692307692304" y="219.2307692307692" width="115.38461538461539" height="219.23076923076923"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="567.3076923076923" y="219.2307692307692" width="115.38461538461539" height="219.23076923076923"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 625 173.07692307692304 L 174.99999999999994 173.07692307692304 L 174.99999999999994 484.6153846153846 L 625 484.6153846153846" fill="none" stroke="#f2eda1" stroke-width="11.53846153846154" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="23.07692307692308" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,440.38461538461536,115.38461538461533)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "led_1206"
   },
   {
@@ -52193,7 +52179,7 @@ var content_default = [
     title: "platedhole_squarepad"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="232.5581395348837" y="139.53488372093028" width="334.8837209302326" height="320.9302325581395"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="260.4651162790698" y="265.1162790697675" width="139.53488372093022" height="139.53488372093022"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="497.6744186046512" y="265.1162790697675" width="139.53488372093022" height="139.53488372093022"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 567.4418604651163 209.3023255813954 L 232.5581395348837 209.3023255813954 L 232.5581395348837 460.4651162790698 L 567.4418604651163 460.4651162790698" fill="none" stroke="#f2eda1" stroke-width="13.953488372093023" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.906976744186046" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,448.83720930232556,139.53488372093028)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="242.94117647058823" y="141.1764705882353" width="314.1176470588236" height="317.64705882352945"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="271.1764705882353" y="268.2352941176471" width="120" height="134.11764705882354"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="497.0588235294118" y="268.2352941176471" width="120" height="134.11764705882354"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 557.0588235294118 211.76470588235296 L 242.94117647058823 211.76470588235296 L 242.94117647058823 458.82352941176475 L 557.0588235294118 458.82352941176475" fill="none" stroke="#f2eda1" stroke-width="14.11764705882353" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="28.23529411764706" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,444.11764705882354,141.1764705882353)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "diode0603"
   },
   {
@@ -52369,7 +52355,7 @@ var content_default = [
     title: "vssop8"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="232.5581395348837" y="139.53488372093028" width="334.8837209302326" height="320.9302325581395"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="260.4651162790698" y="265.1162790697675" width="139.53488372093022" height="139.53488372093022"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="497.6744186046512" y="265.1162790697675" width="139.53488372093022" height="139.53488372093022"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 567.4418604651163 209.3023255813954 L 232.5581395348837 209.3023255813954 L 232.5581395348837 460.4651162790698 L 567.4418604651163 460.4651162790698" fill="none" stroke="#f2eda1" stroke-width="13.953488372093023" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.906976744186046" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,448.83720930232556,139.53488372093028)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="242.94117647058823" y="141.1764705882353" width="314.1176470588236" height="317.64705882352945"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="271.1764705882353" y="268.2352941176471" width="120" height="134.11764705882354"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="497.0588235294118" y="268.2352941176471" width="120" height="134.11764705882354"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 557.0588235294118 211.76470588235296 L 242.94117647058823 211.76470588235296 L 242.94117647058823 458.82352941176475 L 557.0588235294118 458.82352941176475" fill="none" stroke="#f2eda1" stroke-width="14.11764705882353" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="28.23529411764706" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,444.11764705882354,141.1764705882353)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "led_0603"
   },
   {
@@ -52397,7 +52383,7 @@ var content_default = [
     title: "soic8_w5.3mm_p1.27mm"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="220.00000000000006" y="133.33333333333326" width="359.99999999999994" height="333.33333333333337"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="246.66666666666669" y="253.33333333333326" width="160" height="160"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="500" y="253.33333333333326" width="160" height="160"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 580 199.99999999999991 L 220.00000000000006 199.99999999999991 L 220.00000000000006 466.66666666666663 L 580 466.66666666666663" fill="none" stroke="#f2eda1" stroke-width="13.333333333333336" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="26.66666666666667" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,453.33333333333337,133.33333333333326)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="214.99999999999994" y="133.33333333333326" width="370.00000000000006" height="333.33333333333337"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="241.66666666666657" y="253.33333333333326" width="113.33333333333334" height="160"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="528.3333333333334" y="253.33333333333326" width="113.33333333333334" height="160"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 585 199.99999999999991 L 214.99999999999994 199.99999999999991 L 214.99999999999994 466.66666666666663 L 585 466.66666666666663" fill="none" stroke="#f2eda1" stroke-width="13.333333333333336" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="26.66666666666667" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,441.66666666666663,133.33333333333326)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "led_0805"
   },
   {
