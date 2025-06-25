@@ -46232,11 +46232,11 @@ var footprintSizes = [
   {
     imperial: "1210",
     metric: "3225",
-    p_mm_min: 2,
-    pw_mm_min: 1.1,
-    ph_mm_min: 1.1,
-    w_mm_min: 3.2,
-    h_mm_min: 2.5
+    p_mm_min: 2.8,
+    pw_mm_min: 1.25,
+    ph_mm_min: 2.65,
+    w_mm_min: 4.5,
+    h_mm_min: 3.3
   },
   {
     imperial: "2010",
@@ -52047,7 +52047,7 @@ var content_default = [
     title: "sod323w"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="212.50000000000003" y="136.3636363636364" width="375" height="327.27272727272725"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="239.77272727272725" y="259.0909090909091" width="150" height="150"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="512.5" y="259.0909090909091" width="150" height="150"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 587.5 204.5454545454546 L 212.50000000000003 204.5454545454546 L 212.50000000000003 463.6363636363636 L 587.5 463.6363636363636" fill="none" stroke="#f2eda1" stroke-width="13.636363636363635" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.27272727272727" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,451.1363636363636,136.3636363636364)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="217.2268907563025" y="100.84033613445382" width="365.546218487395" height="398.3193277310924"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="237.39495798319328" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="519.7478991596639" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 582.7731092436975 151.26050420168073 L 217.2268907563025 151.26050420168073 L 217.2268907563025 499.15966386554624 L 582.7731092436975 499.15966386554624" fill="none" stroke="#f2eda1" stroke-width="10.084033613445378" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="20.168067226890756" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,441.5966386554622,100.84033613445382)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "cap_1210"
   },
   {
@@ -52315,7 +52315,7 @@ var content_default = [
     title: "potentiometer_ca14_h5"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="212.50000000000003" y="136.3636363636364" width="375" height="327.27272727272725"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="239.77272727272725" y="259.0909090909091" width="150" height="150"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="512.5" y="259.0909090909091" width="150" height="150"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 587.5 204.5454545454546 L 212.50000000000003 204.5454545454546 L 212.50000000000003 463.6363636363636 L 587.5 463.6363636363636" fill="none" stroke="#f2eda1" stroke-width="13.636363636363635" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.27272727272727" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,451.1363636363636,136.3636363636364)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="217.2268907563025" y="100.84033613445382" width="365.546218487395" height="398.3193277310924"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="237.39495798319328" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="519.7478991596639" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 582.7731092436975 151.26050420168073 L 217.2268907563025 151.26050420168073 L 217.2268907563025 499.15966386554624 L 582.7731092436975 499.15966386554624" fill="none" stroke="#f2eda1" stroke-width="10.084033613445378" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="20.168067226890756" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,441.5966386554622,100.84033613445382)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "diode1210"
   },
   {
