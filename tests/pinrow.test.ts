@@ -173,3 +173,19 @@ test("pinrow5_doublesidedpinlabel", () => {
     "pinrow5_doublesidedpinlabel",
   )
 })
+
+test("pinrow5_nopinlabels", () => {
+  const def = "pinrow5_nopinlabels"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  const pinrowJson = fp.string(def).json() as any
+  expect(pinrowJson.nopinlabels).toBe(true)
+  expect(
+    soup.some(
+      (el) => el.type === "pcb_silkscreen_text" && el.text?.startsWith("{PIN"),
+    ),
+  ).toBe(false)
+
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_nopinlabels")
+})

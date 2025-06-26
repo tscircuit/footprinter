@@ -78,6 +78,7 @@ export type Footprinter = {
     | "pinlabelverticallyinverted"
     | "pinlabelorthogonal"
     | "nosquareplating"
+    | "nopinlabels"
     | "doublesidedpinlabel"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">

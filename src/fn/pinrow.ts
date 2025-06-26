@@ -32,6 +32,11 @@ export const pinrow_def = z
       .optional()
       .default(false)
       .describe("do not use rectangular pad for pin 1"),
+    nopinlabels: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("omit silkscreen pin labels"),
     doublesidedpinlabel: z
       .boolean()
       .optional()
@@ -73,6 +78,7 @@ export const pinrow = (
     pinlabelorthogonal,
     pinlabeltextalignleft,
     pinlabeltextalignright,
+    nopinlabels,
     doublesidedpinlabel,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
@@ -129,20 +135,7 @@ export const pinrow = (
       od,
       anchorSide: pinlabelAnchorSide,
     })
-    holes.push(
-      silkscreenPin({
-        fs: od / 5,
-        pn: pinNumber,
-        anchor_x,
-        anchor_y,
-        anchorplacement: pinlabelAnchorSide,
-        textalign: pinlabelTextAlign,
-        orthogonal: pinlabelorthogonal,
-        verticallyinverted: pinlabelverticallyinverted,
-        layer: "top",
-      }),
-    )
-    if (doublesidedpinlabel) {
+    if (!nopinlabels) {
       holes.push(
         silkscreenPin({
           fs: od / 5,
@@ -153,9 +146,24 @@ export const pinrow = (
           textalign: pinlabelTextAlign,
           orthogonal: pinlabelorthogonal,
           verticallyinverted: pinlabelverticallyinverted,
-          layer: "bottom",
+          layer: "top",
         }),
       )
+      if (doublesidedpinlabel) {
+        holes.push(
+          silkscreenPin({
+            fs: od / 5,
+            pn: pinNumber,
+            anchor_x,
+            anchor_y,
+            anchorplacement: pinlabelAnchorSide,
+            textalign: pinlabelTextAlign,
+            orthogonal: pinlabelorthogonal,
+            verticallyinverted: pinlabelverticallyinverted,
+            layer: "bottom",
+          }),
+        )
+      }
     }
   }
 
