@@ -8,6 +8,28 @@ test("vssop8", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vssop8")
 })
 
+test("vssop8 pin numbering", () => {
+  const circuitJson = fp.string("vssop8").circuitJson()
+  const pads = circuitJson.filter(
+    (elm: any) => elm.type === "pcb_smtpad",
+  ) as any[]
+
+  // Check pin order
+  const pinNumbers = pads.map((p) => p.port_hints[0])
+  expect(pinNumbers).toEqual(["1", "2", "3", "4", "8", "7", "6", "5"])
+
+  // Check relative positions
+  const getPad = (pin: string) => pads.find((p) => p.port_hints[0] === pin)!
+
+  const pad1 = getPad("1")
+  const pad4 = getPad("4")
+  const pad5 = getPad("5")
+  const pad8 = getPad("8")
+
+  expect(pad1.y).toBeGreaterThan(pad4.y)
+  expect(pad8.y).toBeGreaterThan(pad5.y)
+})
+
 test("vssop8_w4.1mm_h4.14mm_p0.65mm", () => {
   const circuitJson = fp.string("vssop8_w4.1mm_h4.14mm_p0.65mm").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
