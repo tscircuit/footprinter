@@ -24,7 +24,7 @@
     "@types/bun": "^1.2.2",
     "@types/node": "^20.12.13",
     "bun-match-svg": "^0.0.10",
-    "circuit-json": "^0.0.190",
+    "circuit-json": "^0.0.218",
     "circuit-json-to-connectivity-map": "^0.0.18",
     "circuit-to-svg": "^0.0.152",
     "esbuild": "^0.21.4",

@@ -1,0 +1,37 @@
+import type { AnyCircuitElement } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { z } from "zod"
+
+export const m2host_def = z.object({
+  fn: z.string(),
+})
+
+export const m2host = (
+  raw_params: z.input<typeof m2host_def>,
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  const parameters = m2host_def.parse(raw_params)
+
+  const pads: AnyCircuitElement[] = []
+  const padWidth = 0.25
+  const padLength = 0.6
+  const pitch = 0.5
+  const rowOffset = 0.25
+  const numPads = 75
+
+  const startX = -((numPads - 1) * pitch) / 2
+
+  for (let i = 0; i < numPads; i++) {
+    const pn = i + 1
+    const x = startX + i * pitch
+    const y = i % 2 === 0 ? 0 : -rowOffset
+    pads.push(rectpad(pn, x, y, padWidth, padLength))
+  }
+
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
+
+  return {
+    circuitJson: [...pads, silkscreenRefText],
+    parameters,
+  }
+}

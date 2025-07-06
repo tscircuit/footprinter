@@ -14,7 +14,7 @@
         "@types/bun": "^1.2.2",
         "@types/node": "^20.12.13",
         "bun-match-svg": "^0.0.10",
-        "circuit-json": "^0.0.190",
+        "circuit-json": "^0.0.218",
         "circuit-json-to-connectivity-map": "^0.0.18",
         "circuit-to-svg": "^0.0.152",
         "esbuild": "^0.21.4",
@@ -26,7 +26,7 @@
         "typescript": "^5.4.5",
       },
       "peerDependencies": {
-        "circuit-json": "*",
+        "circuit-json": "^0.0.218",
       },
     },
   },
@@ -227,7 +227,7 @@
 
     "chownr": ["chownr@1.1.4", "", {}, "sha512-jJ0bqzaylmJtVnNgzTeSOs8DPavpbYgEr/b0YL8/2GO3xJEhInFmhKMUnEJQjZumK7KXGFhUy89PrsJWlakBVg=="],
 
-    "circuit-json": ["circuit-json@0.0.190", "", { "dependencies": { "nanoid": "^5.0.7", "zod": "^3.23.6" } }, "sha512-HbJAQZ/h1Abm4jSOYcQ/eaJ5PgmgXXskP1corGD/gmZExgPHo44Zr+9OaGNOGGf1MC+zH1vo1vhWSzg5e8cLoQ=="],
+    "circuit-json": ["circuit-json@0.0.218", "", { "dependencies": { "nanoid": "^5.0.7", "zod": "*" } }, "sha512-U+GZoXfiQhcWZemE7VGIbp/VFJ3fTC2YEMzeoxN/MuJdziX/J5go+2GOMpVOA8mXA6Dsw7BunwFD+xpg2cjepg=="],
 
     "circuit-json-to-connectivity-map": ["circuit-json-to-connectivity-map@0.0.18", "", { "dependencies": { "@tscircuit/math-utils": "^0.0.9" }, "peerDependencies": { "typescript": "^5.0.0" } }, "sha512-0NH8nlYAxzGsVRtAho4FjI3JocXSDVp93t5rveJG21p0ckxCR7iIeEZOKcb0nndxhJ3fxctXWv7eJpyFIrAlPw=="],
 
