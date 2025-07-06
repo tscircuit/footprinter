@@ -1,4 +1,4 @@
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
@@ -33,19 +33,39 @@ export const m2host = (
 
   const cutoutWidth = 46 * 0.0254
   const cutoutDepth = 137 * 0.0254
+  const cutoutOffsetFromPin1 = 261 * 0.0254
   const cutout = {
     type: "pcb_cutout",
     pcb_cutout_id: "",
     shape: "rect" as const,
-    center: { x: 0, y: -cutoutDepth / 2 },
+    center: { x: startX + cutoutOffsetFromPin1, y: -cutoutDepth / 2 },
     width: cutoutWidth,
     height: cutoutDepth,
+  }
+
+  const pin1MarkerPosition = {
+    x: startX - 0.8,
+    y: 0,
+  }
+
+  const pin1Marker: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "pin_marker_1",
+    route: [
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y + 0.3 },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y - 0.3 },
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+    ],
+    stroke_width: 0.05,
+    pcb_silkscreen_path_id: "pin_marker_1",
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
   return {
-    circuitJson: [...pads, cutout, silkscreenRefText],
+    circuitJson: [...pads, cutout, silkscreenRefText, pin1Marker],
     parameters,
   }
 }
