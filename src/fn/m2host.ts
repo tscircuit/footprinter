@@ -23,15 +23,29 @@ export const m2host = (
 
   for (let i = 0; i < numPads; i++) {
     const pn = i + 1
+    if (pn >= 24 && pn <= 31) continue
     const x = startX + i * pitch
     const y = i % 2 === 0 ? 0 : -rowOffset
-    pads.push(rectpad(pn, x, y, padWidth, padLength))
+    const pad = rectpad(pn, x, y, padWidth, padLength)
+    pad.layer = pn % 2 === 0 ? "bottom" : "top"
+    pads.push(pad)
+  }
+
+  const cutoutWidth = 46 * 0.0254
+  const cutoutDepth = 137 * 0.0254
+  const cutout = {
+    type: "pcb_cutout",
+    pcb_cutout_id: "",
+    shape: "rect" as const,
+    center: { x: 0, y: -cutoutDepth / 2 },
+    width: cutoutWidth,
+    height: cutoutDepth,
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
   return {
-    circuitJson: [...pads, silkscreenRefText],
+    circuitJson: [...pads, cutout, silkscreenRefText],
     parameters,
   }
 }
