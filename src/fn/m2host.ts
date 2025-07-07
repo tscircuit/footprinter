@@ -13,20 +13,22 @@ export const m2host = (
   const parameters = m2host_def.parse(raw_params)
 
   const pads: AnyCircuitElement[] = []
-  const padWidth = 0.25
-  const padLength = 0.6
+  const padWidth = 0.5 - 0.15
+  const padLength = 1.5
   const pitch = 0.5
-  const rowOffset = 0.25
+  const halfPitch = pitch / 2
+  const rowOffset = 0.5
   const numPads = 75
 
-  const startX = -((numPads - 1) * pitch) / 2
+  const startY = -((numPads - 1) * pitch) / 2
 
   for (let i = 0; i < numPads; i++) {
     const pn = i + 1
     if (pn >= 24 && pn <= 31) continue
-    const x = startX + i * pitch
-    const y = i % 2 === 0 ? 0 : -rowOffset
-    const pad = rectpad(pn, x, y, padWidth, padLength)
+    const y = startY - i * halfPitch
+    const x = i % 2 === 0 ? 0 : -rowOffset / 2
+    const padLengthWithOffset = padLength + (i % 2 === 0 ? 0 : 0.25)
+    const pad = rectpad(pn, x, y, padLengthWithOffset, padWidth)
     pad.layer = pn % 2 === 0 ? "bottom" : "top"
     pads.push(pad)
   }
@@ -38,14 +40,17 @@ export const m2host = (
     type: "pcb_cutout",
     pcb_cutout_id: "",
     shape: "rect" as const,
-    center: { x: startX + cutoutOffsetFromPin1, y: -cutoutDepth / 2 },
-    width: cutoutWidth,
-    height: cutoutDepth,
+    center: {
+      x: -cutoutDepth / 2 + padLength / 2,
+      y: startY - cutoutOffsetFromPin1,
+    },
+    width: cutoutDepth,
+    height: cutoutWidth,
   }
 
   const pin1MarkerPosition = {
-    x: startX - 0.8,
-    y: 0,
+    x: -0.5,
+    y: startY,
   }
 
   const pin1Marker: PcbSilkscreenPath = {
@@ -62,10 +67,15 @@ export const m2host = (
     pcb_silkscreen_path_id: "pin_marker_1",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
+  // const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
   return {
-    circuitJson: [...pads, cutout, silkscreenRefText, pin1Marker],
+    circuitJson: [
+      ...pads,
+      cutout,
+      // silkscreenRefText,
+      pin1Marker,
+    ],
     parameters,
   }
 }
