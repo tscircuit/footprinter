@@ -17058,6 +17058,7 @@ __export(exports_dist, {
   supplier_name: () => supplier_name,
   source_trace: () => source_trace,
   source_simple_transistor: () => source_simple_transistor,
+  source_simple_test_point: () => source_simple_test_point,
   source_simple_switch: () => source_simple_switch,
   source_simple_resonator: () => source_simple_resonator,
   source_simple_resistor: () => source_simple_resistor,
@@ -17073,13 +17074,12 @@ __export(exports_dist, {
   source_simple_crystal: () => source_simple_crystal,
   source_simple_chip: () => source_simple_chip,
   source_simple_capacitor: () => source_simple_capacitor,
-  source_simple_bug: () => source_simple_bug,
   source_simple_battery: () => source_simple_battery,
   source_project_metadata: () => source_project_metadata,
   source_port: () => source_port,
+  source_pcb_ground_plane: () => source_pcb_ground_plane,
   source_net: () => source_net,
   source_missing_property_error: () => source_missing_property_error,
-  source_led: () => source_led,
   source_group: () => source_group,
   source_failed_to_create_component_error: () => source_failed_to_create_component_error,
   source_component_base: () => source_component_base,
@@ -17087,12 +17087,15 @@ __export(exports_dist, {
   schematic_voltage_probe: () => schematic_voltage_probe,
   schematic_trace: () => schematic_trace,
   schematic_text: () => schematic_text,
+  schematic_table_cell: () => schematic_table_cell,
+  schematic_table: () => schematic_table,
   schematic_port: () => schematic_port,
   schematic_pin_styles: () => schematic_pin_styles,
   schematic_path: () => schematic_path,
   schematic_net_label: () => schematic_net_label,
   schematic_manual_edit_conflict_warning: () => schematic_manual_edit_conflict_warning,
   schematic_line: () => schematic_line,
+  schematic_layout_error: () => schematic_layout_error,
   schematic_group: () => schematic_group,
   schematic_error: () => schematic_error,
   schematic_debug_rect: () => schematic_debug_rect,
@@ -17119,6 +17122,7 @@ __export(exports_dist, {
   pcb_trace_hint: () => pcb_trace_hint,
   pcb_trace_error: () => pcb_trace_error,
   pcb_trace: () => pcb_trace,
+  pcb_thermal_spoke: () => pcb_thermal_spoke,
   pcb_text: () => pcb_text,
   pcb_solder_paste: () => pcb_solder_paste,
   pcb_smtpad_pill: () => pcb_smtpad_pill,
@@ -17142,6 +17146,8 @@ __export(exports_dist, {
   pcb_hole_circle_or_square_shape: () => pcb_hole_circle_or_square_shape,
   pcb_hole: () => pcb_hole,
   pcb_group: () => pcb_group,
+  pcb_ground_plane_region: () => pcb_ground_plane_region,
+  pcb_ground_plane: () => pcb_ground_plane,
   pcb_fabrication_note_text: () => pcb_fabrication_note_text,
   pcb_fabrication_note_path: () => pcb_fabrication_note_path,
   pcb_cutout_rect: () => pcb_cutout_rect,
@@ -17149,8 +17155,10 @@ __export(exports_dist, {
   pcb_cutout_circle: () => pcb_cutout_circle,
   pcb_cutout: () => pcb_cutout,
   pcb_component: () => pcb_component,
+  pcb_breakout_point: () => pcb_breakout_point,
   pcb_board: () => pcb_board,
   pcb_autorouting_error: () => pcb_autorouting_error,
+  ninePointAnchor: () => ninePointAnchor,
   length: () => length,
   layer_string: () => layer_string,
   layer_ref: () => layer_ref,
@@ -21381,32 +21389,6 @@ var battery_capacity = exports_external.number().or(exports_external.string().en
   }
   return v;
 }).describe("Battery capacity in mAh");
-var point = exports_external.object({
-  x: distance2,
-  y: distance2
-});
-var position = point;
-var point3 = exports_external.object({
-  x: distance2,
-  y: distance2,
-  z: distance2
-});
-var position3 = point3;
-var size = exports_external.object({
-  width: exports_external.number(),
-  height: exports_external.number()
-});
-var getZodPrefixedIdWithDefault = (prefix) => {
-  return exports_external.string().optional().default(() => `${prefix}_${nanoid(10)}`);
-};
-var supplier_name = exports_external.enum([
-  "jlcpcb",
-  "macrofab",
-  "pcbway",
-  "digikey",
-  "mouser",
-  "lcsc"
-]);
 var expectTypesMatch = (shouldBe) => {};
 expectTypesMatch("extra props b");
 expectTypesMatch("missing props b");
@@ -21419,6 +21401,49 @@ expectStringUnionsMatch('T1 has extra: "c"');
 expectStringUnionsMatch('T2 has extra: "c"');
 expectStringUnionsMatch('T1 has extra: "d", T2 has extra: "c"');
 expectStringUnionsMatch(true);
+var point = exports_external.object({
+  x: distance2,
+  y: distance2
+});
+var position = point;
+expectTypesMatch(true);
+expectTypesMatch(true);
+var point3 = exports_external.object({
+  x: distance2,
+  y: distance2,
+  z: distance2
+});
+var position3 = point3;
+expectTypesMatch(true);
+var size = exports_external.object({
+  width: exports_external.number(),
+  height: exports_external.number()
+});
+expectTypesMatch(true);
+var getZodPrefixedIdWithDefault = (prefix) => {
+  return exports_external.string().optional().default(() => `${prefix}_${nanoid(10)}`);
+};
+var ninePointAnchor = exports_external.enum([
+  "top_left",
+  "top_center",
+  "top_right",
+  "center_left",
+  "center",
+  "center_right",
+  "bottom_left",
+  "bottom_center",
+  "bottom_right"
+]);
+expectTypesMatch(true);
+var supplier_name = exports_external.enum([
+  "jlcpcb",
+  "macrofab",
+  "pcbway",
+  "digikey",
+  "mouser",
+  "lcsc"
+]);
+expectTypesMatch(true);
 var source_component_base = exports_external.object({
   type: exports_external.literal("source_component"),
   ftype: exports_external.string().optional(),
@@ -21429,7 +21454,8 @@ var source_component_base = exports_external.object({
   display_value: exports_external.string().optional(),
   are_pins_interchangeable: exports_external.boolean().optional(),
   internally_connected_source_port_ids: exports_external.array(exports_external.array(exports_external.string())).optional(),
-  source_group_id: exports_external.string().optional()
+  source_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var source_simple_capacitor = source_component_base.extend({
@@ -21460,15 +21486,8 @@ var source_simple_ground = source_component_base.extend({
   ftype: exports_external.literal("simple_ground")
 });
 expectTypesMatch(true);
-var source_simple_bug = source_component_base.extend({
-  ftype: exports_external.literal("simple_bug")
-}).describe("@deprecated");
 var source_simple_chip = source_component_base.extend({
   ftype: exports_external.literal("simple_chip")
-});
-expectTypesMatch(true);
-var source_led = source_simple_diode.extend({
-  ftype: exports_external.literal("led")
 });
 expectTypesMatch(true);
 var source_simple_power_source = source_component_base.extend({
@@ -21489,7 +21508,8 @@ var source_simple_battery = source_component_base.extend({
 expectTypesMatch(true);
 var source_simple_inductor = source_component_base.extend({
   ftype: exports_external.literal("simple_inductor"),
-  inductance
+  inductance,
+  max_current_rating: exports_external.number().optional()
 });
 expectTypesMatch(true);
 var source_simple_push_button = source_component_base.extend({
@@ -21500,6 +21520,7 @@ var source_simple_potentiometer = source_component_base.extend({
   ftype: exports_external.literal("simple_potentiometer"),
   max_resistance: resistance
 });
+expectTypesMatch(true);
 var source_simple_crystal = source_component_base.extend({
   ftype: exports_external.literal("simple_crystal"),
   frequency: exports_external.number().describe("Frequency in Hz"),
@@ -21511,6 +21532,7 @@ var source_simple_pin_header = source_component_base.extend({
   pin_count: exports_external.number(),
   gender: exports_external.enum(["male", "female"]).optional().default("male")
 });
+expectTypesMatch(true);
 var source_simple_resonator = source_component_base.extend({
   ftype: exports_external.literal("simple_resonator"),
   load_capacitance: capacitance,
@@ -21521,6 +21543,16 @@ expectTypesMatch(true);
 var source_simple_transistor = source_component_base.extend({
   ftype: exports_external.literal("simple_transistor"),
   transistor_type: exports_external.enum(["npn", "pnp"])
+});
+expectTypesMatch(true);
+var source_simple_test_point = source_component_base.extend({
+  ftype: exports_external.literal("simple_test_point"),
+  footprint_variant: exports_external.enum(["pad", "through_hole"]).optional(),
+  pad_shape: exports_external.enum(["rect", "circle"]).optional(),
+  pad_diameter: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  hole_diameter: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  width: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  height: exports_external.union([exports_external.number(), exports_external.string()]).optional()
 });
 expectTypesMatch(true);
 var source_simple_mosfet = source_component_base.extend({
@@ -21537,6 +21569,7 @@ var source_project_metadata = exports_external.object({
   type: exports_external.literal("source_project_metadata"),
   name: exports_external.string().optional(),
   software_used_string: exports_external.string().optional(),
+  project_url: exports_external.string().optional(),
   created_at: exports_external.string().datetime().optional()
 });
 expectTypesMatch(true);
@@ -21545,13 +21578,15 @@ var source_missing_property_error = exports_external.object({
   source_missing_property_error_id: getZodPrefixedIdWithDefault("source_missing_property_error"),
   source_component_id: exports_external.string(),
   property_name: exports_external.string(),
-  error_type: exports_external.literal("source_missing_property_error"),
+  subcircuit_id: exports_external.string().optional(),
+  error_type: exports_external.literal("source_missing_property_error").default("source_missing_property_error"),
   message: exports_external.string()
 }).describe("The source code is missing a property");
 expectTypesMatch(true);
 var source_failed_to_create_component_error = exports_external.object({
   type: exports_external.literal("source_failed_to_create_component_error"),
   source_failed_to_create_component_error_id: getZodPrefixedIdWithDefault("source_failed_to_create_component_error"),
+  error_type: exports_external.literal("source_failed_to_create_component_error").default("source_failed_to_create_component_error"),
   component_name: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   parent_source_component_id: exports_external.string().optional(),
@@ -21573,8 +21608,6 @@ var any_source_component = exports_external.union([
   source_simple_led,
   source_simple_ground,
   source_simple_chip,
-  source_simple_bug,
-  source_led,
   source_simple_power_source,
   source_simple_battery,
   source_simple_inductor,
@@ -21585,12 +21618,14 @@ var any_source_component = exports_external.union([
   source_simple_resonator,
   source_simple_switch,
   source_simple_transistor,
+  source_simple_test_point,
   source_simple_mosfet,
   source_simple_fuse,
   source_project_metadata,
   source_missing_property_error,
   source_failed_to_create_component_error
 ]);
+expectTypesMatch(true);
 var source_port = exports_external.object({
   type: exports_external.literal("source_port"),
   pin_number: exports_external.number().optional(),
@@ -21598,7 +21633,8 @@ var source_port = exports_external.object({
   name: exports_external.string(),
   source_port_id: exports_external.string(),
   source_component_id: exports_external.string(),
-  subcircuit_id: exports_external.string().optional()
+  subcircuit_id: exports_external.string().optional(),
+  subcircuit_connectivity_map_key: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var source_trace = exports_external.object({
@@ -21621,6 +21657,7 @@ var source_group = exports_external.object({
   is_subcircuit: exports_external.boolean().optional(),
   name: exports_external.string().optional()
 });
+expectTypesMatch(true);
 var source_net = exports_external.object({
   type: exports_external.literal("source_net"),
   source_net_id: exports_external.string(),
@@ -21631,16 +21668,27 @@ var source_net = exports_external.object({
   is_digital_signal: exports_external.boolean().optional(),
   is_analog_signal: exports_external.boolean().optional(),
   trace_width: exports_external.number().optional(),
-  subcircuit_id: exports_external.string().optional()
+  subcircuit_id: exports_external.string().optional(),
+  subcircuit_connectivity_map_key: exports_external.string().optional()
 });
+expectTypesMatch(true);
+var source_pcb_ground_plane = exports_external.object({
+  type: exports_external.literal("source_pcb_ground_plane"),
+  source_pcb_ground_plane_id: exports_external.string(),
+  source_group_id: exports_external.string(),
+  source_net_id: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a ground plane in the source domain");
+expectTypesMatch(true);
 var schematic_box = exports_external.object({
   type: exports_external.literal("schematic_box"),
-  schematic_component_id: exports_external.string(),
+  schematic_component_id: exports_external.string().optional(),
   width: distance2,
   height: distance2,
   is_dashed: exports_external.boolean().default(false),
   x: distance2,
-  y: distance2
+  y: distance2,
+  subcircuit_id: exports_external.string().optional()
 }).describe("Draws a box on the schematic");
 expectTypesMatch(true);
 var schematic_path = exports_external.object({
@@ -21648,7 +21696,8 @@ var schematic_path = exports_external.object({
   schematic_component_id: exports_external.string(),
   fill_color: exports_external.enum(["red", "blue"]).optional(),
   is_filled: exports_external.boolean().optional(),
-  points: exports_external.array(point)
+  points: exports_external.array(point),
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var schematic_pin_styles = exports_external.record(exports_external.object({
@@ -21710,7 +21759,8 @@ var schematic_line = exports_external.object({
   x1: distance2,
   x2: distance2,
   y1: distance2,
-  y2: distance2
+  y2: distance2,
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var schematic_trace = exports_external.object({
@@ -21733,20 +21783,10 @@ var schematic_trace = exports_external.object({
     is_crossing: exports_external.boolean().optional(),
     from_schematic_port_id: exports_external.string().optional(),
     to_schematic_port_id: exports_external.string().optional()
-  }))
+  })),
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
-var ninePointAnchor = exports_external.enum([
-  "top_left",
-  "top_center",
-  "top_right",
-  "center_left",
-  "center",
-  "center_right",
-  "bottom_left",
-  "bottom_center",
-  "bottom_right"
-]);
 var fivePointAnchor = exports_external.enum([
   "center",
   "left",
@@ -21754,6 +21794,7 @@ var fivePointAnchor = exports_external.enum([
   "top",
   "bottom"
 ]);
+expectTypesMatch(true);
 var schematic_text = exports_external.object({
   type: exports_external.literal("schematic_text"),
   schematic_component_id: exports_external.string().optional(),
@@ -21766,7 +21807,8 @@ var schematic_text = exports_external.object({
   }),
   rotation: exports_external.number().default(0),
   anchor: exports_external.union([fivePointAnchor.describe("legacy"), ninePointAnchor]).default("center"),
-  color: exports_external.string().default("#000000")
+  color: exports_external.string().default("#000000"),
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var schematic_port = exports_external.object({
@@ -21780,7 +21822,9 @@ var schematic_port = exports_external.object({
   side_of_component: exports_external.enum(["top", "bottom", "left", "right"]).optional(),
   true_ccw_index: exports_external.number().optional(),
   pin_number: exports_external.number().optional(),
-  display_pin_label: exports_external.string().optional()
+  display_pin_label: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  is_connected: exports_external.boolean().optional()
 }).describe("Defines a port on a schematic component");
 expectTypesMatch(true);
 var schematic_net_label = exports_external.object({
@@ -21793,19 +21837,33 @@ var schematic_net_label = exports_external.object({
   anchor_position: point.optional(),
   anchor_side: exports_external.enum(["top", "bottom", "left", "right"]),
   text: exports_external.string(),
-  symbol_name: exports_external.string().optional()
+  symbol_name: exports_external.string().optional(),
+  is_movable: exports_external.boolean().optional(),
+  subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var schematic_error = exports_external.object({
   type: exports_external.literal("schematic_error"),
   schematic_error_id: exports_external.string(),
-  error_type: exports_external.literal("schematic_port_not_found"),
-  message: exports_external.string()
+  error_type: exports_external.literal("schematic_port_not_found").default("schematic_port_not_found"),
+  message: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
 }).describe("Defines a schematic error on the schematic");
+expectTypesMatch(true);
+var schematic_layout_error = exports_external.object({
+  type: exports_external.literal("schematic_layout_error"),
+  schematic_layout_error_id: getZodPrefixedIdWithDefault("schematic_layout_error"),
+  error_type: exports_external.literal("schematic_layout_error").default("schematic_layout_error"),
+  message: exports_external.string(),
+  source_group_id: exports_external.string(),
+  schematic_group_id: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when schematic layout fails for a group");
 expectTypesMatch(true);
 var schematic_debug_object_base = exports_external.object({
   type: exports_external.literal("schematic_debug_object"),
-  label: exports_external.string().optional()
+  label: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
 });
 var schematic_debug_rect = schematic_debug_object_base.extend({
   shape: exports_external.literal("rect"),
@@ -21832,12 +21890,14 @@ var schematic_voltage_probe = exports_external.object({
   schematic_voltage_probe_id: exports_external.string(),
   position: point,
   schematic_trace_id: exports_external.string(),
-  voltage: voltage.optional()
+  voltage: voltage.optional(),
+  subcircuit_id: exports_external.string().optional()
 }).describe("Defines a voltage probe measurement point on a schematic trace");
 expectTypesMatch(true);
 var schematic_manual_edit_conflict_warning = exports_external.object({
   type: exports_external.literal("schematic_manual_edit_conflict_warning"),
   schematic_manual_edit_conflict_warning_id: getZodPrefixedIdWithDefault("schematic_manual_edit_conflict_warning"),
+  warning_type: exports_external.literal("schematic_manual_edit_conflict_warning").default("schematic_manual_edit_conflict_warning"),
   message: exports_external.string(),
   schematic_component_id: exports_external.string(),
   schematic_group_id: exports_external.string().optional(),
@@ -21859,6 +21919,37 @@ var schematic_group = exports_external.object({
   description: exports_external.string().optional()
 }).describe("Defines a group of components on the schematic");
 expectTypesMatch(true);
+var schematic_table = exports_external.object({
+  type: exports_external.literal("schematic_table"),
+  schematic_table_id: getZodPrefixedIdWithDefault("schematic_table"),
+  anchor_position: point,
+  column_widths: exports_external.array(distance2),
+  row_heights: exports_external.array(distance2),
+  cell_padding: distance2.optional(),
+  border_width: distance2.optional(),
+  subcircuit_id: exports_external.string().optional(),
+  schematic_component_id: exports_external.string().optional(),
+  anchor: ninePointAnchor.optional()
+}).describe("Defines a table on the schematic");
+expectTypesMatch(true);
+var schematic_table_cell = exports_external.object({
+  type: exports_external.literal("schematic_table_cell"),
+  schematic_table_cell_id: getZodPrefixedIdWithDefault("schematic_table_cell"),
+  schematic_table_id: exports_external.string(),
+  start_row_index: exports_external.number(),
+  end_row_index: exports_external.number(),
+  start_column_index: exports_external.number(),
+  end_column_index: exports_external.number(),
+  text: exports_external.string().optional(),
+  center: point,
+  width: distance2,
+  height: distance2,
+  horizontal_align: exports_external.enum(["left", "center", "right"]).optional(),
+  vertical_align: exports_external.enum(["top", "middle", "bottom"]).optional(),
+  font_size: distance2.optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a cell within a schematic_table");
+expectTypesMatch(true);
 var all_layers = [
   "top",
   "bottom",
@@ -21878,6 +21969,7 @@ var layer_ref = layer_string.or(exports_external.object({
   }
   return layer.name;
 });
+expectTypesMatch(true);
 var visible_layer = exports_external.enum(["top", "bottom"]);
 var pcb_route_hint = exports_external.object({
   x: distance2,
@@ -21886,6 +21978,8 @@ var pcb_route_hint = exports_external.object({
   via_to_layer: layer_ref.optional()
 });
 var pcb_route_hints = exports_external.array(pcb_route_hint);
+expectTypesMatch(true);
+expectTypesMatch(true);
 var route_hint_point = exports_external.object({
   x: distance2,
   y: distance2,
@@ -21893,6 +21987,7 @@ var route_hint_point = exports_external.object({
   to_layer: layer_ref.optional(),
   trace_width: distance2.optional()
 });
+expectTypesMatch(true);
 var pcb_component = exports_external.object({
   type: exports_external.literal("pcb_component"),
   pcb_component_id: getZodPrefixedIdWithDefault("pcb_component"),
@@ -22084,12 +22179,26 @@ var pcb_smtpad_pill = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_port_id: exports_external.string().optional()
 });
-var pcb_smtpad = exports_external.union([
+var pcb_smtpad_polygon = exports_external.object({
+  type: exports_external.literal("pcb_smtpad"),
+  shape: exports_external.literal("polygon"),
+  pcb_smtpad_id: getZodPrefixedIdWithDefault("pcb_smtpad"),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  points: exports_external.array(point),
+  layer: layer_ref,
+  port_hints: exports_external.array(exports_external.string()).optional(),
+  pcb_component_id: exports_external.string().optional(),
+  pcb_port_id: exports_external.string().optional()
+});
+var pcb_smtpad = exports_external.discriminatedUnion("shape", [
   pcb_smtpad_circle,
   pcb_smtpad_rect,
   pcb_smtpad_rotated_rect,
-  pcb_smtpad_pill
+  pcb_smtpad_pill,
+  pcb_smtpad_polygon
 ]).describe("Defines an SMT pad on the PCB");
+expectTypesMatch(true);
 expectTypesMatch(true);
 expectTypesMatch(true);
 expectTypesMatch(true);
@@ -22231,20 +22340,23 @@ expectTypesMatch(true);
 var pcb_trace_error = exports_external.object({
   type: exports_external.literal("pcb_trace_error"),
   pcb_trace_error_id: getZodPrefixedIdWithDefault("pcb_trace_error"),
-  error_type: exports_external.literal("pcb_trace_error"),
+  error_type: exports_external.literal("pcb_trace_error").default("pcb_trace_error"),
   message: exports_external.string(),
   center: point.optional(),
   pcb_trace_id: exports_external.string(),
   source_trace_id: exports_external.string(),
   pcb_component_ids: exports_external.array(exports_external.string()),
-  pcb_port_ids: exports_external.array(exports_external.string())
+  pcb_port_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
 }).describe("Defines a trace error on the PCB");
 expectTypesMatch(true);
 var pcb_port_not_matched_error = exports_external.object({
   type: exports_external.literal("pcb_port_not_matched_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
+  error_type: exports_external.literal("pcb_port_not_matched_error").default("pcb_port_not_matched_error"),
   message: exports_external.string(),
-  pcb_component_ids: exports_external.array(exports_external.string())
+  pcb_component_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
 }).describe("Defines a trace error on the PCB where a port is not matched");
 expectTypesMatch(true);
 var pcb_via = exports_external.object({
@@ -22279,7 +22391,9 @@ expectTypesMatch(true);
 var pcb_placement_error = exports_external.object({
   type: exports_external.literal("pcb_placement_error"),
   pcb_placement_error_id: getZodPrefixedIdWithDefault("pcb_placement_error"),
-  message: exports_external.string()
+  error_type: exports_external.literal("pcb_placement_error").default("pcb_placement_error"),
+  message: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
 }).describe("Defines a placement error on the PCB");
 expectTypesMatch(true);
 var pcb_trace_hint = exports_external.object({
@@ -22287,7 +22401,8 @@ var pcb_trace_hint = exports_external.object({
   pcb_trace_hint_id: getZodPrefixedIdWithDefault("pcb_trace_hint"),
   pcb_port_id: exports_external.string(),
   pcb_component_id: exports_external.string(),
-  route: exports_external.array(route_hint_point)
+  route: exports_external.array(route_hint_point),
+  subcircuit_id: exports_external.string().optional()
 }).describe("A hint that can be used during generation of a PCB trace");
 expectTypesMatch(true);
 var pcb_silkscreen_line = exports_external.object({
@@ -22341,7 +22456,10 @@ var pcb_silkscreen_rect = exports_external.object({
   width: length,
   height: length,
   layer: layer_ref,
-  stroke_width: length.default("1mm")
+  stroke_width: length.default("1mm"),
+  is_filled: exports_external.boolean().default(true).optional(),
+  has_stroke: exports_external.boolean().optional(),
+  is_stroke_dashed: exports_external.boolean().optional()
 }).describe("Defines a silkscreen rect on the PCB");
 expectTypesMatch(true);
 var pcb_silkscreen_circle = exports_external.object({
@@ -22416,6 +22534,7 @@ var pcb_keepout = exports_external.object({
   layers: exports_external.array(exports_external.string()),
   description: exports_external.string().optional()
 }));
+expectTypesMatch(true);
 var pcb_cutout_base = exports_external.object({
   type: exports_external.literal("pcb_cutout"),
   pcb_cutout_id: getZodPrefixedIdWithDefault("pcb_cutout"),
@@ -22452,7 +22571,7 @@ var pcb_missing_footprint_error = exports_external.object({
   pcb_missing_footprint_error_id: getZodPrefixedIdWithDefault("pcb_missing_footprint_error"),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
-  error_type: exports_external.literal("pcb_missing_footprint_error"),
+  error_type: exports_external.literal("pcb_missing_footprint_error").default("pcb_missing_footprint_error"),
   source_component_id: exports_external.string(),
   message: exports_external.string()
 }).describe("Defines a missing footprint error on the PCB");
@@ -22468,24 +22587,75 @@ var pcb_group = exports_external.object({
   center: point,
   pcb_component_ids: exports_external.array(exports_external.string()),
   name: exports_external.string().optional(),
-  description: exports_external.string().optional()
+  description: exports_external.string().optional(),
+  autorouter_configuration: exports_external.object({
+    trace_clearance: length
+  }).optional(),
+  autorouter_used_string: exports_external.string().optional()
 }).describe("Defines a group of components on the PCB");
 expectTypesMatch(true);
 var pcb_autorouting_error = exports_external.object({
   type: exports_external.literal("pcb_autorouting_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_autorouting_error"),
-  message: exports_external.string()
+  error_type: exports_external.literal("pcb_autorouting_error").default("pcb_autorouting_error"),
+  message: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
 }).describe("The autorouting has failed to route a portion of the board");
 expectTypesMatch(true);
 var pcb_manual_edit_conflict_warning = exports_external.object({
   type: exports_external.literal("pcb_manual_edit_conflict_warning"),
   pcb_manual_edit_conflict_warning_id: getZodPrefixedIdWithDefault("pcb_manual_edit_conflict_warning"),
+  warning_type: exports_external.literal("pcb_manual_edit_conflict_warning").default("pcb_manual_edit_conflict_warning"),
   message: exports_external.string(),
   pcb_component_id: exports_external.string(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   source_component_id: exports_external.string()
 }).describe("Warning emitted when a component has both manual placement and explicit pcbX/pcbY coordinates");
+expectTypesMatch(true);
+var pcb_breakout_point = exports_external.object({
+  type: exports_external.literal("pcb_breakout_point"),
+  pcb_breakout_point_id: getZodPrefixedIdWithDefault("pcb_breakout_point"),
+  pcb_group_id: exports_external.string(),
+  subcircuit_id: exports_external.string().optional(),
+  source_trace_id: exports_external.string().optional(),
+  source_port_id: exports_external.string().optional(),
+  source_net_id: exports_external.string().optional(),
+  x: distance2,
+  y: distance2
+}).describe("Defines a routing target within a pcb_group for a source_trace or source_net");
+expectTypesMatch(true);
+var pcb_ground_plane = exports_external.object({
+  type: exports_external.literal("pcb_ground_plane"),
+  pcb_ground_plane_id: getZodPrefixedIdWithDefault("pcb_ground_plane"),
+  source_pcb_ground_plane_id: exports_external.string(),
+  source_net_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a ground plane on the PCB");
+expectTypesMatch(true);
+var pcb_ground_plane_region = exports_external.object({
+  type: exports_external.literal("pcb_ground_plane_region"),
+  pcb_ground_plane_region_id: getZodPrefixedIdWithDefault("pcb_ground_plane_region"),
+  pcb_ground_plane_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  layer: layer_ref,
+  points: exports_external.array(point)
+}).describe("Defines a polygon region of a ground plane");
+expectTypesMatch(true);
+var pcb_thermal_spoke = exports_external.object({
+  type: exports_external.literal("pcb_thermal_spoke"),
+  pcb_thermal_spoke_id: getZodPrefixedIdWithDefault("pcb_thermal_spoke"),
+  pcb_ground_plane_id: exports_external.string(),
+  shape: exports_external.string(),
+  spoke_count: exports_external.number(),
+  spoke_thickness: distance2,
+  spoke_inner_diameter: distance2,
+  spoke_outer_diameter: distance2,
+  pcb_plated_hole_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Pattern for connecting a ground plane to a plated hole");
 expectTypesMatch(true);
 var cad_component = exports_external.object({
   type: exports_external.literal("cad_component"),
@@ -22496,20 +22666,20 @@ var cad_component = exports_external.object({
   rotation: point3.optional(),
   size: point3.optional(),
   layer: layer_ref.optional(),
+  subcircuit_id: exports_external.string().optional(),
   footprinter_string: exports_external.string().optional(),
   model_obj_url: exports_external.string().optional(),
   model_stl_url: exports_external.string().optional(),
   model_3mf_url: exports_external.string().optional(),
   model_jscad: exports_external.any().optional()
 }).describe("Defines a component on the PCB");
+expectTypesMatch(true);
 var any_circuit_element = exports_external.union([
   source_trace,
   source_port,
   any_source_component,
-  source_led,
   source_net,
   source_group,
-  source_simple_bug,
   source_simple_chip,
   source_simple_capacitor,
   source_simple_diode,
@@ -22522,9 +22692,11 @@ var any_circuit_element = exports_external.union([
   source_simple_resonator,
   source_simple_switch,
   source_simple_transistor,
+  source_simple_test_point,
   source_simple_mosfet,
   source_simple_potentiometer,
   source_simple_push_button,
+  source_pcb_ground_plane,
   source_project_metadata,
   pcb_component,
   pcb_hole,
@@ -22553,7 +22725,11 @@ var any_circuit_element = exports_external.union([
   pcb_fabrication_note_path,
   pcb_fabrication_note_text,
   pcb_autorouting_error,
+  pcb_breakout_point,
   pcb_cutout,
+  pcb_ground_plane,
+  pcb_ground_plane_region,
+  pcb_thermal_spoke,
   schematic_box,
   schematic_text,
   schematic_line,
@@ -22562,11 +22738,14 @@ var any_circuit_element = exports_external.union([
   schematic_trace,
   schematic_path,
   schematic_error,
+  schematic_layout_error,
   schematic_net_label,
   schematic_debug_object,
   schematic_voltage_probe,
   schematic_manual_edit_conflict_warning,
   schematic_group,
+  schematic_table,
+  schematic_table_cell,
   cad_component
 ]);
 var any_soup_element = any_circuit_element;
@@ -46323,6 +46502,7 @@ __export(exports_fn, {
   minimelf: () => minimelf,
   micromelf: () => micromelf,
   melf: () => melf,
+  m2host: () => m2host,
   lqfp: () => lqfp,
   led: () => led,
   jst: () => jst,
@@ -52147,6 +52327,71 @@ var sotWithoutParsing = (parameters) => {
     pin1Indicator
   ];
 };
+// src/fn/m2host.ts
+var m2host_def = exports_external.object({
+  fn: exports_external.string()
+});
+var m2host = (raw_params) => {
+  const parameters = m2host_def.parse(raw_params);
+  const pads = [];
+  const padWidth = 0.5 - 0.15;
+  const padLength = 1.5;
+  const pitch = 0.5;
+  const halfPitch = pitch / 2;
+  const rowOffset = 0.5;
+  const numPads = 75;
+  const startY = -((numPads - 1) * pitch) / 2;
+  for (let i = 0;i < numPads; i++) {
+    const pn = i + 1;
+    if (pn >= 24 && pn <= 31)
+      continue;
+    const y = startY - i * halfPitch;
+    const x = i % 2 === 0 ? 0 : -rowOffset / 2;
+    const padLengthWithOffset = padLength + (i % 2 === 0 ? 0 : 0.25);
+    const pad2 = rectpad(pn, x, y, padLengthWithOffset, padWidth);
+    pad2.layer = pn % 2 === 0 ? "bottom" : "top";
+    pads.push(pad2);
+  }
+  const cutoutWidth = 46 * 0.0254;
+  const cutoutDepth = 137 * 0.0254;
+  const cutoutOffsetFromPin1 = 261 * 0.0254;
+  const cutout = {
+    type: "pcb_cutout",
+    pcb_cutout_id: "",
+    shape: "rect",
+    center: {
+      x: -cutoutDepth / 2 + padLength / 2,
+      y: startY - cutoutOffsetFromPin1
+    },
+    width: cutoutDepth,
+    height: cutoutWidth
+  };
+  const pin1MarkerPosition = {
+    x: -0.5,
+    y: startY
+  };
+  const pin1Marker = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "pin_marker_1",
+    route: [
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y + 0.3 },
+      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y - 0.3 },
+      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y }
+    ],
+    stroke_width: 0.05,
+    pcb_silkscreen_path_id: "pin_marker_1"
+  };
+  return {
+    circuitJson: [
+      ...pads,
+      cutout,
+      pin1Marker
+    ],
+    parameters
+  };
+};
 // src/helpers/is-not-null.ts
 function isNotNull(value) {
   return value !== null;
@@ -52388,6 +52633,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="248.31460674157304" y="67.41573033707877" width="303.37078651685397" height="465.16853932584263"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 248.31460674157304 532.5842696629214 L 248.31460674157304 94.38202247191023" fill="none" stroke="#f2eda1" stroke-width="6.741573033707865" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 551.685393258427 532.5842696629214 L 551.685393258427 94.38202247191023" fill="none" stroke="#f2eda1" stroke-width="6.741573033707865" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 248.31460674157304 313.4831460674158 L 339.32584269662925 313.4831460674158 L 442.90310807199273 258.7078651685394" fill="none" stroke="#f2eda1" stroke-width="6.741573033707865" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 551.685393258427 313.4831460674158 L 460.67415730337075 313.4831460674158" fill="none" stroke="#f2eda1" stroke-width="6.741573033707865" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.70786516853932" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,67.41573033707877)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="248.31460674157304" cy="94.38202247191023" r="50.561797752808985"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="248.31460674157304" cy="94.38202247191023" r="33.70786516853932"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="248.31460674157304" cy="532.5842696629214" r="50.561797752808985"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="248.31460674157304" cy="532.5842696629214" r="33.70786516853932"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="551.685393258427" cy="532.5842696629214" r="50.561797752808985"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="551.685393258427" cy="532.5842696629214" r="33.70786516853932"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="551.685393258427" cy="94.38202247191023" r="50.561797752808985"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="551.685393258427" cy="94.38202247191023" r="33.70786516853932"/></g></svg>',
     title: "pushbutton"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="382.69230769230774" y="28.846153846153754" width="34.615384615384585" height="542.3076923076924"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="39.663461538461476" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="54.08653846153838" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="68.50961538461529" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="82.9326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="97.3557692307691" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="111.77884615384612" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="126.20192307692302" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="140.62499999999991" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="155.04807692307682" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="169.47115384615373" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="183.89423076923063" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="256.0096153846153" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="270.4326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="284.8557692307692" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="299.27884615384613" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="313.70192307692304" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="328.12499999999994" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="342.54807692307685" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="356.97115384615375" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="371.39423076923066" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="385.8173076923077" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="400.2403846153846" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="414.6634615384615" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="429.0865384615384" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="443.5096153846153" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="457.9326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="472.3557692307692" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="486.77884615384613" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="501.20192307692304" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="515.625" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="530.0480769230769" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="544.4711538461538" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="558.8942307692307" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="32.45192307692302" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="46.87499999999993" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="61.298076923076835" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="75.72115384615374" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="90.14423076923065" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="104.56730769230766" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="118.99038461538457" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="133.41346153846146" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="147.83653846153837" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="162.25961538461527" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="176.68269230769218" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="191.1057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="263.22115384615375" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="277.64423076923066" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="292.0673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="306.4903846153846" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="320.9134615384615" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="335.3365384615384" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="349.7596153846153" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="364.1826923076922" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="378.6057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="393.02884615384613" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="407.45192307692304" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="421.87499999999994" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="436.29807692307685" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="450.72115384615375" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="465.14423076923066" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="479.5673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="493.9903846153846" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="508.41346153846143" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="522.8365384615386" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="537.2596153846155" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="551.6826923076924" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="566.1057692307693" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-cutout pcb-cutout-rect" x="-50.18942307692308" y="-16.851923076923075" width="100.37884615384615" height="33.70384615384615" fill="#FF26E2" transform="matrix(1,0,0,1,388.75288461538463,228.73269230769228)"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 391.34615384615387 37.49999999999994 L 382.69230769230774 28.846153846153754 L 382.69230769230774 46.15384615384613 L 391.34615384615387 37.49999999999994 Z" fill="none" stroke="#f2eda1" stroke-width="1.4423076923076925" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="pin_marker_1" data-pcb-silkscreen-path-id="pin_marker_1"/></svg>',
+    title: "m2host"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="247.94520547945203" y="82.19178082191777" width="304.1095890410959" height="435.6164383561645"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="186.30136986301366" y="415.06849315068496" width="123.28767123287673" height="57.534246575342465" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="186.30136986301366" y="168.49315068493146" width="123.28767123287673" height="57.534246575342465" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="367.1232876712329" y="238.35616438356163" width="65.75342465753425" height="164.38356164383563" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="490.4109589041096" y="415.06849315068496" width="123.28767123287673" height="57.534246575342465" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="490.4109589041096" y="168.49315068493146" width="123.28767123287673" height="57.534246575342465" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 284.93150684931504 123.28767123287668 L 515.068493150685 123.28767123287668" fill="none" stroke="#f2eda1" stroke-width="8.219178082191782" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 284.93150684931504 517.8082191780823 L 515.068493150685 517.8082191780823" fill="none" stroke="#f2eda1" stroke-width="8.219178082191782" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_2"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="24.657534246575345" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,82.19178082191777)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
