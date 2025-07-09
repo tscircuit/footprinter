@@ -226,11 +226,9 @@ export type Footprinter = {
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
 
-  // special case: 0402, 0603, etc.
-  const modifiedDef =
-    (def.length === 4 || def.length === 5) && /^\d+$/.test(def)
-      ? `res${def}`
-      : def
+  // The regex below automatically inserts a "res" prefix so forms like
+  // "0603_pw1.0_ph1.1" are understood without typing "res0603".
+  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1")
 
   const def_parts = modifiedDef
     .split("_")
