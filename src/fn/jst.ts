@@ -9,7 +9,6 @@ import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 
-// Input validation schema
 export const jst_def = z.object({
   fn: z.string(),
   p: length.optional(),
@@ -27,7 +26,6 @@ export type jstDef = z.input<typeof jst_def>
 // Variant type
 type JstVariant = "ph" | "sh"
 
-// Variant-specific default values
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
     p: length.parse("2.2mm"),
@@ -46,14 +44,12 @@ const variantDefaults: Record<JstVariant, any> = {
   },
 }
 
-// Determine variant from params
 function getVariant(params: jstDef): JstVariant {
   if (params.sh) return "sh"
   if (params.ph) return "ph"
-  return "ph" // default
+  return "ph"
 }
 
-// Pads based on variant
 function generatePads(
   variant: JstVariant,
   p: number,
@@ -79,7 +75,6 @@ function generatePads(
   }
 }
 
-// ✅ Silkscreen shape based on variant
 function generateSilkscreenBody(
   variant: JstVariant,
   w: number,
@@ -101,7 +96,6 @@ function generateSilkscreenBody(
       pcb_silkscreen_path_id: "",
     }
   } else {
-    // For SH variant - maybe a taller rounded box
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
@@ -113,7 +107,6 @@ function generateSilkscreenBody(
   }
 }
 
-// Main JST component
 export const jst = (
   raw_params: jstDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
