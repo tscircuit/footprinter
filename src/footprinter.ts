@@ -108,7 +108,9 @@ export type Footprinter = {
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
-  jst: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "pw" | "pl">
+  jst: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "pw" | "pl" | "ph" | "sh"
+  >
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   ms013: () => FootprinterParamsBuilder<"w" | "p">
   ms012: () => FootprinterParamsBuilder<"w" | "p">
