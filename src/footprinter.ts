@@ -206,6 +206,9 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  platedhole: () => FootprinterParamsBuilder<
+    "d" | "hd" | "r" | "hr" | "pd" | "pr"
+  >
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
     params: () => any
     soup: () => AnySoupElement[]
