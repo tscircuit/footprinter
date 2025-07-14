@@ -17,8 +17,26 @@ export const jst_def = z.object({
   pl: length.optional(),
   w: length.optional(),
   h: length.optional(),
-  sh: z.boolean().optional(),
-  ph: z.boolean().optional(),
+  sh: z
+    .union([z.boolean(), z.string(), z.number()])
+    .optional()
+    .transform((v) => {
+      if (typeof v === "string") {
+        const n = Number(v)
+        return Number.isNaN(n) ? true : n
+      }
+      return v
+    }),
+  ph: z
+    .union([z.boolean(), z.string(), z.number()])
+    .optional()
+    .transform((v) => {
+      if (typeof v === "string") {
+        const n = Number(v)
+        return Number.isNaN(n) ? true : n
+      }
+      return v
+    }),
 })
 
 export type jstDef = z.input<typeof jst_def>
@@ -45,34 +63,38 @@ const variantDefaults: Record<JstVariant, any> = {
 }
 
 function getVariant(params: jstDef): JstVariant {
-  if (params.sh) return "sh"
-  if (params.ph) return "ph"
+  if (params.sh !== undefined) return "sh"
+  if (params.ph !== undefined) return "ph"
   return "ph"
 }
 
 function generatePads(
   variant: JstVariant,
+  numPins: number,
   p: number,
   id: number,
   pw: number,
   pl: number,
 ): AnySoupElement[] {
-  const half_p = p / 2
+  const pads: AnySoupElement[] = []
+  const startX = -((numPins - 1) / 2) * p
+
   if (variant === "ph") {
-    return [
-      platedHoleWithRectPad(1, -half_p, 2, id, pw, pl),
-      platedHoleWithRectPad(2, half_p, 2, id, pw, pl),
-    ]
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(platedHoleWithRectPad(i + 1, x, 2, id, pw, pl))
+    }
   } else {
-    return [
-      rectpad(1, -half_p * 3, 2, pw, pl),
-      rectpad(2, -half_p, 2, pw, pl),
-      rectpad(3, half_p, 2, pw, pl),
-      rectpad(4, half_p * 3, 2, pw, pl),
-      rectpad(5, -2.8, -1.9, 1.2, 1.8),
-      rectpad(6, 2.8, -1.9, 1.2, 1.8),
-    ]
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(rectpad(i + 1, x, 2, pw, pl))
+    }
+    // side pads for mechanical stability (not counted in numPins)
+    pads.push(rectpad(numPins + 1, -2.8, -1.9, 1.2, 1.8))
+    pads.push(rectpad(numPins + 2, 2.8, -1.9, 1.2, 1.8))
   }
+
+  return pads
 }
 
 function generateSilkscreenBody(
@@ -121,7 +143,16 @@ export const jst = (
   const w = params.w ?? defaults.w
   const h = params.h ?? defaults.h
 
-  const pads = generatePads(variant, p, id, pw, pl)
+  const numPins =
+    variant === "sh"
+      ? typeof params.sh === "number"
+        ? params.sh
+        : 4
+      : typeof params.ph === "number"
+        ? params.ph
+        : 4
+
+  const pads = generatePads(variant, numPins, p, id, pw, pl)
   const silkscreenBody = generateSilkscreenBody(variant, w, h)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
@@ -135,6 +166,7 @@ export const jst = (
       pl,
       w,
       h,
+      num_pins: numPins,
       sh: variant === "sh",
       ph: variant === "ph",
     },
