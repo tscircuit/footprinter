@@ -28,6 +28,7 @@ export const jst_def = z.object({
       return v
     }),
   ph: z.boolean().optional(),
+  string: z.string().optional(),
 })
 
 export type jstDef = z.input<typeof jst_def>
