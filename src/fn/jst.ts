@@ -140,8 +140,11 @@ export const jst = (
   if (variant === "sh") {
     const str = typeof raw_params.string === "string" ? raw_params.string : ""
     const match = str.match(/sh(\d+)/)
-    if (match) {
-      numPins = parseInt(match[1], 10)
+    if (match && match[1]) {
+      const parsed = parseInt(match[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
     } else if (typeof params.sh === "number") {
       numPins = params.sh
     }
