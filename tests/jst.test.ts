@@ -20,9 +20,4 @@ test("jst_sh6", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_sh6")
 })
 
-test("jst_ph3", () => {
-  const circuitJson = fp.string("jst_ph3").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph3")
-})
 

@@ -27,16 +27,7 @@ export const jst_def = z.object({
       }
       return v
     }),
-  ph: z
-    .union([z.boolean(), z.string(), z.number()])
-    .optional()
-    .transform((v) => {
-      if (typeof v === "string") {
-        const n = Number(v)
-        return Number.isNaN(n) ? true : n
-      }
-      return v
-    }),
+  ph: z.boolean().optional(),
 })
 
 export type jstDef = z.input<typeof jst_def>
@@ -63,8 +54,8 @@ const variantDefaults: Record<JstVariant, any> = {
 }
 
 function getVariant(params: jstDef): JstVariant {
-  if (params.sh !== undefined) return "sh"
-  if (params.ph !== undefined) return "ph"
+  if (params.sh) return "sh"
+  if (params.ph) return "ph"
   return "ph"
 }
 
@@ -77,21 +68,21 @@ function generatePads(
   pl: number,
 ): AnySoupElement[] {
   const pads: AnySoupElement[] = []
-  const startX = -((numPins - 1) / 2) * p
 
   if (variant === "ph") {
-    for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
-      pads.push(platedHoleWithRectPad(i + 1, x, 2, id, pw, pl))
-    }
+    const half_p = p / 2
+    pads.push(platedHoleWithRectPad(1, -half_p, 2, id, pw, pl))
+    pads.push(platedHoleWithRectPad(2, half_p, 2, id, pw, pl))
   } else {
+    const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
       pads.push(rectpad(i + 1, x, 2, pw, pl))
     }
-    // side pads for mechanical stability (not counted in numPins)
-    pads.push(rectpad(numPins + 1, -2.8, -1.9, 1.2, 1.8))
-    pads.push(rectpad(numPins + 2, 2.8, -1.9, 1.2, 1.8))
+
+    const sideOffset = ((numPins - 1) / 2) * p + 1.3
+    pads.push(rectpad(numPins + 1, -sideOffset, -1.9, 1.2, 1.8))
+    pads.push(rectpad(numPins + 2, sideOffset, -1.9, 1.2, 1.8))
   }
 
   return pads
@@ -143,14 +134,17 @@ export const jst = (
   const w = params.w ?? defaults.w
   const h = params.h ?? defaults.h
 
-  const numPins =
-    variant === "sh"
-      ? typeof params.sh === "number"
-        ? params.sh
-        : 4
-      : typeof params.ph === "number"
-        ? params.ph
-        : 4
+  let numPins = variant === "sh" ? 4 : 2
+
+  if (variant === "sh") {
+    const str = typeof raw_params.string === "string" ? raw_params.string : ""
+    const match = str.match(/sh(\d+)/)
+    if (match) {
+      numPins = parseInt(match[1], 10)
+    } else if (typeof params.sh === "number") {
+      numPins = params.sh
+    }
+  }
 
   const pads = generatePads(variant, numPins, p, id, pw, pl)
   const silkscreenBody = generateSilkscreenBody(variant, w, h)
