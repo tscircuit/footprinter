@@ -48033,10 +48033,11 @@ var passive_def = exports_external.object({
   metric: distance2.optional(),
   imperial: distance2.optional(),
   w: length.optional(),
-  h: length.optional()
+  h: length.optional(),
+  textbottom: exports_external.boolean().optional()
 });
 var passive = (params) => {
-  let { tht, p, pw, ph, metric, imperial, w, h } = params;
+  let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params;
   if (typeof w === "string")
     w = mm_default(w);
   if (typeof h === "string")
@@ -48078,7 +48079,8 @@ var passive = (params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const silkscreenRefText = silkscreenRef(0, ph / 2 + 0.9, 0.2);
+  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9;
+  const silkscreenRefText = silkscreenRef(0, textY, 0.2);
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, pw * 1 / 0.8),
@@ -53635,7 +53637,7 @@ var string2 = (def) => {
     const [_, fn, v] = m ?? [];
     if (v?.includes("?"))
       return null;
-    return { fn: m?.[1], v: m?.[2] };
+    return { fn, v: m?.[2] };
   }).filter(isNotNull);
   for (const { fn, v } of def_parts) {
     fp = fp[fn](v);
@@ -53794,6 +53796,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="246.8085106382979" y="127.65957446808517" width="306.3829787234042" height="344.6808510638297"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="297.87234042553195" y="280.8510638297873" width="102.12765957446808" height="153.1914893617021" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="502.12765957446805" y="280.8510638297873" width="102.12765957446808" height="153.1914893617021" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 553.1914893617021 242.55319148936175 L 246.8085106382979 242.55319148936175 L 246.8085106382979 472.3404255319149 L 553.1914893617021 472.3404255319149" fill="none" stroke="#f2eda1" stroke-width="12.76595744680851" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="38.29787234042553" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,451.06382978723406,127.65957446808517)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "micromelf"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="229.06976744186053" y="139.53488372093028" width="341.860465116279" height="320.9302325581395"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="256.9767441860466" y="195.34883720930236" width="153.48837209302326" height="139.53488372093022" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="494.1860465116279" y="195.34883720930236" width="153.48837209302326" height="139.53488372093022" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 570.9302325581396 139.53488372093028 L 229.06976744186053 139.53488372093028 L 229.06976744186053 390.69767441860466 L 570.9302325581396 390.69767441860466" fill="none" stroke="#f2eda1" stroke-width="13.953488372093023" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="27.906976744186046" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,452.3255813953489,460.4651162790698)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    title: "0603_textbottom"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="217.2268907563025" y="100.84033613445382" width="365.546218487395" height="398.3193277310924"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="237.39495798319328" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="519.7478991596639" y="191.59663865546224" width="126.05042016806722" height="267.2268907563025" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 582.7731092436975 151.26050420168073 L 217.2268907563025 151.26050420168073 L 217.2268907563025 499.15966386554624 L 582.7731092436975 499.15966386554624" fill="none" stroke="#f2eda1" stroke-width="10.084033613445378" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="20.168067226890756" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,441.5966386554622,100.84033613445382)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
