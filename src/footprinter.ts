@@ -23,7 +23,7 @@ type CommonPassiveOptionKey =
   | "ph"
   | "w"
   | "h"
-  | "_textbottom"
+  | "textbottom"
 
 export type Footprinter = {
   dip: (
@@ -240,8 +240,7 @@ export const string = (def: string): Footprinter => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
       const [_, fn, v] = m ?? []
       if (v?.includes("?")) return null
-      const fnName = fn === "textbottom" ? "_textbottom" : fn
-      return { fn: fnName!, v: m?.[2]! }
+      return { fn: fn!, v: m?.[2]! }
     })
     .filter(isNotNull)
 

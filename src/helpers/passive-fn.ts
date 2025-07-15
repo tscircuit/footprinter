@@ -119,13 +119,13 @@ export const passive_def = z.object({
   imperial: distance.optional(),
   w: length.optional(),
   h: length.optional(),
-  _textbottom: z.boolean().optional(),
+  textbottom: z.boolean().optional(),
 })
 
 export type PassiveDef = z.input<typeof passive_def>
 
 export const passive = (params: PassiveDef): AnySoupElement[] => {
-  let { tht, p, pw, ph, metric, imperial, w, h, _textbottom } = params
+  let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -169,7 +169,7 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     pcb_silkscreen_path_id: "",
   }
 
-  const textY = _textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
+  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
   if (tht) {
