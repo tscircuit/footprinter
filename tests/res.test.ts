@@ -13,8 +13,15 @@ test("0603", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603")
 })
+
 test("res01005", () => {
   const soup = fp().res().imperial("01005").soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "res01005")
+})
+
+test("0201", () => {
+  const soup = fp.string("0201").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0201")
 })
