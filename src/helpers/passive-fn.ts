@@ -34,9 +34,9 @@ export const footprintSizes: StandardSize[] = [
   {
     imperial: "0201",
     metric: "0603",
-    p_mm_min: 0.6,
-    pw_mm_min: 0.3,
-    ph_mm_min: 0.3,
+    p_mm_min: 0.66,
+    pw_mm_min: 0.46,
+    ph_mm_min: 0.4,
     w_mm_min: 0.9,
     h_mm_min: 0.3,
   },
