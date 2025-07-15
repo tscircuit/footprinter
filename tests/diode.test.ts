@@ -39,7 +39,7 @@ test("diode0201", () => {
 })
 
 test("diode2512", () => {
-  const soup = fp().diode().imperial("0201").soup()
+  const soup = fp().diode().imperial("2512").soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode2512")
 })
