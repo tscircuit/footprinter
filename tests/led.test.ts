@@ -93,3 +93,9 @@ test("led1206", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_1206")
 })
+
+test("led0201", () => {
+  const soup = fp().led().imperial("0201").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
+})
