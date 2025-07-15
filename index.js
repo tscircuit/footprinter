@@ -47933,6 +47933,15 @@ var footprintSizes = [
     h_mm_min: 0.21
   },
   {
+    imperial: "0504",
+    metric: "1310",
+    p_mm_min: 1.1,
+    pw_mm_min: 0.65,
+    ph_mm_min: 1.3,
+    w_mm_min: 0.58,
+    h_mm_min: 0.21
+  },
+  {
     imperial: "0201",
     metric: "0603",
     p_mm_min: 0.66,
@@ -54328,6 +54337,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="290.9090909090909" y="109.09090909090907" width="218.18181818181824" height="381.8181818181818"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="266.3636363636363" y="218.1818181818182" width="49.09090909090909" height="76.36363636363636" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="266.3636363636363" y="359.99999999999994" width="49.09090909090909" height="76.36363636363636" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="484.54545454545456" y="289.09090909090907" width="49.09090909090909" height="76.36363636363636" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 315.45454545454544 163.63636363636363 L 484.54545454545456 163.63636363636363 L 484.54545454545456 261.8181818181818" fill="none" stroke="#f2eda1" stroke-width="10.90909090909091" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 315.45454545454544 490.9090909090909 L 484.54545454545456 490.9090909090909 L 484.54545454545456 392.7272727272727" fill="none" stroke="#f2eda1" stroke-width="10.90909090909091" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_2"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="32.72727272727273" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,109.09090909090907)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "sot323"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="294.0217391304348" y="130.4347826086956" width="211.95652173913044" height="339.13043478260875"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="320.1086956521739" y="247.8260869565217" width="84.78260869565219" height="169.56521739130437" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="463.5869565217391" y="247.8260869565217" width="84.78260869565219" height="169.56521739130437" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 505.97826086956525 195.65217391304344 L 294.0217391304348 195.65217391304344 L 294.0217391304348 469.5652173913043 L 505.97826086956525 469.5652173913043" fill="none" stroke="#f2eda1" stroke-width="13.043478260869566" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="26.086956521739133" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,434.2391304347826,130.4347826086956)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    title: "cap_0504"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="284.61538461538464" y="153.84615384615384" width="230.76923076923072" height="292.30769230769226"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="315.3846153846154" y="292.3076923076923" width="92.3076923076923" height="92.3076923076923" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="469.2307692307692" y="292.3076923076923" width="92.3076923076923" height="92.3076923076923" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 515.3846153846154 230.76923076923077 L 284.61538461538464 230.76923076923077 L 284.61538461538464 446.15384615384613 L 515.3846153846154 446.15384615384613" fill="none" stroke="#f2eda1" stroke-width="15.384615384615385" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="30.76923076923077" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,438.46153846153845,153.84615384615384)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
