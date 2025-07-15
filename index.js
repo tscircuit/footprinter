@@ -23676,14 +23676,14 @@ var rotateRightFacingSymbol = (symbol11, opts) => {
     ...port,
     ...applyToPoint(transform22, port)
   }));
-  const bounds104 = getBoundsOfPrimitives(rotatedPrimitives);
+  const bounds113 = getBoundsOfPrimitives(rotatedPrimitives);
   return {
     primitives: rotatedPrimitives,
     center,
     ports: rotatedPorts,
     size: {
-      width: bounds104.maxX - bounds104.minX,
-      height: bounds104.maxY - bounds104.minY
+      width: bounds113.maxX - bounds113.minX,
+      height: bounds113.maxY - bounds113.minY
     },
     ...overrides
   };
@@ -23729,10 +23729,10 @@ var SymbolModifier = class {
     return this;
   }
   computeSize() {
-    const bounds104 = getBoundsOfPrimitives(this.symbol.primitives);
+    const bounds113 = getBoundsOfPrimitives(this.symbol.primitives);
     return {
-      width: bounds104.maxX - bounds104.minX,
-      height: bounds104.maxY - bounds104.minY
+      width: bounds113.maxX - bounds113.minX,
+      height: bounds113.maxY - bounds113.minY
     };
   }
   build() {
@@ -24583,10 +24583,10 @@ var backward_diode_up_default = rotated;
 function defineSymbol(symbol11) {
   let size2 = symbol11.size;
   if (!size2) {
-    const bounds104 = getBoundsOfPrimitives(symbol11.primitives);
+    const bounds113 = getBoundsOfPrimitives(symbol11.primitives);
     size2 = {
-      width: bounds104.maxX - bounds104.minX,
-      height: bounds104.maxY - bounds104.minY
+      width: bounds113.maxX - bounds113.minX,
+      height: bounds113.maxY - bounds113.minY
     };
   }
   return { ...symbol11, size: size2 };
@@ -30202,8 +30202,156 @@ var filled_diode_default = {
   },
   circles: {}
 };
-var filled_diode_horz_default = modifySymbol(filled_diode_default).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var filled_diode_vert_default = rotateSymbol(filled_diode_horz_default);
+var { paths: paths48, texts: texts49, bounds: bounds48, refblocks: refblocks48, circles: circles48 } = filled_diode_default;
+var filled_diode_down_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths48),
+    ...Object.values(circles48),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0.15,
+      y: 0.3294553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: 0.15,
+      y: 0.3294553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks48.left1, labels: ["1"] },
+    { ...refblocks48.right1, labels: ["2"] }
+  ],
+  size: { width: bounds48.width, height: bounds48.height },
+  center: { x: bounds48.centerX, y: bounds48.centerY }
+}).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: paths49, texts: texts50, bounds: bounds49, refblocks: refblocks49, circles: circles49 } = filled_diode_default;
+var filled_diode_horz_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths49),
+    ...Object.values(circles49),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0,
+      y: 0.4094553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: 0,
+      y: -0.4094553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks49.left1, labels: ["1"] },
+    { ...refblocks49.right1, labels: ["2"] }
+  ],
+  size: { width: bounds49.width, height: bounds49.height },
+  center: { x: bounds49.centerX, y: bounds49.centerY }
+}).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: paths50, texts: texts51, bounds: bounds50, refblocks: refblocks50, circles: circles50 } = filled_diode_default;
+var filled_diode_left_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths50),
+    ...Object.values(circles50),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0,
+      y: -0.3094553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: 0,
+      y: 0.4094553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks50.left1, labels: ["1"] },
+    { ...refblocks50.right1, labels: ["2"] }
+  ],
+  size: { width: bounds50.width, height: bounds50.height },
+  center: { x: bounds50.centerX, y: bounds50.centerY }
+}).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: paths51, texts: texts52, bounds: bounds51, refblocks: refblocks51, circles: circles51 } = filled_diode_default;
+var filled_diode_right_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths51),
+    ...Object.values(circles51),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0,
+      y: 0.4094553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: 0,
+      y: -0.4094553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks51.left1, labels: ["1"] },
+    { ...refblocks51.right1, labels: ["2"] }
+  ],
+  size: { width: bounds51.width, height: bounds51.height },
+  center: { x: bounds51.centerX, y: bounds51.centerY }
+}).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: paths52, texts: texts53, bounds: bounds52, refblocks: refblocks52, circles: circles52 } = filled_diode_default;
+var filled_diode_up_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths52),
+    ...Object.values(circles52),
+    {
+      type: "text",
+      text: "{REF}",
+      x: 0.15,
+      y: -0.2894553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: -0.15,
+      y: -0.2894553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks52.left1, labels: ["1"] },
+    { ...refblocks52.right1, labels: ["2"] }
+  ],
+  size: { width: bounds52.width, height: bounds52.height },
+  center: { x: bounds52.centerX, y: bounds52.centerY }
+}).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: paths53, texts: texts54, bounds: bounds53, refblocks: refblocks53, circles: circles53 } = filled_diode_default;
+var filled_diode_vert_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths53),
+    ...Object.values(circles53),
+    {
+      type: "text",
+      text: "{REF}",
+      x: 0.15,
+      y: -0.2894553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: -0.15,
+      y: -0.2894553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks53.left1, labels: ["1"] },
+    { ...refblocks53.right1, labels: ["2"] }
+  ],
+  size: { width: bounds53.width, height: bounds53.height },
+  center: { x: bounds53.centerX, y: bounds53.centerY }
+}).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var frequency_meter_default = {
   paths: {
     path11: {
@@ -30288,11 +30436,11 @@ var frequency_meter_default = {
     }
   }
 };
-var { paths: paths48, texts: texts49, bounds: bounds48, refblocks: refblocks48, circles: circles48 } = frequency_meter_default;
+var { paths: paths54, texts: texts55, bounds: bounds54, refblocks: refblocks54, circles: circles54 } = frequency_meter_default;
 var frequency_meter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths48),
-    ...Object.values(circles48),
+    ...Object.values(paths54),
+    ...Object.values(circles54),
     {
       type: "text",
       text: "{REF}",
@@ -30307,14 +30455,14 @@ var frequency_meter_horz_default = defineSymbol({
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts49.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.2 }
+    { ...texts55.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.2 }
   ],
   ports: [
-    { ...refblocks48.left1, labels: ["1"] },
-    { ...refblocks48.right1, labels: ["2"] }
+    { ...refblocks54.left1, labels: ["1"] },
+    { ...refblocks54.right1, labels: ["2"] }
   ],
-  size: { width: bounds48.width, height: bounds48.height },
-  center: { x: bounds48.centerX, y: bounds48.centerY }
+  size: { width: bounds54.width, height: bounds54.height },
+  center: { x: bounds54.centerX, y: bounds54.centerY }
 });
 var { 5: letter2, ...rest2 } = frequency_meter_horz_default.primitives;
 function isPrimitive2(value) {
@@ -30413,11 +30561,11 @@ var fuse_default = {
   },
   circles: {}
 };
-var { paths: paths49, texts: texts50, bounds: bounds49, refblocks: refblocks49 } = fuse_default;
+var { paths: paths55, texts: texts56, bounds: bounds55, refblocks: refblocks55 } = fuse_default;
 var fuse_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths49),
-    { ...texts50.top1, anchor: "middle_bottom" },
+    ...Object.values(paths55),
+    { ...texts56.top1, anchor: "middle_bottom" },
     {
       type: "text",
       text: "{VAL}",
@@ -30427,11 +30575,11 @@ var fuse_horz_default = defineSymbol({
     }
   ],
   ports: [
-    { ...refblocks49.left1, labels: ["1"] },
-    { ...refblocks49.right1, labels: ["2"] }
+    { ...refblocks55.left1, labels: ["1"] },
+    { ...refblocks55.right1, labels: ["2"] }
   ],
-  size: { width: bounds49.width, height: bounds49.height },
-  center: { x: bounds49.centerX, y: bounds49.centerY }
+  size: { width: bounds55.width, height: bounds55.height },
+  center: { x: bounds55.centerX, y: bounds55.centerY }
 });
 var fuse_vert_default = rotateSymbol(fuse_horz_default);
 var ground_default = {
@@ -30588,10 +30736,10 @@ var ground2_default = {
   },
   circles: {}
 };
-var { paths: paths50, texts: texts51, bounds: bounds50, refblocks: refblocks50 } = ground2_default;
+var { paths: paths56, texts: texts57, bounds: bounds56, refblocks: refblocks56 } = ground2_default;
 var ground2_down_default = modifySymbol({
   primitives: [
-    ...Object.values(paths50),
+    ...Object.values(paths56),
     {
       type: "text",
       text: "{REF}",
@@ -30600,15 +30748,15 @@ var ground2_down_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks50.left1, labels: ["1"] }
+    { ...refblocks56.left1, labels: ["1"] }
   ],
-  center: { x: bounds50.centerX, y: bounds50.centerY }
+  center: { x: bounds56.centerX, y: bounds56.centerY }
 }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: paths51, texts: texts52, bounds: bounds51, refblocks: refblocks51, circles: circles49 } = ground2_default;
+var { paths: paths57, texts: texts58, bounds: bounds57, refblocks: refblocks57, circles: circles55 } = ground2_default;
 var ground2_left_default = modifySymbol({
   primitives: [
-    ...Object.values(paths51),
-    ...Object.values(circles49),
+    ...Object.values(paths57),
+    ...Object.values(circles55),
     {
       type: "text",
       text: "{REF}",
@@ -30617,15 +30765,15 @@ var ground2_left_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks51.left1, labels: ["1"] }
+    { ...refblocks57.left1, labels: ["1"] }
   ],
-  center: { x: bounds51.centerX, y: bounds51.centerY }
+  center: { x: bounds57.centerX, y: bounds57.centerY }
 }).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: paths52, texts: texts53, bounds: bounds52, refblocks: refblocks52, circles: circles50 } = ground2_default;
+var { paths: paths58, texts: texts59, bounds: bounds58, refblocks: refblocks58, circles: circles56 } = ground2_default;
 var ground2_right_default = modifySymbol({
   primitives: [
-    ...Object.values(paths52),
-    ...Object.values(circles50),
+    ...Object.values(paths58),
+    ...Object.values(circles56),
     {
       type: "text",
       text: "{REF}",
@@ -30634,15 +30782,15 @@ var ground2_right_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks52.left1, labels: ["1"] }
+    { ...refblocks58.left1, labels: ["1"] }
   ],
-  center: { x: bounds52.centerX, y: bounds52.centerY }
+  center: { x: bounds58.centerX, y: bounds58.centerY }
 }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: paths53, texts: texts54, bounds: bounds53, refblocks: refblocks53, circles: circles51 } = ground2_default;
+var { paths: paths59, texts: texts60, bounds: bounds59, refblocks: refblocks59, circles: circles57 } = ground2_default;
 var ground2_up_default = modifySymbol({
   primitives: [
-    ...Object.values(paths53),
-    ...Object.values(circles51),
+    ...Object.values(paths59),
+    ...Object.values(circles57),
     {
       type: "text",
       text: "{REF}",
@@ -30651,9 +30799,9 @@ var ground2_up_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks53.left1, labels: ["1"] }
+    { ...refblocks59.left1, labels: ["1"] }
   ],
-  center: { x: bounds53.centerX, y: bounds53.centerY }
+  center: { x: bounds59.centerX, y: bounds59.centerY }
 }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
 var gunn_diode_default = {
   paths: {
@@ -31502,12 +31650,12 @@ var illuminated_push_button_normally_open_default = {
 };
 var illuminated_push_button_normally_open_horz_default = modifySymbol(illuminated_push_button_normally_open_default).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
 var rotatedSymbol4 = rotateSymbol(illuminated_push_button_normally_open_horz_default);
-var texts56 = rotatedSymbol4.primitives.filter((p) => p.type === "text");
-var val18 = texts56.find((t) => t.text === "{VAL}");
+var texts62 = rotatedSymbol4.primitives.filter((p) => p.type === "text");
+var val18 = texts62.find((t) => t.text === "{VAL}");
 val18.x = -0.35;
 val18.y = 0;
 val18.anchor = "middle_right";
-var ref18 = texts56.find((t) => t.text === "{REF}");
+var ref18 = texts62.find((t) => t.text === "{REF}");
 ref18.y = 0;
 ref18.x = 0.35;
 ref18.anchor = "middle_left";
@@ -32905,20 +33053,20 @@ var inductor_default = {
   },
   circles: {}
 };
-var { paths: paths55, texts: texts57, bounds: bounds55, refblocks: refblocks55, circles: circles53 } = inductor_default;
+var { paths: paths61, texts: texts63, bounds: bounds61, refblocks: refblocks61, circles: circles59 } = inductor_default;
 var inductor_right_default = defineSymbol({
   primitives: [
-    ...Object.values(paths55),
-    ...Object.values(circles53),
-    { ...texts57.top1, anchor: "middle_bottom" },
-    { ...texts57.bottom1, anchor: "middle_top" }
+    ...Object.values(paths61),
+    ...Object.values(circles59),
+    { ...texts63.top1, anchor: "middle_bottom" },
+    { ...texts63.bottom1, anchor: "middle_top" }
   ],
   ports: [
-    { ...refblocks55.left1, labels: ["1"] },
-    { ...refblocks55.right1, labels: ["2"] }
+    { ...refblocks61.left1, labels: ["1"] },
+    { ...refblocks61.right1, labels: ["2"] }
   ],
-  size: { width: bounds55.width, height: bounds55.height },
-  center: { x: bounds55.centerX, y: bounds55.centerY }
+  size: { width: bounds61.width, height: bounds61.height },
+  center: { x: bounds61.centerX, y: bounds61.centerY }
 });
 var inductor_up_default = rotateSymbol(inductor_right_default, "up");
 var inductor_down_default = flipSymbolOverXAxis(inductor_up_default);
@@ -33405,20 +33553,20 @@ var led_default = {
   },
   circles: {}
 };
-var { paths: paths56, texts: texts58, bounds: bounds56, refblocks: refblocks56, circles: circles54 } = led_default;
+var { paths: paths62, texts: texts64, bounds: bounds62, refblocks: refblocks62, circles: circles60 } = led_default;
 var led_right_default = defineSymbol({
   primitives: [
-    ...Object.values(paths56),
-    ...Object.values(circles54),
-    { ...texts58.bottom1, anchor: "middle_top" },
-    { ...texts58.right1, anchor: "middle_bottom" }
+    ...Object.values(paths62),
+    ...Object.values(circles60),
+    { ...texts64.bottom1, anchor: "middle_top" },
+    { ...texts64.right1, anchor: "middle_bottom" }
   ],
   ports: [
-    { ...refblocks56.left1, labels: ["1"] },
-    { ...refblocks56.right1, labels: ["2"] }
+    { ...refblocks62.left1, labels: ["1"] },
+    { ...refblocks62.right1, labels: ["2"] }
   ],
-  size: { width: bounds56.width, height: bounds56.height },
-  center: { x: bounds56.centerX, y: bounds56.centerY }
+  size: { width: bounds62.width, height: bounds62.height },
+  center: { x: bounds62.centerX, y: bounds62.centerY }
 });
 var symbol6 = rotateSymbol(led_right_default, "up");
 var ref22 = symbol6.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -33663,28 +33811,28 @@ var light_dependent_resistor_default = {
     }
   }
 };
-var { paths: paths57, texts: texts59, bounds: bounds57, refblocks: refblocks57, circles: circles55 } = light_dependent_resistor_default;
+var { paths: paths63, texts: texts65, bounds: bounds63, refblocks: refblocks63, circles: circles61 } = light_dependent_resistor_default;
 var light_dependent_resistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths57),
-    ...Object.values(circles55),
-    { ...texts59.top1, anchor: "middle_left", x: 0 },
-    { ...texts59.bottom1, anchor: "middle_left", x: 0 }
+    ...Object.values(paths63),
+    ...Object.values(circles61),
+    { ...texts65.top1, anchor: "middle_left", x: 0 },
+    { ...texts65.bottom1, anchor: "middle_left", x: 0 }
   ],
   ports: [
-    { ...refblocks57.left1, labels: ["1"] },
-    { ...refblocks57.right1, labels: ["2"] }
+    { ...refblocks63.left1, labels: ["1"] },
+    { ...refblocks63.right1, labels: ["2"] }
   ],
-  size: { width: bounds57.width, height: bounds57.height },
-  center: { x: bounds57.centerX, y: bounds57.centerY }
+  size: { width: bounds63.width, height: bounds63.height },
+  center: { x: bounds63.centerX, y: bounds63.centerY }
 });
 var rotatedSymbol5 = rotateSymbol(light_dependent_resistor_horz_default);
-var texts60 = rotatedSymbol5.primitives.filter((p) => p.type === "text");
-var val24 = texts60.find((t) => t.text === "{VAL}");
+var texts66 = rotatedSymbol5.primitives.filter((p) => p.type === "text");
+var val24 = texts66.find((t) => t.text === "{VAL}");
 val24.x = -0.35;
 val24.y = 0;
 val24.anchor = "middle_right";
-var ref24 = texts60.find((t) => t.text === "{REF}");
+var ref24 = texts66.find((t) => t.text === "{REF}");
 ref24.y = 0;
 ref24.x = 0.35;
 ref24.anchor = "middle_left";
@@ -33957,20 +34105,20 @@ var mosfet_depletion_normally_on_default = {
   },
   circles: {}
 };
-var { paths: paths58, texts: texts61, bounds: bounds58, refblocks: refblocks58 } = mosfet_depletion_normally_on_default;
+var { paths: paths64, texts: texts67, bounds: bounds64, refblocks: refblocks64 } = mosfet_depletion_normally_on_default;
 var mosfet_depletion_normally_on_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths58),
-    { ...texts61.right1, anchor: "middle_left" },
-    { ...texts61.right2, anchor: "middle_left" }
+    ...Object.values(paths64),
+    { ...texts67.right1, anchor: "middle_left" },
+    { ...texts67.right2, anchor: "middle_left" }
   ],
   ports: [
-    { ...refblocks58.top1, labels: ["1"] },
-    { ...refblocks58.bottom1, labels: ["2"] },
-    { ...refblocks58.left1, labels: ["3"] }
+    { ...refblocks64.top1, labels: ["1"] },
+    { ...refblocks64.bottom1, labels: ["2"] },
+    { ...refblocks64.left1, labels: ["3"] }
   ],
-  size: { width: bounds58.width + 0.4, height: bounds58.height },
-  center: { x: bounds58.centerX + 0.2, y: bounds58.centerY }
+  size: { width: bounds64.width + 0.4, height: bounds64.height },
+  center: { x: bounds64.centerX + 0.2, y: bounds64.centerY }
 });
 var rotated15 = rotateSymbol(mosfet_depletion_normally_on_horz_default);
 var ref25 = rotated15.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -34586,20 +34734,20 @@ var mushroom_head_normally_open_momentary_default = {
   },
   circles: {}
 };
-var { paths: paths59, texts: texts62, bounds: bounds59, refblocks: refblocks59, circles: circles56 } = mushroom_head_normally_open_momentary_default;
+var { paths: paths65, texts: texts68, bounds: bounds65, refblocks: refblocks65, circles: circles62 } = mushroom_head_normally_open_momentary_default;
 var mushroom_head_normally_open_momentary_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths59),
-    ...Object.values(circles56),
-    { ...texts62.top1, anchor: "middle_bottom", x: 0 },
-    { ...texts62.bottom1, anchor: "middle_top", x: 0 }
+    ...Object.values(paths65),
+    ...Object.values(circles62),
+    { ...texts68.top1, anchor: "middle_bottom", x: 0 },
+    { ...texts68.bottom1, anchor: "middle_top", x: 0 }
   ],
   ports: [
-    { ...refblocks59.left1, labels: ["1"] },
-    { ...refblocks59.right1, labels: ["2"] }
+    { ...refblocks65.left1, labels: ["1"] },
+    { ...refblocks65.right1, labels: ["2"] }
   ],
-  size: { width: bounds59.width, height: bounds59.height },
-  center: { x: bounds59.centerX + 0.006, y: bounds59.centerY + 0.06 }
+  size: { width: bounds65.width, height: bounds65.height },
+  center: { x: bounds65.centerX + 0.006, y: bounds65.centerY + 0.06 }
 });
 var rotated16 = rotateSymbol(mushroom_head_normally_open_momentary_horz_default);
 var ref26 = rotated16.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -34806,29 +34954,29 @@ var n_channel_d_mosfet_transistor_default = {
     }
   }
 };
-var { paths: paths60, texts: texts63, bounds: bounds60, refblocks: refblocks60, circles: circles57 } = n_channel_d_mosfet_transistor_default;
+var { paths: paths66, texts: texts69, bounds: bounds66, refblocks: refblocks66, circles: circles63 } = n_channel_d_mosfet_transistor_default;
 var n_channel_d_mosfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths60),
-    ...Object.values(circles57),
-    { ...texts63.top1, anchor: "middle_right", x: 0 },
-    { ...texts63.bottom1, anchor: "middle_right", x: 0 }
+    ...Object.values(paths66),
+    ...Object.values(circles63),
+    { ...texts69.top1, anchor: "middle_right", x: 0 },
+    { ...texts69.bottom1, anchor: "middle_right", x: 0 }
   ],
   ports: [
-    { ...refblocks60.top1, labels: ["1", "drain"] },
-    { ...refblocks60.bottom1, labels: ["2", "source"] },
-    { ...refblocks60.left1, labels: ["3", "gate"] }
+    { ...refblocks66.top1, labels: ["1", "drain"] },
+    { ...refblocks66.bottom1, labels: ["2", "source"] },
+    { ...refblocks66.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds60.width, height: bounds60.height },
-  center: { x: bounds60.centerX, y: bounds60.centerY }
+  size: { width: bounds66.width, height: bounds66.height },
+  center: { x: bounds66.centerX, y: bounds66.centerY }
 });
 var rotatedSymbol6 = rotateSymbol(n_channel_d_mosfet_transistor_horz_default);
-var texts64 = rotatedSymbol6.primitives.filter((p) => p.type === "text");
-var val27 = texts64.find((t) => t.text === "{VAL}");
+var texts70 = rotatedSymbol6.primitives.filter((p) => p.type === "text");
+var val27 = texts70.find((t) => t.text === "{VAL}");
 val27.x = -0.35;
 val27.y = 0;
 val27.anchor = "middle_right";
-var ref27 = texts64.find((t) => t.text === "{REF}");
+var ref27 = texts70.find((t) => t.text === "{REF}");
 ref27.y = 0;
 ref27.x = 0.35;
 ref27.anchor = "middle_left";
@@ -35058,29 +35206,29 @@ var n_channel_e_mosfet_transistor_default = {
     }
   }
 };
-var { paths: paths61, texts: texts65, bounds: bounds61, refblocks: refblocks61, circles: circles58 } = n_channel_e_mosfet_transistor_default;
+var { paths: paths67, texts: texts71, bounds: bounds67, refblocks: refblocks67, circles: circles64 } = n_channel_e_mosfet_transistor_default;
 var n_channel_e_mosfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths61),
-    ...Object.values(circles58),
-    { ...texts65.top1, anchor: "middle_right", x: 0 },
-    { ...texts65.bottom1, anchor: "middle_right", x: 0 }
+    ...Object.values(paths67),
+    ...Object.values(circles64),
+    { ...texts71.top1, anchor: "middle_right", x: 0 },
+    { ...texts71.bottom1, anchor: "middle_right", x: 0 }
   ],
   ports: [
-    { ...refblocks61.top1, labels: ["1", "drain"] },
-    { ...refblocks61.bottom1, labels: ["2", "source"] },
-    { ...refblocks61.left1, labels: ["3", "gate"] }
+    { ...refblocks67.top1, labels: ["1", "drain"] },
+    { ...refblocks67.bottom1, labels: ["2", "source"] },
+    { ...refblocks67.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds61.width, height: bounds61.height },
-  center: { x: bounds61.centerX, y: bounds61.centerY }
+  size: { width: bounds67.width, height: bounds67.height },
+  center: { x: bounds67.centerX, y: bounds67.centerY }
 });
 var rotatedSymbol7 = rotateSymbol(n_channel_e_mosfet_transistor_horz_default);
-var texts66 = rotatedSymbol7.primitives.filter((p) => p.type === "text");
-var val28 = texts66.find((t) => t.text === "{VAL}");
+var texts72 = rotatedSymbol7.primitives.filter((p) => p.type === "text");
+var val28 = texts72.find((t) => t.text === "{VAL}");
 val28.x = -0.35;
 val28.y = 0;
 val28.anchor = "middle_right";
-var ref28 = texts66.find((t) => t.text === "{REF}");
+var ref28 = texts72.find((t) => t.text === "{REF}");
 ref28.y = 0;
 ref28.x = 0.35;
 ref28.anchor = "middle_left";
@@ -35250,29 +35398,29 @@ var njfet_transistor_default = {
     }
   }
 };
-var { paths: paths62, texts: texts67, bounds: bounds62, refblocks: refblocks62, circles: circles59 } = njfet_transistor_default;
+var { paths: paths68, texts: texts73, bounds: bounds68, refblocks: refblocks68, circles: circles65 } = njfet_transistor_default;
 var njfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths62),
-    ...Object.values(circles59),
-    { ...texts67.top1, anchor: "middle_right", x: 0 },
-    { ...texts67.bottom1, anchor: "middle_right", x: 0 }
+    ...Object.values(paths68),
+    ...Object.values(circles65),
+    { ...texts73.top1, anchor: "middle_right", x: 0 },
+    { ...texts73.bottom1, anchor: "middle_right", x: 0 }
   ],
   ports: [
-    { ...refblocks62.top1, labels: ["1", "drain"] },
-    { ...refblocks62.bottom1, labels: ["2", "source"] },
-    { ...refblocks62.left1, labels: ["3", "gate"] }
+    { ...refblocks68.top1, labels: ["1", "drain"] },
+    { ...refblocks68.bottom1, labels: ["2", "source"] },
+    { ...refblocks68.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds62.width, height: bounds62.height },
-  center: { x: bounds62.centerX, y: bounds62.centerY }
+  size: { width: bounds68.width, height: bounds68.height },
+  center: { x: bounds68.centerX, y: bounds68.centerY }
 });
 var rotatedSymbol8 = rotateSymbol(njfet_transistor_horz_default);
-var texts68 = rotatedSymbol8.primitives.filter((p) => p.type === "text");
-var val29 = texts68.find((t) => t.text === "{VAL}");
+var texts74 = rotatedSymbol8.primitives.filter((p) => p.type === "text");
+var val29 = texts74.find((t) => t.text === "{VAL}");
 val29.x = -0.35;
 val29.y = 0;
 val29.anchor = "middle_right";
-var ref29 = texts68.find((t) => t.text === "{REF}");
+var ref29 = texts74.find((t) => t.text === "{REF}");
 ref29.y = 0;
 ref29.x = 0.35;
 ref29.anchor = "middle_left";
@@ -35323,11 +35471,11 @@ var not_connected_default = {
   },
   circles: {}
 };
-var { paths: paths63, bounds: bounds63, refblocks: refblocks63 } = not_connected_default;
+var { paths: paths69, bounds: bounds69, refblocks: refblocks69 } = not_connected_default;
 var not_connected_right_default = modifySymbol({
-  primitives: [...Object.values(paths63)],
-  ports: [{ ...refblocks63.left1, labels: ["1"] }],
-  center: { x: bounds63.centerX, y: bounds63.centerY }
+  primitives: [...Object.values(paths69)],
+  ports: [{ ...refblocks69.left1, labels: ["1"] }],
+  center: { x: bounds69.centerX, y: bounds69.centerY }
 }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).build();
 var not_connected_down_default = rotateSymbol(not_connected_right_default, "down");
 var not_connected_left_default = rotateSymbol(not_connected_right_default, "left");
@@ -35497,11 +35645,11 @@ var npn_bipolar_transistor_default = {
     }
   }
 };
-var { paths: paths64, texts: texts69, bounds: bounds64, refblocks: refblocks64, circles: circles60 } = npn_bipolar_transistor_default;
+var { paths: paths70, texts: texts75, bounds: bounds70, refblocks: refblocks70, circles: circles66 } = npn_bipolar_transistor_default;
 var npn_bipolar_transistor_down_default = modifySymbol({
   primitives: [
-    ...Object.values(paths64),
-    ...Object.values(circles60),
+    ...Object.values(paths70),
+    ...Object.values(circles66),
     {
       type: "text",
       text: "{REF}",
@@ -35516,19 +35664,19 @@ var npn_bipolar_transistor_down_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks64.top1, labels: ["1"] },
-    { ...refblocks64.bottom1, labels: ["3"] },
-    { ...refblocks64.left1, labels: ["2"] }
+    { ...refblocks70.top1, labels: ["1"] },
+    { ...refblocks70.bottom1, labels: ["3"] },
+    { ...refblocks70.left1, labels: ["2"] }
   ],
-  size: { width: bounds64.width, height: bounds64.height },
-  center: { x: bounds64.centerX, y: bounds64.centerY }
+  size: { width: bounds70.width, height: bounds70.height },
+  center: { x: bounds70.centerX, y: bounds70.centerY }
 }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
 var npn_bipolar_transistor_horz_default = modifySymbol(npn_bipolar_transistor_default).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["2"]).labelPort("top1", ["1"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: paths66, texts: texts71, bounds: bounds66, refblocks: refblocks66, circles: circles62 } = npn_bipolar_transistor_default;
+var { paths: paths72, texts: texts77, bounds: bounds72, refblocks: refblocks72, circles: circles68 } = npn_bipolar_transistor_default;
 var npn_bipolar_transistor_left_default = modifySymbol({
   primitives: [
-    ...Object.values(paths66),
-    ...Object.values(circles62),
+    ...Object.values(paths72),
+    ...Object.values(circles68),
     {
       type: "text",
       text: "{REF}",
@@ -35543,18 +35691,18 @@ var npn_bipolar_transistor_left_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks66.top1, labels: ["1"] },
-    { ...refblocks66.bottom1, labels: ["3"] },
-    { ...refblocks66.left1, labels: ["2"] }
+    { ...refblocks72.top1, labels: ["1"] },
+    { ...refblocks72.bottom1, labels: ["3"] },
+    { ...refblocks72.left1, labels: ["2"] }
   ],
-  size: { width: bounds66.width, height: bounds66.height },
-  center: { x: bounds66.centerX, y: bounds66.centerY }
+  size: { width: bounds72.width, height: bounds72.height },
+  center: { x: bounds72.centerX, y: bounds72.centerY }
 }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
-var { paths: paths67, texts: texts72, bounds: bounds67, refblocks: refblocks67, circles: circles63 } = npn_bipolar_transistor_default;
+var { paths: paths73, texts: texts78, bounds: bounds73, refblocks: refblocks73, circles: circles69 } = npn_bipolar_transistor_default;
 var npn_bipolar_transistor_right_default = modifySymbol({
   primitives: [
-    ...Object.values(paths67),
-    ...Object.values(circles63),
+    ...Object.values(paths73),
+    ...Object.values(circles69),
     {
       type: "text",
       text: "{REF}",
@@ -35569,18 +35717,18 @@ var npn_bipolar_transistor_right_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks67.top1, labels: ["1"] },
-    { ...refblocks67.bottom1, labels: ["3"] },
-    { ...refblocks67.left1, labels: ["2"] }
+    { ...refblocks73.top1, labels: ["1"] },
+    { ...refblocks73.bottom1, labels: ["3"] },
+    { ...refblocks73.left1, labels: ["2"] }
   ],
-  size: { width: bounds67.width, height: bounds67.height },
-  center: { x: bounds67.centerX, y: bounds67.centerY }
+  size: { width: bounds73.width, height: bounds73.height },
+  center: { x: bounds73.centerX, y: bounds73.centerY }
 }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: paths68, texts: texts73, bounds: bounds68, refblocks: refblocks68, circles: circles64 } = npn_bipolar_transistor_default;
+var { paths: paths74, texts: texts79, bounds: bounds74, refblocks: refblocks74, circles: circles70 } = npn_bipolar_transistor_default;
 var npn_bipolar_transistor_up_default = modifySymbol({
   primitives: [
-    ...Object.values(paths68),
-    ...Object.values(circles64),
+    ...Object.values(paths74),
+    ...Object.values(circles70),
     {
       type: "text",
       text: "{REF}",
@@ -35595,18 +35743,18 @@ var npn_bipolar_transistor_up_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks68.top1, labels: ["1"] },
-    { ...refblocks68.bottom1, labels: ["3"] },
-    { ...refblocks68.left1, labels: ["2"] }
+    { ...refblocks74.top1, labels: ["1"] },
+    { ...refblocks74.bottom1, labels: ["3"] },
+    { ...refblocks74.left1, labels: ["2"] }
   ],
-  size: { width: bounds68.width, height: bounds68.height },
-  center: { x: bounds68.centerX, y: bounds68.centerY }
+  size: { width: bounds74.width, height: bounds74.height },
+  center: { x: bounds74.centerX, y: bounds74.centerY }
 }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: paths69, texts: texts74, bounds: bounds69, refblocks: refblocks69, circles: circles65 } = npn_bipolar_transistor_default;
+var { paths: paths75, texts: texts80, bounds: bounds75, refblocks: refblocks75, circles: circles71 } = npn_bipolar_transistor_default;
 var npn_bipolar_transistor_vert_default = modifySymbol({
   primitives: [
-    ...Object.values(paths69),
-    ...Object.values(circles65),
+    ...Object.values(paths75),
+    ...Object.values(circles71),
     {
       type: "text",
       text: "{REF}",
@@ -35621,12 +35769,12 @@ var npn_bipolar_transistor_vert_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks69.top1, labels: ["1"] },
-    { ...refblocks69.bottom1, labels: ["3"] },
-    { ...refblocks69.left1, labels: ["2"] }
+    { ...refblocks75.top1, labels: ["1"] },
+    { ...refblocks75.bottom1, labels: ["3"] },
+    { ...refblocks75.left1, labels: ["2"] }
   ],
-  size: { width: bounds69.width, height: bounds69.height },
-  center: { x: bounds69.centerX, y: bounds69.centerY }
+  size: { width: bounds75.width, height: bounds75.height },
+  center: { x: bounds75.centerX, y: bounds75.centerY }
 }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var opamp_no_power_default = {
   paths: {
@@ -36225,29 +36373,29 @@ var p_channel_d_mosfet_transistor_default = {
     }
   }
 };
-var { paths: paths70, texts: texts75, bounds: bounds70, refblocks: refblocks70, circles: circles66 } = p_channel_d_mosfet_transistor_default;
+var { paths: paths76, texts: texts81, bounds: bounds76, refblocks: refblocks76, circles: circles72 } = p_channel_d_mosfet_transistor_default;
 var p_channel_d_mosfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths70),
-    ...Object.values(circles66),
-    { ...texts75.top1, anchor: "middle_right", x: 0 },
-    { ...texts75.bottom1, anchor: "middle_right", x: 0 }
+    ...Object.values(paths76),
+    ...Object.values(circles72),
+    { ...texts81.top1, anchor: "middle_right", x: 0 },
+    { ...texts81.bottom1, anchor: "middle_right", x: 0 }
   ],
   ports: [
-    { ...refblocks70.top1, labels: ["1", "drain"] },
-    { ...refblocks70.bottom1, labels: ["2", "source"] },
-    { ...refblocks70.left1, labels: ["3", "gate"] }
+    { ...refblocks76.top1, labels: ["1", "drain"] },
+    { ...refblocks76.bottom1, labels: ["2", "source"] },
+    { ...refblocks76.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds70.width, height: bounds70.height },
-  center: { x: bounds70.centerX, y: bounds70.centerY }
+  size: { width: bounds76.width, height: bounds76.height },
+  center: { x: bounds76.centerX, y: bounds76.centerY }
 });
 var rotatedSymbol9 = rotateSymbol(p_channel_d_mosfet_transistor_horz_default);
-var texts76 = rotatedSymbol9.primitives.filter((p) => p.type === "text");
-var val30 = texts76.find((t) => t.text === "{VAL}");
+var texts82 = rotatedSymbol9.primitives.filter((p) => p.type === "text");
+var val30 = texts82.find((t) => t.text === "{VAL}");
 val30.x = -0.35;
 val30.y = 0;
 val30.anchor = "middle_right";
-var ref30 = texts76.find((t) => t.text === "{REF}");
+var ref30 = texts82.find((t) => t.text === "{REF}");
 ref30.y = 0;
 ref30.x = 0.35;
 ref30.anchor = "middle_left";
@@ -36477,29 +36625,29 @@ var p_channel_e_mosfet_transistor_default = {
     }
   }
 };
-var { paths: paths71, texts: texts77, bounds: bounds71, refblocks: refblocks71, circles: circles67 } = p_channel_e_mosfet_transistor_default;
+var { paths: paths77, texts: texts83, bounds: bounds77, refblocks: refblocks77, circles: circles73 } = p_channel_e_mosfet_transistor_default;
 var p_channel_e_mosfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths71),
-    ...Object.values(circles67),
-    { ...texts77.top1, anchor: "middle_right", x: 0 },
-    { ...texts77.bottom1, anchor: "middle_right", x: 0 }
+    ...Object.values(paths77),
+    ...Object.values(circles73),
+    { ...texts83.top1, anchor: "middle_right", x: 0 },
+    { ...texts83.bottom1, anchor: "middle_right", x: 0 }
   ],
   ports: [
-    { ...refblocks71.top1, labels: ["1", "drain"] },
-    { ...refblocks71.bottom1, labels: ["2", "source"] },
-    { ...refblocks71.left1, labels: ["3", "gate"] }
+    { ...refblocks77.top1, labels: ["1", "drain"] },
+    { ...refblocks77.bottom1, labels: ["2", "source"] },
+    { ...refblocks77.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds71.width, height: bounds71.height },
-  center: { x: bounds71.centerX, y: bounds71.centerY }
+  size: { width: bounds77.width, height: bounds77.height },
+  center: { x: bounds77.centerX, y: bounds77.centerY }
 });
 var rotatedSymbol10 = rotateSymbol(p_channel_e_mosfet_transistor_horz_default);
-var texts78 = rotatedSymbol10.primitives.filter((p) => p.type === "text");
-var val31 = texts78.find((t) => t.text === "{VAL}");
+var texts84 = rotatedSymbol10.primitives.filter((p) => p.type === "text");
+var val31 = texts84.find((t) => t.text === "{VAL}");
 val31.x = -0.35;
 val31.y = 0;
 val31.anchor = "middle_right";
-var ref31 = texts78.find((t) => t.text === "{REF}");
+var ref31 = texts84.find((t) => t.text === "{REF}");
 ref31.y = 0;
 ref31.x = 0.35;
 ref31.anchor = "middle_left";
@@ -36728,8 +36876,8 @@ var photodiode_default = {
 };
 var photodiode_horz_default = modifySymbol(photodiode_default).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
 var rotatedSymbol11 = rotateSymbol(photodiode_horz_default);
-var texts79 = rotatedSymbol11.primitives.filter((p) => p.type === "text");
-var ref32 = texts79.find((t) => t.text === "{REF}");
+var texts85 = rotatedSymbol11.primitives.filter((p) => p.type === "text");
+var ref32 = texts85.find((t) => t.text === "{REF}");
 ref32.y = 0;
 ref32.anchor = "middle_left";
 var photodiode_vert_default = rotatedSymbol11;
@@ -36898,29 +37046,29 @@ var pjfet_transistor_default = {
     }
   }
 };
-var { paths: paths72, texts: texts80, bounds: bounds72, refblocks: refblocks72, circles: circles68 } = pjfet_transistor_default;
+var { paths: paths78, texts: texts86, bounds: bounds78, refblocks: refblocks78, circles: circles74 } = pjfet_transistor_default;
 var pjfet_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths72),
-    ...Object.values(circles68),
-    { ...texts80.top1, anchor: "middle_right", x: 0 },
-    { ...texts80.bottom1, anchor: "middle_right" }
+    ...Object.values(paths78),
+    ...Object.values(circles74),
+    { ...texts86.top1, anchor: "middle_right", x: 0 },
+    { ...texts86.bottom1, anchor: "middle_right" }
   ],
   ports: [
-    { ...refblocks72.top1, labels: ["1", "drain"] },
-    { ...refblocks72.bottom1, labels: ["2", "source"] },
-    { ...refblocks72.left1, labels: ["3", "gate"] }
+    { ...refblocks78.top1, labels: ["1", "drain"] },
+    { ...refblocks78.bottom1, labels: ["2", "source"] },
+    { ...refblocks78.left1, labels: ["3", "gate"] }
   ],
-  size: { width: bounds72.width, height: bounds72.height },
-  center: { x: bounds72.centerX, y: bounds72.centerY }
+  size: { width: bounds78.width, height: bounds78.height },
+  center: { x: bounds78.centerX, y: bounds78.centerY }
 });
 var rotatedSymbol12 = rotateSymbol(pjfet_transistor_horz_default);
-var texts81 = rotatedSymbol12.primitives.filter((p) => p.type === "text");
-var val32 = texts81.find((t) => t.text === "{VAL}");
+var texts87 = rotatedSymbol12.primitives.filter((p) => p.type === "text");
+var val32 = texts87.find((t) => t.text === "{VAL}");
 val32.x = -0.35;
 val32.y = 0;
 val32.anchor = "middle_right";
-var ref33 = texts81.find((t) => t.text === "{REF}");
+var ref33 = texts87.find((t) => t.text === "{REF}");
 ref33.y = 0;
 ref33.x = 0.35;
 ref33.anchor = "middle_left";
@@ -37090,11 +37238,11 @@ var pnp_bipolar_transistor_default = {
     }
   }
 };
-var { paths: paths73, texts: texts82, bounds: bounds73, refblocks: refblocks73, circles: circles69 } = pnp_bipolar_transistor_default;
+var { paths: paths79, texts: texts88, bounds: bounds79, refblocks: refblocks79, circles: circles75 } = pnp_bipolar_transistor_default;
 var pnp_bipolar_transistor_down_default = modifySymbol({
   primitives: [
-    ...Object.values(paths73),
-    ...Object.values(circles69),
+    ...Object.values(paths79),
+    ...Object.values(circles75),
     {
       type: "text",
       text: "{REF}",
@@ -37109,19 +37257,19 @@ var pnp_bipolar_transistor_down_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks73.top1, labels: ["1"] },
-    { ...refblocks73.bottom1, labels: ["3"] },
-    { ...refblocks73.left1, labels: ["2"] }
+    { ...refblocks79.top1, labels: ["1"] },
+    { ...refblocks79.bottom1, labels: ["3"] },
+    { ...refblocks79.left1, labels: ["2"] }
   ],
-  size: { width: bounds73.width, height: bounds73.height },
-  center: { x: bounds73.centerX, y: bounds73.centerY }
+  size: { width: bounds79.width, height: bounds79.height },
+  center: { x: bounds79.centerX, y: bounds79.centerY }
 }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
 var pnp_bipolar_transistor_horz_default = modifySymbol(pnp_bipolar_transistor_default).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["2"]).labelPort("top1", ["1"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: paths75, texts: texts84, bounds: bounds75, refblocks: refblocks75, circles: circles71 } = pnp_bipolar_transistor_default;
+var { paths: paths81, texts: texts90, bounds: bounds81, refblocks: refblocks81, circles: circles77 } = pnp_bipolar_transistor_default;
 var pnp_bipolar_transistor_left_default = modifySymbol({
   primitives: [
-    ...Object.values(paths75),
-    ...Object.values(circles71),
+    ...Object.values(paths81),
+    ...Object.values(circles77),
     {
       type: "text",
       text: "{REF}",
@@ -37136,18 +37284,18 @@ var pnp_bipolar_transistor_left_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks75.top1, labels: ["1"] },
-    { ...refblocks75.bottom1, labels: ["3"] },
-    { ...refblocks75.left1, labels: ["2"] }
+    { ...refblocks81.top1, labels: ["1"] },
+    { ...refblocks81.bottom1, labels: ["3"] },
+    { ...refblocks81.left1, labels: ["2"] }
   ],
-  size: { width: bounds75.width, height: bounds75.height },
-  center: { x: bounds75.centerX, y: bounds75.centerY }
+  size: { width: bounds81.width, height: bounds81.height },
+  center: { x: bounds81.centerX, y: bounds81.centerY }
 }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
-var { paths: paths76, texts: texts85, bounds: bounds76, refblocks: refblocks76, circles: circles72 } = pnp_bipolar_transistor_default;
+var { paths: paths82, texts: texts91, bounds: bounds82, refblocks: refblocks82, circles: circles78 } = pnp_bipolar_transistor_default;
 var pnp_bipolar_transistor_right_default = modifySymbol({
   primitives: [
-    ...Object.values(paths76),
-    ...Object.values(circles72),
+    ...Object.values(paths82),
+    ...Object.values(circles78),
     {
       type: "text",
       text: "{REF}",
@@ -37162,18 +37310,18 @@ var pnp_bipolar_transistor_right_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks76.top1, labels: ["1"] },
-    { ...refblocks76.bottom1, labels: ["3"] },
-    { ...refblocks76.left1, labels: ["2"] }
+    { ...refblocks82.top1, labels: ["1"] },
+    { ...refblocks82.bottom1, labels: ["3"] },
+    { ...refblocks82.left1, labels: ["2"] }
   ],
-  size: { width: bounds76.width, height: bounds76.height },
-  center: { x: bounds76.centerX, y: bounds76.centerY }
+  size: { width: bounds82.width, height: bounds82.height },
+  center: { x: bounds82.centerX, y: bounds82.centerY }
 }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: paths77, texts: texts86, bounds: bounds77, refblocks: refblocks77, circles: circles73 } = pnp_bipolar_transistor_default;
+var { paths: paths83, texts: texts92, bounds: bounds83, refblocks: refblocks83, circles: circles79 } = pnp_bipolar_transistor_default;
 var pnp_bipolar_transistor_up_default = modifySymbol({
   primitives: [
-    ...Object.values(paths77),
-    ...Object.values(circles73),
+    ...Object.values(paths83),
+    ...Object.values(circles79),
     {
       type: "text",
       text: "{REF}",
@@ -37188,18 +37336,18 @@ var pnp_bipolar_transistor_up_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks77.top1, labels: ["1"] },
-    { ...refblocks77.bottom1, labels: ["3"] },
-    { ...refblocks77.left1, labels: ["2"] }
+    { ...refblocks83.top1, labels: ["1"] },
+    { ...refblocks83.bottom1, labels: ["3"] },
+    { ...refblocks83.left1, labels: ["2"] }
   ],
-  size: { width: bounds77.width, height: bounds77.height },
-  center: { x: bounds77.centerX, y: bounds77.centerY }
+  size: { width: bounds83.width, height: bounds83.height },
+  center: { x: bounds83.centerX, y: bounds83.centerY }
 }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: paths78, texts: texts87, bounds: bounds78, refblocks: refblocks78, circles: circles74 } = pnp_bipolar_transistor_default;
+var { paths: paths84, texts: texts93, bounds: bounds84, refblocks: refblocks84, circles: circles80 } = pnp_bipolar_transistor_default;
 var pnp_bipolar_transistor_vert_default = modifySymbol({
   primitives: [
-    ...Object.values(paths78),
-    ...Object.values(circles74),
+    ...Object.values(paths84),
+    ...Object.values(circles80),
     {
       type: "text",
       text: "{REF}",
@@ -37214,12 +37362,12 @@ var pnp_bipolar_transistor_vert_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks78.top1, labels: ["1"] },
-    { ...refblocks78.bottom1, labels: ["3"] },
-    { ...refblocks78.left1, labels: ["2"] }
+    { ...refblocks84.top1, labels: ["1"] },
+    { ...refblocks84.bottom1, labels: ["3"] },
+    { ...refblocks84.left1, labels: ["2"] }
   ],
-  size: { width: bounds78.width, height: bounds78.height },
-  center: { x: bounds78.centerX, y: bounds78.centerY }
+  size: { width: bounds84.width, height: bounds84.height },
+  center: { x: bounds84.centerX, y: bounds84.centerY }
 }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var potentiometer_default = {
   paths: {
@@ -37628,19 +37776,19 @@ var potentiometer_default = {
   },
   circles: {}
 };
-var { paths: paths79, texts: texts88, bounds: bounds79, refblocks: refblocks79 } = potentiometer_default;
+var { paths: paths85, texts: texts94, bounds: bounds85, refblocks: refblocks85 } = potentiometer_default;
 var potentiometer_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths79),
-    { ...texts88.bottom1, y: 0.35, anchor: "middle_top" },
-    { ...texts88.top1, anchor: "middle_left" }
+    ...Object.values(paths85),
+    { ...texts94.bottom1, y: 0.35, anchor: "middle_top" },
+    { ...texts94.top1, anchor: "middle_left" }
   ],
   ports: [
-    { ...refblocks79.left1, labels: ["1"] },
-    { ...refblocks79.right1, labels: ["2"] }
+    { ...refblocks85.left1, labels: ["1"] },
+    { ...refblocks85.right1, labels: ["2"] }
   ],
-  size: { width: bounds79.width + 0.05, height: bounds79.height },
-  center: { x: bounds79.centerX, y: bounds79.centerY }
+  size: { width: bounds85.width + 0.05, height: bounds85.height },
+  center: { x: bounds85.centerX, y: bounds85.centerY }
 });
 var rotated17 = rotateSymbol(potentiometer_horz_default);
 var potentiometer_vert_default = rotated17;
@@ -37797,19 +37945,19 @@ var potentiometer2_default = {
   },
   circles: {}
 };
-var { paths: paths80, texts: texts89, bounds: bounds80, refblocks: refblocks80 } = potentiometer2_default;
+var { paths: paths86, texts: texts95, bounds: bounds86, refblocks: refblocks86 } = potentiometer2_default;
 var potentiometer2_right_default = defineSymbol({
   primitives: [
-    ...Object.values(paths80),
-    { ...texts89.bottom1, x: 0, y: -0.35, anchor: "middle_top" },
-    { ...texts89.top1, x: 0, y: 0.35, anchor: "middle_bottom" }
+    ...Object.values(paths86),
+    { ...texts95.bottom1, x: 0, y: -0.35, anchor: "middle_top" },
+    { ...texts95.top1, x: 0, y: 0.35, anchor: "middle_bottom" }
   ],
   ports: [
-    { ...refblocks80.left1, labels: ["1"] },
-    { ...refblocks80.right1, labels: ["2"] }
+    { ...refblocks86.left1, labels: ["1"] },
+    { ...refblocks86.right1, labels: ["2"] }
   ],
-  size: { width: bounds80.width + 0.05, height: bounds80.height },
-  center: { x: bounds80.centerX, y: bounds80.centerY }
+  size: { width: bounds86.width + 0.05, height: bounds86.height },
+  center: { x: bounds86.centerX, y: bounds86.centerY }
 });
 var symbol8 = rotateSymbol(potentiometer2_right_default, "down");
 var ref34 = symbol8.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -37934,10 +38082,85 @@ var potentiometer3_default = {
   },
   circles: {}
 };
-var potentiometer3_right_default = modifySymbol(potentiometer3_default).labelPort("left", ["1"]).labelPort("right", ["3"]).labelPort("bottom", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var potentiometer3_down_default = rotateSymbol(potentiometer3_right_default, "down");
-var potentiometer3_left_default = rotateSymbol(potentiometer3_right_default, "left");
-var potentiometer3_up_default = rotateSymbol(potentiometer3_right_default, "up");
+var { paths: paths87, texts: texts96, bounds: bounds87, refblocks: refblocks87, circles: circles81 } = potentiometer3_default;
+var potentiometer3_down_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths87),
+    ...Object.values(circles81),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0.15,
+      y: 0.2394553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: 0.15,
+      y: 0.2394553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks87.left, labels: ["1"] },
+    { ...refblocks87.right, labels: ["2"] },
+    { ...refblocks87.bottom, labels: ["3"] }
+  ],
+  size: { width: bounds87.width, height: bounds87.height },
+  center: { x: bounds87.centerX, y: bounds87.centerY }
+}).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: paths88, texts: texts97, bounds: bounds88, refblocks: refblocks88, circles: circles82 } = potentiometer3_default;
+var potentiometer3_left_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths88),
+    ...Object.values(circles82),
+    {
+      type: "text",
+      text: "{REF}",
+      x: -0.3,
+      y: -0.3894553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: -0.3,
+      y: 0.3194553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks88.left, labels: ["1"] },
+    { ...refblocks88.right, labels: ["2"] },
+    { ...refblocks88.bottom, labels: ["3"] }
+  ],
+  size: { width: bounds88.width, height: bounds88.height },
+  center: { x: bounds88.centerX, y: bounds88.centerY }
+}).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var potentiometer3_right_default = modifySymbol(potentiometer3_default).labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: paths89, texts: texts98, bounds: bounds89, refblocks: refblocks89, circles: circles83 } = potentiometer3_default;
+var potentiometer3_up_default = modifySymbol({
+  primitives: [
+    ...Object.values(paths89),
+    ...Object.values(circles83),
+    {
+      type: "text",
+      text: "{REF}",
+      x: 0.3,
+      y: -0.2894553499999995
+    },
+    {
+      type: "text",
+      text: "{VAL}",
+      x: -0.3,
+      y: -0.2894553499999995
+    }
+  ],
+  ports: [
+    { ...refblocks89.left, labels: ["1"] },
+    { ...refblocks89.right, labels: ["2"] },
+    { ...refblocks89.bottom, labels: ["3"] }
+  ],
+  size: { width: bounds89.width, height: bounds89.height },
+  center: { x: bounds89.centerX, y: bounds89.centerY }
+}).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var power_factor_meter_default = {
   paths: {
     path11: {
@@ -38022,11 +38245,11 @@ var power_factor_meter_default = {
     }
   }
 };
-var { paths: paths81, texts: texts90, bounds: bounds81, refblocks: refblocks81, circles: circles75 } = power_factor_meter_default;
+var { paths: paths90, texts: texts99, bounds: bounds90, refblocks: refblocks90, circles: circles84 } = power_factor_meter_default;
 var power_factor_meter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths81),
-    ...Object.values(circles75),
+    ...Object.values(paths90),
+    ...Object.values(circles84),
     {
       type: "text",
       text: "{REF}",
@@ -38050,17 +38273,17 @@ var power_factor_meter_horz_default = defineSymbol({
     }
   ],
   ports: [
-    { ...refblocks81.left1, labels: ["1"] },
-    { ...refblocks81.right1, labels: ["2"] }
+    { ...refblocks90.left1, labels: ["1"] },
+    { ...refblocks90.right1, labels: ["2"] }
   ],
-  size: { width: bounds81.width, height: bounds81.height },
-  center: { x: bounds81.centerX, y: bounds81.centerY }
+  size: { width: bounds90.width, height: bounds90.height },
+  center: { x: bounds90.centerX, y: bounds90.centerY }
 });
 var rotatedSymbol13 = rotateSymbol(power_factor_meter_horz_default);
-var texts91 = rotatedSymbol13.primitives.filter((p) => p.type === "text");
-var ref37 = texts91.find((t) => t.text === "{REF}");
-var val36 = texts91.find((t) => t.text === "{VAL}");
-var text_cos = texts91.find((t) => t.text === "COS φ");
+var texts100 = rotatedSymbol13.primitives.filter((p) => p.type === "text");
+var ref37 = texts100.find((t) => t.text === "{REF}");
+var val36 = texts100.find((t) => t.text === "{VAL}");
+var text_cos = texts100.find((t) => t.text === "COS φ");
 ref37.x = 0.35;
 ref37.y = 0;
 ref37.anchor = "middle_left";
@@ -38187,20 +38410,20 @@ var push_button_normally_closed_momentary_default = {
     }
   }
 };
-var { paths: paths82, texts: texts92, bounds: bounds82, refblocks: refblocks82, circles: circles76 } = push_button_normally_closed_momentary_default;
+var { paths: paths91, texts: texts101, bounds: bounds91, refblocks: refblocks91, circles: circles85 } = push_button_normally_closed_momentary_default;
 var push_button_normally_closed_momentary_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths82),
-    ...Object.values(circles76),
-    { ...texts92.top1, anchor: "middle_left" },
-    { ...texts92.bottom1, anchor: "middle_left" }
+    ...Object.values(paths91),
+    ...Object.values(circles85),
+    { ...texts101.top1, anchor: "middle_left" },
+    { ...texts101.bottom1, anchor: "middle_left" }
   ],
   ports: [
-    { ...refblocks82.left1, labels: ["1"] },
-    { ...refblocks82.right1, labels: ["2"] }
+    { ...refblocks91.left1, labels: ["1"] },
+    { ...refblocks91.right1, labels: ["2"] }
   ],
-  size: { width: bounds82.width, height: bounds82.height },
-  center: { x: bounds82.centerX, y: bounds82.centerY }
+  size: { width: bounds91.width, height: bounds91.height },
+  center: { x: bounds91.centerX, y: bounds91.centerY }
 });
 var push_button_normally_closed_momentary_vert_default = rotateSymbol(push_button_normally_closed_momentary_horz_default, "up");
 var push_button_normally_open_momentary_default = {
@@ -38349,20 +38572,20 @@ var push_button_normally_open_momentary_default = {
     }
   }
 };
-var { paths: paths83, texts: texts93, bounds: bounds83, refblocks: refblocks83, circles: circles77 } = push_button_normally_open_momentary_default;
+var { paths: paths92, texts: texts102, bounds: bounds92, refblocks: refblocks92, circles: circles86 } = push_button_normally_open_momentary_default;
 var push_button_normally_open_momentary_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths83),
-    ...Object.values(circles77),
-    { ...texts93.top1, anchor: "middle_left" },
-    { ...texts93.bottom1, anchor: "middle_left" }
+    ...Object.values(paths92),
+    ...Object.values(circles86),
+    { ...texts102.top1, anchor: "middle_left" },
+    { ...texts102.bottom1, anchor: "middle_left" }
   ],
   ports: [
-    { ...refblocks83.left1, labels: ["1"] },
-    { ...refblocks83.right1, labels: ["2"] }
+    { ...refblocks92.left1, labels: ["1"] },
+    { ...refblocks92.right1, labels: ["2"] }
   ],
-  size: { width: bounds83.width, height: bounds83.height },
-  center: { x: bounds83.centerX, y: bounds83.centerY }
+  size: { width: bounds92.width, height: bounds92.height },
+  center: { x: bounds92.centerX, y: bounds92.centerY }
 });
 var push_button_normally_open_momentary_vert_default = rotateSymbol(push_button_normally_open_momentary_horz_default, "up");
 var rectifier_diode_default = {
@@ -38772,22 +38995,22 @@ var rectifier_diode_default = {
   },
   circles: {}
 };
-var { paths: paths84, texts: texts94, bounds: bounds84, refblocks: refblocks84, circles: circles78 } = rectifier_diode_default;
+var { paths: paths93, texts: texts103, bounds: bounds93, refblocks: refblocks93, circles: circles87 } = rectifier_diode_default;
 var rectifier_diode_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths84),
-    ...Object.values(circles78),
-    { ...texts94.top1, anchor: "middle_right" },
-    { ...texts94.bottom1, anchor: "middle_right" }
+    ...Object.values(paths93),
+    ...Object.values(circles87),
+    { ...texts103.top1, anchor: "middle_right" },
+    { ...texts103.bottom1, anchor: "middle_right" }
   ],
   ports: [
-    { ...refblocks84.top1, labels: ["1"] },
-    { ...refblocks84.bottom1, labels: ["2"] },
-    { ...refblocks84.left1, labels: ["3"] },
-    { ...refblocks84.right1, labels: ["4"] }
+    { ...refblocks93.top1, labels: ["1"] },
+    { ...refblocks93.bottom1, labels: ["2"] },
+    { ...refblocks93.left1, labels: ["3"] },
+    { ...refblocks93.right1, labels: ["4"] }
   ],
-  size: { width: bounds84.width, height: bounds84.height },
-  center: { x: bounds84.centerX, y: bounds84.centerY }
+  size: { width: bounds93.width, height: bounds93.height },
+  center: { x: bounds93.centerX, y: bounds93.centerY }
 });
 var rotated18 = rotateSymbol(rectifier_diode_horz_default);
 var ref38 = rotated18.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -38999,11 +39222,11 @@ var resistor_default = {
   },
   circles: {}
 };
-var { paths: paths85, texts: texts95, bounds: bounds85, refblocks: refblocks85, circles: circles79 } = resistor_default;
+var { paths: paths94, texts: texts104, bounds: bounds94, refblocks: refblocks94, circles: circles88 } = resistor_default;
 var resistor_down_default = modifySymbol({
   primitives: [
-    ...Object.values(paths85),
-    ...Object.values(circles79),
+    ...Object.values(paths94),
+    ...Object.values(circles88),
     {
       type: "text",
       text: "{REF}",
@@ -39018,17 +39241,17 @@ var resistor_down_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks85.left1, labels: ["1"] },
-    { ...refblocks85.right1, labels: ["2"] }
+    { ...refblocks94.left1, labels: ["1"] },
+    { ...refblocks94.right1, labels: ["2"] }
   ],
-  size: { width: bounds85.width, height: bounds85.height },
-  center: { x: bounds85.centerX, y: bounds85.centerY }
+  size: { width: bounds94.width, height: bounds94.height },
+  center: { x: bounds94.centerX, y: bounds94.centerY }
 }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: paths86, texts: texts96, bounds: bounds86, refblocks: refblocks86, circles: circles80 } = resistor_default;
+var { paths: paths95, texts: texts105, bounds: bounds95, refblocks: refblocks95, circles: circles89 } = resistor_default;
 var resistor_left_default = modifySymbol({
   primitives: [
-    ...Object.values(paths86),
-    ...Object.values(circles80),
+    ...Object.values(paths95),
+    ...Object.values(circles89),
     {
       type: "text",
       text: "{REF}",
@@ -39043,17 +39266,17 @@ var resistor_left_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks86.left1, labels: ["1"] },
-    { ...refblocks86.right1, labels: ["2"] }
+    { ...refblocks95.left1, labels: ["1"] },
+    { ...refblocks95.right1, labels: ["2"] }
   ],
-  size: { width: bounds86.width, height: bounds86.height },
-  center: { x: bounds86.centerX, y: bounds86.centerY }
+  size: { width: bounds95.width, height: bounds95.height },
+  center: { x: bounds95.centerX, y: bounds95.centerY }
 }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: paths87, texts: texts97, bounds: bounds87, refblocks: refblocks87, circles: circles81 } = resistor_default;
+var { paths: paths96, texts: texts106, bounds: bounds96, refblocks: refblocks96, circles: circles90 } = resistor_default;
 var resistor_right_default = modifySymbol({
   primitives: [
-    ...Object.values(paths87),
-    ...Object.values(circles81),
+    ...Object.values(paths96),
+    ...Object.values(circles90),
     {
       type: "text",
       text: "{REF}",
@@ -39068,17 +39291,17 @@ var resistor_right_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks87.left1, labels: ["1"] },
-    { ...refblocks87.right1, labels: ["2"] }
+    { ...refblocks96.left1, labels: ["1"] },
+    { ...refblocks96.right1, labels: ["2"] }
   ],
-  size: { width: bounds87.width, height: bounds87.height },
-  center: { x: bounds87.centerX, y: bounds87.centerY }
+  size: { width: bounds96.width, height: bounds96.height },
+  center: { x: bounds96.centerX, y: bounds96.centerY }
 }).rotateRightFacingSymbol("right").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: paths88, texts: texts98, bounds: bounds88, refblocks: refblocks88, circles: circles82 } = resistor_default;
+var { paths: paths97, texts: texts107, bounds: bounds97, refblocks: refblocks97, circles: circles91 } = resistor_default;
 var resistor_up_default = modifySymbol({
   primitives: [
-    ...Object.values(paths88),
-    ...Object.values(circles82),
+    ...Object.values(paths97),
+    ...Object.values(circles91),
     {
       type: "text",
       text: "{REF}",
@@ -39093,11 +39316,11 @@ var resistor_up_default = modifySymbol({
     }
   ],
   ports: [
-    { ...refblocks88.left1, labels: ["1"] },
-    { ...refblocks88.right1, labels: ["2"] }
+    { ...refblocks97.left1, labels: ["1"] },
+    { ...refblocks97.right1, labels: ["2"] }
   ],
-  size: { width: bounds88.width, height: bounds88.height },
-  center: { x: bounds88.centerX, y: bounds88.centerY }
+  size: { width: bounds97.width, height: bounds97.height },
+  center: { x: bounds97.centerX, y: bounds97.centerY }
 }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var resonator_default = {
   paths: {
@@ -39442,11 +39665,11 @@ var resonator_default = {
   },
   circles: {}
 };
-var { paths: paths89, texts: texts99, bounds: bounds89, refblocks: refblocks89, circles: circles83 } = resonator_default;
+var { paths: paths98, texts: texts108, bounds: bounds98, refblocks: refblocks98, circles: circles92 } = resonator_default;
 var resonator_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths89),
-    ...Object.values(circles83),
+    ...Object.values(paths98),
+    ...Object.values(circles92),
     {
       type: "text",
       text: "{REF}",
@@ -39463,12 +39686,12 @@ var resonator_horz_default = defineSymbol({
     }
   ],
   ports: [
-    { ...refblocks89.left1, labels: ["1"] },
-    { ...refblocks89.right1, labels: ["2"] },
-    { ...refblocks89.right2, labels: ["3"] }
+    { ...refblocks98.left1, labels: ["1"] },
+    { ...refblocks98.right1, labels: ["2"] },
+    { ...refblocks98.right2, labels: ["3"] }
   ],
-  size: { width: bounds89.width, height: bounds89.height },
-  center: { x: bounds89.centerX, y: bounds89.centerY }
+  size: { width: bounds98.width, height: bounds98.height },
+  center: { x: bounds98.centerX, y: bounds98.centerY }
 });
 var resonator_vert_default = rotateSymbol(resonator_horz_default);
 var schottky_diode_default = {
@@ -39834,8 +40057,8 @@ var silicon_controlled_rectifier_default = {
 };
 var silicon_controlled_rectifier_horz_default = modifySymbol(silicon_controlled_rectifier_default).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
 var rotatedSymbol14 = rotateSymbol(silicon_controlled_rectifier_horz_default);
-var texts101 = rotatedSymbol14.primitives.filter((primitive) => primitive.type === "text");
-var ref42 = texts101.find((text) => text.text === "{REF}");
+var texts110 = rotatedSymbol14.primitives.filter((primitive) => primitive.type === "text");
+var ref42 = texts110.find((text) => text.text === "{REF}");
 ref42.y = 0;
 ref42.anchor = "middle_left";
 var silicon_controlled_rectifier_vert_default = rotatedSymbol14;
@@ -43329,11 +43552,11 @@ var tachometer_default = {
     }
   }
 };
-var { paths: paths92, texts: texts103, bounds: bounds92, refblocks: refblocks92, circles: circles86 } = tachometer_default;
+var { paths: paths101, texts: texts112, bounds: bounds101, refblocks: refblocks101, circles: circles95 } = tachometer_default;
 var tachometer_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths92),
-    ...Object.values(circles86),
+    ...Object.values(paths101),
+    ...Object.values(circles95),
     {
       type: "text",
       text: "{REF}",
@@ -43348,14 +43571,14 @@ var tachometer_horz_default = defineSymbol({
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts103.left1, y: 0.01, anchor: "center", fontSize: 0.2 }
+    { ...texts112.left1, y: 0.01, anchor: "center", fontSize: 0.2 }
   ],
   ports: [
-    { ...refblocks92.left1, labels: ["1"] },
-    { ...refblocks92.right1, labels: ["2"] }
+    { ...refblocks101.left1, labels: ["1"] },
+    { ...refblocks101.right1, labels: ["2"] }
   ],
-  size: { width: bounds92.width, height: bounds92.height },
-  center: { x: bounds92.centerX, y: bounds92.centerY }
+  size: { width: bounds101.width, height: bounds101.height },
+  center: { x: bounds101.centerX, y: bounds101.centerY }
 });
 var { 5: letter3, ...rest3 } = tachometer_horz_default.primitives;
 function isPrimitive3(value) {
@@ -43739,9 +43962,9 @@ var triac_default = {
 };
 var triac_horz_default = modifySymbol(triac_default).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
 var rotatedSymbol16 = rotateSymbol(triac_horz_default);
-var texts105 = rotatedSymbol16.primitives.filter((primitive) => primitive.type === "text");
-var ref60 = texts105.find((text) => text.text === "{REF}");
-var val56 = texts105.find((text) => text.text === "{VAL}");
+var texts114 = rotatedSymbol16.primitives.filter((primitive) => primitive.type === "text");
+var ref60 = texts114.find((text) => text.text === "{REF}");
+var val56 = texts114.find((text) => text.text === "{VAL}");
 ref60.y = 0;
 val56.y = 0;
 var triac_vert_default = rotatedSymbol16;
@@ -43904,20 +44127,20 @@ var tunnel_diode_default = {
   },
   circles: {}
 };
-var { paths: paths94, texts: texts106, bounds: bounds94, refblocks: refblocks94, circles: circles88 } = tunnel_diode_default;
+var { paths: paths103, texts: texts115, bounds: bounds103, refblocks: refblocks103, circles: circles97 } = tunnel_diode_default;
 var tunnel_diode_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths94),
-    ...Object.values(circles88),
-    { ...texts106.top1, anchor: "middle_bottom" },
-    { ...texts106.bottom1, anchor: "middle_top" }
+    ...Object.values(paths103),
+    ...Object.values(circles97),
+    { ...texts115.top1, anchor: "middle_bottom" },
+    { ...texts115.bottom1, anchor: "middle_top" }
   ],
   ports: [
-    { ...refblocks94.left1, labels: ["1"] },
-    { ...refblocks94.right1, labels: ["2"] }
+    { ...refblocks103.left1, labels: ["1"] },
+    { ...refblocks103.right1, labels: ["2"] }
   ],
-  size: { width: bounds94.width, height: bounds94.height },
-  center: { x: bounds94.centerX, y: bounds94.centerY }
+  size: { width: bounds103.width, height: bounds103.height },
+  center: { x: bounds103.centerX, y: bounds103.centerY }
 });
 var rotated39 = rotateSymbol(tunnel_diode_horz_default);
 var ref61 = rotated39.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -44090,27 +44313,27 @@ var unijunction_transistor_default = {
     }
   }
 };
-var { paths: paths95, texts: texts107, bounds: bounds95, refblocks: refblocks95, circles: circles89 } = unijunction_transistor_default;
+var { paths: paths104, texts: texts116, bounds: bounds104, refblocks: refblocks104, circles: circles98 } = unijunction_transistor_default;
 var unijunction_transistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths95),
-    ...Object.values(circles89),
-    { ...texts107.top1, anchor: "middle_left" },
-    { ...texts107.bottom1, anchor: "middle_right" }
+    ...Object.values(paths104),
+    ...Object.values(circles98),
+    { ...texts116.top1, anchor: "middle_left" },
+    { ...texts116.bottom1, anchor: "middle_right" }
   ],
   ports: [
-    { ...refblocks95.top1, labels: ["1"] },
-    { ...refblocks95.bottom1, labels: ["2"] },
-    { ...refblocks95.left1, labels: ["3"] }
+    { ...refblocks104.top1, labels: ["1"] },
+    { ...refblocks104.bottom1, labels: ["2"] },
+    { ...refblocks104.left1, labels: ["3"] }
   ],
-  size: { width: bounds95.width, height: bounds95.height },
-  center: { x: bounds95.centerX, y: bounds95.centerY }
+  size: { width: bounds104.width, height: bounds104.height },
+  center: { x: bounds104.centerX, y: bounds104.centerY }
 });
 var rotatedSymbol17 = rotateSymbol(unijunction_transistor_horz_default);
-var texts108 = rotatedSymbol17.primitives.filter((primitive) => primitive.type === "text");
-var ref62 = texts108.find((text) => text.text === "{REF}");
+var texts117 = rotatedSymbol17.primitives.filter((primitive) => primitive.type === "text");
+var ref62 = texts117.find((text) => text.text === "{REF}");
 ref62.y = 0.1;
-var val58 = texts108.find((text) => text.text === "{VAL}");
+var val58 = texts117.find((text) => text.text === "{VAL}");
 val58.y = 0.1;
 val58.x = -0.4;
 var unijunction_transistor_vert_default = rotatedSymbol17;
@@ -44346,31 +44569,31 @@ var var_meter_default = {
     }
   }
 };
-var { paths: paths96, texts: texts109, bounds: bounds96, refblocks: refblocks96, circles: circles90 } = var_meter_default;
+var { paths: paths105, texts: texts118, bounds: bounds105, refblocks: refblocks105, circles: circles99 } = var_meter_default;
 var var_meter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths96),
-    ...Object.values(circles90),
+    ...Object.values(paths105),
+    ...Object.values(circles99),
     {
-      ...texts109.top1,
+      ...texts118.top1,
       x: 0,
       y: -0.3594553499999995,
       anchor: "middle_top"
     },
     {
-      ...texts109.bottom1,
+      ...texts118.bottom1,
       x: 0,
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts109.left1, x: -0.02, y: 0.01, fontSize: 0.2, anchor: "center" }
+    { ...texts118.left1, x: -0.02, y: 0.01, fontSize: 0.2, anchor: "center" }
   ],
   ports: [
-    { ...refblocks96.left1, labels: ["1"] },
-    { ...refblocks96.right1, labels: ["2"] }
+    { ...refblocks105.left1, labels: ["1"] },
+    { ...refblocks105.right1, labels: ["2"] }
   ],
-  size: { width: bounds96.width, height: bounds96.height },
-  center: { x: bounds96.centerX, y: bounds96.centerY }
+  size: { width: bounds105.width, height: bounds105.height },
+  center: { x: bounds105.centerX, y: bounds105.centerY }
 });
 var var_meter_vert_default = rotateSymbol(var_meter_horz_default);
 var varactor_diode_default = {
@@ -44517,20 +44740,20 @@ var varactor_diode_default = {
   },
   circles: {}
 };
-var { paths: paths97, texts: texts110, bounds: bounds97, refblocks: refblocks97, circles: circles91 } = varactor_diode_default;
+var { paths: paths106, texts: texts119, bounds: bounds106, refblocks: refblocks106, circles: circles100 } = varactor_diode_default;
 var varactor_diode_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths97),
-    ...Object.values(circles91),
-    { ...texts110.top1, anchor: "middle_bottom" },
-    { ...texts110.bottom1, anchor: "middle_top" }
+    ...Object.values(paths106),
+    ...Object.values(circles100),
+    { ...texts119.top1, anchor: "middle_bottom" },
+    { ...texts119.bottom1, anchor: "middle_top" }
   ],
   ports: [
-    { ...refblocks97.left1, labels: ["1"] },
-    { ...refblocks97.right1, labels: ["2"] }
+    { ...refblocks106.left1, labels: ["1"] },
+    { ...refblocks106.right1, labels: ["2"] }
   ],
-  size: { width: bounds97.width, height: bounds97.height },
-  center: { x: bounds97.centerX, y: bounds97.centerY }
+  size: { width: bounds106.width, height: bounds106.height },
+  center: { x: bounds106.centerX, y: bounds106.centerY }
 });
 var rotated40 = rotateSymbol(varactor_diode_horz_default);
 var ref63 = rotated40.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -44668,25 +44891,25 @@ var varistor_default = {
   },
   circles: {}
 };
-var { paths: paths98, texts: texts111, bounds: bounds98, refblocks: refblocks98 } = varistor_default;
+var { paths: paths107, texts: texts120, bounds: bounds107, refblocks: refblocks107 } = varistor_default;
 var varistor_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths98),
-    { ...texts111.top1, anchor: "middle_left" },
-    { ...texts111.bottom1, anchor: "middle_right" }
+    ...Object.values(paths107),
+    { ...texts120.top1, anchor: "middle_left" },
+    { ...texts120.bottom1, anchor: "middle_right" }
   ],
   ports: [
     {
-      ...refblocks98.left1,
+      ...refblocks107.left1,
       labels: ["1", "-"]
     },
     {
-      ...refblocks98.right1,
+      ...refblocks107.right1,
       labels: ["2", "+"]
     }
   ],
-  size: { width: bounds98.width, height: bounds98.height },
-  center: { x: bounds98.centerX, y: bounds98.centerY }
+  size: { width: bounds107.width, height: bounds107.height },
+  center: { x: bounds107.centerX, y: bounds107.centerY }
 });
 var varistor_vert_default = rotateSymbol(varistor_horz_default);
 var varmeter_default = {
@@ -44773,11 +44996,11 @@ var varmeter_default = {
     }
   }
 };
-var { paths: paths99, texts: texts112, bounds: bounds99, refblocks: refblocks99, circles: circles92 } = varmeter_default;
+var { paths: paths108, texts: texts121, bounds: bounds108, refblocks: refblocks108, circles: circles101 } = varmeter_default;
 var varmeter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths99),
-    ...Object.values(circles92),
+    ...Object.values(paths108),
+    ...Object.values(circles101),
     {
       type: "text",
       text: "{REF}",
@@ -44792,14 +45015,14 @@ var varmeter_horz_default = defineSymbol({
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts112.left1, anchor: "center", y: 0.02, fontSize: 0.2 }
+    { ...texts121.left1, anchor: "center", y: 0.02, fontSize: 0.2 }
   ],
   ports: [
-    { ...refblocks99.left1, labels: ["1"] },
-    { ...refblocks99.right1, labels: ["2"] }
+    { ...refblocks108.left1, labels: ["1"] },
+    { ...refblocks108.right1, labels: ["2"] }
   ],
-  size: { width: bounds99.width, height: bounds99.height },
-  center: { x: bounds99.centerX, y: bounds99.centerY }
+  size: { width: bounds108.width, height: bounds108.height },
+  center: { x: bounds108.centerX, y: bounds108.centerY }
 });
 var { 5: letter4, ...rest4 } = varmeter_horz_default.primitives;
 function isPrimitive4(value) {
@@ -45074,11 +45297,11 @@ var watt_hour_meter_default = {
     }
   }
 };
-var { paths: paths101, texts: texts114, bounds: bounds101, refblocks: refblocks101, circles: circles94 } = watt_hour_meter_default;
+var { paths: paths110, texts: texts123, bounds: bounds110, refblocks: refblocks110, circles: circles103 } = watt_hour_meter_default;
 var watt_hour_meter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths101),
-    ...Object.values(circles94),
+    ...Object.values(paths110),
+    ...Object.values(circles103),
     {
       type: "text",
       text: "{REF}",
@@ -45093,14 +45316,14 @@ var watt_hour_meter_horz_default = defineSymbol({
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts114.left1, anchor: "center", y: 0.01, fontSize: 0.2 }
+    { ...texts123.left1, anchor: "center", y: 0.01, fontSize: 0.2 }
   ],
   ports: [
-    { ...refblocks101.left1, labels: ["1"] },
-    { ...refblocks101.right1, labels: ["2"] }
+    { ...refblocks110.left1, labels: ["1"] },
+    { ...refblocks110.right1, labels: ["2"] }
   ],
-  size: { width: bounds101.width, height: bounds101.height },
-  center: { x: bounds101.centerX, y: bounds101.centerY }
+  size: { width: bounds110.width, height: bounds110.height },
+  center: { x: bounds110.centerX, y: bounds110.centerY }
 });
 var { 5: letter5, ...rest5 } = watt_hour_meter_horz_default.primitives;
 function isPrimitive5(value) {
@@ -45198,11 +45421,11 @@ var wattmeter_default = {
     }
   }
 };
-var { paths: paths102, texts: texts115, bounds: bounds102, refblocks: refblocks102, circles: circles95 } = wattmeter_default;
+var { paths: paths111, texts: texts124, bounds: bounds111, refblocks: refblocks111, circles: circles104 } = wattmeter_default;
 var wattmeter_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths102),
-    ...Object.values(circles95),
+    ...Object.values(paths111),
+    ...Object.values(circles104),
     {
       type: "text",
       text: "{REF}",
@@ -45217,14 +45440,14 @@ var wattmeter_horz_default = defineSymbol({
       y: 0.35,
       anchor: "middle_bottom"
     },
-    { ...texts115.left1, anchor: "center", y: 0.01, fontSize: 0.3 }
+    { ...texts124.left1, anchor: "center", y: 0.01, fontSize: 0.3 }
   ],
   ports: [
-    { ...refblocks102.left1, labels: ["1"] },
-    { ...refblocks102.right1, labels: ["2"] }
+    { ...refblocks111.left1, labels: ["1"] },
+    { ...refblocks111.right1, labels: ["2"] }
   ],
-  size: { width: bounds102.width, height: bounds102.height },
-  center: { x: bounds102.centerX, y: bounds102.centerY }
+  size: { width: bounds111.width, height: bounds111.height },
+  center: { x: bounds111.centerX, y: bounds111.centerY }
 });
 var { 5: letter6, ...rest6 } = wattmeter_horz_default.primitives;
 function isPrimitive6(value) {
@@ -45382,20 +45605,20 @@ var zener_diode_default = {
   },
   circles: {}
 };
-var { paths: paths103, texts: texts116, bounds: bounds103, refblocks: refblocks103, circles: circles96 } = zener_diode_default;
+var { paths: paths112, texts: texts125, bounds: bounds112, refblocks: refblocks112, circles: circles105 } = zener_diode_default;
 var zener_diode_horz_default = defineSymbol({
   primitives: [
-    ...Object.values(paths103),
-    ...Object.values(circles96),
-    { ...texts116.top1, anchor: "middle_bottom" },
-    { ...texts116.bottom1, anchor: "middle_top" }
+    ...Object.values(paths112),
+    ...Object.values(circles105),
+    { ...texts125.top1, anchor: "middle_bottom" },
+    { ...texts125.bottom1, anchor: "middle_top" }
   ],
   ports: [
-    { ...refblocks103.left1, labels: ["1"] },
-    { ...refblocks103.right1, labels: ["2"] }
+    { ...refblocks112.left1, labels: ["1"] },
+    { ...refblocks112.right1, labels: ["2"] }
   ],
-  size: { width: bounds103.width, height: bounds103.height },
-  center: { x: bounds103.centerX, y: bounds103.centerY }
+  size: { width: bounds112.width, height: bounds112.height },
+  center: { x: bounds112.centerX, y: bounds112.centerY }
 });
 var rotated41 = rotateSymbol(zener_diode_horz_default);
 var ref64 = rotated41.primitives.find((p) => p.type === "text" && p.text === "{REF}");
@@ -45492,7 +45715,11 @@ var symbols_index_default = {
   ferrite_bead_left: ferrite_bead_left_default,
   ferrite_bead_right: ferrite_bead_right_default,
   ferrite_bead_up: ferrite_bead_up_default,
+  filled_diode_down: filled_diode_down_default,
   filled_diode_horz: filled_diode_horz_default,
+  filled_diode_left: filled_diode_left_default,
+  filled_diode_right: filled_diode_right_default,
+  filled_diode_up: filled_diode_up_default,
   filled_diode_vert: filled_diode_vert_default,
   frequency_meter_horz: frequency_meter_horz_default,
   frequency_meter_vert: frequency_meter_vert_default,
