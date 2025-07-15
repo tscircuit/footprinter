@@ -25,3 +25,8 @@ test("diode0603", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode0603")
 })
+test("diode01005", () => {
+  const soup = fp().diode().imperial("01005").soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode01005")
+})
