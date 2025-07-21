@@ -42,6 +42,13 @@ export const pinrow_def = z
       .optional()
       .default(false)
       .describe("add silkscreen pins in top and bottom layers"),
+    backsidelabel: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe(
+        "place the silkscreen reference text on the bottom layer instead of top",
+      ),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -80,6 +87,7 @@ export const pinrow = (
     pinlabeltextalignright,
     nopinlabels,
     doublesidedpinlabel,
+    backsidelabel,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -136,19 +144,35 @@ export const pinrow = (
       anchorSide: pinlabelAnchorSide,
     })
     if (!nopinlabels) {
-      holes.push(
-        silkscreenPin({
-          fs: od / 5,
-          pn: pinNumber,
-          anchor_x,
-          anchor_y,
-          anchorplacement: pinlabelAnchorSide,
-          textalign: pinlabelTextAlign,
-          orthogonal: pinlabelorthogonal,
-          verticallyinverted: pinlabelverticallyinverted,
-          layer: "top",
-        }),
-      )
+      if (!backsidelabel) {
+        holes.push(
+          silkscreenPin({
+            fs: od / 5,
+            pn: pinNumber,
+            anchor_x,
+            anchor_y,
+            anchorplacement: pinlabelAnchorSide,
+            textalign: pinlabelTextAlign,
+            orthogonal: pinlabelorthogonal,
+            verticallyinverted: pinlabelverticallyinverted,
+            layer: "top",
+          }),
+        )
+      } else {
+        holes.push(
+          silkscreenPin({
+            fs: od / 5,
+            pn: pinNumber,
+            anchor_x,
+            anchor_y,
+            anchorplacement: pinlabelAnchorSide,
+            textalign: pinlabelTextAlign,
+            orthogonal: pinlabelorthogonal,
+            verticallyinverted: pinlabelverticallyinverted,
+            layer: "bottom",
+          }),
+        )
+      }
       if (doublesidedpinlabel) {
         holes.push(
           silkscreenPin({
