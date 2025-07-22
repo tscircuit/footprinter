@@ -25,18 +25,36 @@ export const footprintSizes: StandardSize[] = [
   {
     imperial: "01005",
     metric: "0402",
-    p_mm_min: 0.038,
-    pw_mm_min: 0.2,
-    ph_mm_min: 0.2,
+    p_mm_min: 0.5,
+    pw_mm_min: 0.4,
+    ph_mm_min: 0.3,
+    w_mm_min: 0.58,
+    h_mm_min: 0.21,
+  },
+  {
+    imperial: "0504",
+    metric: "1310",
+    p_mm_min: 1.1,
+    pw_mm_min: 0.65,
+    ph_mm_min: 1.3,
+    w_mm_min: 0.58,
+    h_mm_min: 0.21,
+  },
+  {
+    imperial: "1812",
+    metric: "4532",
+    p_mm_min: 4.1,
+    pw_mm_min: 1.4,
+    ph_mm_min: 3.4,
     w_mm_min: 0.58,
     h_mm_min: 0.21,
   },
   {
     imperial: "0201",
     metric: "0603",
-    p_mm_min: 0.6,
-    pw_mm_min: 0.3,
-    ph_mm_min: 0.3,
+    p_mm_min: 0.66,
+    pw_mm_min: 0.46,
+    ph_mm_min: 0.4,
     w_mm_min: 0.9,
     h_mm_min: 0.3,
   },
@@ -97,9 +115,9 @@ export const footprintSizes: StandardSize[] = [
   {
     imperial: "2512",
     metric: "6332",
-    p_mm_min: 4.5,
-    pw_mm_min: 1.6,
-    ph_mm_min: 1.6,
+    p_mm_min: 5.8,
+    pw_mm_min: 1.35,
+    ph_mm_min: 3.35,
     w_mm_min: 6.3,
     h_mm_min: 3.2,
   },
@@ -119,12 +137,13 @@ export const passive_def = z.object({
   imperial: distance.optional(),
   w: length.optional(),
   h: length.optional(),
+  textbottom: z.boolean().optional(),
 })
 
 export type PassiveDef = z.input<typeof passive_def>
 
 export const passive = (params: PassiveDef): AnySoupElement[] => {
-  let { tht, p, pw, ph, metric, imperial, w, h } = params
+  let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -168,7 +187,8 @@ export const passive = (params: PassiveDef): AnySoupElement[] => {
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, ph / 2 + 0.9, 0.2)
+  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
   if (tht) {
     return [

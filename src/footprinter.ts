@@ -23,6 +23,7 @@ type CommonPassiveOptionKey =
   | "ph"
   | "w"
   | "h"
+  | "textbottom"
 
 export type Footprinter = {
   dip: (
@@ -80,6 +81,7 @@ export type Footprinter = {
     | "nosquareplating"
     | "nopinlabels"
     | "doublesidedpinlabel"
+    | "backsidelabel"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
@@ -208,6 +210,9 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  platedhole: () => FootprinterParamsBuilder<
+    "d" | "hd" | "r" | "hr" | "pd" | "pr"
+  >
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
     params: () => any
     soup: () => AnySoupElement[]
@@ -238,7 +243,7 @@ export const string = (def: string): Footprinter => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
       const [_, fn, v] = m ?? []
       if (v?.includes("?")) return null
-      return { fn: m?.[1]!, v: m?.[2]! }
+      return { fn: fn!, v: m?.[2]! }
     })
     .filter(isNotNull)
 

@@ -77,10 +77,10 @@ fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 
 ## Getting JSON output from the builder
 
-Use the `.soup()` function to output [tscircuit soup JSON](https://github.com/tscircuit/soup)
+Use the `.circuitJson()` function to output [tscircuit circuit JSON](https://github.com/tscircuit/circuit-json)
 
 ```ts
-fp.string("res0402").soup()
+fp.string("res0402").circuitJson()
 /*
 [
   {
