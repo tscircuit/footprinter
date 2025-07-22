@@ -78,12 +78,14 @@ function generatePads(
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
-      pads.push(rectpad(i + 1, x, 2, pw, pl))
+      console.log("x si", x)
+      pads.push(rectpad(i + 1, x, -1.325, pw, pl))
     }
 
     const sideOffset = ((numPins - 1) / 2) * p + 1.3
-    pads.push(rectpad(numPins + 1, -sideOffset, -1.9, 1.2, 1.8))
-    pads.push(rectpad(numPins + 2, sideOffset, -1.9, 1.2, 1.8))
+    console.log("offset", sideOffset)
+    pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8))
+    pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8))
   }
 
   return pads
