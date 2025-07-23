@@ -42,7 +42,7 @@ export const pinrow_def = z
       .optional()
       .default(false)
       .describe("add silkscreen pins in top and bottom layers"),
-    bottomsidelabel: z
+    bottomsidepinlabel: z
       .boolean()
       .optional()
       .default(false)
@@ -87,7 +87,7 @@ export const pinrow = (
     pinlabeltextalignright,
     nopinlabels,
     doublesidedpinlabel,
-    bottomsidelabel,
+    bottomsidepinlabel,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -144,7 +144,7 @@ export const pinrow = (
       anchorSide: pinlabelAnchorSide,
     })
     if (!nopinlabels) {
-      if (!bottomsidelabel) {
+      if (!bottomsidepinlabel) {
         holes.push(
           silkscreenPin({
             fs: od / 5,
