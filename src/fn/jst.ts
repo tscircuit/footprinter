@@ -26,8 +26,18 @@ export const jst_def = z.object({
         return Number.isNaN(n) ? true : n
       }
       return v
-    }),
-  ph: z.boolean().optional(),
+    })
+    .describe(
+      'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
+    ),
+
+  ph: z
+    .boolean()
+    .optional()
+    .describe(
+      'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
+    ),
+
   string: z.string().optional(),
 })
 
