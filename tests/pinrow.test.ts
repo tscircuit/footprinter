@@ -189,18 +189,18 @@ test("pinrow5_nopinlabels", () => {
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_nopinlabels")
 })
-test("pinrow5_backsidelabel", () => {
-  const def = "pinrow5_backsidelabel"
+test("pinrow5_bottomsidelabel", () => {
+  const def = "pinrow5_bottomsidelabel"
   const soup = fp.string(def).circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
 
   const pinrowJson = fp.string(def).json() as any
-  expect(pinrowJson.backsidelabel).toBe(true)
+  expect(pinrowJson.bottomsidelabel).toBe(true)
 
   // Check for bottom-layer ref label
 
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "pinrow5_backsidelabel",
+    "pinrow5_bottomsidelabel",
   )
 })
