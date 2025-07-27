@@ -204,3 +204,14 @@ test("pinrow5_bottomsidepinlabel", () => {
     "pinrow5_bottomsidepinlabel",
   )
 })
+
+test("pinrow12_rows2_startingpin(bottomside,leftpin)", () => {
+  const def = "pinrow12_rows2_startingpin(bottomside,leftpin)"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow12_rows2_startingpin(bottomside,leftpin)",
+  )
+})
