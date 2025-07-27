@@ -244,8 +244,8 @@ export const pinrow = (
       const { x, y } = posArr[i]
       const onLeft = Math.abs(x - minX) < eps
       const onRight = Math.abs(x - maxX) < eps
-      const onBottom = Math.abs(y - minY) < eps
-      const onTop = Math.abs(y - maxY) < eps
+      const onBottom = Math.abs(y - maxY) < eps
+      const onTop = Math.abs(y - minY) < eps
       let side: z.infer<typeof pin_order_specifier> | undefined
       let pin: z.infer<typeof pin_order_specifier> | undefined
       if (onLeft) {
