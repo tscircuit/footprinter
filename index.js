@@ -1252,13 +1252,13 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
       return null;
     };
     deprecatedAPIs = {
-      "react-stack-bottom-frame": function(callStackForError) {
+      react_stack_bottom_frame: function(callStackForError) {
         return callStackForError();
       }
     };
     var specialPropKeyWarningShown, didWarnAboutOldJSXRuntime;
     var didWarnAboutElementRef = {};
-    var unknownOwnerDebugStack = deprecatedAPIs["react-stack-bottom-frame"].bind(deprecatedAPIs, UnknownOwner)();
+    var unknownOwnerDebugStack = deprecatedAPIs.react_stack_bottom_frame.bind(deprecatedAPIs, UnknownOwner)();
     var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
     var didWarnAboutMaps = false, userProvidedKeyEscapeRegex = /\/+/g, reportGlobalError = typeof reportError === "function" ? reportError : function(error) {
       if (typeof window === "object" && typeof window.ErrorEvent === "function") {
@@ -1593,7 +1593,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useTransition = function() {
       return resolveDispatcher().useTransition();
     };
-    exports.version = "19.1.0";
+    exports.version = "19.1.1";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -2047,7 +2047,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useFormStatus = function() {
       return resolveDispatcher().useHostTransitionStatus();
     };
-    exports.version = "19.1.0";
+    exports.version = "19.1.1";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -3116,7 +3116,7 @@ var require_react_dom_client_development = __commonJS((exports) => {
       prevPrepareStackTrace = error.indexOf(`
 `);
       prevPrepareStackTrace !== -1 && (error = error.slice(prevPrepareStackTrace + 1));
-      prevPrepareStackTrace = error.indexOf("react-stack-bottom-frame");
+      prevPrepareStackTrace = error.indexOf("react_stack_bottom_frame");
       prevPrepareStackTrace !== -1 && (prevPrepareStackTrace = error.lastIndexOf(`
 `, prevPrepareStackTrace));
       if (prevPrepareStackTrace !== -1)
@@ -15889,7 +15889,7 @@ Learn more about this warning here: https://react.dev/link/legacy-context`, sort
       }
     };
     var callComponent = {
-      "react-stack-bottom-frame": function(Component, props, secondArg) {
+      react_stack_bottom_frame: function(Component, props, secondArg) {
         var wasRendering = isRendering;
         isRendering = true;
         try {
@@ -15898,8 +15898,8 @@ Learn more about this warning here: https://react.dev/link/legacy-context`, sort
           isRendering = wasRendering;
         }
       }
-    }, callComponentInDEV = callComponent["react-stack-bottom-frame"].bind(callComponent), callRender = {
-      "react-stack-bottom-frame": function(instance) {
+    }, callComponentInDEV = callComponent.react_stack_bottom_frame.bind(callComponent), callRender = {
+      react_stack_bottom_frame: function(instance) {
         var wasRendering = isRendering;
         isRendering = true;
         try {
@@ -15908,59 +15908,59 @@ Learn more about this warning here: https://react.dev/link/legacy-context`, sort
           isRendering = wasRendering;
         }
       }
-    }, callRenderInDEV = callRender["react-stack-bottom-frame"].bind(callRender), callComponentDidMount = {
-      "react-stack-bottom-frame": function(finishedWork, instance) {
+    }, callRenderInDEV = callRender.react_stack_bottom_frame.bind(callRender), callComponentDidMount = {
+      react_stack_bottom_frame: function(finishedWork, instance) {
         try {
           instance.componentDidMount();
         } catch (error) {
           captureCommitPhaseError(finishedWork, finishedWork.return, error);
         }
       }
-    }, callComponentDidMountInDEV = callComponentDidMount["react-stack-bottom-frame"].bind(callComponentDidMount), callComponentDidUpdate = {
-      "react-stack-bottom-frame": function(finishedWork, instance, prevProps, prevState, snapshot) {
+    }, callComponentDidMountInDEV = callComponentDidMount.react_stack_bottom_frame.bind(callComponentDidMount), callComponentDidUpdate = {
+      react_stack_bottom_frame: function(finishedWork, instance, prevProps, prevState, snapshot) {
         try {
           instance.componentDidUpdate(prevProps, prevState, snapshot);
         } catch (error) {
           captureCommitPhaseError(finishedWork, finishedWork.return, error);
         }
       }
-    }, callComponentDidUpdateInDEV = callComponentDidUpdate["react-stack-bottom-frame"].bind(callComponentDidUpdate), callComponentDidCatch = {
-      "react-stack-bottom-frame": function(instance, errorInfo) {
+    }, callComponentDidUpdateInDEV = callComponentDidUpdate.react_stack_bottom_frame.bind(callComponentDidUpdate), callComponentDidCatch = {
+      react_stack_bottom_frame: function(instance, errorInfo) {
         var stack = errorInfo.stack;
         instance.componentDidCatch(errorInfo.value, {
           componentStack: stack !== null ? stack : ""
         });
       }
-    }, callComponentDidCatchInDEV = callComponentDidCatch["react-stack-bottom-frame"].bind(callComponentDidCatch), callComponentWillUnmount = {
-      "react-stack-bottom-frame": function(current3, nearestMountedAncestor, instance) {
+    }, callComponentDidCatchInDEV = callComponentDidCatch.react_stack_bottom_frame.bind(callComponentDidCatch), callComponentWillUnmount = {
+      react_stack_bottom_frame: function(current3, nearestMountedAncestor, instance) {
         try {
           instance.componentWillUnmount();
         } catch (error) {
           captureCommitPhaseError(current3, nearestMountedAncestor, error);
         }
       }
-    }, callComponentWillUnmountInDEV = callComponentWillUnmount["react-stack-bottom-frame"].bind(callComponentWillUnmount), callCreate = {
-      "react-stack-bottom-frame": function(effect) {
+    }, callComponentWillUnmountInDEV = callComponentWillUnmount.react_stack_bottom_frame.bind(callComponentWillUnmount), callCreate = {
+      react_stack_bottom_frame: function(effect) {
         effect.resourceKind != null && console.error("Expected only SimpleEffects when enableUseEffectCRUDOverload is disabled, got %s", effect.resourceKind);
         var create = effect.create;
         effect = effect.inst;
         create = create();
         return effect.destroy = create;
       }
-    }, callCreateInDEV = callCreate["react-stack-bottom-frame"].bind(callCreate), callDestroy = {
-      "react-stack-bottom-frame": function(current3, nearestMountedAncestor, destroy) {
+    }, callCreateInDEV = callCreate.react_stack_bottom_frame.bind(callCreate), callDestroy = {
+      react_stack_bottom_frame: function(current3, nearestMountedAncestor, destroy) {
         try {
           destroy();
         } catch (error) {
           captureCommitPhaseError(current3, nearestMountedAncestor, error);
         }
       }
-    }, callDestroyInDEV = callDestroy["react-stack-bottom-frame"].bind(callDestroy), callLazyInit = {
-      "react-stack-bottom-frame": function(lazy) {
+    }, callDestroyInDEV = callDestroy.react_stack_bottom_frame.bind(callDestroy), callLazyInit = {
+      react_stack_bottom_frame: function(lazy) {
         var init = lazy._init;
         return init(lazy._payload);
       }
-    }, callLazyInitInDEV = callLazyInit["react-stack-bottom-frame"].bind(callLazyInit), thenableState = null, thenableIndexCounter = 0, currentDebugInfo = null, didWarnAboutMaps;
+    }, callLazyInitInDEV = callLazyInit.react_stack_bottom_frame.bind(callLazyInit), thenableState = null, thenableIndexCounter = 0, currentDebugInfo = null, didWarnAboutMaps;
     var didWarnAboutGenerators = didWarnAboutMaps = false;
     var ownerHasKeyUseWarning = {};
     var ownerHasFunctionTypeWarning = {};
@@ -16346,10 +16346,10 @@ Check the top-level render call using <` + componentName2 + ">.");
     };
     (function() {
       var isomorphicReactPackageVersion = React.version;
-      if (isomorphicReactPackageVersion !== "19.1.0")
+      if (isomorphicReactPackageVersion !== "19.1.1")
         throw Error(`Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
   - react:      ` + (isomorphicReactPackageVersion + `
-  - react-dom:  19.1.0
+  - react-dom:  19.1.1
 Learn more: https://react.dev/warnings/version-mismatch`));
     })();
     typeof Map === "function" && Map.prototype != null && typeof Map.prototype.forEach === "function" && typeof Set === "function" && Set.prototype != null && typeof Set.prototype.clear === "function" && typeof Set.prototype.forEach === "function" || console.error("React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://react.dev/link/react-polyfills");
@@ -16369,10 +16369,10 @@ Learn more: https://react.dev/warnings/version-mismatch`));
     if (!function() {
       var internals = {
         bundleType: 1,
-        version: "19.1.0",
+        version: "19.1.1",
         rendererPackageName: "react-dom",
         currentDispatcherRef: ReactSharedInternals,
-        reconcilerVersion: "19.1.0"
+        reconcilerVersion: "19.1.1"
       };
       internals.overrideHookState = overrideHookState;
       internals.overrideHookStateDeletePath = overrideHookStateDeletePath;
@@ -16432,7 +16432,7 @@ You might need to use a local HTTP server (instead of file://): https://react.de
       listenToAllSupportedEvents(container);
       return new ReactDOMHydrationRoot(initialChildren);
     };
-    exports.version = "19.1.0";
+    exports.version = "19.1.1";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -16642,13 +16642,13 @@ React keys must be passed directly to JSX without using spread:
       return null;
     };
     React = {
-      "react-stack-bottom-frame": function(callStackForError) {
+      react_stack_bottom_frame: function(callStackForError) {
         return callStackForError();
       }
     };
     var specialPropKeyWarningShown;
     var didWarnAboutElementRef = {};
-    var unknownOwnerDebugStack = React["react-stack-bottom-frame"].bind(React, UnknownOwner)();
+    var unknownOwnerDebugStack = React.react_stack_bottom_frame.bind(React, UnknownOwner)();
     var unknownOwnerDebugTask = createTask(getTaskName(UnknownOwner));
     var didWarnAboutKeySpread = {};
     exports.Fragment = REACT_FRAGMENT_TYPE;
@@ -22797,6 +22797,8 @@ function buildSubtree(soup, opts) {
   for (const elm of soup) {
     const entries = Object.entries(elm);
     for (const [key, val] of entries) {
+      if (key === "parent_source_group_id")
+        continue;
       if (key.endsWith("_id") && typeof val === "string") {
         const other = idMap.get(val);
         connect(adj, elm, other);
@@ -53733,6 +53735,45 @@ var m2host = (raw_params) => {
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "pin_marker_1"
   };
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  const updateBounds = (x, y, w = 0, h = 0) => {
+    minX = Math.min(minX, x - w / 2);
+    maxX = Math.max(maxX, x + w / 2);
+    minY = Math.min(minY, y - h / 2);
+    maxY = Math.max(maxY, y + h / 2);
+  };
+  for (const pad2 of pads) {
+    updateBounds(pad2.x, pad2.y, pad2.width, pad2.height);
+  }
+  updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height);
+  for (const point2 of pin1Marker.route) {
+    updateBounds(point2.x, point2.y);
+  }
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
+  const translate3 = (el) => {
+    if (typeof el.x === "number")
+      el.x -= centerX;
+    if (typeof el.y === "number")
+      el.y -= centerY;
+    if (el.center) {
+      el.center.x -= centerX;
+      el.center.y -= centerY;
+    }
+    if (Array.isArray(el.route)) {
+      el.route = el.route.map((p) => ({
+        x: p.x - centerX,
+        y: p.y - centerY
+      }));
+    }
+  };
+  for (const pad2 of pads)
+    translate3(pad2);
+  translate3(cutout);
+  translate3(pin1Marker);
   return {
     circuitJson: [
       ...pads,
@@ -54249,7 +54290,7 @@ var content_default = [
     title: "led_0805"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="382.69230769230774" y="28.846153846153754" width="34.615384615384585" height="542.3076923076924"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="39.663461538461476" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="54.08653846153838" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="68.50961538461529" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="82.9326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="97.3557692307691" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="111.77884615384612" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="126.20192307692302" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="140.62499999999991" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="155.04807692307682" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="169.47115384615373" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="183.89423076923063" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="256.0096153846153" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="270.4326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="284.8557692307692" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="299.27884615384613" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="313.70192307692304" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="328.12499999999994" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="342.54807692307685" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="356.97115384615375" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="371.39423076923066" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="385.8173076923077" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="400.2403846153846" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="414.6634615384615" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="429.0865384615384" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="443.5096153846153" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="457.9326923076922" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="472.3557692307692" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="486.77884615384613" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="501.20192307692304" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="515.625" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="530.0480769230769" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="544.4711538461538" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.8557692307692" y="558.8942307692307" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="32.45192307692302" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="46.87499999999993" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="61.298076923076835" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="75.72115384615374" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="90.14423076923065" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="104.56730769230766" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="118.99038461538457" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="133.41346153846146" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="147.83653846153837" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="162.25961538461527" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="176.68269230769218" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="191.1057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="263.22115384615375" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="277.64423076923066" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="292.0673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="306.4903846153846" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="320.9134615384615" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="335.3365384615384" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="349.7596153846153" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="364.1826923076922" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="378.6057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="393.02884615384613" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="407.45192307692304" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="421.87499999999994" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="436.29807692307685" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="450.72115384615375" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="465.14423076923066" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="479.5673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="493.9903846153846" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="508.41346153846143" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="522.8365384615386" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="537.2596153846155" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="551.6826923076924" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="566.1057692307693" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-cutout pcb-cutout-rect" x="-50.18942307692308" y="-16.851923076923075" width="100.37884615384615" height="33.70384615384615" fill="#FF26E2" transform="matrix(1,0,0,1,388.75288461538463,228.73269230769228)"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 391.34615384615387 37.49999999999994 L 382.69230769230774 28.846153846153754 L 382.69230769230774 46.15384615384613 L 391.34615384615387 37.49999999999994 Z" fill="none" stroke="#f2eda1" stroke-width="1.4423076923076925" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="pin_marker_1" data-pcb-silkscreen-path-id="pin_marker_1"/></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="382.6923076923077" y="28.84615384615381" width="34.615384615384585" height="542.3076923076924"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="39.66346153846153" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="54.08653846153844" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="68.50961538461537" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="82.9326923076923" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="97.35576923076921" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="111.77884615384615" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="126.20192307692308" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="140.62499999999997" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="155.0480769230769" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="169.4711538461538" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="183.89423076923075" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="256.0096153846154" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="270.4326923076923" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="284.8557692307692" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="299.2788461538462" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="313.7019230769231" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="328.125" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="342.5480769230769" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="356.97115384615387" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="371.3942307692308" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="385.81730769230774" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="400.24038461538464" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="414.66346153846155" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="429.08653846153845" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="443.50961538461536" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="457.9326923076923" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="472.3557692307693" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="486.7788461538462" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="501.2019230769231" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="515.625" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="530.0480769230769" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="544.4711538461538" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(77, 127, 196)" x="384.85576923076917" y="558.8942307692307" width="50.48076923076923" height="10.096153846153845" data-layer="bottom"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="32.45192307692308" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="46.874999999999986" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="61.29807692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="75.72115384615383" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="90.14423076923076" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="104.5673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="118.9903846153846" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="133.41346153846152" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="147.83653846153845" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="162.25961538461536" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="176.6826923076923" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="191.1057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="263.22115384615387" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="277.6442307692308" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="292.0673076923077" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="306.49038461538464" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="320.91346153846155" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="335.33653846153845" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="349.7596153846154" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="364.1826923076923" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="378.6057692307692" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="393.0288461538462" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="407.4519230769231" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="421.875" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="436.2980769230769" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="450.72115384615387" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="465.1442307692308" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="479.56730769230774" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="493.99038461538464" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="508.41346153846155" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="522.8365384615385" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="537.2596153846154" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="551.6826923076924" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="395.6730769230769" y="566.1057692307693" width="43.269230769230774" height="10.096153846153845" data-layer="top"/><rect class="pcb-cutout pcb-cutout-rect" x="-50.18942307692308" y="-16.851923076923075" width="100.37884615384615" height="33.70384615384615" fill="#FF26E2" transform="matrix(1,0,0,1,388.7528846153846,228.7326923076923)"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 391.3461538461538 37.5 L 382.6923076923077 28.84615384615381 L 382.6923076923077 46.15384615384619 L 391.3461538461538 37.5 Z" fill="none" stroke="#f2eda1" stroke-width="1.4423076923076925" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="pin_marker_1" data-pcb-silkscreen-path-id="pin_marker_1"/></svg>',
     title: "m2host"
   },
   {
