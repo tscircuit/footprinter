@@ -53788,6 +53788,90 @@ function isNotNull(value) {
   return value !== null;
 }
 
+// src/helpers/apply-origin.ts
+var applyOrigin = (elements, origin) => {
+  if (!origin)
+    return elements;
+  const pads = elements.filter((el) => el.type === "pcb_smtpad" || el.type === "pcb_plated_hole" || el.type === "pcb_thtpad");
+  if (pads.length === 0)
+    return elements;
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
+  const updateBounds = (x, y, w = 0, h = 0) => {
+    const left = x - w / 2;
+    const right = x + w / 2;
+    const bottom = y - h / 2;
+    const top = y + h / 2;
+    minX = Math.min(minX, left);
+    maxX = Math.max(maxX, right);
+    minY = Math.min(minY, bottom);
+    maxY = Math.max(maxY, top);
+  };
+  for (const pad2 of pads) {
+    if (pad2.type === "pcb_smtpad") {
+      const w = pad2.shape === "circle" ? pad2.radius * 2 : pad2.width;
+      const h = pad2.shape === "circle" ? pad2.radius * 2 : pad2.height;
+      updateBounds(pad2.x, pad2.y, w, h);
+    } else if (pad2.type === "pcb_plated_hole") {
+      const d = pad2.outer_diameter ?? pad2.hole_diameter;
+      updateBounds(pad2.x, pad2.y, d, d);
+    } else if (pad2.type === "pcb_thtpad") {
+      const d = pad2.diameter;
+      updateBounds(pad2.x, pad2.y, d, d);
+    }
+  }
+  let dx = 0;
+  let dy = 0;
+  switch (origin) {
+    case "center":
+      dx = (minX + maxX) / 2;
+      dy = (minY + maxY) / 2;
+      break;
+    case "bottomleft":
+      dx = minX;
+      dy = minY;
+      break;
+    case "bottomcenter":
+    case "centerbottom":
+      dx = (minX + maxX) / 2;
+      dy = minY;
+      break;
+    case "topcenter":
+    case "centertop":
+      dx = (minX + maxX) / 2;
+      dy = maxY;
+      break;
+    case "leftcenter":
+    case "centerleft":
+      dx = minX;
+      dy = (minY + maxY) / 2;
+      break;
+    case "rightcenter":
+    case "centerright":
+      dx = maxX;
+      dy = (minY + maxY) / 2;
+      break;
+    case "pin1":
+      const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0];
+      dx = pin1.x;
+      dy = pin1.y;
+      break;
+  }
+  if (dx === 0 && dy === 0)
+    return elements;
+  for (const pad2 of pads) {
+    pad2.x -= dx;
+    pad2.y -= dy;
+    if (pad2.center) {
+      pad2.center.x -= dx;
+      pad2.center.y -= dy;
+    }
+  }
+  return elements;
+};
+
 // src/footprinter.ts
 var string2 = (def) => {
   let fp = footprinter();
@@ -53813,7 +53897,10 @@ var footprinter = () => {
     get: (target, prop) => {
       if (prop === "soup" || prop === "circuitJson") {
         if ("fn" in target && exports_fn[target.fn]) {
-          return () => exports_fn[target.fn](target).circuitJson;
+          return () => {
+            const { circuitJson } = exports_fn[target.fn](target);
+            return applyOrigin(circuitJson, target.origin);
+          };
         }
         if (!exports_fn[target.fn]) {
           throw new Error(`Invalid footprint function, got "${target.fn}"${target.string ? `, from string "${target.string}"` : ""}`);
