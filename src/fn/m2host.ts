@@ -69,6 +69,49 @@ export const m2host = (
 
   // const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
+  // --- center footprint around (0,0) ---
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+
+  const updateBounds = (x: number, y: number, w = 0, h = 0) => {
+    minX = Math.min(minX, x - w / 2)
+    maxX = Math.max(maxX, x + w / 2)
+    minY = Math.min(minY, y - h / 2)
+    maxY = Math.max(maxY, y + h / 2)
+  }
+
+  for (const pad of pads) {
+    updateBounds(pad.x, pad.y, pad.width, pad.height)
+  }
+  updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height)
+  for (const point of pin1Marker.route) {
+    updateBounds(point.x, point.y)
+  }
+
+  const centerX = (minX + maxX) / 2
+  const centerY = (minY + maxY) / 2
+
+  const translate = (el: any) => {
+    if (typeof el.x === "number") el.x -= centerX
+    if (typeof el.y === "number") el.y -= centerY
+    if (el.center) {
+      el.center.x -= centerX
+      el.center.y -= centerY
+    }
+    if (Array.isArray(el.route)) {
+      el.route = el.route.map((p: { x: number; y: number }) => ({
+        x: p.x - centerX,
+        y: p.y - centerY,
+      }))
+    }
+  }
+
+  for (const pad of pads) translate(pad)
+  translate(cutout)
+  translate(pin1Marker)
+
   return {
     circuitJson: [
       ...pads,
