@@ -6,3 +6,4 @@ dist
 package-lock.json
 public
 gallery/content.ts
+.env

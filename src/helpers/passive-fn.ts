@@ -1,8 +1,4 @@
-import type {
-  AnyCircuitElement,
-  AnySoupElement,
-  PcbSilkscreenPath,
-} from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
@@ -25,11 +21,11 @@ export const footprintSizes: StandardSize[] = [
   {
     imperial: "01005",
     metric: "0402",
-    p_mm_min: 0.5,
-    pw_mm_min: 0.4,
-    ph_mm_min: 0.3,
-    w_mm_min: 0.58,
-    h_mm_min: 0.21,
+    p_mm_min: 1.3,
+    pw_mm_min: 0.54,
+    ph_mm_min: 0.64,
+    w_mm_min: 1.56,
+    h_mm_min: 0.64,
   },
   {
     imperial: "0504",
@@ -142,7 +138,7 @@ export const passive_def = z.object({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-export const passive = (params: PassiveDef): AnySoupElement[] => {
+export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
 
   if (typeof w === "string") w = mm(w)
