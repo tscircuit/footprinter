@@ -14,13 +14,16 @@ type PcbSmtPad = {
 
 export async function compareFootprinterVsKicad(
   footprinterString: string,
-  kicadUrl: string,
+  kicadPath: string,
 ): Promise<{
   avgRelDiff: number
   combinedFootprintElements: any[]
 }> {
+  const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
+  const kicadUrl = BASE_URL + kicadPath
   const normalizedFootprintName =
-    kicadUrl.split("/").pop()?.replace(".circuit.json", "") ?? "unknown"
+    kicadPath.split("/").pop()?.replace(".circuit.json", "") ?? "unknown"
+
   const res = await fetch(kicadUrl)
   if (!res.ok)
     throw new Error(`Failed to fetch ${normalizedFootprintName}: ${res.status}`)
