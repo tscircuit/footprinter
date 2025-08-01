@@ -1,8 +1,4 @@
-import type {
-  AnyCircuitElement,
-  AnySoupElement,
-  PcbSilkscreenPath,
-} from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
@@ -142,7 +138,7 @@ export const passive_def = z.object({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-export const passive = (params: PassiveDef): AnySoupElement[] => {
+export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
 
   if (typeof w === "string") w = mm(w)
