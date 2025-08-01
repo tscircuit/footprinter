@@ -350,12 +350,7 @@ export const footprinter = (): Footprinter & {
               target.fn = prop
               if (prop === "res" || prop === "cap") {
                 if (v) {
-                  // Prefer metric if found
-                  if (footprintSizes.some((s) => s.metric === v)) {
-                    target.metric = v
-                  } else {
-                    target.imperial = v
-                  }
+                  target.imperial = v // res0402, cap0603 etc.
                 }
               } else {
                 target.num_pins = Number.isNaN(Number.parseFloat(v))

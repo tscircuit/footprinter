@@ -2,6 +2,7 @@ import { footprintSizes } from "src/helpers/passive-fn"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
+import type { PcbSilkscreenText } from "circuit-json"
 
 type PcbSmtPad = {
   type: "pcb_smtpad"
@@ -19,18 +20,31 @@ type PcbComponent = {
   center: { x: number; y: number }
 }
 
-const diff = (a: number, b: number) => Math.abs(a - b)
+const safe = (v: number | undefined) => (typeof v === "number" ? v : 0)
+
+function relativeDiffToRef(kicadVal: number, refVal: number) {
+  if (refVal === 0) return 0
+  return Math.abs(kicadVal - refVal) / refVal
+}
 
 export async function padDifference(
   imperialOrMetric: string,
   footprintName: string,
 ): Promise<{
-  totalDiff: number
+  avgRelDiff: number
   combinedFootprintElements: any[]
 }> {
-  const size = footprintSizes.find(
-    (s) => s.metric === imperialOrMetric || s.imperial === imperialOrMetric,
-  )
+  const normalized = imperialOrMetric.replace(/_(imp|metric)$/, "")
+
+  let size = imperialOrMetric.endsWith("_imp")
+    ? footprintSizes.find((s) => s.imperial === normalized)
+    : footprintSizes.find((s) => s.metric === normalized) ||
+      footprintSizes.find((s) => s.imperial === normalized)
+
+  if (!size) {
+    throw new Error(`Footprint size not found for ${imperialOrMetric}`)
+  }
+
   if (!size) throw new Error(`Footprint size not found for ${imperialOrMetric}`)
 
   const normalizedFootprintName = footprintName.startsWith("kicad:")
@@ -61,73 +75,114 @@ export async function padDifference(
       `Expected 2 signal pads for ${normalizedFootprintName}, found ${kicadPads.length}`,
     )
 
+  console.log(size)
+  console.log(kicadPads)
+  console.log(pcbComp)
+
   const [leftPad, rightPad] = kicadPads.sort((a, b) => a.x - b.x)
   const kicadPadSpacing = Math.abs(rightPad!.x - leftPad!.x)
 
-  const padSpacingDiff = diff(kicadPadSpacing, size.p_mm_min)
-  const padWidthDiff =
-    diff(leftPad!.width, size.pw_mm_min) + diff(rightPad!.width, size.pw_mm_min)
-  const padHeightDiff =
-    diff(leftPad!.height, size.ph_mm_min) +
-    diff(rightPad!.height, size.ph_mm_min)
-  const bodyWidthDiff = diff(pcbComp.width, size.w_mm_min)
-  const bodyHeightDiff = diff(pcbComp.height, size.h_mm_min)
+  // Reference sizes
+  const refPadSpacing = safe(size.p_mm_min)
+  const refPadWidth = safe(size.pw_mm_min)
+  const refPadHeight = safe(size.ph_mm_min)
+  const refBodyWidth = safe(size.w_mm_min)
+  const refBodyHeight = safe(size.h_mm_min)
 
-  const totalDiff =
-    padSpacingDiff +
-    padWidthDiff +
-    padHeightDiff +
-    bodyWidthDiff +
-    bodyHeightDiff
+  // Compute individual relative diffs
+  const padSpacingRelDiff = relativeDiffToRef(kicadPadSpacing, refPadSpacing)
 
+  const leftPadWidthRelDiff = relativeDiffToRef(leftPad!.width, refPadWidth)
+  const rightPadWidthRelDiff = relativeDiffToRef(rightPad!.width, refPadWidth)
+
+  const leftPadHeightRelDiff = relativeDiffToRef(leftPad!.height, refPadHeight)
+  const rightPadHeightRelDiff = relativeDiffToRef(
+    rightPad!.height,
+    refPadHeight,
+  )
+
+  const bodyWidthRelDiff = relativeDiffToRef(pcbComp.width, refBodyWidth)
+  const bodyHeightRelDiff = relativeDiffToRef(pcbComp.height, refBodyHeight)
+
+  // Weight each diff by its reference dimension (pads weighted twice for two pads)
+  const weights = {
+    padSpacing: refPadSpacing,
+    padWidth: refPadWidth,
+    padHeight: refPadHeight,
+    bodyWidth: refBodyWidth,
+    bodyHeight: refBodyHeight,
+  }
+
+  const totalWeight =
+    weights.padSpacing +
+    2 * weights.padWidth +
+    2 * weights.padHeight +
+    weights.bodyWidth +
+    weights.bodyHeight
+
+  const weightedDiffSum =
+    padSpacingRelDiff * weights.padSpacing +
+    leftPadWidthRelDiff * weights.padWidth +
+    rightPadWidthRelDiff * weights.padWidth +
+    leftPadHeightRelDiff * weights.padHeight +
+    rightPadHeightRelDiff * weights.padHeight +
+    bodyWidthRelDiff * weights.bodyWidth +
+    bodyHeightRelDiff * weights.bodyHeight
+
+  const avgRelDiff = weightedDiffSum / totalWeight
+  const diffPercent = avgRelDiff * 100
+
+  // Prepare reference pad for layout
   const refRightPad: PcbSmtPad = {
     type: "pcb_smtpad",
-    x: size.p_mm_min,
+    x: refPadSpacing,
     y: 0,
-    width: size.pw_mm_min,
-    height: size.ph_mm_min,
+    width: refPadWidth,
+    height: refPadHeight,
     port_hints: ["2"],
   }
 
   const circuitJson = fp.string(imperialOrMetric).circuitJson()
-
+  console.log("circuitJson", circuitJson)
   const referenceElements: any = circuitJson
 
-  // --- Center Reference Footprint Vertically ---
-  const refMinY = -Math.max(size.ph_mm_min / 2, size.h_mm_min / 2)
-  const refMaxY = Math.max(size.ph_mm_min / 2, size.h_mm_min / 2)
+  const refMinY = -Math.max(refPadHeight / 2, refBodyHeight / 2)
+  const refMaxY = Math.max(refPadHeight / 2, refBodyHeight / 2)
   const refCenterY = (refMaxY + refMinY) / 2
 
   let transformedReference = transformPcbElements(
     referenceElements,
     translate(0, -refCenterY),
   )
-  // Filter out the {REF} silkscreen from the reference
+
+  // Remove default REF text to replace with our own
   const cleanedReference = transformedReference.filter(
     (e) => !(e.type === "pcb_silkscreen_text" && e.text === "{REF}"),
   )
 
-  // Find original silkscreen text to reuse position/font settings
   const referenceSilkscreenText = transformedReference.find(
     (e) => e.type === "pcb_silkscreen_text" && e.text === "{REF}",
   )
 
+  let silkscreenForKiCad: any = null
   if (referenceSilkscreenText) {
-    const silkscreenForKiCad = {
+    const silkscreenForReference = {
       ...referenceSilkscreenText,
-      text: "Local_FP",
+      text: `REF: ${imperialOrMetric}`,
     }
+    cleanedReference.push(silkscreenForReference)
 
-    // Add the renamed silkscreen to the cleaned reference
-    cleanedReference.push(silkscreenForKiCad)
+    silkscreenForKiCad = {
+      ...referenceSilkscreenText,
+      text: `KiCad: ${normalizedFootprintName}`,
+    }
   }
 
-  // Then use cleanedReference instead of transformedReference
   transformedReference = cleanedReference
 
-  // --- Filter and Align KiCad Footprint Vertically ---
   const kicadElements: any = [pcbComp, ...kicadPads]
 
+  // Calculate Y bounds for KiCad footprint
   const padYs = kicadPads.flatMap((p) => [
     p.y - p.height / 2,
     p.y + p.height / 2,
@@ -138,61 +193,72 @@ export async function padDifference(
   const kicadMaxY = Math.max(...padYs, compMaxY)
   const kicadCenterY = (kicadMinY + kicadMaxY) / 2
 
-  // Place KiCad footprint to the right of reference
-  // Calculate rightmost edge of reference right pad
+  // Calculate horizontal gap to position footprints side-by-side
   const refRightEdge = refRightPad.x + refRightPad.width / 2
-
-  // Calculate leftmost edge of KiCad left pad
   const kicadLeftEdge = leftPad!.x - leftPad!.width / 2
-
-  // Calculate the minimum required gap (e.g., 0.5mm) + safety
   const minDesiredGap = 0.5
   const actualGap = kicadLeftEdge - refRightEdge
-
-  // If too close or overlapping, increase gap
   const dynamicGapX =
-    actualGap < minDesiredGap
-      ? minDesiredGap - actualGap + 0.2 // add 0.2mm buffer
-      : 1
+    actualGap < minDesiredGap ? minDesiredGap - actualGap + 0.2 : 1
 
-  const kicadShiftX = size.p_mm_min + dynamicGapX
-
+  const kicadShiftX = refPadSpacing + dynamicGapX
   const kicadShiftY = -kicadCenterY
 
   const transformedKiCad = transformPcbElements(
-    [
-      ...kicadElements,
-      {
-        type: "pcb_silkscreen_text",
-        pcb_silkscreen_text_id: "silkscreen_text_kicad",
-        font: "tscircuit2024",
-        font_size: 0.2,
-        pcb_component_id: "pcb_generic_component_0", // make sure this matches the KiCad component ID
-        text: "KiCad_FP",
-        layer: "top",
-        anchor_position: {
-          x: 0,
-          y: 1.05,
-        },
-        anchor_alignment: "center",
-      },
-    ],
+    silkscreenForKiCad ? [...kicadElements, silkscreenForKiCad] : kicadElements,
     translate(kicadShiftX, kicadShiftY),
   )
 
-  console.log(
-    "transformedReference",
-    JSON.stringify(transformedReference, null, 2),
-  )
+  // Combine both transformed arrays temporarily to calculate bounding box
+  const allElements = [...transformedReference, ...transformedKiCad]
 
-  // Combine both
+  // Compute minX and maxX for all elements to center the diff text
+  const allXBounds = allElements.flatMap((el) => {
+    if ("x" in el && "width" in el)
+      return [el.x - el.width / 2, el.x + el.width / 2]
+    if ("center" in el && "width" in el)
+      return [el.center.x - el.width / 2, el.center.x + el.width / 2]
+    return []
+  })
+  const minX = Math.min(...allXBounds)
+  const maxX = Math.max(...allXBounds)
+  const midX = (minX + maxX) / 2
+
+  // Get max Y from all elements to place diff text below footprints
+  const allYBounds = allElements.flatMap((el) => {
+    if ("y" in el && "height" in el) return [el.y + el.height / 2]
+    if ("center" in el && "height" in el) return [el.center.y + el.height / 2]
+    return []
+  })
+  const maxY = Math.max(...allYBounds)
+  const belowY = maxY + 1 // margin below
+
+  const diffPercentText: PcbSilkscreenText = {
+    type: "pcb_silkscreen_text",
+    pcb_silkscreen_text_id: "diffPercentText",
+    pcb_component_id: "",
+    font: "tscircuit2024",
+    font_size: 0.3,
+    text: `Diff: ${diffPercent.toFixed(2)}%`,
+    layer: "top",
+    anchor_position: {
+      x: midX,
+      y: -belowY,
+    },
+    anchor_alignment: "center",
+    ccw_rotation: 0,
+    is_mirrored: false,
+  }
+
+  cleanedReference.push(diffPercentText)
+
   const combinedFootprintElements = [
     ...transformedReference,
     ...transformedKiCad,
   ]
 
   return {
-    totalDiff,
+    avgRelDiff,
     combinedFootprintElements,
   }
 }
