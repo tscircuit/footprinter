@@ -4,7 +4,10 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/0603", async () => {
   const { avgRelDiff, combinedFootprintElements } =
-    await compareFootprinterVsKicad("0603", "kicad:R_0603_1608Metric")
+    await compareFootprinterVsKicad(
+      "0603",
+      "https://kicad-mod-cache.tscircuit.com/Resistor_SMD.pretty/R_0603_1608Metric.circuit.json",
+    )
   console.log("Total diff:", avgRelDiff)
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)

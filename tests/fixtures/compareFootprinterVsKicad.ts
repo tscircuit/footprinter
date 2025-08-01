@@ -1,4 +1,3 @@
-import { footprintSizes } from "src/helpers/passive-fn"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
@@ -14,37 +13,22 @@ type PcbSmtPad = {
 }
 
 export async function compareFootprinterVsKicad(
-  imperialOrMetric: string,
-  footprintName: string,
+  footprinterString: string,
+  kicadUrl: string,
 ): Promise<{
   avgRelDiff: number
   combinedFootprintElements: any[]
 }> {
-  let size = imperialOrMetric.endsWith("_imp")
-    ? footprintSizes.find((s) => s.imperial === imperialOrMetric)
-    : footprintSizes.find((s) => s.metric === imperialOrMetric) ||
-      footprintSizes.find((s) => s.imperial === imperialOrMetric)
-
-  if (!size) {
-    throw new Error(`Footprint size not found for ${imperialOrMetric}`)
-  }
-
-  const normalizedFootprintName = footprintName.startsWith("kicad:")
-    ? footprintName.slice(6)
-    : footprintName
-
-  const url = `https://kicad-mod-cache.tscircuit.com/Resistor_SMD.pretty/${normalizedFootprintName}.circuit.json`
-  const res = await fetch(url)
+  const normalizedFootprintName =
+    kicadUrl.split("/").pop()?.replace(".circuit.json", "") ?? "unknown"
+  const res = await fetch(kicadUrl)
   if (!res.ok)
     throw new Error(`Failed to fetch ${normalizedFootprintName}: ${res.status}`)
 
-  const data = (await res.json()) as any[]
+  const kicadCircuitJson = (await res.json()) as any[]
 
-  const kicadPads = data.filter(
-    (e) =>
-      e.type === "pcb_smtpad" &&
-      Array.isArray(e.port_hints) &&
-      (e.port_hints.includes("1") || e.port_hints.includes("2")),
+  const kicadPads = kicadCircuitJson.filter(
+    (e) => e.type === "pcb_smtpad",
   ) as PcbSmtPad[]
 
   const kicadArea = kicadPads.reduce(
@@ -52,8 +36,8 @@ export async function compareFootprinterVsKicad(
     0,
   )
 
-  const circuitJson = fp.string(imperialOrMetric).circuitJson()
-  const referencePads = (circuitJson as any[]).filter(
+  const fpCircuitJson = fp.string(footprinterString).circuitJson()
+  const referencePads = (fpCircuitJson as any[]).filter(
     (e) => e.type === "pcb_smtpad",
   ) as PcbSmtPad[]
 
@@ -65,22 +49,17 @@ export async function compareFootprinterVsKicad(
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
 
-  // Visual placement
-  const transformedReference = transformPcbElements(
-    circuitJson,
-    translate(0, 0),
-  )
-  const kicadElements = data.filter(
+  const kicadElements = kicadCircuitJson.filter(
     (e) => e.type === "pcb_smtpad" || e.type === "pcb_component",
   )
 
   const refMaxX = Math.max(
-    ...transformedReference.map((e) =>
+    ...fpCircuitJson.map((e) =>
       "x" in e && "width" in e ? e.x + e.width / 2 : 0,
     ),
   )
   const refMinX = Math.min(
-    ...transformedReference.map((e) =>
+    ...fpCircuitJson.map((e) =>
       "x" in e && "width" in e ? e.x - e.width / 2 : 0,
     ),
   )
@@ -95,33 +74,21 @@ export async function compareFootprinterVsKicad(
     translate(dynamicGap, 0),
   )
 
-  // Combine and annotate
-  const allElements = [...transformedReference, ...transformedKiCad]
-  const refXs = transformedReference.flatMap((e) =>
-    "x" in e && "width" in e
-      ? [e.x - e.width / 2, e.x + e.width / 2]
-      : "center" in e && "width" in e
-        ? [e.center.x - e.width / 2, e.center.x + e.width / 2]
-        : [],
-  )
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
 
-  const kicadXs = transformedKiCad.flatMap((e) =>
-    "x" in e && "width" in e
-      ? [e.x - e.width / 2, e.x + e.width / 2]
-      : "center" in e && "width" in e
-        ? [e.center.x - e.width / 2, e.center.x + e.width / 2]
-        : [],
-  )
+  for (const elm of [...fpCircuitJson, ...transformedKiCad]) {
+    if (elm.type === "pcb_smtpad" && elm.shape === "rect") {
+      minX = Math.min(minX, elm.x - elm.width / 2)
+      maxX = Math.max(maxX, elm.x + elm.width / 2)
+      minY = Math.min(minY, elm.y - elm.height / 2)
+      maxY = Math.max(maxY, elm.y + elm.height / 2)
+    }
+  }
 
-  const minX = Math.min(...refXs, ...kicadXs)
-  const maxX = Math.max(...refXs, ...kicadXs)
   const midX = (minX + maxX) / 2
-
-  const maxY = Math.max(
-    ...allElements.map((e) =>
-      "y" in e && "height" in e ? e.y + e.height / 2 : 0,
-    ),
-  )
 
   const diffPercentText: PcbSilkscreenText = {
     type: "pcb_silkscreen_text",
@@ -141,7 +108,7 @@ export async function compareFootprinterVsKicad(
   }
 
   const combinedFootprintElements = [
-    ...transformedReference,
+    ...fpCircuitJson,
     ...transformedKiCad,
     diffPercentText,
   ]
