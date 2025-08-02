@@ -239,12 +239,12 @@ export const string = (def: string): Footprinter => {
   const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1")
 
   const def_parts = modifiedDef
-    .split("_")
+    .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
       const [_, fn, v] = m ?? []
       if (v?.includes("?")) return null
-      return { fn: fn!, v: m?.[2]! }
+      return { fn: fn!, v: v! }
     })
     .filter(isNotNull)
 
@@ -350,7 +350,11 @@ export const footprinter = (): Footprinter & {
               target.fn = prop
               if (prop === "res" || prop === "cap") {
                 if (v) {
-                  target.imperial = v // res0402, cap0603 etc.
+                  if (typeof v === "string" && v.includes("_metric")) {
+                    target.metric = v.split("_metric")[0]
+                  } else {
+                    target.imperial = v // e.g., res0402, cap0603 etc.
+                  }
                 }
               } else {
                 target.num_pins = Number.isNaN(Number.parseFloat(v))
