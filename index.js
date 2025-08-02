@@ -53912,12 +53912,12 @@ var applyOrigin = (elements, origin) => {
 var string2 = (def) => {
   let fp = footprinter();
   const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1");
-  const def_parts = modifiedDef.split("_").map((s) => {
+  const def_parts = modifiedDef.split(/_(?!metric)/).map((s) => {
     const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/);
     const [_, fn, v] = m ?? [];
     if (v?.includes("?"))
       return null;
-    return { fn, v: m?.[2] };
+    return { fn, v };
   }).filter(isNotNull);
   for (const { fn, v } of def_parts) {
     fp = fp[fn](v);
@@ -53973,7 +53973,11 @@ var footprinter = () => {
             target.fn = prop;
             if (prop === "res" || prop === "cap") {
               if (v) {
-                target.imperial = v;
+                if (typeof v === "string" && v.includes("_metric")) {
+                  target.metric = v.split("_metric")[0];
+                } else {
+                  target.imperial = v;
+                }
               }
             } else {
               target.num_pins = Number.isNaN(Number.parseFloat(v)) ? undefined : Number.parseFloat(v);
