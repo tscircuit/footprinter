@@ -1,6 +1,7 @@
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
+import type { PcbPlatedHole } from "circuit-json"
 
 test("pinrow5", () => {
   const soup = fp.string("pinrow5").circuitJson()
@@ -203,4 +204,80 @@ test("pinrow5_bottomsidepinlabel", () => {
     import.meta.path,
     "pinrow5_bottomsidepinlabel",
   )
+})
+
+test("pinrow12_rows2_startingpin(bottomside,leftpin)", () => {
+  const def = "pinrow12_rows2_startingpin(bottomside,leftpin)"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, def)
+
+  const pads = soup.filter(
+    (el): el is PcbPlatedHole =>
+      el.type === "pcb_plated_hole" && el.port_hints?.[0] !== undefined,
+  )
+  const pin1 = pads.find((p) => p.port_hints![0] === "1")!
+  const xs = pads.map((p) => p.x)
+  const ys = pads.map((p) => p.y)
+  const minX = Math.min(...xs)
+  const minY = Math.min(...ys)
+  expect(pin1.x).toBe(minX)
+  expect(pin1.y).toBe(minY)
+})
+
+test("pinrow12_rows2_startingpin(bottomside,rightpin)", () => {
+  const def = "pinrow12_rows2_startingpin(bottomside,rightpin)"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, def)
+
+  const pads = soup.filter(
+    (el): el is PcbPlatedHole =>
+      el.type === "pcb_plated_hole" && el.port_hints?.[0] !== undefined,
+  )
+  const pin1 = pads.find((p) => p.port_hints![0] === "1")!
+  const xs = pads.map((p) => p.x)
+  const ys = pads.map((p) => p.y)
+  const maxX = Math.max(...xs)
+  const minY = Math.min(...ys)
+  expect(pin1.x).toBe(maxX)
+  expect(pin1.y).toBe(minY)
+})
+
+test("pinrow12_rows2_startingpin(topside,rightpin)", () => {
+  const def = "pinrow12_rows2_startingpin(topside,rightpin)"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, def)
+
+  const pads = soup.filter(
+    (el): el is PcbPlatedHole =>
+      el.type === "pcb_plated_hole" && el.port_hints?.[0] !== undefined,
+  )
+  const pin1 = pads.find((p) => p.port_hints![0] === "1")!
+  const xs = pads.map((p) => p.x)
+  const ys = pads.map((p) => p.y)
+  const maxX = Math.max(...xs)
+  const maxY = Math.max(...ys)
+  expect(pin1.x).toBe(maxX)
+  expect(pin1.y).toBe(maxY)
+})
+
+test("pinrow12_rows2_startingpin(rightside,toppin)", () => {
+  const def = "pinrow12_rows2_startingpin(rightside,toppin)"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, def)
+
+  const pads = soup.filter(
+    (el): el is PcbPlatedHole =>
+      el.type === "pcb_plated_hole" && el.port_hints?.[0] !== undefined,
+  )
+  const pin1 = pads.find((p) => p.port_hints![0] === "1")!
+  const xs = pads.map((p) => p.x)
+  const ys = pads.map((p) => p.y)
+  const maxX = Math.max(...xs)
+  const maxY = Math.max(...ys)
+  expect(pin1.x).toBe(maxX)
+  expect(pin1.y).toBe(maxY)
 })
