@@ -48031,20 +48031,20 @@ var footprintSizes = [
   {
     imperial: "0805",
     metric: "2012",
-    p_mm_min: 2.15,
-    pw_mm_min: 0.85,
-    ph_mm_min: 1.2,
-    w_mm_min: 3,
-    h_mm_min: 1.2
+    p_mm_min: 1.825,
+    pw_mm_min: 1.025,
+    ph_mm_min: 1.4,
+    w_mm_min: 2.8499999999999996,
+    h_mm_min: 1.4
   },
   {
     imperial: "1206",
     metric: "3216",
-    p_mm_min: 3.2,
-    pw_mm_min: 1,
-    ph_mm_min: 1.9,
-    w_mm_min: 4.2,
-    h_mm_min: 2.5
+    p_mm_min: 2.925,
+    pw_mm_min: 1.125,
+    ph_mm_min: 1.75,
+    w_mm_min: 4.05,
+    h_mm_min: 1.75
   },
   {
     imperial: "1210",
@@ -54413,7 +54413,7 @@ var content_default = [
     title: "sot23w"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="214.99999999999994" y="133.33333333333326" width="370.00000000000006" height="333.33333333333337"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="241.66666666666657" y="253.33333333333326" width="113.33333333333334" height="160" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="528.3333333333334" y="253.33333333333326" width="113.33333333333334" height="160" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 585 199.99999999999991 L 214.99999999999994 199.99999999999991 L 214.99999999999994 466.66666666666663 L 585 466.66666666666663" fill="none" stroke="#f2eda1" stroke-width="13.333333333333336" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="26.66666666666667" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,441.66666666666663,133.33333333333326)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="238.03191489361708" y="127.65957446808511" width="323.9361702127659" height="344.6808510638298"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="263.56382978723406" y="242.55319148936172" width="130.85106382978722" height="178.72340425531914" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="496.5425531914894" y="242.55319148936172" width="130.85106382978722" height="178.72340425531914" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 561.968085106383 191.48936170212767 L 238.03191489361708 191.48936170212767 L 238.03191489361708 472.3404255319149 L 561.968085106383 472.3404255319149" fill="none" stroke="#f2eda1" stroke-width="12.76595744680851" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="25.53191489361702" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,445.47872340425533,127.65957446808511)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "led_0805"
   },
   {
@@ -54721,7 +54721,7 @@ var content_default = [
     title: "diode0201"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="174.99999999999994" y="115.38461538461533" width="450.00000000000006" height="369.2307692307693"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="198.07692307692304" y="219.2307692307692" width="115.38461538461539" height="219.23076923076923" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="567.3076923076923" y="219.2307692307692" width="115.38461538461539" height="219.23076923076923" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 625 173.07692307692304 L 174.99999999999994 173.07692307692304 L 174.99999999999994 484.6153846153846 L 625 484.6153846153846" fill="none" stroke="#f2eda1" stroke-width="11.53846153846154" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="23.07692307692308" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,440.38461538461536,115.38461538461533)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="180.94059405940595" y="118.81188118811875" width="438.1188118811882" height="362.37623762376245"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="204.70297029702976" y="225.7425742574257" width="133.66336633663366" height="207.92079207920793" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="552.2277227722773" y="225.7425742574257" width="133.66336633663366" height="207.92079207920793" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 619.0594059405942 178.21782178217816 L 180.94059405940595 178.21782178217816 L 180.94059405940595 481.18811881188117 L 619.0594059405942 481.18811881188117" fill="none" stroke="#f2eda1" stroke-width="11.881188118811883" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="23.762376237623766" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,445.29702970297035,118.81188118811875)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "led_1206"
   },
   {
