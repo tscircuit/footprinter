@@ -52,7 +52,7 @@ export async function compareFootprinterVsKicad(
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
 
-  if (diffPercent > 10) {
+  if (diffPercent > 0) {
     // 🔹 Estimate pitch (assumes pads aligned in 1D)
     if (kicadPads.length >= 2) {
       // Example: check if aligned horizontally (same y)
