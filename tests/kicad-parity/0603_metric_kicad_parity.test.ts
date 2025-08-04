@@ -2,7 +2,7 @@ import { expect, test } from "bun:test"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test("parity/0603", async () => {
+test("parity/0603_metric", async () => {
   const { avgRelDiff, combinedFootprintElements } =
     await compareFootprinterVsKicad(
       "0603_metric",
