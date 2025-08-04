@@ -52,6 +52,47 @@ export async function compareFootprinterVsKicad(
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
 
+  if (diffPercent > 10) {
+    // 🔹 Estimate pitch (assumes pads aligned in 1D)
+    if (kicadPads.length >= 2) {
+      // Example: check if aligned horizontally (same y)
+      const horizontal = kicadPads.every((pad) => pad.y === kicadPads[0]!.y)
+
+      if (horizontal) {
+        const sorted = [...kicadPads].sort((a, b) => a.x - b.x)
+        const pitches: number[] = []
+        for (let i = 1; i < sorted.length; i++) {
+          const pitch = sorted[i]!.x - sorted[i - 1]!.x
+          pitches.push(pitch)
+        }
+        const avgPitch = pitches.reduce((a, b) => a + b, 0) / pitches.length
+        console.log(`📏 Horizontal pad pitch: ${avgPitch}`)
+      } else {
+        const sorted = [...kicadPads].sort((a, b) => a.y - b.y)
+        const pitches: number[] = []
+        for (let i = 1; i < sorted.length; i++) {
+          const pitch = sorted[i]!.y - sorted[i - 1]!.y
+          pitches.push(pitch)
+        }
+        const avgPitch = pitches.reduce((a, b) => a + b, 0) / pitches.length
+        console.log(`📏 Vertical pad pitch: ${avgPitch}`)
+      }
+    }
+    // 🟡 Log all KiCad pad sizes
+    for (const pad of kicadPads) {
+      console.log(`🔹 KiCad Pad - width: ${pad.width}, height: ${pad.height}`)
+    }
+
+    // 🟡 Log component width and height if present
+    for (const e of kicadCircuitJson) {
+      if (e.type === "pcb_component" && "width" in e && "height" in e) {
+        console.log(
+          `🟦 KiCad Component - width: ${e.width}, height: ${e.height}`,
+        )
+      }
+    }
+  }
+
   const kicadElements = kicadCircuitJson.filter(
     (e) => e.type === "pcb_smtpad" || e.type === "pcb_component",
   )
