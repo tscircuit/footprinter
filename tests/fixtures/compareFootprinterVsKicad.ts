@@ -235,7 +235,7 @@ export async function compareFootprinterVsKicad(
       colorB: "#007bff", // KiCad in blue
       colorDifference: "#ffc107", // Overlap in yellow
       showLegend: true,
-      footprintNameA: normalizedFootprintName,
+      footprintNameA: footprinterString,
       footprintNameB: normalizedFootprintName,
     },
   )

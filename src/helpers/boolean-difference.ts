@@ -465,7 +465,7 @@ export function createBooleanDifferenceVisualization(
       // Footprint A legend
       svg += `<rect x="${viewBoxX + padding * 0.2}" y="${legendY + 0.1}" width="${rectSize}" height="${rectSize}" fill="${colorA}" fill-opacity="0.5" stroke="${colorA}" stroke-width="0.01"/>`
       const labelA = options?.footprintNameA
-        ? `Footprinter: ${options.footprintNameA}`
+        ? `${options.footprintNameA}`
         : "Footprinter"
       svg += `<text x="${viewBoxX + padding * 0.2 + rectSize + 0.05}" y="${legendY + 0.1 + rectSize / 2}" fill="#212529" font-weight="500" dominant-baseline="middle">${labelA}</text>`
 
