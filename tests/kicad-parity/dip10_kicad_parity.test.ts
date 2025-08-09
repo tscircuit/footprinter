@@ -3,7 +3,7 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/dip10", async () => {
-  const { avgRelDiff, combinedFootprintElements } =
+  const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
       "dip10_w10.16mm_od1.6mm_id0.8mm",
       "Package_DIP.pretty/DIP-10_W10.16mm.circuit.json",
@@ -11,4 +11,8 @@ test("parity/dip10", async () => {
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip10")
+  expect(booleanDifferenceSvg).toMatchSvgSnapshot(
+    import.meta.path,
+    "dip10_boolean_difference",
+  )
 })

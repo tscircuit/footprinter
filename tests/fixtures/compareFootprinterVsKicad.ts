@@ -2,6 +2,7 @@ import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
 import type { PcbPlatedHole, PcbSilkscreenText } from "circuit-json"
+import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-difference"
 
 type PcbSmtPad = {
   type: "pcb_smtpad"
@@ -42,6 +43,8 @@ export async function compareFootprinterVsKicad(
 ): Promise<{
   avgRelDiff: number
   combinedFootprintElements: any[]
+  booleanDifferenceSvg: string
+  fpSilkscreenElements: any[]
 }> {
   const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
   const kicadUrl = BASE_URL + kicadPath
@@ -204,5 +207,43 @@ export async function compareFootprinterVsKicad(
     diffPercentText,
   ]
 
-  return { avgRelDiff, combinedFootprintElements }
+  // Parse out silkscreen elements separately (not included in boolean diff)
+  const fpSilkscreenElements = fpCircuitJson.filter(
+    (e) => e.type === "pcb_silkscreen_path" || e.type === "pcb_silkscreen_text",
+  )
+
+  // Generate boolean difference visualization for alignment analysis
+  // Only include pads and holes (not silkscreen) for precise alignment comparison
+  const fpFootprintElements = fpCircuitJson.filter(
+    (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
+  )
+
+  // CRITICAL: Use the original KiCad elements BEFORE transformation
+  // The kicadElements above are filtered but not yet transformed
+  // This ensures true overlay positioning for alignment analysis
+  const originalKicadFootprintElements = kicadElements.filter(
+    (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
+  )
+
+  const booleanDifferenceSvg = createBooleanDifferenceVisualization(
+    fpFootprintElements,
+    originalKicadFootprintElements,
+    {
+      title: `${normalizedFootprintName} - Alignment Analysis (Footprinter vs KiCad)`,
+      operation: "intersection",
+      colorA: "#dc3545", // Footprinter in red
+      colorB: "#007bff", // KiCad in blue
+      colorDifference: "#ffc107", // Overlap in yellow
+      showLegend: true,
+      footprintNameA: normalizedFootprintName,
+      footprintNameB: normalizedFootprintName,
+    },
+  )
+
+  return {
+    avgRelDiff,
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    fpSilkscreenElements,
+  }
 }

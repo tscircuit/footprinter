@@ -19,6 +19,7 @@
   "license": "ISC",
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
+    "@flatten-js/core": "^1.6.2",
     "@tscircuit/circuit-json-util": "^0.0.62",
     "@tscircuit/log-soup": "^1.0.2",
     "@tscircuit/soup-util": "^0.0.41",
