@@ -86,14 +86,9 @@ export const getCcwDipCoords = (
   const h = gs * leftPinGaps
 
   if (isLeft) {
-    // The y position starts at h/2, then goes down by gap size
-    // for each pin
-    // Adding x padding (0.4) to postion the hole in the center
-    return { x: -w / 2 - 0.4, y: h / 2 - (pn - 1) * gs }
+    return { x: -w / 2, y: h / 2 - (pn - 1) * gs }
   }
-  // The y position starts at -h/2, then goes up by gap size
-  // Adding x padding (0.4) to postion the hole in the center
-  return { x: w / 2 + 0.4, y: -h / 2 + (pn - ph - 1) * gs }
+  return { x: w / 2, y: -h / 2 + (pn - ph - 1) * gs }
 }
 
 /**
@@ -108,6 +103,7 @@ export const dip = (raw_params: {
   od?: string | number
 }): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = dip_def.parse(raw_params)
+
   const platedHoles: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
@@ -120,9 +116,18 @@ export const dip = (raw_params: {
       platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"),
     )
   }
-  /** silkscreen width */
-  const sw = parameters.w - parameters.od - 0.4
+
+  const padEdgeHeight =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.od
+
+  // Gap between rows (inner edge to inner edge)
+  const innerGap = parameters.w - parameters.od
+  // Silk width (small box between rows)
+  const sw = innerGap - 1 // clearance
+
+  // Silk height still spans the whole row length
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.od + 0.4
+
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -130,7 +135,7 @@ export const dip = (raw_params: {
     route: [
       { x: -sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: sh / 2 },
-      // Little U shape at the top
+      // U-notch curve outside the pads
       ...u_curve.map(({ x, y }) => ({
         x: (x * sw) / 6,
         y: (y * sw) / 6 + sh / 2,
@@ -142,33 +147,30 @@ export const dip = (raw_params: {
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
   }
+
+  /** Pin labels placed just outside silk line */
   const silkscreenPins: PcbFabricationNoteText[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const isLeft = i < parameters.num_pins / 2
-    const pinLabelX = isLeft
-      ? -parameters.w / 2 - parameters.p / 2 - 0.2
-      : parameters.p / 2 + parameters.w / 2 + 0.2
+    const pinLabelX = isLeft ? -sw / 2 - 0.4 : sw / 2 + 0.4
     const pinLabelY = isLeft
-      ? (-sh + 1.6) / 2 + i * parameters.p
-      : (-sh + 1.6) / 2 + (i - parameters.num_pins / 2) * parameters.p
-    const silkscreenPin = {
+      ? (-padEdgeHeight + parameters.od) / 2 + i * parameters.p
+      : (-padEdgeHeight + parameters.od) / 2 +
+        (i - parameters.num_pins / 2) * parameters.p
+    silkscreenPins.push({
       type: "pcb_fabrication_note_text",
       layer: "top",
       pcb_component_id: `pin_${i + 1}`,
       pcb_silkscreen_text_id: `pin_${i + 1}`,
       text: `{pin${i + 1}}`,
-      anchor_position: {
-        x: pinLabelX,
-        y: pinLabelY,
-      },
+      anchor_position: { x: pinLabelX, y: pinLabelY },
       font_size: 0.3,
       font_color: "red",
       font: "tscircuit2024",
       anchor_alignment: "top-left",
-    }
-
-    silkscreenPins.push(silkscreenPin)
+    })
   }
+
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
   return {
