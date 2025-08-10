@@ -143,7 +143,13 @@ export const dip = (raw_params: {
   const silkscreenPins: PcbFabricationNoteText[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const isLeft = i < parameters.num_pins / 2
-    const pinLabelX = isLeft ? -sw / 2 - 0.4 : sw / 2 + 0.4
+    // Place fabrication text outside the outer edge of the holes/pads
+    // Hole centers are at ±w/2; outer pad edge is at ±(w/2 + od/2)
+    // Add a small clearance margin to keep text away from holes
+    const clearance = 0.6
+    const pinLabelX = isLeft
+      ? -parameters.w / 2 - parameters.od / 2 - clearance
+      : parameters.w / 2 + parameters.od / 2 + clearance
     const pinLabelY = isLeft
       ? (-padEdgeHeight + parameters.od) / 2 + i * parameters.p
       : (-padEdgeHeight + parameters.od) / 2 +
