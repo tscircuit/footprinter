@@ -147,24 +147,28 @@ export const dip = (raw_params: {
     // Hole centers are at ±w/2; outer pad edge is at ±(w/2 + od/2)
     // Add a small clearance margin to keep text away from holes
     const clearance = 0.6
+    // Use CCW pin coordinates for correct top-left origin for pin1
+    const { y: pinCenterY } = getCcwDipCoords(
+      parameters.num_pins,
+      i + 1,
+      parameters.w,
+      parameters.p ?? 2.54,
+    )
     const pinLabelX = isLeft
       ? -parameters.w / 2 - parameters.od / 2 - clearance
       : parameters.w / 2 + parameters.od / 2 + clearance
-    const pinLabelY = isLeft
-      ? (-padEdgeHeight + parameters.od) / 2 + i * parameters.p
-      : (-padEdgeHeight + parameters.od) / 2 +
-        (i - parameters.num_pins / 2) * parameters.p
+    // Align label vertically with the actual pin center to preserve CCW order
+    const pinLabelY = pinCenterY
     silkscreenPins.push({
       type: "pcb_fabrication_note_text",
+      pcb_fabrication_note_text_id: `pin_${i + 1}`,
       layer: "top",
       pcb_component_id: `pin_${i + 1}`,
-      pcb_silkscreen_text_id: `pin_${i + 1}`,
       text: `{pin${i + 1}}`,
       anchor_position: { x: pinLabelX, y: pinLabelY },
       font_size: 0.3,
-      font_color: "red",
       font: "tscircuit2024",
-      anchor_alignment: "top-left",
+      anchor_alignment: "top_left",
     })
   }
 
