@@ -5,7 +5,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 test("parity/axial", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "axial_od1.4mm_id0.7mm_p1.9mm",
+      "axial_p1.9mm",
       "Resistor_THT.pretty/R_Axial_DIN0204_L3.6mm_D1.6mm_P1.90mm_Vertical.circuit.json",
     )
 
