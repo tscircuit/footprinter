@@ -5,7 +5,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 test("parity/soic20", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "soic20_w7.6mm_pl1.67mm_p1.27mm_legsoutside",
+      "soic20_w7.6mm_p1.27mm_legsoutside",
       "Package_SO.pretty/Infineon_SOIC-20W_7.6x12.8mm_P1.27mm.circuit.json",
     )
 

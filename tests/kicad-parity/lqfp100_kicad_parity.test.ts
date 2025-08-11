@@ -5,7 +5,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 test("parity/lqfp100", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "lqfp100_w14_p0.5mm_pw0.3_pl1.475_thermalpad6.9x6.9",
+      "lqfp100_w14_p0.5mm_pw0.3_thermalpad6.9x6.9",
       "Package_QFP.pretty/LQFP-100-1EP_14x14mm_P0.5mm_EP6.9x6.9mm.circuit.json",
     )
 

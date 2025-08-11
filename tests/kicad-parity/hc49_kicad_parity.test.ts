@@ -5,7 +5,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 test("parity/hc49", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "hc49_id0.8mm_od1.5mm",
+      "hc49",
       "Crystal.pretty/Crystal_HC49-4H_Vertical.circuit.json",
     )
 

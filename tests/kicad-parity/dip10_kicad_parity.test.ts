@@ -5,7 +5,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 test("parity/dip10", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "dip10_w10.16mm_od1.6mm_id0.8mm",
+      "dip10_w10.16mm",
       "Package_DIP.pretty/DIP-10_W10.16mm.circuit.json",
     )
 
