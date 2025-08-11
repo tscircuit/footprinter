@@ -109,13 +109,47 @@ export async function compareFootprinterVsKicad(
     console.log(
       `📏 ${horizontal ? "Horizontal" : "Vertical"} pad/hole pitch: ${avgPitch}`,
     )
-    for (const pad of kicadPads) {
-      console.log(`🔹 KiCad Pad - width: ${pad.width}, height: ${pad.height}`)
+    // Consolidate pad dimension logs: if all pads share same size, log once
+    if (kicadPads.length > 0) {
+      const padDimKey = (p: PcbSmtPad) => `${p.width}x${p.height}`
+      const uniquePadDims = new Set(kicadPads.map(padDimKey))
+      if (uniquePadDims.size === 1) {
+        const p = kicadPads[0]!
+        console.log(
+          `🔹 KiCad Pads - width: ${p.width}, height: ${p.height} (all ${kicadPads.length})`,
+        )
+      } else {
+        for (const pad of kicadPads) {
+          console.log(
+            `🔹 KiCad Pad - width: ${pad.width}, height: ${pad.height}`,
+          )
+        }
+      }
     }
-    for (const hole of kicadHoles) {
-      console.log(
-        `⚪ KiCad Plated Hole - outer: ${hole.shape === "circle" ? hole.outer_diameter : "N/A"}, inner: ${hole.shape === "circle" ? hole.hole_diameter : "N/A"}`,
-      )
+
+    // Consolidate plated hole logs: if all holes share same inner/outer diameters, log once
+    if (kicadHoles.length > 0) {
+      const holeDimKey = (h: PcbPlatedHole) =>
+        h.shape === "circle"
+          ? `circle:${h.outer_diameter}/${h.hole_diameter}`
+          : `${h.shape}:N/A/N/A`
+      const uniqueHoleDims = new Set(kicadHoles.map(holeDimKey))
+      if (uniqueHoleDims.size === 1) {
+        const h = kicadHoles[0]!
+        const outer = h.shape === "circle" ? h.outer_diameter : "N/A"
+        const inner = h.shape === "circle" ? h.hole_diameter : "N/A"
+        console.log(
+          `⚪ KiCad Plated Holes - outer: ${outer}, inner: ${inner} (all ${kicadHoles.length})`,
+        )
+      } else {
+        for (const hole of kicadHoles) {
+          console.log(
+            `⚪ KiCad Plated Hole - outer: ${
+              hole.shape === "circle" ? hole.outer_diameter : "N/A"
+            }, inner: ${hole.shape === "circle" ? hole.hole_diameter : "N/A"}`,
+          )
+        }
+      }
     }
   }
 
