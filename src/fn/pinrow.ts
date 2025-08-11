@@ -6,6 +6,8 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
+import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
+import { getPinrowStartIndex } from "src/helpers/get-pinrow-start-index"
 
 export const pinrow_def = z
   .object({
@@ -22,6 +24,12 @@ export const pinrow_def = z
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    startingpin: z
+      .string()
+      .or(z.array(pin_order_specifier))
+      .transform((v) => (typeof v === "string" ? v.slice(1, -1).split(",") : v))
+      .pipe(z.array(pin_order_specifier))
+      .optional(),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -80,6 +88,7 @@ export const pinrow = (
     od,
     rows,
     num_pins,
+    startingpin,
     pinlabelAnchorSide,
     pinlabelverticallyinverted,
     pinlabelorthogonal,
@@ -96,6 +105,9 @@ export const pinrow = (
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
   const ySpacing = -p
+
+  const positions: Array<{ row: number; col: number; x: number; y: number }> =
+    []
 
   const calculateAnchorPosition = ({
     xoff,
@@ -198,28 +210,30 @@ export const pinrow = (
   const useBGAStyle = rows > 2 && numPinsPerRow > 2
 
   if (rows === 1) {
-    // Single row: left to right, pin 1 to num_pins
+    // Single row: left to right
     const xStart = -((num_pins - 1) / 2) * p
     for (let i = 0; i < num_pins; i++) {
-      const pinNumber = i + 1
       const xoff = xStart + i * p
       const posKey = `${xoff},${0}`
       if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
       usedPositions.add(posKey)
-      addPin(pinNumber, xoff, 0)
+      positions.push({ row: 0, col: i, x: xoff, y: 0 })
     }
   } else if (useBGAStyle) {
     // BGA-style: row-major numbering (left to right, top to bottom)
     const xStart = -((numPinsPerRow - 1) / 2) * p
-    let currentPin = 1
-    for (let row = 0; row < rows && currentPin <= num_pins; row++) {
-      for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
+    for (let row = 0; row < rows && positions.length < num_pins; row++) {
+      for (
+        let col = 0;
+        col < numPinsPerRow && positions.length < num_pins;
+        col++
+      ) {
         const xoff = xStart + col * p
         const yoff = row * ySpacing
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
+        positions.push({ row, col, x: xoff, y: yoff })
       }
     }
   } else {
@@ -239,7 +253,8 @@ export const pinrow = (
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
+        positions.push({ row, col: left, x: xoff, y: yoff })
+        currentPin++
       }
       left++
 
@@ -250,7 +265,8 @@ export const pinrow = (
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
+        positions.push({ row: bottom, col, x: xoff, y: yoff })
+        currentPin++
       }
       bottom--
 
@@ -262,7 +278,8 @@ export const pinrow = (
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
+          positions.push({ row, col: right, x: xoff, y: yoff })
+          currentPin++
         }
         right--
       }
@@ -275,18 +292,33 @@ export const pinrow = (
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
+          positions.push({ row: top, col, x: xoff, y: yoff })
+          currentPin++
         }
         top++
       }
     }
 
     // Verify all pins were assigned
+
     if (currentPin - 1 < num_pins) {
       throw new Error(
         `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
       )
     }
+  }
+
+  const startIndex = getPinrowStartIndex({
+    positions: positions.map((p) => ({ row: p.row, col: p.col })),
+    rows,
+    numPinsPerRow,
+    startingpin,
+  })
+
+  for (let i = 0; i < positions.length; i++) {
+    const pinNumber = ((i - startIndex + num_pins) % num_pins) + 1
+    const { x, y } = positions[i]
+    addPin(pinNumber, x, y)
   }
 
   // Add centered silkscreen reference text
