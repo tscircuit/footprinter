@@ -171,6 +171,7 @@ export type Footprinter = {
     | "pl"
     | "innerhole"
     | "innerholeedgedistance"
+    | "silkscreenlabels"
   >
   stampreceiver: () => FootprinterParamsBuilder<
     | "w"

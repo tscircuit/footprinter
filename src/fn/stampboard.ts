@@ -3,6 +3,7 @@ import {
   type AnyCircuitElement,
   type PcbPlatedHole,
   type PcbSilkscreenPath,
+  type PcbSilkscreenText,
 } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -22,6 +23,7 @@ export const stampboard_def = z.object({
   pl: length.default(length.parse("2.4mm")),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
+  silkscreenlabels: z.boolean().default(false),
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>
@@ -133,6 +135,7 @@ export const stampboard = (
   const height = params.h ?? getHeight(params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
+  const pinLabels: PcbSilkscreenText[] = []
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
   const outerDiameter = 1.2
@@ -157,6 +160,23 @@ export const stampboard = (
           params.pw,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1 + params.left + (params.bottom ?? 0)
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: params.w / 2 - params.pl / 2 + 3.7,
+            y: yoff + i * params.p,
+          },
+          text: `pin${padIndex}`,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -198,6 +218,23 @@ export const stampboard = (
           params.pw,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: -params.w / 2 + params.pl / 2 - 4.5,
+            y: yoff + i * params.p,
+          },
+          text: `pin${padIndex}`,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -244,6 +281,24 @@ export const stampboard = (
           params.pl,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex =
+          i + 1 + params.left + params.right + (params.bottom ?? 0)
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: xoff + i * params.p,
+            y: height / 2 - params.pl / 2 + 3.2,
+          },
+          text: `pin${padIndex}`,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -295,6 +350,23 @@ export const stampboard = (
           params.pl,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1 + params.left
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: xoff + i * params.p,
+            y: -height / 2 + params.pl / 2 - 3.2,
+          },
+          text: `pin${padIndex}`,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -350,6 +422,7 @@ export const stampboard = (
     circuitJson: [
       ...rectpads,
       ...holes,
+      ...pinLabels,
       silkscreenPath,
       silkscreenTriangle,
       silkscreenRefText,
