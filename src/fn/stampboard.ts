@@ -168,7 +168,7 @@ export const stampboard = (
           pcb_component_id: "1",
           layer: "top",
           anchor_position: {
-            x: params.w / 2 - params.pl / 2 + 3.7,
+            x: params.w / 2 - params.pl / 2 - 3.7,
             y: yoff + i * params.p,
           },
           text: `pin${padIndex}`,
@@ -226,7 +226,7 @@ export const stampboard = (
           pcb_component_id: "1",
           layer: "top",
           anchor_position: {
-            x: -params.w / 2 + params.pl / 2 - 4.5,
+            x: -params.w / 2 + params.pl / 2 + 3.7,
             y: yoff + i * params.p,
           },
           text: `pin${padIndex}`,
@@ -291,12 +291,13 @@ export const stampboard = (
           layer: "top",
           anchor_position: {
             x: xoff + i * params.p,
-            y: height / 2 - params.pl / 2 + 3.2,
+            y: height / 2 - params.pl / 2 - 3.2,
           },
           text: `pin${padIndex}`,
           font_size: 0.7,
           font: "tscircuit2024",
           anchor_alignment: "center",
+          ccw_rotation: 270,
         })
       }
       if (params.innerhole) {
@@ -359,12 +360,13 @@ export const stampboard = (
           layer: "top",
           anchor_position: {
             x: xoff + i * params.p,
-            y: -height / 2 + params.pl / 2 - 3.2,
+            y: -height / 2 + params.pl / 2 + 3.2,
           },
           text: `pin${padIndex}`,
           font_size: 0.7,
           font: "tscircuit2024",
           anchor_alignment: "center",
+          ccw_rotation: 90,
         })
       }
       if (params.innerhole) {
