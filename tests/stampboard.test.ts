@@ -45,6 +45,48 @@ test("stampboard silkscreen labels", () => {
     ),
   ).toBe(true)
 
+  const pos = (n: number) =>
+    silkscreenTexts.find((t) => t.text === `pin${n}`)!.anchor_position
+
+  // pin1 should be on the left side at the top
+  const pin1 = pos(1)
+  expect(pin1.x).toBeLessThan(0)
+  expect(pin1.y).toBeGreaterThan(0)
+
+  for (let i = 1; i < params.left; i++) {
+    const current = pos(i)
+    const next = pos(i + 1)
+    expect(next.y).toBeLessThan(current.y)
+    expect(next.x).toBeCloseTo(current.x, 3)
+  }
+
+  const bottomFirst = params.left + 1
+  const bottomLast = params.left + (params.bottom ?? 0)
+  for (let pin = bottomFirst; pin < bottomLast; pin++) {
+    const current = pos(pin)
+    const next = pos(pin + 1)
+    expect(next.x).toBeGreaterThan(current.x)
+    expect(next.y).toBeCloseTo(current.y, 3)
+  }
+
+  const rightFirst = params.left + (params.bottom ?? 0) + 1
+  const rightLast = rightFirst + params.right - 1
+  for (let pin = rightFirst; pin < rightLast; pin++) {
+    const current = pos(pin)
+    const next = pos(pin + 1)
+    expect(next.y).toBeGreaterThan(current.y)
+    expect(next.x).toBeCloseTo(current.x, 3)
+  }
+
+  const topFirst = params.left + params.bottom + params.right + 1
+  const topLast = topFirst + params.top - 1
+  for (let pin = topFirst; pin < topLast; pin++) {
+    const current = pos(pin)
+    const next = pos(pin + 1)
+    expect(next.x).toBeLessThan(current.x)
+    expect(next.y).toBeCloseTo(current.y, 3)
+  }
+
   const bottomStart = params.left + 1
   const bottomEnd = params.left + (params.bottom ?? 0)
   const topStart = params.left + params.right + (params.bottom ?? 0) + 1

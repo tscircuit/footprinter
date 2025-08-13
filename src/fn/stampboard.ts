@@ -200,12 +200,12 @@ export const stampboard = (
     }
   }
   if (params.left) {
-    const yoff = -((params.left - 1) / 2) * params.p
+    const yoff = ((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
-      if (i === params.left - 1) {
+      if (i === 0) {
         routes = getTriangleDir(
           -params.w / 2 + params.pl * 1.4,
-          yoff + i * params.p,
+          yoff - i * params.p,
           "left",
         )
       }
@@ -213,7 +213,7 @@ export const stampboard = (
         rectpad(
           i + 1,
           -params.w / 2 + params.pl / 2,
-          yoff + i * params.p,
+          yoff - i * params.p,
           params.pl,
           params.pw,
         ),
@@ -227,7 +227,7 @@ export const stampboard = (
           layer: "top",
           anchor_position: {
             x: -params.w / 2 + params.pl / 2 + 3.7,
-            y: yoff + i * params.p,
+            y: yoff - i * params.p,
           },
           text: `pin${padIndex}`,
           font_size: 0.7,
@@ -240,7 +240,7 @@ export const stampboard = (
           platedhole(
             i + 1 + totalPadsNumber,
             -params.w / 2,
-            yoff + i * params.p,
+            yoff - i * params.p,
             innerDiameter,
             outerDiameter,
           ),
@@ -249,7 +249,7 @@ export const stampboard = (
           platedhole(
             i + 1 + totalPadsNumber * 2,
             -params.w / 2 + params.innerholeedgedistance,
-            yoff + i * params.p,
+            yoff - i * params.p,
             innerDiameter,
             outerDiameter,
           ),
@@ -258,16 +258,11 @@ export const stampboard = (
     }
   }
   if (params.top) {
-    const xoff = -((params.top - 1) / 2) * params.p
+    const xoff = ((params.top - 1) / 2) * params.p
     for (let i = 0; i < params.top; i++) {
-      if (
-        i === params.top - 1 &&
-        !params.left &&
-        !params.bottom &&
-        !params.right
-      ) {
+      if (i === 0 && !params.left && !params.bottom && !params.right) {
         routes = getTriangleDir(
-          xoff + i * params.p,
+          xoff - i * params.p,
           height / 2 - params.pl * 1.4,
           "top",
         )
@@ -275,7 +270,7 @@ export const stampboard = (
       rectpads.push(
         rectpad(
           i + 1 + params.left + params.right + (params.bottom ?? 0),
-          xoff + i * params.p,
+          xoff - i * params.p,
           height / 2 - params.pl / 2,
           params.pw,
           params.pl,
@@ -290,7 +285,7 @@ export const stampboard = (
           pcb_component_id: "1",
           layer: "top",
           anchor_position: {
-            x: xoff + i * params.p,
+            x: xoff - i * params.p,
             y: height / 2 - params.pl / 2 - 3.2,
           },
           text: `pin${padIndex}`,
@@ -309,7 +304,7 @@ export const stampboard = (
               params.right +
               (params.bottom ?? 0) +
               totalPadsNumber,
-            xoff + i * params.p,
+            xoff - i * params.p,
             height / 2,
             innerDiameter,
             outerDiameter,
@@ -323,7 +318,7 @@ export const stampboard = (
               params.right +
               (params.bottom ?? 0) +
               totalPadsNumber * 2,
-            xoff + i * params.p,
+            xoff - i * params.p,
             height / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
