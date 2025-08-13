@@ -3,6 +3,7 @@ import {
   type AnyCircuitElement,
   type PcbPlatedHole,
   type PcbSilkscreenPath,
+  type PcbSilkscreenText,
 } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -22,6 +23,8 @@ export const stampboard_def = z.object({
   pl: length.default(length.parse("2.4mm")),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
+  silkscreenlabels: z.boolean().default(false),
+  silkscreenlabelmargin: length.default(length.parse("0.2mm")),
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>
@@ -133,15 +136,23 @@ export const stampboard = (
   const height = params.h ?? getHeight(params)
   const rectpads: AnyCircuitElement[] = []
   const holes: PcbPlatedHole[] = []
+  const pinLabels: PcbSilkscreenText[] = []
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
   const outerDiameter = 1.2
   const totalPadsNumber =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
+  const maxLabelLength = `pin${totalPadsNumber}`.length
+  const textHalf = (maxLabelLength * 0.7) / 2
   if (params.right) {
     const yoff = -((params.right - 1) / 2) * params.p
     for (let i = 0; i < params.right; i++) {
-      if (i === 0 && !params.left && !params.bottom) {
+      if (
+        i === 0 &&
+        !params.left &&
+        !params.bottom &&
+        !params.silkscreenlabels
+      ) {
         routes = getTriangleDir(
           params.w / 2 - params.pl * 1.4,
           yoff + i * params.p,
@@ -157,6 +168,27 @@ export const stampboard = (
           params.pw,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1 + params.left + (params.bottom ?? 0)
+        const label = `pin${padIndex}`
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x:
+              params.w / 2 -
+              params.pl -
+              (textHalf + params.silkscreenlabelmargin),
+            y: yoff + i * params.p,
+          },
+          text: label,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -180,12 +212,12 @@ export const stampboard = (
     }
   }
   if (params.left) {
-    const yoff = -((params.left - 1) / 2) * params.p
+    const yoff = ((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
-      if (i === params.left - 1) {
+      if (i === 0 && !params.silkscreenlabels) {
         routes = getTriangleDir(
           -params.w / 2 + params.pl * 1.4,
-          yoff + i * params.p,
+          yoff - i * params.p,
           "left",
         )
       }
@@ -193,17 +225,38 @@ export const stampboard = (
         rectpad(
           i + 1,
           -params.w / 2 + params.pl / 2,
-          yoff + i * params.p,
+          yoff - i * params.p,
           params.pl,
           params.pw,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1
+        const label = `pin${padIndex}`
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x:
+              -params.w / 2 +
+              params.pl +
+              (textHalf + params.silkscreenlabelmargin),
+            y: yoff - i * params.p,
+          },
+          text: label,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
             i + 1 + totalPadsNumber,
             -params.w / 2,
-            yoff + i * params.p,
+            yoff - i * params.p,
             innerDiameter,
             outerDiameter,
           ),
@@ -212,7 +265,7 @@ export const stampboard = (
           platedhole(
             i + 1 + totalPadsNumber * 2,
             -params.w / 2 + params.innerholeedgedistance,
-            yoff + i * params.p,
+            yoff - i * params.p,
             innerDiameter,
             outerDiameter,
           ),
@@ -221,16 +274,17 @@ export const stampboard = (
     }
   }
   if (params.top) {
-    const xoff = -((params.top - 1) / 2) * params.p
+    const xoff = ((params.top - 1) / 2) * params.p
     for (let i = 0; i < params.top; i++) {
       if (
-        i === params.top - 1 &&
+        i === 0 &&
         !params.left &&
         !params.bottom &&
-        !params.right
+        !params.right &&
+        !params.silkscreenlabels
       ) {
         routes = getTriangleDir(
-          xoff + i * params.p,
+          xoff - i * params.p,
           height / 2 - params.pl * 1.4,
           "top",
         )
@@ -238,12 +292,35 @@ export const stampboard = (
       rectpads.push(
         rectpad(
           i + 1 + params.left + params.right + (params.bottom ?? 0),
-          xoff + i * params.p,
+          xoff - i * params.p,
           height / 2 - params.pl / 2,
           params.pw,
           params.pl,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex =
+          i + 1 + params.left + params.right + (params.bottom ?? 0)
+        const label = `pin${padIndex}`
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: xoff - i * params.p,
+            y:
+              height / 2 -
+              params.pl -
+              (textHalf + params.silkscreenlabelmargin),
+          },
+          text: label,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+          ccw_rotation: 270,
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -253,7 +330,7 @@ export const stampboard = (
               params.right +
               (params.bottom ?? 0) +
               totalPadsNumber,
-            xoff + i * params.p,
+            xoff - i * params.p,
             height / 2,
             innerDiameter,
             outerDiameter,
@@ -267,7 +344,7 @@ export const stampboard = (
               params.right +
               (params.bottom ?? 0) +
               totalPadsNumber * 2,
-            xoff + i * params.p,
+            xoff - i * params.p,
             height / 2 - params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
@@ -279,7 +356,7 @@ export const stampboard = (
   if (params.bottom) {
     const xoff = -((params.bottom - 1) / 2) * params.p
     for (let i = 0; i < params.bottom; i++) {
-      if (i === 0 && !params.left) {
+      if (i === 0 && !params.left && !params.silkscreenlabels) {
         routes = getTriangleDir(
           xoff + i * params.p,
           -height / 2 + params.pl * 1.4,
@@ -295,6 +372,28 @@ export const stampboard = (
           params.pl,
         ),
       )
+      if (params.silkscreenlabels) {
+        const padIndex = i + 1 + params.left
+        const label = `pin${padIndex}`
+        pinLabels.push({
+          type: "pcb_silkscreen_text",
+          pcb_silkscreen_text_id: `pin_${padIndex}`,
+          pcb_component_id: "1",
+          layer: "top",
+          anchor_position: {
+            x: xoff + i * params.p,
+            y:
+              -height / 2 +
+              params.pl +
+              (textHalf + params.silkscreenlabelmargin),
+          },
+          text: label,
+          font_size: 0.7,
+          font: "tscircuit2024",
+          anchor_alignment: "center",
+          ccw_rotation: 90,
+        })
+      }
       if (params.innerhole) {
         holes.push(
           platedhole(
@@ -350,8 +449,9 @@ export const stampboard = (
     circuitJson: [
       ...rectpads,
       ...holes,
+      ...pinLabels,
       silkscreenPath,
-      silkscreenTriangle,
+      ...(params.silkscreenlabels ? [] : [silkscreenTriangle]),
       silkscreenRefText,
     ],
     parameters: params,
