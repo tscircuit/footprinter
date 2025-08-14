@@ -127,7 +127,7 @@ test("stampboard silkscreen labels", () => {
   const pin1Margin = silkscreenTextsMargin.find(
     (t) => t.text === "pin1",
   )!.anchor_position
-  expect(pin1Margin.x - pin1Default.x).toBeCloseTo(0.8, 3)
+  expect(pin1Margin.x - pin1Default.x).toBeCloseTo(0.9, 3)
 
   const pinTopDefault = silkscreenTexts.find(
     (t) => t.text === `pin${topFirst}`,
@@ -135,5 +135,5 @@ test("stampboard silkscreen labels", () => {
   const pinTopMargin = silkscreenTextsMargin.find(
     (t) => t.text === `pin${topFirst}`,
   )!.anchor_position
-  expect(pinTopDefault.y - pinTopMargin.y).toBeCloseTo(0.8, 3)
+  expect(pinTopDefault.y - pinTopMargin.y).toBeCloseTo(0.9, 3)
 })

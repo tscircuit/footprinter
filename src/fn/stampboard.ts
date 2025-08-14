@@ -24,7 +24,7 @@ export const stampboard_def = z.object({
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
-  silkscreenlabelmargin: length.default(length.parse("0.2mm")),
+  silkscreenlabelmargin: length.default(length.parse("0.1mm")),
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>
