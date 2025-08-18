@@ -14,6 +14,7 @@ export const silkscreenPin = ({
   orthogonal = false,
   verticallyinverted = false,
   layer = "top",
+  anchorplacement,
 }: {
   fs: number
   pn: number
@@ -36,22 +37,29 @@ export const silkscreenPin = ({
     ccw_rotation = 0
   }
 
-  let anchor_alignment: PcbSilkscreenText["anchor_alignment"] = "center"
+  let horizontal: "left" | "center" | "right" = "center"
   if (textalign === "left") {
-    if (verticallyinverted) anchor_alignment = "center_right"
-    else anchor_alignment = "center_left"
+    horizontal = verticallyinverted ? "right" : "left"
+  } else if (textalign === "right") {
+    horizontal = verticallyinverted ? "left" : "right"
   }
-  if (textalign === "right") {
-    if (verticallyinverted) anchor_alignment = "center_left"
-    else anchor_alignment = "center_right"
+
+  let vertical: "top" | "center" | "bottom" = "center"
+  if (anchorplacement === "top") vertical = "bottom"
+  else if (anchorplacement === "bottom") vertical = "top"
+
+  let anchor_alignment: PcbSilkscreenText["anchor_alignment"]
+  if (vertical === "center" && horizontal === "center") {
+    anchor_alignment = "center"
+  } else {
+    anchor_alignment = `${vertical}_${horizontal}` as any
   }
 
   if (layer === "bottom") {
-    if (anchor_alignment === "center_left") {
-      anchor_alignment = "center_right"
-    } else if (anchor_alignment === "center_right") {
-      anchor_alignment = "center_left"
-    }
+    anchor_alignment = anchor_alignment
+      .replace("left", "__temp__")
+      .replace("right", "left")
+      .replace("__temp__", "right") as any
   }
 
   return {
