@@ -1,4 +1,5 @@
 import { test, expect } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 // Test bottomleft origin for single pad
@@ -120,4 +121,13 @@ test("res origin bottomleft shifts silkscreen", () => {
   )!
   const text = circuit.find((el) => el.type === "pcb_silkscreen_text")!
   expect(text.anchor_position.y - pad1.y).toBeCloseTo(pad1.height / 2 + 0.9)
+})
+
+test("res origin bottomleft snapshot", () => {
+  const soup = fp().res().imperial("0603").origin("bottomleft").soup()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "0603_bottomleft_origin",
+  )
 })
