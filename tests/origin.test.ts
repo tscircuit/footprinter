@@ -110,3 +110,14 @@ test("smtpad origin centertop", () => {
   expect(pad.x).toBeCloseTo(0)
   expect(pad.y).toBeCloseTo(-0.5)
 })
+
+// Ensure origin applies to silkscreen elements
+
+test("res origin bottomleft shifts silkscreen", () => {
+  const circuit = fp().res().imperial("0603").origin("bottomleft").circuitJson()
+  const pad1 = circuit.find(
+    (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === "1",
+  )!
+  const text = circuit.find((el) => el.type === "pcb_silkscreen_text")!
+  expect(text.anchor_position.y - pad1.y).toBeCloseTo(pad1.height / 2 + 0.9)
+})

@@ -98,12 +98,25 @@ export const applyOrigin = (
 
   if (dx === 0 && dy === 0) return elements
 
-  for (const pad of pads) {
-    pad.x -= dx
-    pad.y -= dy
-    if (pad.center) {
-      pad.center.x -= dx
-      pad.center.y -= dy
+  for (const el of elements as Array<any>) {
+    if (typeof el.x === "number") el.x -= dx
+    if (typeof el.y === "number") el.y -= dy
+
+    if (el.center && typeof el.center.x === "number") {
+      el.center.x -= dx
+      el.center.y -= dy
+    }
+
+    if (el.type === "pcb_silkscreen_path") {
+      for (const pt of el.route) {
+        pt.x -= dx
+        pt.y -= dy
+      }
+    }
+
+    if (el.type === "pcb_silkscreen_text" && el.anchor_position) {
+      el.anchor_position.x -= dx
+      el.anchor_position.y -= dy
     }
   }
 
