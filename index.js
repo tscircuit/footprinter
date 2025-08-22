@@ -53899,7 +53899,7 @@ var m2host = (raw_params) => {
 };
 // src/helpers/is-not-null.ts
 function isNotNull(value) {
-  return value !== null;
+  return value !== null && value !== undefined;
 }
 
 // src/helpers/apply-origin.ts
@@ -54004,8 +54004,10 @@ var string2 = (def) => {
   const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1");
   const def_parts = modifiedDef.split(/_(?!metric)/).map((s) => {
     const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/);
-    const [_, fn, v] = m ?? [];
-    if (v?.includes("?"))
+    if (!m)
+      return null;
+    const [, fn, v] = m;
+    if (!fn || v?.includes("?"))
       return null;
     return { fn, v };
   }).filter(isNotNull);
