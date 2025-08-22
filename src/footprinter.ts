@@ -245,9 +245,10 @@ export const string = (def: string): Footprinter => {
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
-      const [_, fn, v] = m ?? []
-      if (v?.includes("?")) return null
-      return { fn: fn!, v: v! }
+      if (!m) return null
+      const [, fn, v] = m
+      if (!fn || v?.includes("?")) return null
+      return { fn, v }
     })
     .filter(isNotNull)
 
