@@ -247,7 +247,7 @@ export const string = (def: string): Footprinter => {
       const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
       const [, fn, v] = m
-      if (v?.includes("?")) return null
+      if (!fn || v?.includes("?")) return null
       return { fn, v }
     })
     .filter(isNotNull)
