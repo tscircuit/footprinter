@@ -6,7 +6,7 @@
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
-    "ignore": ["node_modules", "package.json"]
+    "ignore": ["node_modules", "package.json", "public"]
   },
   "javascript": {
     "formatter": {
