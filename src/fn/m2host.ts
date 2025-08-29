@@ -28,7 +28,7 @@ export const m2host = (
     const y = startY - i * halfPitch
 
     const isBottomLayer = pn % 2 === 0
-    const padLengthWithOffset = padLength + (isBottomLayer ? 0 : 0.25)
+    const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0)
     const rightEdgeOffset = 0.5
     const x = isBottomLayer
       ? rightEdgeOffset - padLengthWithOffset / 2
