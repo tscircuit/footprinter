@@ -30,9 +30,7 @@ export const m2host = (
     const isBottomLayer = pn % 2 === 0
     const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0)
     const rightEdgeOffset = 0.5
-    const x = isBottomLayer
-      ? rightEdgeOffset - padLengthWithOffset / 2
-      : rightEdgeOffset - padLengthWithOffset / 2
+    const x = rightEdgeOffset - padLengthWithOffset / 2
     const pad = rectpad(pn, x, y, padLengthWithOffset, padWidth)
     pad.layer = isBottomLayer ? "bottom" : "top"
     pads.push(pad)
