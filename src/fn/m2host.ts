@@ -26,10 +26,13 @@ export const m2host = (
     const pn = i + 1
     if (pn >= 24 && pn <= 31) continue
     const y = startY - i * halfPitch
-    const x = i % 2 === 0 ? 0 : -rowOffset / 2
-    const padLengthWithOffset = padLength + (i % 2 === 0 ? 0 : 0.25)
+
+    const isBottomLayer = pn % 2 === 0
+    const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0)
+    const rightEdgeOffset = 0.5
+    const x = rightEdgeOffset - padLengthWithOffset / 2
     const pad = rectpad(pn, x, y, padLengthWithOffset, padWidth)
-    pad.layer = pn % 2 === 0 ? "bottom" : "top"
+    pad.layer = isBottomLayer ? "bottom" : "top"
     pads.push(pad)
   }
 
