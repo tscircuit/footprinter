@@ -139,7 +139,7 @@ export const stampboard = (
   const pinLabels: PcbSilkscreenText[] = []
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
-  const outerDiameter = 1.2
+  const outerDiameter = innerDiameter
   const totalPadsNumber =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
   const maxLabelLength = `pin${totalPadsNumber}`.length
