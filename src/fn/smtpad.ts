@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
+import { pillpad } from "../helpers/pillpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement } from "circuit-json"
 import { mm } from "@tscircuit/mm"
@@ -12,6 +13,7 @@ export const smtpad_def = z
     circle: z.boolean().optional(),
     rect: z.boolean().optional(),
     square: z.boolean().optional(),
+    pill: z.boolean().optional(),
     d: length.optional(),
     pd: length.optional(),
     diameter: length.optional(),
@@ -29,10 +31,11 @@ export const smtpad_def = z
     string: z.string().optional(),
   })
   .transform((v) => {
-    let shape: "circle" | "rect" | "square" = "rect"
+    let shape: "circle" | "rect" | "square" | "pill" = "rect"
     if (v.circle) shape = "circle"
     if (v.square) shape = "square"
     if (v.rect) shape = "rect"
+    if (v.pill) shape = "pill"
 
     let radius: number | undefined
     let width: number | undefined
@@ -47,6 +50,7 @@ export const smtpad_def = z
       else if (v.diameter !== undefined) radius = mm(v.diameter) / 2
       else radius = mm("1mm") / 2
     } else {
+      // For rect, square, and pill shapes
       if (v.w !== undefined) width = mm(v.w)
       else if (v.pw !== undefined) width = mm(v.pw)
       else if (v.width !== undefined) width = mm(v.width)
@@ -57,7 +61,10 @@ export const smtpad_def = z
       if (v.h !== undefined) height = mm(v.h)
       else if (v.ph !== undefined) height = mm(v.ph)
       else if (v.height !== undefined) height = mm(v.height)
-      else height = width
+      else if (shape === "square") height = width
+      else if (shape === "rect")
+        height = width // rect defaults to square when only width specified
+      else height = mm("1mm") // pill default
     }
 
     return {
@@ -77,16 +84,25 @@ export const smtpad = (
   const params = smtpad_def.parse(raw_params)
   const { shape, radius, width, height } = params
 
+  let pad: AnyCircuitElement
+  let silkscreenOffset: number
+
+  if (shape === "circle") {
+    pad = circlepad(1, { x: 0, y: 0, radius: radius! }) as AnyCircuitElement
+    silkscreenOffset = radius! + 0.5
+  } else if (shape === "pill") {
+    pad = pillpad(1, 0, 0, width!, height!) as AnyCircuitElement
+    silkscreenOffset = Math.max(width!, height!) / 2 + 0.5
+  } else {
+    // rect or square
+    pad = rectpad(1, 0, 0, width!, height!) as AnyCircuitElement
+    silkscreenOffset = height! / 2 + 0.5
+  }
+
   return {
     circuitJson: [
-      shape === "circle"
-        ? (circlepad(1, { x: 0, y: 0, radius: radius! }) as AnyCircuitElement)
-        : (rectpad(1, 0, 0, width!, height!) as AnyCircuitElement),
-      silkscreenRef(
-        0,
-        shape === "circle" ? radius! + 0.5 : height! / 2 + 0.5,
-        0.2,
-      ) as AnyCircuitElement,
+      pad,
+      silkscreenRef(0, silkscreenOffset, 0.2) as AnyCircuitElement,
     ],
     parameters: params,
   }
