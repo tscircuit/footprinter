@@ -4,6 +4,7 @@ import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { u_curve } from "../helpers/u-curve"
 import { rectpad } from "src/helpers/rectpad"
+import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -12,6 +13,7 @@ export const extendSoicDef = (newDefaults: {
   pl?: string
   num_pins?: number
   legsoutside?: boolean
+  pillpads?: boolean
 }) =>
   z
     .object({
@@ -25,6 +27,10 @@ export const extendSoicDef = (newDefaults: {
         .boolean()
         .optional()
         .default(newDefaults.legsoutside ?? false),
+      pillpads: z
+        .boolean()
+        .optional()
+        .default(newDefaults.pillpads ?? false),
     })
     .transform((v) => {
       // Default inner diameter and outer diameter
@@ -37,7 +43,7 @@ export const extendSoicDef = (newDefaults: {
         v.pl = v.pw! * (1.0 / 0.6)
       }
 
-      return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl">
+      return v as NowDefined<typeof v, "w" | "p" | "pw" | "pl" | "pillpads">
     })
 
 export const soic_def = extendSoicDef({})
@@ -108,7 +114,11 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+    if (parameters.pillpads) {
+      pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw))
+    } else {
+      pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+    }
   }
 
   /** silkscreen width */
