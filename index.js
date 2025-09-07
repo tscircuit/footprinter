@@ -32429,6 +32429,7 @@ var smtpad_def = exports_external.object({
   circle: exports_external.boolean().optional(),
   rect: exports_external.boolean().optional(),
   square: exports_external.boolean().optional(),
+  pill: exports_external.boolean().optional(),
   d: length.optional(),
   pd: length.optional(),
   diameter: length.optional(),
@@ -32452,6 +32453,8 @@ var smtpad_def = exports_external.object({
     shape = "square";
   if (v2.rect)
     shape = "rect";
+  if (v2.pill)
+    shape = "pill";
   let radius;
   let width;
   let height;
@@ -32489,8 +32492,12 @@ var smtpad_def = exports_external.object({
       height = mm2(v2.ph);
     else if (v2.height !== undefined)
       height = mm2(v2.height);
-    else
+    else if (shape === "square")
       height = width;
+    else if (shape === "rect")
+      height = width;
+    else
+      height = mm2("1mm");
   }
   return {
     fn: v2.fn,
@@ -32503,10 +32510,22 @@ var smtpad_def = exports_external.object({
 var smtpad = (raw_params) => {
   const params = smtpad_def.parse(raw_params);
   const { shape, radius, width, height } = params;
+  let pad2;
+  let silkscreenOffset;
+  if (shape === "circle") {
+    pad2 = circlepad(1, { x: 0, y: 0, radius });
+    silkscreenOffset = radius + 0.5;
+  } else if (shape === "pill") {
+    pad2 = pillpad(1, 0, 0, width, height);
+    silkscreenOffset = Math.max(width, height) / 2 + 0.5;
+  } else {
+    pad2 = rectpad(1, 0, 0, width, height);
+    silkscreenOffset = height / 2 + 0.5;
+  }
   return {
     circuitJson: [
-      shape === "circle" ? circlepad(1, { x: 0, y: 0, radius }) : rectpad(1, 0, 0, width, height),
-      silkscreenRef(0, shape === "circle" ? radius + 0.5 : height / 2 + 0.5, 0.2)
+      pad2,
+      silkscreenRef(0, silkscreenOffset, 0.2)
     ],
     parameters: params
   };
