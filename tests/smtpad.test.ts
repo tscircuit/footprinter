@@ -13,6 +13,11 @@ const expectPad = (
   expect(pad.shape).toBe(shape)
   if (shape === "circle") {
     expect(pad.radius).toBeCloseTo(typeof size === "number" ? size : 0)
+  } else if (shape === "pill") {
+    const { width, height } = size as { width: number; height: number }
+    expect(pad.width).toBeCloseTo(width)
+    expect(pad.height).toBeCloseTo(height)
+    expect(pad.radius).toBeCloseTo(height / 2) // pill pads have radius = height / 2
   } else {
     const { width, height } = size as { width: number; height: number }
     expect(pad.width).toBeCloseTo(width)
@@ -57,6 +62,23 @@ test("smtpad square width", () => {
 test("smtpad square size alias", () => {
   const circuitJson = fp().smtpad().square().size("1.5mm").circuitJson()
   expectPad(circuitJson, "rect", { width: 1.5, height: 1.5 })
+})
+
+test("smtpad pill w/h", async () => {
+  const { snapshotSoup } = await getTestFixture("smtpad_pill_w3_h1")
+  const circuitJson = fp().smtpad().pill().w("3mm").h("1mm").circuitJson()
+  expectPad(circuitJson, "pill", { width: 3, height: 1 })
+  snapshotSoup(circuitJson)
+})
+
+test("smtpad pill default size", () => {
+  const circuitJson = fp().smtpad().pill().circuitJson()
+  expectPad(circuitJson, "pill", { width: 1, height: 1 })
+})
+
+test("smtpad pill with width only", () => {
+  const circuitJson = fp().smtpad().pill().w("2mm").circuitJson()
+  expectPad(circuitJson, "pill", { width: 2, height: 1 })
 })
 
 test("smtpad from string", () => {

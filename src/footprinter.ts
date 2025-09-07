@@ -195,6 +195,7 @@ export type Footprinter = {
     | "circle"
     | "rect"
     | "square"
+    | "pill"
     | "d"
     | "pd"
     | "diameter"
