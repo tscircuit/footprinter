@@ -5,7 +5,7 @@ import type {
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
@@ -104,7 +104,7 @@ export const dip = (raw_params: {
       parameters.p ?? 2.54,
     )
     platedHoles.push(
-      platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"),
+      platedHoleWithRectPad(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm", parameters.od ?? "1mm"),
     )
   }
 
