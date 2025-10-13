@@ -104,7 +104,14 @@ export const dip = (raw_params: {
       parameters.p ?? 2.54,
     )
     platedHoles.push(
-      platedHoleWithRectPad(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm", parameters.od ?? "1mm"),
+      platedHoleWithRectPad(
+        i + 1,
+        x,
+        y,
+        parameters.id ?? "0.8mm",
+        parameters.od ?? "1mm",
+        parameters.od ?? "1mm",
+      ),
     )
   }
 
