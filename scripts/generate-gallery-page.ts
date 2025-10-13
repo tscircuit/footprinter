@@ -1,5 +1,5 @@
-import fs from "fs"
-import path from "path"
+import fs from "node:fs"
+import path from "node:path"
 
 const snapshotsDir = path.join(__dirname, "..", "tests", "__snapshots__")
 const outputDir = path.join(__dirname, "..", "public")
@@ -8,6 +8,7 @@ const outputFile = path.join(outputDir, "gallery.html")
 function generateGalleryPage() {
   const svgFiles = fs
     .readdirSync(snapshotsDir)
+    .sort()
     .filter((file) => file.endsWith(".snap.svg"))
 
   const htmlContent = `
