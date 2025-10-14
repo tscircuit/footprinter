@@ -12,28 +12,67 @@ type PcbSmtPad = {
   height: number
   port_hints?: string[]
   shape?: string
+  radius?: number
 }
+
+const isRectPadHole = (
+  elm: PcbPlatedHole,
+): elm is PcbPlatedHole & {
+  shape: "circular_hole_with_rect_pad"
+  rect_pad_width: number
+  rect_pad_height: number
+} =>
+  elm.shape === "circular_hole_with_rect_pad" &&
+  "rect_pad_width" in elm &&
+  "rect_pad_height" in elm
 
 // --- Helpers to handle both pads & holes safely ---
 function getWidth(elm: PcbSmtPad | PcbPlatedHole): number {
-  if ("width" in elm) return elm.width
-  if (elm.shape === "circle") return elm.outer_diameter
+  if (elm.type === "pcb_plated_hole") {
+    if (elm.shape === "circle") return elm.outer_diameter
+    if (isRectPadHole(elm)) return elm.rect_pad_width
+    return 0
+  }
 
-  return 0
+  return elm.width
 }
 function getHeight(elm: PcbSmtPad | PcbPlatedHole): number {
-  if ("height" in elm) return elm.height
-  if (elm.shape === "circle") return elm.outer_diameter
+  if (elm.type === "pcb_plated_hole") {
+    if (elm.shape === "circle") return elm.outer_diameter
+    if (isRectPadHole(elm)) return elm.rect_pad_height
+    return 0
+  }
 
-  return 0
+  return elm.height
 }
 function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
-  if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
-    const outerRadius = elm.outer_diameter / 2
-    const innerRadius = elm.hole_diameter / 2
-    // Plated area = outer circle - inner circle (annular ring)
-    return Math.PI * (outerRadius * outerRadius - innerRadius * innerRadius)
+  if (elm.type === "pcb_plated_hole") {
+    if (elm.shape === "circle") {
+      const outerRadius = elm.outer_diameter / 2
+      const innerRadius = elm.hole_diameter / 2
+      // Plated area = outer circle - inner circle (annular ring)
+      return Math.PI * (outerRadius * outerRadius - innerRadius * innerRadius)
+    }
+
+    if (isRectPadHole(elm)) {
+      const holeRadius = elm.hole_diameter / 2
+      const padArea = elm.rect_pad_width * elm.rect_pad_height
+      const drillArea = Math.PI * holeRadius * holeRadius
+      return Math.max(padArea - drillArea, 0)
+    }
   }
+
+  if (elm.type === "pcb_smtpad" && elm.shape === "pill") {
+    const radius =
+      typeof elm.radius === "number"
+        ? elm.radius
+        : Math.min(elm.height / 2, elm.width / 2)
+    const rectWidth = Math.max(elm.width - 2 * radius, 0)
+    const rectangularArea = rectWidth * elm.height
+    const semicircleArea = Math.PI * radius * radius
+    return rectangularArea + semicircleArea
+  }
+
   return getWidth(elm) * getHeight(elm)
 }
 
