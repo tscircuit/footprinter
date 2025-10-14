@@ -12,27 +12,63 @@ type PcbSmtPad = {
   height: number
   port_hints?: string[]
   shape?: string
+  radius?: number
 }
+
+type RectPadPlatedHole = PcbPlatedHole & {
+  shape: "circular_hole_with_rect_pad"
+  rect_pad_width: number
+  rect_pad_height: number
+}
+
+const isRectPadPlatedHole = (elm: PcbPlatedHole): elm is RectPadPlatedHole =>
+  elm.shape === "circular_hole_with_rect_pad"
+
+const isPillPad = (elm: PcbSmtPad) => elm.shape === "pill"
 
 // --- Helpers to handle both pads & holes safely ---
 function getWidth(elm: PcbSmtPad | PcbPlatedHole): number {
   if ("width" in elm) return elm.width
   if (elm.shape === "circle") return elm.outer_diameter
+  if (isRectPadPlatedHole(elm)) return elm.rect_pad_width
 
   return 0
 }
 function getHeight(elm: PcbSmtPad | PcbPlatedHole): number {
   if ("height" in elm) return elm.height
   if (elm.shape === "circle") return elm.outer_diameter
+  if (isRectPadPlatedHole(elm)) return elm.rect_pad_height
 
   return 0
 }
 function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
-  if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
-    const outerRadius = elm.outer_diameter / 2
-    const innerRadius = elm.hole_diameter / 2
-    // Plated area = outer circle - inner circle (annular ring)
-    return Math.PI * (outerRadius * outerRadius - innerRadius * innerRadius)
+  if (elm.type === "pcb_plated_hole") {
+    if (elm.shape === "circle") {
+      const outerRadius = elm.outer_diameter / 2
+      const innerRadius = elm.hole_diameter / 2
+      // Plated area = outer circle - inner circle (annular ring)
+      return Math.PI * (outerRadius * outerRadius - innerRadius * innerRadius)
+    }
+
+    if (isRectPadPlatedHole(elm)) {
+      const rectArea = elm.rect_pad_width * elm.rect_pad_height
+      const innerRadius = elm.hole_diameter / 2
+      const holeArea = Math.PI * innerRadius * innerRadius
+
+      return rectArea - holeArea
+    }
+  }
+
+  if (elm.type === "pcb_smtpad" && isPillPad(elm)) {
+    const longSide = Math.max(elm.width, elm.height)
+    const shortSide = Math.min(elm.width, elm.height)
+    const radius = Math.min(elm.radius ?? shortSide / 2, shortSide / 2)
+    const diameter = radius * 2
+    const rectangleLength = Math.max(longSide - diameter, 0)
+    const rectangleArea = rectangleLength * diameter
+    const semicircleArea = Math.PI * radius * radius
+
+    return rectangleArea + semicircleArea
   }
   return getWidth(elm) * getHeight(elm)
 }
