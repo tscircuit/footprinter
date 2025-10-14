@@ -15,4 +15,4 @@ test("parity/to92_2", async () => {
     import.meta.path,
     "to92_2_boolean_difference",
   )
-}, 100001)
+})
