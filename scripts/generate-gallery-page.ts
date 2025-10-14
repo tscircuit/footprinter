@@ -8,6 +8,7 @@ const outputFile = path.join(outputDir, "gallery.html")
 function generateGalleryPage() {
   const svgFiles = fs
     .readdirSync(snapshotsDir)
+    .sort()
     .filter((file) => file.endsWith(".snap.svg"))
 
   const htmlContent = `
