@@ -18,12 +18,14 @@ type PcbSmtPad = {
 function getWidth(elm: PcbSmtPad | PcbPlatedHole): number {
   if ("width" in elm) return elm.width
   if (elm.shape === "circle") return elm.outer_diameter
+  if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_width
 
   return 0
 }
 function getHeight(elm: PcbSmtPad | PcbPlatedHole): number {
   if ("height" in elm) return elm.height
   if (elm.shape === "circle") return elm.outer_diameter
+  if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_height
 
   return 0
 }
@@ -33,6 +35,15 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
     const innerRadius = elm.hole_diameter / 2
     // Plated area = outer circle - inner circle (annular ring)
     return Math.PI * (outerRadius * outerRadius - innerRadius * innerRadius)
+  }
+  if (
+    elm.type === "pcb_plated_hole" &&
+    elm.shape === "circular_hole_with_rect_pad"
+  ) {
+    const rectArea = elm.rect_pad_width * elm.rect_pad_height
+    const holeRadius = elm.hole_diameter / 2
+    const holeArea = Math.PI * holeRadius * holeRadius
+    return Math.max(rectArea - holeArea, 0)
   }
   return getWidth(elm) * getHeight(elm)
 }
@@ -208,7 +219,9 @@ export async function compareFootprinterVsKicad(
   for (const elm of [...fpCircuitJson, ...transformedKiCad]) {
     if (
       (elm.type === "pcb_smtpad" && elm.shape === "rect") ||
-      (elm.type === "pcb_plated_hole" && elm.shape === "circle")
+      (elm.type === "pcb_plated_hole" && elm.shape === "circle") ||
+      (elm.type === "pcb_plated_hole" &&
+        elm.shape === "circular_hole_with_rect_pad")
     ) {
       const radiusX = getWidth(elm) / 2
       const radiusY = getHeight(elm) / 2
