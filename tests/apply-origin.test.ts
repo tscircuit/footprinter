@@ -21,10 +21,7 @@ test("applyOrigin uses plated hole rectangular pad extents", () => {
     },
   ] as const
 
-  const translated = applyOrigin(
-    JSON.parse(JSON.stringify(elements)),
-    "center",
-  )
+  const translated = applyOrigin(JSON.parse(JSON.stringify(elements)), "center")
 
   const platedHole = translated.find(
     (el) => el.type === "pcb_plated_hole",

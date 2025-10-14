@@ -59,7 +59,12 @@ export const applyOrigin = (
         if (holeDiameter > 0) {
           const offsetX = pad.hole_offset_x ?? 0
           const offsetY = pad.hole_offset_y ?? 0
-          updateBounds(pad.x + offsetX, pad.y + offsetY, holeDiameter, holeDiameter)
+          updateBounds(
+            pad.x + offsetX,
+            pad.y + offsetY,
+            holeDiameter,
+            holeDiameter,
+          )
         }
       } else {
         const d = pad.outer_diameter ?? pad.hole_diameter
