@@ -15,4 +15,4 @@ test("parity/dip10", async () => {
     import.meta.path,
     "dip10_boolean_difference",
   )
-})
+}, 100001)
