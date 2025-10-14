@@ -19,9 +19,114 @@ interface FootprintElement {
   height?: number
   outer_diameter?: number
   hole_diameter?: number
+  hole_width?: number
+  hole_height?: number
+  rect_pad_width?: number
+  rect_pad_height?: number
   route?: Array<{ x: number; y: number }>
   points?: Array<{ x: number; y: number }>
   shape?: string
+}
+
+function createCirclePolygon(
+  cx: number,
+  cy: number,
+  radius: number,
+  numPoints = 64,
+): Flatten.Polygon {
+  const points: Flatten.Point[] = []
+
+  for (let i = 0; i < numPoints; i++) {
+    const angle = (i * Math.PI * 2) / numPoints
+    points.push(
+      new Flatten.Point(
+        cx + radius * Math.cos(angle),
+        cy + radius * Math.sin(angle),
+      ),
+    )
+  }
+
+  return new Flatten.Polygon(points)
+}
+
+function createRectanglePolygon(
+  cx: number,
+  cy: number,
+  width: number,
+  height: number,
+): Flatten.Polygon {
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+
+  return new Flatten.Polygon([
+    new Flatten.Point(cx - halfWidth, cy - halfHeight),
+    new Flatten.Point(cx + halfWidth, cy - halfHeight),
+    new Flatten.Point(cx + halfWidth, cy + halfHeight),
+    new Flatten.Point(cx - halfWidth, cy + halfHeight),
+  ])
+}
+
+function createPillPolygon(
+  cx: number,
+  cy: number,
+  width: number,
+  height: number,
+  arcSegments = 32,
+): Flatten.Polygon {
+  const points: Flatten.Point[] = []
+
+  const segments = Math.max(16, arcSegments)
+  const isHorizontal = width >= height
+  const radius = (isHorizontal ? height : width) / 2
+  const halfLength = (isHorizontal ? width : height) / 2 - radius
+
+  if (radius === 0) {
+    return createRectanglePolygon(cx, cy, width, height)
+  }
+
+  if (isHorizontal) {
+    for (let i = 0; i <= segments; i++) {
+      const angle = -Math.PI / 2 + (i * Math.PI) / segments
+      points.push(
+        new Flatten.Point(
+          cx + halfLength + radius * Math.cos(angle),
+          cy + radius * Math.sin(angle),
+        ),
+      )
+    }
+
+    for (let i = 0; i <= segments; i++) {
+      const angle = Math.PI / 2 + (i * Math.PI) / segments
+      points.push(
+        new Flatten.Point(
+          cx - halfLength + radius * Math.cos(angle),
+          cy + radius * Math.sin(angle),
+        ),
+      )
+    }
+  } else {
+    for (let i = 0; i <= segments; i++) {
+      const angle = (i * Math.PI) / segments
+      points.push(
+        new Flatten.Point(
+          cx + radius * Math.cos(angle),
+          cy + halfLength + radius * Math.sin(angle),
+        ),
+      )
+    }
+
+    for (let i = 0; i <= segments; i++) {
+      const angle = Math.PI + (i * Math.PI) / segments
+      points.push(
+        new Flatten.Point(
+          cx + radius * Math.cos(angle),
+          cy - halfLength + radius * Math.sin(angle),
+        ),
+      )
+    }
+  }
+
+  return new Flatten.Polygon(points)
 }
 
 /**
@@ -60,70 +165,70 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 
     if (
       element.type === "pcb_plated_hole" &&
-      element.outer_diameter &&
-      element.hole_diameter &&
       element.x !== undefined &&
       element.y !== undefined
     ) {
-      // Create annular ring polygon (outer circle - inner circle) for plated area only
-      const outerRadius = element.outer_diameter / 2
-      const innerRadius = element.hole_diameter / 2
-
-      // Use many more points for very smooth circles (64 points = very smooth)
-      const numPoints = 64
-
-      // Create outer circle with high resolution
-      const outerPoints: Flatten.Point[] = []
-      for (let i = 0; i < numPoints; i++) {
-        const angle = (i * Math.PI * 2) / numPoints
-        outerPoints.push(
-          new Flatten.Point(
-            element.x + outerRadius * Math.cos(angle),
-            element.y + outerRadius * Math.sin(angle),
-          ),
+      if (
+        element.shape === "circle" &&
+        element.outer_diameter &&
+        element.hole_diameter
+      ) {
+        const outerCircle = createCirclePolygon(
+          element.x,
+          element.y,
+          element.outer_diameter / 2,
         )
+        const innerCircle = createCirclePolygon(
+          element.x,
+          element.y,
+          element.hole_diameter / 2,
+        )
+        return Flatten.BooleanOperations.subtract(outerCircle, innerCircle)
       }
 
-      // Create inner circle with high resolution, but in reverse order for proper hole subtraction
-      const innerPoints: Flatten.Point[] = []
-      for (let i = numPoints - 1; i >= 0; i--) {
-        // Reverse order for hole
-        const angle = (i * Math.PI * 2) / numPoints
-        innerPoints.push(
-          new Flatten.Point(
-            element.x + innerRadius * Math.cos(angle),
-            element.y + innerRadius * Math.sin(angle),
-          ),
+      if (
+        element.shape === "circular_hole_with_rect_pad" &&
+        element.rect_pad_width &&
+        element.rect_pad_height &&
+        element.hole_diameter
+      ) {
+        const rect = createRectanglePolygon(
+          element.x,
+          element.y,
+          element.rect_pad_width,
+          element.rect_pad_height,
         )
+        const hole = createCirclePolygon(
+          element.x,
+          element.y,
+          element.hole_diameter / 2,
+        )
+
+        return Flatten.BooleanOperations.subtract(rect, hole)
       }
 
-      // Use a simpler, more reliable approach: create the ring directly
-      // This avoids boolean operation artifacts and ensures smooth, continuous rings
-      const ringPoints: Flatten.Point[] = []
-
-      // Add outer circle points (clockwise)
-      for (let i = 0; i < numPoints; i++) {
-        const angle = (i * Math.PI * 2) / numPoints
-        ringPoints.push(
-          new Flatten.Point(
-            element.x + outerRadius * Math.cos(angle),
-            element.y + outerRadius * Math.sin(angle),
-          ),
+      if (
+        element.shape === "pill_hole_with_rect_pad" &&
+        element.rect_pad_width &&
+        element.rect_pad_height &&
+        element.hole_width &&
+        element.hole_height
+      ) {
+        const rect = createRectanglePolygon(
+          element.x,
+          element.y,
+          element.rect_pad_width,
+          element.rect_pad_height,
         )
-      }
-
-      // Add inner circle points (counter-clockwise to create hole)
-      for (let i = numPoints - 1; i >= 0; i--) {
-        const angle = (i * Math.PI * 2) / numPoints
-        ringPoints.push(
-          new Flatten.Point(
-            element.x + innerRadius * Math.cos(angle),
-            element.y + innerRadius * Math.sin(angle),
-          ),
+        const pillHole = createPillPolygon(
+          element.x,
+          element.y,
+          element.hole_width,
+          element.hole_height,
         )
-      }
 
-      return new Flatten.Polygon(ringPoints)
+        return Flatten.BooleanOperations.subtract(rect, pillHole)
+      }
     }
 
     if (
@@ -138,7 +243,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 
     return null
   } catch (error) {
-    console.warn(`Failed to convert element to polygon:`, error)
+    console.warn("Failed to convert element to polygon:", error)
     return null
   }
 }
@@ -146,17 +251,22 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 /**
  * Convert circuit-json footprint elements to polygons
  */
-function footprintToPolygons(elements: FootprintElement[]): Flatten.Polygon[] {
-  const polygons: Flatten.Polygon[] = []
+function footprintToPolygons(
+  elements: FootprintElement[],
+): Array<{ element: FootprintElement; polygon: Flatten.Polygon }> {
+  const entries: Array<{
+    element: FootprintElement
+    polygon: Flatten.Polygon
+  }> = []
 
   for (const element of elements) {
     const poly = elementToPolygon(element)
     if (poly) {
-      polygons.push(poly)
+      entries.push({ element, polygon: poly })
     }
   }
 
-  return polygons
+  return entries
 }
 
 /**
@@ -168,20 +278,25 @@ function polygonToSvgPath(polygon: Flatten.Polygon): string {
   }
 
   try {
-    // Use vertices directly for simple polygon path generation
-    const vertices = polygon.vertices
-    if (!vertices || vertices.length === 0) {
-      return ""
+    let pathData = ""
+
+    for (const face of polygon.faces) {
+      const firstEdge = face.first
+      if (!firstEdge) continue
+
+      let edge = firstEdge
+      pathData += `M ${edge.start.x} ${edge.start.y}`
+      edge = edge.next
+
+      while (edge && edge !== firstEdge) {
+        pathData += ` L ${edge.start.x} ${edge.start.y}`
+        edge = edge.next
+      }
+
+      pathData += " Z"
     }
 
-    let pathData = `M ${vertices[0]!.x} ${vertices[0]!.y}`
-
-    for (let i = 1; i < vertices.length; i++) {
-      pathData += ` L ${vertices[i]!.x} ${vertices[i]!.y}`
-    }
-
-    pathData += " Z"
-    return pathData
+    return pathData.trim()
   } catch (error) {
     console.warn("Failed to convert polygon to SVG path:", error)
     return ""
@@ -197,10 +312,10 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   maxX: number
   maxY: number
 } {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (const polygon of polygons) {
     if (polygon && !polygon.isEmpty()) {
@@ -213,7 +328,7 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   }
 
   // Fallback if no valid polygons
-  if (!isFinite(minX)) {
+  if (!Number.isFinite(minX)) {
     return { minX: -1, minY: -1, maxX: 1, maxY: 1 }
   }
 
@@ -239,8 +354,11 @@ export function createBooleanDifferenceVisualization(
 
   try {
     // Convert footprints to polygons
-    const polygonsA = footprintToPolygons(footprintA)
-    const polygonsB = footprintToPolygons(footprintB)
+    const footprintPolygonsA = footprintToPolygons(footprintA)
+    const footprintPolygonsB = footprintToPolygons(footprintB)
+
+    const polygonsA = footprintPolygonsA.map((entry) => entry.polygon)
+    const polygonsB = footprintPolygonsB.map((entry) => entry.polygon)
 
     // Convert footprints to polygons for boolean operations
 
@@ -254,19 +372,21 @@ export function createBooleanDifferenceVisualization(
     const centerBY = (bboxB.minY + bboxB.maxY) / 2
 
     // Translate polygons to center them at origin for overlay
-    const centeredPolygonsA = polygonsA.map((poly) => {
-      const translatedVertices = poly.vertices.map(
-        (v) => new Flatten.Point(v.x - centerAX, v.y - centerAY),
-      )
-      return new Flatten.Polygon(translatedVertices)
-    })
+    const translationVectorA = new Flatten.Vector(-centerAX, -centerAY)
+    const translationVectorB = new Flatten.Vector(-centerBX, -centerBY)
 
-    const centeredPolygonsB = polygonsB.map((poly) => {
-      const translatedVertices = poly.vertices.map(
-        (v) => new Flatten.Point(v.x - centerBX, v.y - centerBY),
-      )
-      return new Flatten.Polygon(translatedVertices)
-    })
+    const centeredEntriesA = footprintPolygonsA.map(({ element, polygon }) => ({
+      element,
+      polygon: polygon.translate(translationVectorA),
+    }))
+
+    const centeredEntriesB = footprintPolygonsB.map(({ element, polygon }) => ({
+      element,
+      polygon: polygon.translate(translationVectorB),
+    }))
+
+    const centeredPolygonsA = centeredEntriesA.map((entry) => entry.polygon)
+    const centeredPolygonsB = centeredEntriesB.map((entry) => entry.polygon)
 
     // Footprints are now centered and ready for boolean operations
 
@@ -282,7 +402,7 @@ export function createBooleanDifferenceVisualization(
     const viewBoxY = bbox.minY - padding
 
     // Perform boolean operations using flatten-js/core
-    let resultPolygons: Flatten.Polygon[] = []
+    const resultPolygons: Flatten.Polygon[] = []
 
     if (
       options?.operation === "difference" &&
@@ -359,15 +479,13 @@ export function createBooleanDifferenceVisualization(
     }
 
     // Generate SVG paths for all centered polygons
-    const pathsA = centeredPolygonsA
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
-    const pathsB = centeredPolygonsB
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
-    const resultPaths = resultPolygons
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
+    const pathsA = centeredEntriesA.map(({ polygon }) =>
+      polygonToSvgPath(polygon),
+    )
+    const pathsB = centeredEntriesB.map(({ polygon }) =>
+      polygonToSvgPath(polygon),
+    )
+    const resultPaths = resultPolygons.map((p) => polygonToSvgPath(p))
 
     // Create SVG with proper dimensions for overlay visibility
     let svg = `<svg width="800" height="600" viewBox="${viewBoxX} ${viewBoxY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
@@ -383,63 +501,33 @@ export function createBooleanDifferenceVisualization(
     // Add footprint layers with higher opacity for stronger purple overlap effect
     svg += `<g id="footprint-a" opacity="0.85">`
 
-    // Render all elements from footprintA (centered)
-    for (let i = 0; i < footprintA.length; i++) {
-      const element = footprintA[i]!
-      const path = pathsA[i]
-
-      if (
-        element.type === "pcb_plated_hole" &&
-        element.outer_diameter &&
-        element.hole_diameter
-      ) {
-        // Render plated holes as stroked circles only (no fill)
-        const outerRadius = element.outer_diameter / 2
-        const innerRadius = element.hole_diameter / 2
-        const strokeWidth = outerRadius - innerRadius
-        const avgRadius = (outerRadius + innerRadius) / 2
-
-        // Use already calculated center coordinates
-        const centeredX = element.x! - centerAX
-        const centeredY = element.y! - centerAY
-
-        svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorA}" stroke-width="${strokeWidth}" opacity="0.8"/>`
-      } else if (path) {
-        // Regular pads with fill
-        svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6"/>`
+    for (let index = 0; index < pathsA.length; index++) {
+      const path = pathsA[index]
+      if (path) {
+        svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     svg += `<g id="footprint-b" opacity="0.85">`
 
-    // Render all elements from footprintB (centered)
-    for (let i = 0; i < footprintB.length; i++) {
-      const element = footprintB[i]!
-      const path = pathsB[i]
-
-      if (
-        element.type === "pcb_plated_hole" &&
-        element.outer_diameter &&
-        element.hole_diameter
-      ) {
-        // Render plated holes as stroked circles only (no fill)
-        const outerRadius = element.outer_diameter / 2
-        const innerRadius = element.hole_diameter / 2
-        const strokeWidth = outerRadius - innerRadius
-        const avgRadius = (outerRadius + innerRadius) / 2
-
-        // Use already calculated center coordinates
-        const centeredX = element.x! - centerBX
-        const centeredY = element.y! - centerBY
-
-        svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorB}" stroke-width="${strokeWidth}" opacity="0.8"/>`
-      } else if (path) {
-        // Regular pads with fill
-        svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6"/>`
+    for (let index = 0; index < pathsB.length; index++) {
+      const path = pathsB[index]
+      if (path) {
+        svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
+
+    if (resultPaths.some((path) => path)) {
+      svg += `<g id="boolean-result" opacity="0.7">`
+      for (const path of resultPaths) {
+        if (path) {
+          svg += `<path d="${path}" fill="${colorDifference}" stroke="${colorDifference}" stroke-width="0.02" fill-opacity="0.7" fill-rule="evenodd"/>`
+        }
+      }
+      svg += "</g>"
+    }
 
     const centerX = viewBoxX + width / 2
     const centerY = viewBoxY + height / 2
@@ -448,7 +536,7 @@ export function createBooleanDifferenceVisualization(
     svg += `<g id="alignment-guides" opacity="0.3">`
     svg += `<line x1="${centerX}" y1="${viewBoxY}" x2="${centerX}" y2="${viewBoxY + height}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
     svg += `<line x1="${viewBoxX}" y1="${centerY}" x2="${viewBoxX + width}" y2="${centerY}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
-    svg += `</g>`
+    svg += "</g>"
 
     // Add compact legend for overlay visualization (sized to fit within bounds)
     if (showLegend) {
@@ -480,7 +568,7 @@ export function createBooleanDifferenceVisualization(
       // Compact instructions
       svg += `<text x="${viewBoxX + width / 2}" y="${legendY + legendHeight - 0.1}" text-anchor="middle" fill="#6c757d" font-size="${fontSize * 0.8}">Perfect alignment = complete overlap</text>`
 
-      svg += `</g>`
+      svg += "</g>"
     }
 
     svg += "</svg>"
