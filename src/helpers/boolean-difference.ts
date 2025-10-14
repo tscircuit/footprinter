@@ -212,7 +212,9 @@ function polygonToSvgPath(polygon: Flatten.Polygon): string {
   }
 
   try {
-    const directPath = (polygon as unknown as { dpath?: () => string }).dpath?.()
+    const directPath = (
+      polygon as unknown as { dpath?: () => string }
+    ).dpath?.()
     if (directPath && directPath.trim().length > 0) {
       return directPath
     }
@@ -322,10 +324,14 @@ export function createBooleanDifferenceVisualization(
 
     // Translate polygons to center them at origin for overlay
     const translationA = new Flatten.Vector(-centerAX, -centerAY)
-    const centeredPolygonsA = polygonsA.map((poly) => poly.translate(translationA))
+    const centeredPolygonsA = polygonsA.map((poly) =>
+      poly.translate(translationA),
+    )
 
     const translationB = new Flatten.Vector(-centerBX, -centerBY)
-    const centeredPolygonsB = polygonsB.map((poly) => poly.translate(translationB))
+    const centeredPolygonsB = polygonsB.map((poly) =>
+      poly.translate(translationB),
+    )
 
     // Footprints are now centered and ready for boolean operations
 
