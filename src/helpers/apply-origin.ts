@@ -50,8 +50,21 @@ export const applyOrigin = (
       const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
       updateBounds(pad.x, pad.y, w, h)
     } else if (pad.type === "pcb_plated_hole") {
-      const d = pad.outer_diameter ?? pad.hole_diameter
-      updateBounds(pad.x, pad.y, d, d)
+      if (pad.shape === "circular_hole_with_rect_pad") {
+        const w = pad.rect_pad_width ?? pad.outer_diameter ?? pad.hole_diameter
+        const h = pad.rect_pad_height ?? pad.outer_diameter ?? pad.hole_diameter
+        updateBounds(pad.x, pad.y, w, h)
+
+        const holeDiameter = pad.hole_diameter ?? 0
+        if (holeDiameter > 0) {
+          const offsetX = pad.hole_offset_x ?? 0
+          const offsetY = pad.hole_offset_y ?? 0
+          updateBounds(pad.x + offsetX, pad.y + offsetY, holeDiameter, holeDiameter)
+        }
+      } else {
+        const d = pad.outer_diameter ?? pad.hole_diameter
+        updateBounds(pad.x, pad.y, d, d)
+      }
     } else if (pad.type === "pcb_thtpad") {
       const d = pad.diameter
       updateBounds(pad.x, pad.y, d, d)
