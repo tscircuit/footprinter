@@ -4,8 +4,11 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
@@ -34,6 +37,11 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       p: lengthInMm.default(newDefaults.p ?? "2.54mm"),
       id: lengthInMm.optional(),
       od: lengthInMm.optional(),
+      nosquareplating: z
+        .boolean()
+        .optional()
+        .default(false)
+        .describe("do not use rectangular pad for pin 1"),
     })
     .transform((v) => {
       if (!v.id && !v.od) {
@@ -69,6 +77,7 @@ export const getCcwDipCoords = (
   pn: number,
   w: number,
   p: number,
+  nosquareplating: boolean,
 ) => {
   const ph = pinCount / 2
   const isLeft = pn <= ph
@@ -102,7 +111,21 @@ export const dip = (raw_params: {
       i + 1,
       parameters.w,
       parameters.p ?? 2.54,
+      parameters.nosquareplating,
     )
+    if (i === 0 && !parameters.nosquareplating) {
+      platedHoles.push(
+        platedHoleWithRectPad(
+          i + 1,
+          x,
+          y,
+          parameters.id ?? "0.8mm",
+          parameters.od ?? "1mm",
+          parameters.od ?? "1mm",
+        ),
+      )
+      continue
+    }
     platedHoles.push(
       platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"),
     )
@@ -153,6 +176,7 @@ export const dip = (raw_params: {
       i + 1,
       parameters.w,
       parameters.p ?? 2.54,
+      parameters.nosquareplating,
     )
     const pinLabelX = isLeft
       ? -parameters.w / 2 - parameters.od / 2 - clearance

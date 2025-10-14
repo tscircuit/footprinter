@@ -19,6 +19,10 @@ interface FootprintElement {
   height?: number
   outer_diameter?: number
   hole_diameter?: number
+  rect_pad_width?: number
+  rect_pad_height?: number
+  hole_offset_x?: number
+  hole_offset_y?: number
   route?: Array<{ x: number; y: number }>
   points?: Array<{ x: number; y: number }>
   shape?: string
@@ -127,6 +131,46 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
     }
 
     if (
+      element.type === "pcb_plated_hole" &&
+      element.shape === "circular_hole_with_rect_pad" &&
+      element.rect_pad_width &&
+      element.rect_pad_height &&
+      element.hole_diameter &&
+      element.x !== undefined &&
+      element.y !== undefined
+    ) {
+      const halfWidth = element.rect_pad_width / 2
+      const halfHeight = element.rect_pad_height / 2
+
+      const rectPolygon = new Flatten.Polygon([
+        [element.x - halfWidth, element.y - halfHeight],
+        [element.x + halfWidth, element.y - halfHeight],
+        [element.x + halfWidth, element.y + halfHeight],
+        [element.x - halfWidth, element.y + halfHeight],
+      ])
+
+      const holeRadius = element.hole_diameter / 2
+      const holeOffsetX = element.hole_offset_x ?? 0
+      const holeOffsetY = element.hole_offset_y ?? 0
+      const drillCenter = new Flatten.Point(
+        element.x + holeOffsetX,
+        element.y + holeOffsetY,
+      )
+      const drillCircle = new Flatten.Circle(drillCenter, holeRadius)
+      const drillPolygon = new Flatten.Polygon(drillCircle)
+
+      try {
+        return Flatten.BooleanOperations.subtract(rectPolygon, drillPolygon)
+      } catch (error) {
+        console.warn(
+          "Failed to subtract circular drill from rectangular pad, returning solid rectangle:",
+          error,
+        )
+        return rectPolygon
+      }
+    }
+
+    if (
       element.type === "pcb_silkscreen_path" &&
       element.route &&
       element.route.length > 2
@@ -168,20 +212,45 @@ function polygonToSvgPath(polygon: Flatten.Polygon): string {
   }
 
   try {
-    // Use vertices directly for simple polygon path generation
-    const vertices = polygon.vertices
-    if (!vertices || vertices.length === 0) {
-      return ""
+    const directPath = (
+      polygon as unknown as { dpath?: () => string }
+    ).dpath?.()
+    if (directPath && directPath.trim().length > 0) {
+      return directPath
     }
 
-    let pathData = `M ${vertices[0]!.x} ${vertices[0]!.y}`
+    const faces = [...polygon.faces]
+    if (faces.length === 0) return ""
 
-    for (let i = 1; i < vertices.length; i++) {
-      pathData += ` L ${vertices[i]!.x} ${vertices[i]!.y}`
+    const pathParts: string[] = []
+
+    for (const face of faces) {
+      const edges = [...face]
+      if (edges.length === 0) continue
+
+      const movePoint = edges[0]!.start
+      pathParts.push(`M ${movePoint.x} ${movePoint.y}`)
+
+      for (const edge of edges) {
+        const shape = edge.shape
+        if (shape instanceof Flatten.Segment) {
+          const end = shape.end
+          pathParts.push(`L ${end.x} ${end.y}`)
+        } else if (shape instanceof Flatten.Arc) {
+          const end = shape.end
+          const radius = shape.r
+          const largeArcFlag = Math.abs(shape.sweep) > Math.PI ? 1 : 0
+          const sweepFlag = shape.counterClockwise ? 1 : 0
+          pathParts.push(
+            `A ${radius} ${radius} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`,
+          )
+        }
+      }
+
+      pathParts.push("Z")
     }
 
-    pathData += " Z"
-    return pathData
+    return pathParts.join(" ")
   } catch (error) {
     console.warn("Failed to convert polygon to SVG path:", error)
     return ""
@@ -254,19 +323,15 @@ export function createBooleanDifferenceVisualization(
     const centerBY = (bboxB.minY + bboxB.maxY) / 2
 
     // Translate polygons to center them at origin for overlay
-    const centeredPolygonsA = polygonsA.map((poly) => {
-      const translatedVertices = poly.vertices.map(
-        (v) => new Flatten.Point(v.x - centerAX, v.y - centerAY),
-      )
-      return new Flatten.Polygon(translatedVertices)
-    })
+    const translationA = new Flatten.Vector(-centerAX, -centerAY)
+    const centeredPolygonsA = polygonsA.map((poly) =>
+      poly.translate(translationA),
+    )
 
-    const centeredPolygonsB = polygonsB.map((poly) => {
-      const translatedVertices = poly.vertices.map(
-        (v) => new Flatten.Point(v.x - centerBX, v.y - centerBY),
-      )
-      return new Flatten.Polygon(translatedVertices)
-    })
+    const translationB = new Flatten.Vector(-centerBX, -centerBY)
+    const centeredPolygonsB = polygonsB.map((poly) =>
+      poly.translate(translationB),
+    )
 
     // Footprints are now centered and ready for boolean operations
 
@@ -406,7 +471,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorA}" stroke-width="${strokeWidth}" opacity="0.8"/>`
       } else if (path) {
         // Regular pads with fill
-        svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6"/>`
+        svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
     svg += `</g>`
@@ -436,7 +501,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorB}" stroke-width="${strokeWidth}" opacity="0.8"/>`
       } else if (path) {
         // Regular pads with fill
-        svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6"/>`
+        svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
     svg += `</g>`

@@ -14,6 +14,16 @@ test("dip16", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip16")
 })
+test("dip16 with nosquareplating", () => {
+  const circuitJson = fp
+    .string("dip16_nosquareplating")
+    .circuitJson() as AnyCircuitElement[]
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "dip16_nosquareplating",
+  )
+})
 
 test("dip4_w3.00mm", () => {
   const circuitJson = fp
@@ -50,6 +60,7 @@ test("dip4", () => {
 {
   "fn": "dip",
   "id": 1,
+  "nosquareplating": false,
   "num_pins": 4,
   "od": 1.5,
   "p": 2.54,
