@@ -252,8 +252,9 @@ export const string = (def: string): Footprinter => {
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
       const [, rawFn, v] = m
+      if (!rawFn) return null
       const fn = rawFn.toLowerCase()
-      if (!fn || v?.includes("?")) return null
+      if (v?.includes("?")) return null
       return { fn, v }
     })
     .filter(isNotNull)
