@@ -249,10 +249,12 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
-      const m = s.match(/([a-z]+)([\(\d\.\+\?].*)?/)
+      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
-      const [, fn, v] = m
-      if (!fn || v?.includes("?")) return null
+      const [, rawFn, v] = m
+      if (!rawFn) return null
+      const fn = rawFn.toLowerCase()
+      if (v?.includes("?")) return null
       return { fn, v }
     })
     .filter(isNotNull)

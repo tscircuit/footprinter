@@ -14,6 +14,12 @@ test("dip16", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip16")
 })
+
+test("DIP16 string resolves using lowercase function", () => {
+  const uppercaseJson = fp.string("DIP16").json()
+  const lowercaseJson = fp.string("dip16").json()
+  expect(uppercaseJson).toEqual(lowercaseJson)
+})
 test("dip16 with nosquareplating", () => {
   const circuitJson = fp
     .string("dip16_nosquareplating")
