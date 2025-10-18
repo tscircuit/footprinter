@@ -25,7 +25,7 @@ export const m2host = (
   for (let i = 0; i < numPads; i++) {
     const pn = i + 1
     if (pn >= 24 && pn <= 31) continue
-    const y = startY - i * halfPitch
+    const y = startY + i * pitch
 
     const isBottomLayer = pn % 2 === 0
     const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0)
