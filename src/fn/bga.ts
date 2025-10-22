@@ -23,6 +23,8 @@ export const bga_def = z
 
     circularpads: z.boolean().optional().describe("use circular pads"),
 
+    disable_ref_label: z.boolean().optional().describe("disable ref label"),
+
     tlorigin: z.boolean().optional(),
     blorigin: z.boolean().optional(),
     trorigin: z.boolean().optional(),
@@ -166,6 +168,9 @@ export const bga = (
     (grid.y * p) / 2,
     0.2,
   )
+  if (parameters.disable_ref_label) {
+    silkscreenRefText.text = ""
+  }
 
   // Add pin 1 marker
   const pin1MarkerSize = p / 6 // Make marker smaller, more proportional

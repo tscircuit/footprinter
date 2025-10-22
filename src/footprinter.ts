@@ -58,6 +58,7 @@ export type Footprinter = {
     | "trorigin"
     | "brorigin"
     | "circularpads"
+    | "disable_ref_label"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (
