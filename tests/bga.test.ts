@@ -27,10 +27,7 @@ test("bga_footprint_noref", () => {
     .noref(true)
     .soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "bga_footprint_noref",
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_footprint_noref")
 })
 
 test("bga_footprint_noref_string", () => {
