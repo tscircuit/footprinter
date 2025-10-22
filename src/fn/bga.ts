@@ -3,6 +3,7 @@ import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
 import { z } from "zod"
+import { base_def } from "../helpers/zod/base-definition"
 import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
@@ -12,6 +13,7 @@ import { type PcbSilkscreenPath } from "circuit-json"
 
 export const bga_def = z
   .object({
+    ...base_def,
     fn: z.string(),
     num_pins: z.number().optional().default(64),
     grid: dim2d.optional(),
@@ -22,8 +24,6 @@ export const bga_def = z
     pad: length.optional().describe("pad width/height"),
 
     circularpads: z.boolean().optional().describe("use circular pads"),
-
-    disable_ref_label: z.boolean().optional().describe("disable ref label"),
 
     tlorigin: z.boolean().optional(),
     blorigin: z.boolean().optional(),
@@ -168,7 +168,7 @@ export const bga = (
     (grid.y * p) / 2,
     0.2,
   )
-  if (parameters.disable_ref_label) {
+  if (parameters.noref) {
     silkscreenRefText.text = ""
   }
 
