@@ -13,6 +13,8 @@ import { quad_def } from "src/fn/quad"
 import { sod_def } from "src/fn/sod123"
 import { soic_def } from "src/fn/soic"
 import { sot23_def } from "src/fn/sot23"
+import { sot25_def } from "src/fn/sot25"
+import { sot235_def } from "src/fn/sot235"
 import { sot363_def } from "src/fn/sot363"
 import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
@@ -37,6 +39,8 @@ export const any_footprinter_def = z.union([
   sod_def,
   soic_def,
   sot23_def,
+  sot25_def,
+  sot235_def,
   sot363_def,
   sot563_def,
   sot723_def,
