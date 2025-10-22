@@ -16,7 +16,7 @@ test("bga footprint", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga footprint")
 })
 
-test("bga_footprint_disabled_ref_label", () => {
+test("bga_footprint_noref", () => {
   const soup = fp()
     .bga(8)
     .w("4mm")
@@ -24,12 +24,23 @@ test("bga_footprint_disabled_ref_label", () => {
     .grid("3x3")
     .missing("center")
     .p(1)
-    .disable_ref_label(true)
+    .noref(true)
     .soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "bga_footprint_disabled_ref_label",
+    "bga_footprint_noref",
+  )
+})
+
+test("bga_footprint_noref_string", () => {
+  const soup = fp
+    .string("bga8_w4_h4_grid3x3_missing(center)_p1_noref")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "bga_footprint_noref_string",
   )
 })
 
