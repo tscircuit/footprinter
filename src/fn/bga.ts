@@ -11,9 +11,8 @@ import type { NowDefined } from "src/helpers/zod/now-defined"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { type PcbSilkscreenPath } from "circuit-json"
 
-export const bga_def = z
-  .object({
-    ...base_def,
+export const bga_def = base_def
+  .extend({
     fn: z.string(),
     num_pins: z.number().optional().default(64),
     grid: dim2d.optional(),
@@ -168,9 +167,6 @@ export const bga = (
     (grid.y * p) / 2,
     0.2,
   )
-  if (parameters.noref) {
-    silkscreenRefText.text = ""
-  }
 
   // Add pin 1 marker
   const pin1MarkerSize = p / 6 // Make marker smaller, more proportional
