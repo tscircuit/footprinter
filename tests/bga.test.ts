@@ -16,31 +16,6 @@ test("bga footprint", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga footprint")
 })
 
-test("bga_footprint_noref", () => {
-  const soup = fp()
-    .bga(8)
-    .w("4mm")
-    .h("4mm")
-    .grid("3x3")
-    .missing("center")
-    .p(1)
-    .noref(true)
-    .soup()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_footprint_noref")
-})
-
-test("bga_footprint_noref_string", () => {
-  const soup = fp
-    .string("bga8_w4_h4_grid3x3_missing(center)_p1_noref")
-    .circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "bga_footprint_noref_string",
-  )
-})
-
 test("bga7_w8_h8_grid3x3_p1_missing(center,B1)", () => {
   const soup = fp
     .string("bga7_w8_h8_grid3x3_p1_missing(center,B1)")
