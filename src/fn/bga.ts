@@ -3,6 +3,7 @@ import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
 import { z } from "zod"
+import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
@@ -10,8 +11,8 @@ import type { NowDefined } from "src/helpers/zod/now-defined"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { type PcbSilkscreenPath } from "circuit-json"
 
-export const bga_def = z
-  .object({
+export const bga_def = base_def
+  .extend({
     fn: z.string(),
     num_pins: z.number().optional().default(64),
     grid: dim2d.optional(),
