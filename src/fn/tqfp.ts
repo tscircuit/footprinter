@@ -1,12 +1,12 @@
-import type { AnySoupElement } from "circuit-json"
-import { base_quad_def, quad, quad_def, quadTransform } from "./quad"
+import type { AnyCircuitElement } from "circuit-json"
+import { quad, quad_def } from "./quad"
 import type { z } from "zod"
 
-export const tqfp_def = base_quad_def.extend({}).transform(quadTransform)
+export const tqfp_def = quad_def
 
 export const tqfp = (
-  parameters: z.input<typeof tqfp_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
-  parameters.legsoutside = false
-  return quad(parameters)
+  raw_params: z.input<typeof quad_def>,
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  raw_params.legsoutside = true
+  return quad(raw_params)
 }
