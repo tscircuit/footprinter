@@ -1,7 +1,7 @@
 {
   "name": "@tscircuit/footprinter",
   "type": "module",
-  "version": "0.0.241",
+  "version": "0.0.242",
   "description": "",
   "main": "dist/index.js",
   "files": [
