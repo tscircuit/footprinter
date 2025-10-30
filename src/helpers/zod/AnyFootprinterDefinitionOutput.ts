@@ -9,6 +9,7 @@ import { ms013_def } from "src/fn/ms013"
 import { pinrow_def } from "src/fn/pinrow"
 import { qfn_def } from "src/fn/qfn"
 import { qfp_def } from "src/fn/qfp"
+import { tqfp_def } from "src/fn/tqfp"
 import { quad_def } from "src/fn/quad"
 import { sod_def } from "src/fn/sod123"
 import { soic_def } from "src/fn/soic"
@@ -32,6 +33,7 @@ export const any_footprinter_def = z.union([
   ms013_def,
   pinrow_def,
   qfn_def,
+  tqfp_def,
   qfp_def,
   quad_def,
   sod_def,

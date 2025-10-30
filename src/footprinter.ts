@@ -60,6 +60,7 @@ export type Footprinter = {
     | "circularpads"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  tqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
