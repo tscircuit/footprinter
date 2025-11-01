@@ -30446,7 +30446,7 @@ var axial_def = exports_external.object({
   fn: exports_external.string(),
   p: length.optional().default("2.54mm"),
   id: length.optional().default("0.7mm"),
-  od: length.optional().default("1mm")
+  od: length.optional().default("1.4mm")
 });
 var axial = (raw_params) => {
   const parameters = axial_def.parse(raw_params);
@@ -30466,7 +30466,7 @@ var axial = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const silkscreenRefText = silkscreenRef(0, p / 4, 0.5);
+  const silkscreenRefText = silkscreenRef(0, 1.5, 0.5);
   return {
     circuitJson: [
       ...plated_holes,
@@ -35160,7 +35160,7 @@ var content_default = [
     title: "melf"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="112.99435028248587" y="228.24858757062142" width="574.0112994350284" height="143.50282485875707"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 265.5367231638418 371.7514124293785 L 534.4632768361582 371.7514124293785" fill="none" stroke="#f2eda1" stroke-width="11.299435028248588" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="56.497175141242934" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,228.24858757062142)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="112.99435028248587" cy="371.7514124293785" r="56.497175141242934"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="112.99435028248587" cy="371.7514124293785" r="39.54802259887005"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="687.0056497175142" cy="371.7514124293785" r="56.497175141242934"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="687.0056497175142" cy="371.7514124293785" r="39.54802259887005"/></g></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="112.99435028248587" y="215.2542372881356" width="574.0112994350284" height="169.4915254237288"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 310.73446327683615 384.7457627118644 L 489.26553672316385 384.7457627118644" fill="none" stroke="#f2eda1" stroke-width="11.299435028248588" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="56.497175141242934" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,215.2542372881356)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="112.99435028248587" cy="384.7457627118644" r="79.0960451977401"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="112.99435028248587" cy="384.7457627118644" r="39.54802259887005"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="687.0056497175142" cy="384.7457627118644" r="79.0960451977401"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="687.0056497175142" cy="384.7457627118644" r="39.54802259887005"/></g></svg>',
     title: "axial_p0.2in"
   },
   {
