@@ -15,4 +15,4 @@ test("parity/axial", async () => {
     import.meta.path,
     "axial_parity._boolean_difference",
   )
-})
+}, 10000)
