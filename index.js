@@ -31035,6 +31035,9 @@ var stampreceiver = (raw_params) => {
 // src/fn/lqfp.ts
 var lqfp = (parameters) => {
   parameters.legsoutside = true;
+  if (!parameters.pl) {
+    parameters.pl = 1.5;
+  }
   return quad(parameters);
 };
 // src/fn/breakoutheaders.ts
