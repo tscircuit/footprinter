@@ -7,11 +7,11 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 export const wson_def = z.object({
   fn: z.string(),
   num_pins: z.number().default(6),
-  w: z.string().default("2.4mm"),
-  h: z.string().default("1.6mm"),
+  w: z.string().default("3mm"),
+  h: z.string().default("3mm"),
   p: z.string().default("0.95mm"),
-  pl: z.string().default("0.6mm"),
-  pw: z.string().default("0.4mm"),
+  pl: z.string().default("0.63mm"),
+  pw: z.string().default("0.45mm"),
   epw: z.string().optional(),
   eph: z.string().optional(),
   string: z.string().optional(),
@@ -63,15 +63,38 @@ export const wson = (
   const w = length.parse(parameters.w)
   const h = length.parse(parameters.h)
   const p = length.parse(parameters.p)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
+  
+  // Set pad dimensions based on pitch if not explicitly provided
+  let pl = parameters.pl ? length.parse(parameters.pl) : 0.63
+  let pw = parameters.pw ? length.parse(parameters.pw) : 0.45
+  
+  // For 0.5mm pitch, use different defaults to match KiCad
+  if (p === 0.5 && !raw_params.string?.includes("pl") && !raw_params.string?.includes("pw")) {
+    pl = 0.6  // KiCad uses 0.6mm pad length for 0.5mm pitch
+    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
+  } else if (!raw_params.string?.includes("pl") && !raw_params.string?.includes("pw")) {
+    // For other pitches, use the defaults from the schema
+    pl = length.parse(parameters.pl)
+    pw = length.parse(parameters.pw)
+  }
 
-  // Default EP size based on package size if not specified
+  // Default EP size and configuration
   let epw: number
   let eph: number
+  let splitEP = false
+  
   if (parameters.ep) {
-    epw = parameters.epw ? length.parse(parameters.epw) : w * 0.625 // 1.5mm for 2.4mm package
-    eph = parameters.eph ? length.parse(parameters.eph) : h * 1.5 // 2.4mm for 1.6mm package
+    if (parameters.epw && parameters.eph) {
+      epw = length.parse(parameters.epw)
+      eph = length.parse(parameters.eph)
+      // For wson8 3x3mm p0.5mm with EP1.6x2.0mm, use single pad (not split)
+      splitEP = false
+    } else {
+      // Default for wson6: split into 4 quadrants
+      epw = 0.8
+      eph = 1.05
+      splitEP = true
+    }
   } else {
     epw = 0
     eph = 0
@@ -85,8 +108,16 @@ export const wson = (
   }
 
   if (parameters.ep) {
-    // Single thermal pad (not split into quadrants)
-    pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
+    if (splitEP) {
+      // Split thermal pad into 4 quadrants like KiCad (for wson6)
+      pads.push(rectpad(parameters.num_pins + 1, -epw / 2, eph / 2, epw, eph))
+      pads.push(rectpad(parameters.num_pins + 2, -epw / 2, -eph / 2, epw, eph))
+      pads.push(rectpad(parameters.num_pins + 3, epw / 2, eph / 2, epw, eph))
+      pads.push(rectpad(parameters.num_pins + 4, epw / 2, -eph / 2, epw, eph))
+    } else {
+      // Single thermal pad (for wson8 and others with explicit EP dimensions)
+      pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
+    }
   }
 
   const silkscreenTopLine: PcbSilkscreenPath = {
@@ -154,7 +185,18 @@ export const getWsonPadCoord = (
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
-  const xOffset = w / 2 + 0.2
+  
+  // X position calculation depends on pitch
+  // For 0.5mm pitch (wson8): pad center at ±1.4mm
+  // For 0.95mm pitch (wson6): pad center at ±1.34mm
+  let xOffset: number
+  if (p === 0.5) {
+    // For 0.5mm pitch, KiCad has pads at ±1.4mm
+    xOffset = 1.4
+  } else {
+    // For 0.95mm pitch, use w/2 - 0.16 formula
+    xOffset = w / 2 - 0.16
+  }
 
   return {
     x: col * xOffset,

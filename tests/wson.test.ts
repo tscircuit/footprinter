@@ -14,11 +14,11 @@ test("wson6_ep", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "wson6_ep")
 })
 
-test("wson8_2x2mm_p0.5mm_ep0.9x1.6mm", () => {
-  const circuitJson = fp.string("wson8_2x2mm_p0.5mm_ep0.9x1.6mm").circuitJson()
+test("wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm", () => {
+  const circuitJson = fp.string("wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "wson8_2x2mm_p0.5mm_ep0.9x1.6mm",
+"wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm"
   )
 })
