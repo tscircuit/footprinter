@@ -195,7 +195,7 @@ export const wson = (
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getWsonPadCoord(parameters.num_pins, 1, w, p, pl)
+  const pin1Position = getWsonPadCoord(parameters.num_pins, 1, w, p, pl, variant)
 
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
