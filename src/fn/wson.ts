@@ -21,40 +21,29 @@ export const wson_def = z.object({
 export const wson = (
   raw_params: z.input<typeof wson_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  // Parse the string for various parameters
-  if (raw_params.string) {
-    const str = raw_params.string
+  if (raw_params.string?.includes("_ep")) {
+    raw_params.ep = true
 
-    // Check for EP (exposed pad)
-    if (str.includes("_ep") || /_ep\d/.test(str)) {
-      raw_params.ep = true
+    // Extract EP dimensions from patterns like "_ep1.2x2mm" or "_ep1.6x2.0mm"
+    const epDimMatch = raw_params.string.match(/_ep(\d+\.?\d*)x(\d+\.?\d*)mm/)
+    if (epDimMatch) {
+      raw_params.epw = `${epDimMatch[1]}mm`
+      raw_params.eph = `${epDimMatch[2]}mm`
     }
+  }
 
-    // Extract number of pins from patterns like "wson8" or "wson_8"
-    const pinMatch = str.match(/wson_?(\d+)/)
-    if (pinMatch) {
-      raw_params.num_pins = Number.parseInt(pinMatch[1]!, 10)
-    }
+  // Extract pin count from string like "wson8"
+  const match = raw_params.string?.match(/^wson(\d+)/)
+  if (match) {
+    raw_params.num_pins = Number.parseInt(match[1]!, 10)
+  }
 
-    // Extract package dimensions (e.g., "2.5x2.5mm", "3x3mm", "4x4mm")
-    const dimMatch = str.match(/(\d+\.?\d*)x(\d+\.?\d*)mm/)
+  // Extract package dimensions if not already provided
+  if (raw_params.string && !raw_params.w) {
+    const dimMatch = raw_params.string.match(/(\d+\.?\d*)x(\d+\.?\d*)mm/)
     if (dimMatch) {
       raw_params.w = `${dimMatch[1]}mm`
       raw_params.h = `${dimMatch[2]}mm`
-    }
-
-    // Extract pitch (e.g., "p0.5mm", "p0.65mm")
-    const pitchMatch = str.match(/_p(\d+\.?\d*)mm/)
-    if (pitchMatch) {
-      raw_params.p = `${pitchMatch[1]}mm`
-    }
-
-    // Extract EP dimensions (e.g., "ep1.2x2mm", "ep0.84x2.4mm")
-    const epMatch = str.match(/_ep(\d+\.?\d*)x(\d+\.?\d*)mm/)
-    if (epMatch) {
-      raw_params.epw = `${epMatch[1]}mm`
-      raw_params.eph = `${epMatch[2]}mm`
-      raw_params.ep = true
     }
   }
 
@@ -63,16 +52,57 @@ export const wson = (
   const w = length.parse(parameters.w)
   const h = length.parse(parameters.h)
   const p = length.parse(parameters.p)
-  
-  // Set pad dimensions based on pitch if not explicitly provided
+
+  // Set pad dimensions based on pitch and package size if not explicitly provided
   let pl = parameters.pl ? length.parse(parameters.pl) : 0.63
   let pw = parameters.pw ? length.parse(parameters.pw) : 0.45
-  
-  // For 0.5mm pitch, use different defaults to match KiCad
-  if (p === 0.5 && !raw_params.string?.includes("pl") && !raw_params.string?.includes("pw")) {
-    pl = 0.6  // KiCad uses 0.6mm pad length for 0.5mm pitch
+
+  // For 0.5mm pitch with 3x3mm package (wson8), use different defaults to match KiCad
+  if (
+    p === 0.5 &&
+    w === 3 &&
+    parameters.num_pins === 8 &&
+    !raw_params.string?.includes("pl") &&
+    !raw_params.string?.includes("pw")
+  ) {
+    pl = 0.6 // KiCad uses 0.6mm pad length for wson8
     pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
-  } else if (!raw_params.string?.includes("pl") && !raw_params.string?.includes("pw")) {
+  }
+  // For 0.5mm pitch with 3x3mm package (wson12), use different defaults
+  else if (
+    p === 0.5 &&
+    w === 3 &&
+    parameters.num_pins === 12 &&
+    !raw_params.string?.includes("pl") &&
+    !raw_params.string?.includes("pw")
+  ) {
+    pl = 0.875 // KiCad uses 0.875mm pad length for wson12
+    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
+  }
+  // For 0.5mm pitch with 4x4mm package (wson14), use different defaults
+  else if (
+    p === 0.5 &&
+    w === 4 &&
+    parameters.num_pins === 14 &&
+    !raw_params.string?.includes("pl") &&
+    !raw_params.string?.includes("pw")
+  ) {
+    pl = 0.25 // KiCad uses 0.25mm pad length for wson14
+    pw = 0.6 // KiCad uses 0.6mm pad width for wson14
+  }
+  // For 0.5mm pitch with 2.5x2.5mm package (wson10), use different defaults
+  else if (
+    p === 0.5 &&
+    w === 2.5 &&
+    !raw_params.string?.includes("pl") &&
+    !raw_params.string?.includes("pw")
+  ) {
+    pl = 0.825 // KiCad uses 0.825mm pad length for 2.5x2.5mm package
+    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
+  } else if (
+    !raw_params.string?.includes("pl") &&
+    !raw_params.string?.includes("pw")
+  ) {
     // For other pitches, use the defaults from the schema
     pl = length.parse(parameters.pl)
     pw = length.parse(parameters.pw)
@@ -82,7 +112,7 @@ export const wson = (
   let epw: number
   let eph: number
   let splitEP = false
-  
+
   if (parameters.ep) {
     if (parameters.epw && parameters.eph) {
       epw = length.parse(parameters.epw)
@@ -185,16 +215,23 @@ export const getWsonPadCoord = (
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
-  
-  // X position calculation depends on pitch
-  // For 0.5mm pitch (wson8): pad center at ±1.4mm
-  // For 0.95mm pitch (wson6): pad center at ±1.34mm
+
+  // X position calculation depends on pitch, package size, and pin count
   let xOffset: number
-  if (p === 0.5) {
-    // For 0.5mm pitch, KiCad has pads at ±1.4mm
+  if (p === 0.5 && w === 3 && num_pins === 8) {
+    // For wson8 with 3x3mm package: pad center at ±1.4mm
     xOffset = 1.4
+  } else if (p === 0.5 && w === 3 && num_pins === 12) {
+    // For wson12 with 3x3mm package: pad center at ±1.4375mm
+    xOffset = 1.4375
+  } else if (p === 0.5 && w === 4 && num_pins === 14) {
+    // For wson14 with 4x4mm package: pad center at ±1.9mm
+    xOffset = 1.9
+  } else if (p === 0.5 && w === 2.5) {
+    // For wson10 with 2.5x2.5mm package: pad center at ±1.2125mm
+    xOffset = 1.2125
   } else {
-    // For 0.95mm pitch, use w/2 - 0.16 formula
+    // For 0.95mm pitch (wson6), use w/2 - 0.16 formula
     xOffset = w / 2 - 0.16
   }
 

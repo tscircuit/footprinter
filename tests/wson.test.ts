@@ -15,10 +15,45 @@ test("wson6_ep", () => {
 })
 
 test("wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm", () => {
-  const circuitJson = fp.string("wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm").circuitJson()
+  const circuitJson = fp
+    .string("wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm")
+    .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-"wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm"
+    "wson8_ep1_3x3mm_p0.5mm_ep1.2x2mm",
+  )
+})
+
+test("wson10_ep1_2.5x2.5mm_p0.5mm_ep1.2x2mm", () => {
+  const circuitJson = fp
+    .string("wson10_ep1_2.5x2.5mm_p0.5mm_ep1.2x2mm")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "wson10_ep1_2.5x2.5mm_p0.5mm_ep1.2x2mm",
+  )
+})
+
+test("wson12_ep1_3x3mm_p0.5mm_ep1.5x2.5mm", () => {
+  const circuitJson = fp
+    .string("wson12_ep1_3x3mm_p0.5mm_ep1.5x2.5mm")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "wson12_ep1_3x3mm_p0.5mm_ep1.5x2.5mm",
+  )
+})
+
+test("wson14_ep1_4x4mm_p0.5mm_ep2.6x2.6mm", () => {
+  const circuitJson = fp
+    .string("wson14_ep1_4x4mm_p0.5mm_ep2.6x2.6mm")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "wson14_ep1_4x4mm_p0.5mm_ep2.6x2.6mm",
   )
 })
