@@ -18,6 +18,56 @@ export const wson_def = z.object({
   ep: z.boolean().default(false),
 })
 
+// Variant-specific defaults for different WSON packages
+type WsonVariant = {
+  pl: number // pad length
+  pw: number // pad width
+  xOffset: number // pad center X position
+  epDefault: "split" | "single" // EP configuration
+}
+
+const WSON_VARIANTS: Record<string, WsonVariant> = {
+  "6|0.95|300": {
+    pl: 0.63,
+    pw: 0.45,
+    xOffset: 1.34, // w/2 - 0.16 = 3/2 - 0.16 = 1.34
+    epDefault: "split",
+  },
+  "8|0.5|300": {
+    pl: 0.6,
+    pw: 0.25,
+    xOffset: 1.4,
+    epDefault: "single",
+  },
+  "10|0.5|250": {
+    pl: 0.825,
+    pw: 0.25,
+    xOffset: 1.2125,
+    epDefault: "single",
+  },
+  "12|0.5|300": {
+    pl: 0.875,
+    pw: 0.25,
+    xOffset: 1.4375,
+    epDefault: "single",
+  },
+  "14|0.5|400": {
+    pl: 0.25,
+    pw: 0.6,
+    xOffset: 1.9,
+    epDefault: "single",
+  },
+}
+
+const getWsonVariant = (
+  num_pins: number,
+  p: number,
+  w: number,
+): WsonVariant | undefined => {
+  const key = `${num_pins}|${p}|${Math.round(w * 100)}`
+  return WSON_VARIANTS[key]
+}
+
 export const wson = (
   raw_params: z.input<typeof wson_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -53,57 +103,23 @@ export const wson = (
   const h = length.parse(parameters.h)
   const p = length.parse(parameters.p)
 
-  // Set pad dimensions based on pitch and package size if not explicitly provided
-  let pl = parameters.pl ? length.parse(parameters.pl) : 0.63
-  let pw = parameters.pw ? length.parse(parameters.pw) : 0.45
+  // Get variant-specific defaults
+  const variant = getWsonVariant(parameters.num_pins, p, w)
+  
+  // Determine if user explicitly provided pad dimensions
+  const hasExplicitPadDims =
+    raw_params.string?.includes("pl") || raw_params.string?.includes("pw")
 
-  // For 0.5mm pitch with 3x3mm package (wson8), use different defaults to match KiCad
-  if (
-    p === 0.5 &&
-    w === 3 &&
-    parameters.num_pins === 8 &&
-    !raw_params.string?.includes("pl") &&
-    !raw_params.string?.includes("pw")
-  ) {
-    pl = 0.6 // KiCad uses 0.6mm pad length for wson8
-    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
-  }
-  // For 0.5mm pitch with 3x3mm package (wson12), use different defaults
-  else if (
-    p === 0.5 &&
-    w === 3 &&
-    parameters.num_pins === 12 &&
-    !raw_params.string?.includes("pl") &&
-    !raw_params.string?.includes("pw")
-  ) {
-    pl = 0.875 // KiCad uses 0.875mm pad length for wson12
-    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
-  }
-  // For 0.5mm pitch with 4x4mm package (wson14), use different defaults
-  else if (
-    p === 0.5 &&
-    w === 4 &&
-    parameters.num_pins === 14 &&
-    !raw_params.string?.includes("pl") &&
-    !raw_params.string?.includes("pw")
-  ) {
-    pl = 0.25 // KiCad uses 0.25mm pad length for wson14
-    pw = 0.6 // KiCad uses 0.6mm pad width for wson14
-  }
-  // For 0.5mm pitch with 2.5x2.5mm package (wson10), use different defaults
-  else if (
-    p === 0.5 &&
-    w === 2.5 &&
-    !raw_params.string?.includes("pl") &&
-    !raw_params.string?.includes("pw")
-  ) {
-    pl = 0.825 // KiCad uses 0.825mm pad length for 2.5x2.5mm package
-    pw = 0.25 // KiCad uses 0.25mm pad width for 0.5mm pitch
-  } else if (
-    !raw_params.string?.includes("pl") &&
-    !raw_params.string?.includes("pw")
-  ) {
-    // For other pitches, use the defaults from the schema
+  // Set pad dimensions: use explicit params, then variant defaults, then schema defaults
+  let pl: number
+  let pw: number
+  if (hasExplicitPadDims) {
+    pl = length.parse(parameters.pl)
+    pw = length.parse(parameters.pw)
+  } else if (variant) {
+    pl = variant.pl
+    pw = variant.pw
+  } else {
     pl = length.parse(parameters.pl)
     pw = length.parse(parameters.pw)
   }
@@ -115,15 +131,20 @@ export const wson = (
 
   if (parameters.ep) {
     if (parameters.epw && parameters.eph) {
+      // Explicit EP dimensions provided in string
       epw = length.parse(parameters.epw)
       eph = length.parse(parameters.eph)
-      // For wson8 3x3mm p0.5mm with EP1.6x2.0mm, use single pad (not split)
       splitEP = false
-    } else {
-      // Default for wson6: split into 4 quadrants
+    } else if (variant?.epDefault === "split") {
+      // Default split EP (for wson6)
       epw = 0.8
       eph = 1.05
       splitEP = true
+    } else {
+      // Default single EP for other variants
+      epw = w * 0.6 // reasonable default
+      eph = h * 0.6
+      splitEP = false
     }
   } else {
     epw = 0
@@ -133,7 +154,7 @@ export const wson = (
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getWsonPadCoord(parameters.num_pins, i + 1, w, p, pl)
+    const { x, y } = getWsonPadCoord(parameters.num_pins, i + 1, w, p, pl, variant)
     pads.push(rectpad(i + 1, x, y, pl, pw))
   }
 
@@ -210,28 +231,19 @@ export const getWsonPadCoord = (
   w: number,
   p: number,
   pl: number,
+  variant?: WsonVariant,
 ) => {
   const half = num_pins / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
 
-  // X position calculation depends on pitch, package size, and pin count
+  // X position: use variant-specific xOffset if available, otherwise fallback
   let xOffset: number
-  if (p === 0.5 && w === 3 && num_pins === 8) {
-    // For wson8 with 3x3mm package: pad center at ±1.4mm
-    xOffset = 1.4
-  } else if (p === 0.5 && w === 3 && num_pins === 12) {
-    // For wson12 with 3x3mm package: pad center at ±1.4375mm
-    xOffset = 1.4375
-  } else if (p === 0.5 && w === 4 && num_pins === 14) {
-    // For wson14 with 4x4mm package: pad center at ±1.9mm
-    xOffset = 1.9
-  } else if (p === 0.5 && w === 2.5) {
-    // For wson10 with 2.5x2.5mm package: pad center at ±1.2125mm
-    xOffset = 1.2125
+  if (variant) {
+    xOffset = variant.xOffset
   } else {
-    // For 0.95mm pitch (wson6), use w/2 - 0.16 formula
+    // Fallback formula for unknown variants
     xOffset = w / 2 - 0.16
   }
 
