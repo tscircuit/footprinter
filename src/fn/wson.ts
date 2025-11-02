@@ -105,7 +105,7 @@ export const wson = (
 
   // Get variant-specific defaults
   const variant = getWsonVariant(parameters.num_pins, p, w)
-  
+
   // Determine if user explicitly provided pad dimensions
   const hasExplicitPadDims =
     raw_params.string?.includes("pl") || raw_params.string?.includes("pw")
@@ -154,7 +154,14 @@ export const wson = (
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getWsonPadCoord(parameters.num_pins, i + 1, w, p, pl, variant)
+    const { x, y } = getWsonPadCoord(
+      parameters.num_pins,
+      i + 1,
+      w,
+      p,
+      pl,
+      variant,
+    )
     pads.push(rectpad(i + 1, x, y, pl, pw))
   }
 
@@ -195,7 +202,14 @@ export const wson = (
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getWsonPadCoord(parameters.num_pins, 1, w, p, pl, variant)
+  const pin1Position = getWsonPadCoord(
+    parameters.num_pins,
+    1,
+    w,
+    p,
+    pl,
+    variant,
+  )
 
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
