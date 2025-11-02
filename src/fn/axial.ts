@@ -13,7 +13,7 @@ export const axial_def = z.object({
   fn: z.string(),
   p: length.optional().default("2.54mm"),
   id: length.optional().default("0.7mm"),
-  od: length.optional().default("1mm"),
+  od: length.optional().default("1.4mm"),
 })
 export type AxialDef = z.input<typeof axial_def>
 
@@ -40,7 +40,7 @@ export const axial = (
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 1.5, 0.5)
   return {
     circuitJson: [
       ...plated_holes,
