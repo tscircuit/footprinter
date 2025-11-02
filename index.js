@@ -31038,6 +31038,9 @@ var lqfp = (parameters) => {
   if (!parameters.pl) {
     parameters.pl = 1.5;
   }
+  if (!parameters.pw) {
+    parameters.pw = 0.3;
+  }
   return quad(parameters);
 };
 // src/fn/breakoutheaders.ts
