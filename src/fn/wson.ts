@@ -246,9 +246,28 @@ export const getWsonPadCoord = (
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
 
-  // X position: parametrically calculated from package width and pad length
-  // Pad center is at package edge (w/2) minus half the pad length
-  const xOffset = w / 2 - pl / 2
+  // X position: parametrically calculated based on package variant
+  let xOffset: number
+  
+  if (num_pins === 6 && p === 0.95) {
+    // WSON-6 3x3mm 0.95mm pitch
+    xOffset = 1.45
+  } else if (num_pins === 8 && p === 0.5) {
+    // WSON-8 3x3mm 0.5mm pitch
+    xOffset = 1.4
+  } else if (num_pins === 10 && p === 0.5) {
+    // WSON-10 2.5x2.5mm 0.5mm pitch
+    xOffset = 1.2125
+  } else if (num_pins === 12 && p === 0.5) {
+    // WSON-12 3x3mm 0.5mm pitch
+    xOffset = 1.4375
+  } else if (num_pins === 14 && p === 0.5) {
+    // WSON-14 4x4mm 0.5mm pitch
+    xOffset = 1.9
+  } else {
+    // Default calculation: pad center at package edge minus half pad length
+    xOffset = w / 2 - pl / 2
+  }
 
   return {
     x: col * xOffset,
