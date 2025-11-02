@@ -11,5 +11,8 @@ export const lqfp = (
   if (!parameters.pl) {
     parameters.pl = 1.5
   }
+  if (!parameters.pw) {
+    parameters.pw = 0.3
+  }
   return quad(parameters)
 }
