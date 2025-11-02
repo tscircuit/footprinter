@@ -24,31 +24,31 @@ export const wson = (
   // Parse the string for various parameters
   if (raw_params.string) {
     const str = raw_params.string
-    
+
     // Check for EP (exposed pad)
     if (str.includes("_ep") || /_ep\d/.test(str)) {
       raw_params.ep = true
     }
-    
+
     // Extract number of pins from patterns like "wson8" or "wson_8"
     const pinMatch = str.match(/wson_?(\d+)/)
     if (pinMatch) {
       raw_params.num_pins = Number.parseInt(pinMatch[1]!, 10)
     }
-    
+
     // Extract package dimensions (e.g., "2.5x2.5mm", "3x3mm", "4x4mm")
     const dimMatch = str.match(/(\d+\.?\d*)x(\d+\.?\d*)mm/)
     if (dimMatch) {
       raw_params.w = `${dimMatch[1]}mm`
       raw_params.h = `${dimMatch[2]}mm`
     }
-    
+
     // Extract pitch (e.g., "p0.5mm", "p0.65mm")
     const pitchMatch = str.match(/_p(\d+\.?\d*)mm/)
     if (pitchMatch) {
       raw_params.p = `${pitchMatch[1]}mm`
     }
-    
+
     // Extract EP dimensions (e.g., "ep1.2x2mm", "ep0.84x2.4mm")
     const epMatch = str.match(/_ep(\d+\.?\d*)x(\d+\.?\d*)mm/)
     if (epMatch) {
@@ -65,13 +65,13 @@ export const wson = (
   const p = length.parse(parameters.p)
   const pl = length.parse(parameters.pl)
   const pw = length.parse(parameters.pw)
-  
+
   // Default EP size based on package size if not specified
   let epw: number
   let eph: number
   if (parameters.ep) {
-    epw = parameters.epw ? length.parse(parameters.epw) : w * 0.625  // 1.5mm for 2.4mm package
-    eph = parameters.eph ? length.parse(parameters.eph) : h * 1.5    // 2.4mm for 1.6mm package
+    epw = parameters.epw ? length.parse(parameters.epw) : w * 0.625 // 1.5mm for 2.4mm package
+    eph = parameters.eph ? length.parse(parameters.eph) : h * 1.5 // 2.4mm for 1.6mm package
   } else {
     epw = 0
     eph = 0
@@ -89,16 +89,13 @@ export const wson = (
     pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
   }
 
-  const silkscreenBoxWidth = w
-  const silkscreenBoxHeight = h
-
   const silkscreenTopLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 + 0.5 },
-      { x: silkscreenBoxWidth / 2, y: silkscreenBoxHeight / 2 + 0.5 },
+      { x: -w / 2, y: h / 2 + 0.5 },
+      { x: w / 2, y: h / 2 + 0.5 },
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
@@ -109,45 +106,30 @@ export const wson = (
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 - 0.5 },
-      { x: silkscreenBoxWidth / 2, y: -silkscreenBoxHeight / 2 - 0.5 },
+      { x: -w / 2, y: -h / 2 - 0.5 },
+      { x: w / 2, y: -h / 2 - 0.5 },
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getWsonPadCoord(
-    parameters.num_pins,
-    1,
-    silkscreenBoxWidth,
-    p,
-    pl,
-  )
-
-  const pin1MarkerPosition = {
-    x: pin1Position.x - 0.4,
-    y: pin1Position.y,
-  }
+  const pin1Position = getWsonPadCoord(parameters.num_pins, 1, w, p, pl)
 
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "pin_marker_1",
     route: [
-      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
-      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y + 0.3 },
-      { x: pin1MarkerPosition.x - 0.7, y: pin1MarkerPosition.y - 0.3 },
-      { x: pin1MarkerPosition.x - 0.4, y: pin1MarkerPosition.y },
+      { x: pin1Position.x - 0.8, y: pin1Position.y },
+      { x: pin1Position.x - 1.1, y: pin1Position.y + 0.3 },
+      { x: pin1Position.x - 1.1, y: pin1Position.y - 0.3 },
+      { x: pin1Position.x - 0.8, y: pin1Position.y },
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "pin_marker_1",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    silkscreenBoxHeight / 2 + 1,
-    0.3,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.3)
 
   return {
     circuitJson: [
@@ -172,14 +154,8 @@ export const getWsonPadCoord = (
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
-  
-  // X position: Based on KiCad Texas_PWSON-N6, pads are at ±1.4mm for 2.4mm package
-  // With pad length 0.6mm, that means inner edge at 1.4 - 0.3 = 1.1mm
-  // Package width is 2.4mm, so half is 1.2mm
-  // So pads are slightly inside: 1.4 = 1.2 + 0.2
-  // Formula: w/2 + 0.2
   const xOffset = w / 2 + 0.2
-  
+
   return {
     x: col * xOffset,
     y: row * p,
