@@ -22,7 +22,6 @@ export const wson_def = z.object({
 type WsonVariant = {
   pl: number // pad length
   pw: number // pad width
-  xOffset: number // pad center X position
   epDefault: "split" | "single" // EP configuration
 }
 
@@ -30,31 +29,26 @@ const WSON_VARIANTS: Record<string, WsonVariant> = {
   "6|0.95|300": {
     pl: 0.63,
     pw: 0.45,
-    xOffset: 1.34, // w/2 - 0.16 = 3/2 - 0.16 = 1.34
     epDefault: "split",
   },
   "8|0.5|300": {
     pl: 0.6,
     pw: 0.25,
-    xOffset: 1.4,
     epDefault: "single",
   },
   "10|0.5|250": {
     pl: 0.825,
     pw: 0.25,
-    xOffset: 1.2125,
     epDefault: "single",
   },
   "12|0.5|300": {
     pl: 0.875,
     pw: 0.25,
-    xOffset: 1.4375,
     epDefault: "single",
   },
   "14|0.5|400": {
     pl: 0.25,
     pw: 0.6,
-    xOffset: 1.9,
     epDefault: "single",
   },
 }
@@ -252,14 +246,9 @@ export const getWsonPadCoord = (
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
 
-  // X position: use variant-specific xOffset if available, otherwise fallback
-  let xOffset: number
-  if (variant) {
-    xOffset = variant.xOffset
-  } else {
-    // Fallback formula for unknown variants
-    xOffset = w / 2 - 0.16
-  }
+  // X position: parametrically calculated from package width and pad length
+  // Pad center is at package edge (w/2) minus half the pad length
+  const xOffset = w / 2 - pl / 2
 
   return {
     x: col * xOffset,
