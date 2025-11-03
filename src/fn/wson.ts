@@ -3,274 +3,259 @@ import { z } from "zod"
 import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
-export const wson_def = z.object({
+export const base_wson_def = z.object({
   fn: z.string(),
   num_pins: z.number().default(6),
-  w: z.string().default("3mm"),
-  h: z.string().default("3mm"),
-  p: z.string().default("0.95mm"),
-  pl: z.string().default("0.63mm"),
-  pw: z.string().default("0.45mm"),
-  epw: z.string().optional(),
-  eph: z.string().optional(),
+  w: length.optional(),
+  h: length.optional(),
+  p: length.default(length.parse("0.95mm")),
+  pl: length.optional(),
+  pw: length.optional(),
+  epw: length.optional(),
+  eph: length.optional(),
+  ep: z.coerce.boolean().default(false),
   string: z.string().optional(),
-  ep: z.boolean().default(false),
 })
 
-// Variant-specific defaults for different WSON packages
-type WsonVariant = {
-  pl: number // pad length
-  pw: number // pad width
-  epDefault: "split" | "single" // EP configuration
-}
-
-const WSON_VARIANTS: Record<string, WsonVariant> = {
-  "6|0.95|300": {
-    pl: 0.63,
-    pw: 0.45,
-    epDefault: "split",
-  },
-  "8|0.5|300": {
-    pl: 0.6,
-    pw: 0.25,
-    epDefault: "single",
-  },
-  "10|0.5|250": {
-    pl: 0.825,
-    pw: 0.25,
-    epDefault: "single",
-  },
-  "12|0.5|300": {
-    pl: 0.875,
-    pw: 0.25,
-    epDefault: "single",
-  },
-  "14|0.5|400": {
-    pl: 0.25,
-    pw: 0.6,
-    epDefault: "single",
-  },
-}
-
-const getWsonVariant = (
-  num_pins: number,
-  p: number,
-  w: number,
-): WsonVariant | undefined => {
-  const key = `${num_pins}|${p}|${Math.round(w * 100)}`
-  return WSON_VARIANTS[key]
-}
-
-export const wson = (
-  raw_params: z.input<typeof wson_def>,
-): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  if (raw_params.string?.includes("_ep")) {
-    raw_params.ep = true
-
-    // Extract EP dimensions from patterns like "_ep1.2x2mm" or "_ep1.6x2.0mm"
-    const epDimMatch = raw_params.string.match(/_ep(\d+\.?\d*)x(\d+\.?\d*)mm/)
-    if (epDimMatch) {
-      raw_params.epw = `${epDimMatch[1]}mm`
-      raw_params.eph = `${epDimMatch[2]}mm`
-    }
+export const wsonTransform = <T extends z.infer<typeof base_wson_def>>(
+  v: T,
+) => {
+  // Set default dimensions if not provided
+  if (!v.w && !v.h) {
+    v.w = 3.0
+    v.h = 3.0
+  } else if (v.w && !v.h) {
+    v.h = v.w
+  } else if (!v.w && v.h) {
+    v.w = v.h
   }
 
-  // Extract pin count from string like "wson8"
-  const match = raw_params.string?.match(/^wson(\d+)/)
-  if (match) {
-    raw_params.num_pins = Number.parseInt(match[1]!, 10)
-  }
-
-  // Extract package dimensions if not already provided
-  if (raw_params.string && !raw_params.w) {
-    const dimMatch = raw_params.string.match(/(\d+\.?\d*)x(\d+\.?\d*)mm/)
-    if (dimMatch) {
-      raw_params.w = `${dimMatch[1]}mm`
-      raw_params.h = `${dimMatch[2]}mm`
-    }
-  }
-
-  const parameters = wson_def.parse(raw_params)
-
-  const w = length.parse(parameters.w)
-  const h = length.parse(parameters.h)
-  const p = length.parse(parameters.p)
-
-  // Get variant-specific defaults
-  const variant = getWsonVariant(parameters.num_pins, p, w)
-
-  // Determine if user explicitly provided pad dimensions
-  const hasExplicitPadDims =
-    raw_params.string?.includes("pl") || raw_params.string?.includes("pw")
-
-  // Set pad dimensions: use explicit params, then variant defaults, then schema defaults
-  let pl: number
-  let pw: number
-  if (hasExplicitPadDims) {
-    pl = length.parse(parameters.pl)
-    pw = length.parse(parameters.pw)
-  } else if (variant) {
-    pl = variant.pl
-    pw = variant.pw
-  } else {
-    pl = length.parse(parameters.pl)
-    pw = length.parse(parameters.pw)
-  }
-
-  // Default EP size and configuration
-  let epw: number
-  let eph: number
-  let splitEP = false
-
-  if (parameters.ep) {
-    if (parameters.epw && parameters.eph) {
-      // Explicit EP dimensions provided in string
-      epw = length.parse(parameters.epw)
-      eph = length.parse(parameters.eph)
-      splitEP = false
-    } else if (variant?.epDefault === "split") {
-      // Default split EP (for wson6)
-      epw = 0.8
-      eph = 1.05
-      splitEP = true
+  // Calculate pin length and width based on pitch and pin count
+  if (!v.pl) {
+    if (v.p! >= 0.65) {
+      v.pl = 0.4
     } else {
-      // Default single EP for other variants
-      epw = w * 0.6 // reasonable default
-      eph = h * 0.6
-      splitEP = false
+      v.pl = 0.6
     }
-  } else {
-    epw = 0
-    eph = 0
   }
 
-  const pads: AnyCircuitElement[] = []
-
-  for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getWsonPadCoord(
-      parameters.num_pins,
-      i + 1,
-      w,
-      p,
-      pl,
-      variant,
-    )
-    pads.push(rectpad(i + 1, x, y, pl, pw))
-  }
-
-  if (parameters.ep) {
-    if (splitEP) {
-      // Split thermal pad into 4 quadrants like KiCad (for wson6)
-      pads.push(rectpad(parameters.num_pins + 1, -epw / 2, eph / 2, epw, eph))
-      pads.push(rectpad(parameters.num_pins + 2, -epw / 2, -eph / 2, epw, eph))
-      pads.push(rectpad(parameters.num_pins + 3, epw / 2, eph / 2, epw, eph))
-      pads.push(rectpad(parameters.num_pins + 4, epw / 2, -eph / 2, epw, eph))
+  if (!v.pw) {
+    if (v.p! >= 0.65) {
+      v.pw = 0.375
     } else {
-      // Single thermal pad (for wson8 and others with explicit EP dimensions)
-      pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
+      v.pw = 0.25
     }
   }
 
-  const silkscreenTopLine: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      { x: -w / 2, y: h / 2 + 0.5 },
-      { x: w / 2, y: h / 2 + 0.5 },
-    ],
-    stroke_width: 0.05,
-    pcb_silkscreen_path_id: "",
+  // Set thermal pad dimensions if needed
+  if (v.ep) {
+    if (!v.epw) {
+      v.epw = v.w! * 0.5
+    }
+    if (!v.eph) {
+      v.eph = v.h! * 0.6
+    }
   }
 
-  const silkscreenBottomLine: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      { x: -w / 2, y: -h / 2 - 0.5 },
-      { x: w / 2, y: -h / 2 - 0.5 },
-    ],
-    stroke_width: 0.05,
-    pcb_silkscreen_path_id: "",
-  }
-
-  const pin1Position = getWsonPadCoord(
-    parameters.num_pins,
-    1,
-    w,
-    p,
-    pl,
-    variant,
-  )
-
-  const pin1Marking: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "pin_marker_1",
-    route: [
-      { x: pin1Position.x - 0.8, y: pin1Position.y },
-      { x: pin1Position.x - 1.1, y: pin1Position.y + 0.3 },
-      { x: pin1Position.x - 1.1, y: pin1Position.y - 0.3 },
-      { x: pin1Position.x - 0.8, y: pin1Position.y },
-    ],
-    stroke_width: 0.05,
-    pcb_silkscreen_path_id: "pin_marker_1",
-  }
-
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.3)
-
-  return {
-    circuitJson: [
-      ...pads,
-      silkscreenTopLine,
-      silkscreenBottomLine,
-      silkscreenRefText,
-      pin1Marking,
-    ],
-    parameters,
-  }
+  return v as NowDefined<T, "w" | "h" | "pl" | "pw">
 }
+
+export const wson_def = base_wson_def.transform(wsonTransform)
 
 export const getWsonPadCoord = (
   num_pins: number,
   pn: number,
   w: number,
   p: number,
-  pl: number,
-  variant?: WsonVariant,
 ) => {
   const half = num_pins / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const row = (half - 1) / 2 - rowIndex
 
-  // X position: parametrically calculated based on package variant
-  let xOffset: number
-  
-  if (num_pins === 6 && p === 0.95) {
-    // WSON-6 3x3mm 0.95mm pitch
-    xOffset = 1.45
-  } else if (num_pins === 8 && p === 0.5) {
-    // WSON-8 3x3mm 0.5mm pitch
-    xOffset = 1.4
-  } else if (num_pins === 10 && p === 0.5) {
-    // WSON-10 2.5x2.5mm 0.5mm pitch
-    xOffset = 1.2125
-  } else if (num_pins === 12 && p === 0.5) {
-    // WSON-12 3x3mm 0.5mm pitch
-    xOffset = 1.4375
-  } else if (num_pins === 14 && p === 0.5) {
-    // WSON-14 4x4mm 0.5mm pitch
-    xOffset = 1.9
-  } else {
-    // Default calculation: pad center at package edge minus half pad length
-    xOffset = w / 2 - pl / 2
-  }
+  // Position pads with inset from package edge
+  const inset = 0.1
+  const xOffset = w / 2 - inset
 
   return {
     x: col * xOffset,
     y: row * p,
+  }
+}
+
+export const wson = (
+  raw_params: z.input<typeof wson_def>,
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  // Parse dimensions from string if present
+  if (raw_params.string) {
+    const dimMatch = raw_params.string.match(
+      /(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)mm/,
+    )
+    if (dimMatch) {
+      if (!raw_params.w) raw_params.w = `${dimMatch[1]}mm`
+      if (!raw_params.h) raw_params.h = `${dimMatch[2]}mm`
+    }
+
+    // Parse thermal pad dimensions
+    const epMatch = raw_params.string.match(
+      /ep(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)mm/,
+    )
+    if (epMatch) {
+      raw_params.epw = `${epMatch[1]}mm`
+      raw_params.eph = `${epMatch[2]}mm`
+      raw_params.ep = true
+    }
+
+    // Parse pitch
+    const pitchMatch = raw_params.string.match(/p(\d+(?:\.\d+)?)mm/)
+    if (pitchMatch) {
+      raw_params.p = `${pitchMatch[1]}mm`
+    }
+  }
+
+  const parameters = wson_def.parse(raw_params)
+
+  const w = parameters.w
+  const h = parameters.h
+  const p = parameters.p
+  const pl = parameters.pl
+  const pw = parameters.pw
+  const epw = parameters.epw ?? 0
+  const eph = parameters.eph ?? 0
+
+  const pads: AnyCircuitElement[] = []
+
+  // Generate pins on left and right sides
+  for (let i = 0; i < parameters.num_pins; i++) {
+    const { x, y } = getWsonPadCoord(parameters.num_pins, i + 1, w, p)
+    pads.push(rectpad(i + 1, x, y, pl, pw))
+  }
+
+  // Add thermal pad if specified
+  if (parameters.ep) {
+    pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
+  }
+
+  // Silkscreen corners
+  const silkscreen_corners: PcbSilkscreenPath[] = []
+
+  for (const [corner, dx, dy] of [
+    ["top-left", -1, 1],
+    ["bottom-left", -1, -1],
+    ["bottom-right", 1, -1],
+    ["top-right", 1, 1],
+  ] as const) {
+    const corner_x = (w / 2) * dx
+    const corner_y = (h / 2) * dy
+    let arrow: "none" | "in1" = "none"
+
+    /** corner size */
+    const csz = pw * 2
+
+    // Pin 1 is always on the left side for WSON
+    if (corner === "top-left") {
+      arrow = "in1"
+    }
+
+    // Normal Corner
+    if (arrow === "none") {
+      silkscreen_corners.push({
+        layer: "top",
+        pcb_component_id: "",
+        pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}`,
+        route: [
+          {
+            x: corner_x - csz * dx,
+            y: corner_y,
+          },
+          {
+            x: corner_x,
+            y: corner_y,
+          },
+          {
+            x: corner_x,
+            y: corner_y - csz * dy,
+          },
+        ],
+        type: "pcb_silkscreen_path",
+        stroke_width: 0.1,
+      })
+    }
+
+    // Two lines nearly forming a corner, used when the arrow needs to overlap
+    if (arrow === "in1") {
+      silkscreen_corners.push(
+        {
+          layer: "top",
+          pcb_component_id: "",
+          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_1`,
+          route: [
+            {
+              x: corner_x - csz * dx,
+              y: corner_y,
+            },
+            {
+              x: corner_x - (csz * dx) / 2,
+              y: corner_y,
+            },
+          ],
+          type: "pcb_silkscreen_path",
+          stroke_width: 0,
+        },
+        {
+          layer: "top",
+          pcb_component_id: "",
+          pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_2`,
+          route: [
+            {
+              x: corner_x,
+              y: corner_y - (csz * dy) / 2,
+            },
+            {
+              x: corner_x,
+              y: corner_y - csz * dy,
+            },
+          ],
+          type: "pcb_silkscreen_path",
+          stroke_width: 0.1,
+        },
+      )
+
+      // Pin 1 arrow indicator
+      silkscreen_corners.push({
+        layer: "top",
+        pcb_component_id: "",
+        pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}_3`,
+        route: [
+          {
+            x: corner_x - 0.2 * -dx,
+            y: corner_y + 0.2,
+          },
+          {
+            x: corner_x,
+            y: corner_y,
+          },
+          {
+            x: corner_x + 0.2 * -dx,
+            y: corner_y + 0.2,
+          },
+          {
+            x: corner_x - 0.2 * -dx,
+            y: corner_y + 0.2,
+          },
+        ],
+        type: "pcb_silkscreen_path",
+        stroke_width: 0.1,
+      })
+    }
+  }
+
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.5, 0.3)
+
+  return {
+    circuitJson: [...pads, ...silkscreen_corners, silkscreenRefText],
+    parameters,
   }
 }
