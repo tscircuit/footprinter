@@ -18283,6 +18283,7 @@ __export(exports_dist, {
   wave_shape: () => wave_shape,
   voltage: () => voltage,
   visible_layer: () => visible_layer,
+  unknown_error_finding_part: () => unknown_error_finding_part,
   timestamp: () => timestamp,
   time: () => time,
   supplier_name: () => supplier_name,
@@ -18322,6 +18323,7 @@ __export(exports_dist, {
   size: () => size,
   simulation_voltage_source: () => simulation_voltage_source,
   simulation_voltage_probe: () => simulation_voltage_probe,
+  simulation_unknown_experiment_error: () => simulation_unknown_experiment_error,
   simulation_transient_voltage_graph: () => simulation_transient_voltage_graph,
   simulation_switch: () => simulation_switch,
   simulation_experiment: () => simulation_experiment,
@@ -18332,6 +18334,7 @@ __export(exports_dist, {
   schematic_text: () => schematic_text,
   schematic_table_cell: () => schematic_table_cell,
   schematic_table: () => schematic_table,
+  schematic_sheet: () => schematic_sheet,
   schematic_rect: () => schematic_rect,
   schematic_port: () => schematic_port,
   schematic_pin_styles: () => schematic_pin_styles,
@@ -18390,6 +18393,7 @@ __export(exports_dist, {
   pcb_port: () => pcb_port,
   pcb_plated_hole: () => pcb_plated_hole,
   pcb_placement_error: () => pcb_placement_error,
+  pcb_panel: () => pcb_panel,
   pcb_note_text: () => pcb_note_text,
   pcb_note_rect: () => pcb_note_rect,
   pcb_note_path: () => pcb_note_path,
@@ -18417,12 +18421,15 @@ __export(exports_dist, {
   pcb_cutout_circle: () => pcb_cutout_circle,
   pcb_cutout: () => pcb_cutout,
   pcb_courtyard_rect: () => pcb_courtyard_rect,
+  pcb_courtyard_polygon: () => pcb_courtyard_polygon,
   pcb_courtyard_outline: () => pcb_courtyard_outline,
+  pcb_copper_text: () => pcb_copper_text,
   pcb_copper_pour_rect: () => pcb_copper_pour_rect,
   pcb_copper_pour_polygon: () => pcb_copper_pour_polygon,
   pcb_copper_pour_brep: () => pcb_copper_pour_brep,
   pcb_copper_pour: () => pcb_copper_pour,
   pcb_component_outside_board_error: () => pcb_component_outside_board_error,
+  pcb_component_invalid_layer_error: () => pcb_component_invalid_layer_error,
   pcb_component: () => pcb_component,
   pcb_breakout_point: () => pcb_breakout_point,
   pcb_board: () => pcb_board,
@@ -22952,7 +22959,8 @@ var source_port = exports_external.object({
   port_hints: exports_external.array(exports_external.string()).optional(),
   name: exports_external.string(),
   source_port_id: exports_external.string(),
-  source_component_id: exports_external.string(),
+  source_component_id: exports_external.string().optional(),
+  source_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   subcircuit_connectivity_map_key: exports_external.string().optional()
 });
@@ -23040,6 +23048,15 @@ var source_manually_placed_via = exports_external.object({
   subcircuit_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional()
 }).describe("Defines a via that is manually placed in the source domain");
+expectTypesMatch(true);
+var unknown_error_finding_part = exports_external.object({
+  type: exports_external.literal("unknown_error_finding_part"),
+  unknown_error_finding_part_id: getZodPrefixedIdWithDefault("unknown_error_finding_part"),
+  error_type: exports_external.literal("unknown_error_finding_part").default("unknown_error_finding_part"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when an unexpected error occurs while finding a part");
 expectTypesMatch(true);
 var schematic_box = exports_external.object({
   type: exports_external.literal("schematic_box"),
@@ -23367,6 +23384,13 @@ var schematic_table_cell = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a cell within a schematic_table");
 expectTypesMatch(true);
+var schematic_sheet = exports_external.object({
+  type: exports_external.literal("schematic_sheet"),
+  schematic_sheet_id: getZodPrefixedIdWithDefault("schematic_sheet"),
+  name: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a schematic sheet or page that components can be placed on");
+expectTypesMatch(true);
 var point_with_bulge = exports_external.object({
   x: distance2,
   y: distance2,
@@ -23411,6 +23435,8 @@ var pcb_component = exports_external.object({
   do_not_place: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
+  position_mode: exports_external.enum(["packed", "relative_to_group_anchor", "none"]).optional(),
+  positioned_relative_to_pcb_group_id: exports_external.string().optional(),
   obstructs_within_bounds: exports_external.boolean().default(true).describe("Does this component take up all the space within its bounds on a layer. This is generally true except for when separated pin headers are being represented by a single component (in which case, chips can be placed between the pin headers) or for tall modules where chips fit underneath")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
@@ -23585,7 +23611,7 @@ var pcb_port = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   source_port_id: exports_external.string(),
-  pcb_component_id: exports_external.string(),
+  pcb_component_id: exports_external.string().optional(),
   x: distance2,
   y: distance2,
   layers: exports_external.array(layer_ref),
@@ -23618,6 +23644,7 @@ var pcb_smtpad_rect = exports_external.object({
   width: exports_external.number(),
   height: exports_external.number(),
   rect_border_radius: exports_external.number().optional(),
+  corner_radius: exports_external.number().optional(),
   layer: layer_ref,
   port_hints: exports_external.array(exports_external.string()).optional(),
   pcb_component_id: exports_external.string().optional(),
@@ -23635,6 +23662,7 @@ var pcb_smtpad_rotated_rect = exports_external.object({
   width: exports_external.number(),
   height: exports_external.number(),
   rect_border_radius: exports_external.number().optional(),
+  corner_radius: exports_external.number().optional(),
   ccw_rotation: rotation,
   layer: layer_ref,
   port_hints: exports_external.array(exports_external.string()).optional(),
@@ -23902,12 +23930,15 @@ var pcb_via = exports_external.object({
   from_layer: layer_ref.optional(),
   to_layer: layer_ref.optional(),
   layers: exports_external.array(layer_ref),
-  pcb_trace_id: exports_external.string().optional()
+  pcb_trace_id: exports_external.string().optional(),
+  net_is_assignable: exports_external.boolean().optional(),
+  net_assigned: exports_external.boolean().optional()
 }).describe("Defines a via on the PCB");
 expectTypesMatch(true);
 var pcb_board = exports_external.object({
   type: exports_external.literal("pcb_board"),
   pcb_board_id: getZodPrefixedIdWithDefault("pcb_board"),
+  pcb_panel_id: exports_external.string().optional(),
   is_subcircuit: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
   width: length,
@@ -23918,6 +23949,14 @@ var pcb_board = exports_external.object({
   outline: exports_external.array(point).optional(),
   material: exports_external.enum(["fr4", "fr1"]).default("fr4")
 }).describe("Defines the board outline of the PCB");
+expectTypesMatch(true);
+var pcb_panel = exports_external.object({
+  type: exports_external.literal("pcb_panel"),
+  pcb_panel_id: getZodPrefixedIdWithDefault("pcb_panel"),
+  width: length,
+  height: length,
+  covered_with_solder_mask: exports_external.boolean().optional().default(true)
+}).describe("Defines a PCB panel that can contain multiple boards");
 expectTypesMatch(true);
 var pcb_placement_error = exports_external.object({
   type: exports_external.literal("pcb_placement_error"),
@@ -23989,6 +24028,34 @@ var pcb_silkscreen_text = exports_external.object({
   anchor_alignment: ninePointAnchor.default("center")
 }).describe("Defines silkscreen text on the PCB");
 expectTypesMatch(true);
+var pcb_copper_text = exports_external.object({
+  type: exports_external.literal("pcb_copper_text"),
+  pcb_copper_text_id: getZodPrefixedIdWithDefault("pcb_copper_text"),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  font: exports_external.literal("tscircuit2024").default("tscircuit2024"),
+  font_size: distance2.default("0.2mm"),
+  pcb_component_id: exports_external.string(),
+  text: exports_external.string(),
+  is_knockout: exports_external.boolean().default(false).optional(),
+  knockout_padding: exports_external.object({
+    left: length,
+    top: length,
+    bottom: length,
+    right: length
+  }).default({
+    left: "0.2mm",
+    top: "0.2mm",
+    bottom: "0.2mm",
+    right: "0.2mm"
+  }).optional(),
+  ccw_rotation: exports_external.number().optional(),
+  layer: layer_ref,
+  is_mirrored: exports_external.boolean().default(false).optional(),
+  anchor_position: point.default({ x: 0, y: 0 }),
+  anchor_alignment: ninePointAnchor.default("center")
+}).describe("Defines copper text on the PCB");
+expectTypesMatch(true);
 var pcb_silkscreen_rect = exports_external.object({
   type: exports_external.literal("pcb_silkscreen_rect"),
   pcb_silkscreen_rect_id: getZodPrefixedIdWithDefault("pcb_silkscreen_rect"),
@@ -24000,6 +24067,7 @@ var pcb_silkscreen_rect = exports_external.object({
   height: length,
   layer: layer_ref,
   stroke_width: length.default("1mm"),
+  corner_radius: length.optional(),
   is_filled: exports_external.boolean().default(true).optional(),
   has_stroke: exports_external.boolean().optional(),
   is_stroke_dashed: exports_external.boolean().optional()
@@ -24066,6 +24134,7 @@ var pcb_fabrication_note_rect = exports_external.object({
   height: length,
   layer: visible_layer,
   stroke_width: length.default("0.1mm"),
+  corner_radius: length.optional(),
   is_filled: exports_external.boolean().optional(),
   has_stroke: exports_external.boolean().optional(),
   is_stroke_dashed: exports_external.boolean().optional(),
@@ -24079,10 +24148,16 @@ var pcb_fabrication_note_dimension = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   layer: visible_layer,
-  from: point.or(exports_external.string()),
-  to: point.or(exports_external.string()),
+  from: point,
+  to: point,
   text: exports_external.string().optional(),
+  text_ccw_rotation: exports_external.number().optional(),
   offset: length.optional(),
+  offset_distance: length.optional(),
+  offset_direction: exports_external.object({
+    x: exports_external.number(),
+    y: exports_external.number()
+  }).optional(),
   font: exports_external.literal("tscircuit2024").default("tscircuit2024"),
   font_size: length.default("1mm"),
   color: exports_external.string().optional(),
@@ -24095,9 +24170,10 @@ var pcb_note_text = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
   font: exports_external.literal("tscircuit2024").default("tscircuit2024"),
   font_size: distance2.default("1mm"),
-  text: exports_external.string(),
+  text: exports_external.string().optional(),
   anchor_position: point.default({ x: 0, y: 0 }),
   anchor_alignment: exports_external.enum(["center", "top_left", "top_right", "bottom_left", "bottom_right"]).default("center"),
   color: exports_external.string().optional()
@@ -24109,10 +24185,13 @@ var pcb_note_rect = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
+  text: exports_external.string().optional(),
   center: point,
   width: length,
   height: length,
   stroke_width: length.default("0.1mm"),
+  corner_radius: length.optional(),
   is_filled: exports_external.boolean().optional(),
   has_stroke: exports_external.boolean().optional(),
   is_stroke_dashed: exports_external.boolean().optional(),
@@ -24125,6 +24204,8 @@ var pcb_note_path = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
+  text: exports_external.string().optional(),
   route: exports_external.array(point),
   stroke_width: length.default("0.1mm"),
   color: exports_external.string().optional()
@@ -24136,6 +24217,8 @@ var pcb_note_line = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
+  text: exports_external.string().optional(),
   x1: distance2,
   y1: distance2,
   x2: distance2,
@@ -24151,9 +24234,16 @@ var pcb_note_dimension = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
   from: point,
   to: point,
   text: exports_external.string().optional(),
+  text_ccw_rotation: exports_external.number().optional(),
+  offset_distance: length.optional(),
+  offset_direction: exports_external.object({
+    x: exports_external.number(),
+    y: exports_external.number()
+  }).optional(),
   font: exports_external.literal("tscircuit2024").default("tscircuit2024"),
   font_size: length.default("1mm"),
   color: exports_external.string().optional(),
@@ -24265,10 +24355,14 @@ var pcb_group = exports_external.object({
   source_group_id: exports_external.string(),
   is_subcircuit: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
-  width: length,
-  height: length,
+  width: length.optional(),
+  height: length.optional(),
   center: point,
+  outline: exports_external.array(point).optional(),
+  anchor_position: point.optional(),
+  anchor_alignment: exports_external.enum(["center", "top_left", "top_right", "bottom_left", "bottom_right"]).optional(),
   pcb_component_ids: exports_external.array(exports_external.string()),
+  child_layout_mode: exports_external.enum(["packed", "none"]).optional(),
   name: exports_external.string().optional(),
   description: exports_external.string().optional(),
   layout_mode: exports_external.string().optional(),
@@ -24347,7 +24441,8 @@ var pcb_copper_pour_base = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   layer: layer_ref,
-  source_net_id: exports_external.string().optional()
+  source_net_id: exports_external.string().optional(),
+  covered_with_solder_mask: exports_external.boolean().optional().default(true)
 });
 var pcb_copper_pour_rect = pcb_copper_pour_base.extend({
   shape: exports_external.literal("rect"),
@@ -24391,6 +24486,17 @@ var pcb_component_outside_board_error = exports_external.object({
   source_component_id: exports_external.string().optional()
 }).describe("Error emitted when a PCB component is placed outside the board boundaries");
 expectTypesMatch(true);
+var pcb_component_invalid_layer_error = exports_external.object({
+  type: exports_external.literal("pcb_component_invalid_layer_error"),
+  pcb_component_invalid_layer_error_id: getZodPrefixedIdWithDefault("pcb_component_invalid_layer_error"),
+  error_type: exports_external.literal("pcb_component_invalid_layer_error").default("pcb_component_invalid_layer_error"),
+  message: exports_external.string(),
+  pcb_component_id: exports_external.string().optional(),
+  source_component_id: exports_external.string(),
+  layer: layer_ref,
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when a component is placed on an invalid layer (components can only be on 'top' or 'bottom' layers)");
+expectTypesMatch(true);
 var pcb_via_clearance_error = exports_external.object({
   type: exports_external.literal("pcb_via_clearance_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
@@ -24416,10 +24522,6 @@ var pcb_courtyard_rect = exports_external.object({
   width: length,
   height: length,
   layer: visible_layer,
-  stroke_width: length.default("0.1mm"),
-  is_filled: exports_external.boolean().optional(),
-  has_stroke: exports_external.boolean().optional(),
-  is_stroke_dashed: exports_external.boolean().optional(),
   color: exports_external.string().optional()
 }).describe("Defines a courtyard rectangle on the PCB");
 expectTypesMatch(true);
@@ -24436,6 +24538,17 @@ var pcb_courtyard_outline = exports_external.object({
   is_stroke_dashed: exports_external.boolean().optional(),
   color: exports_external.string().optional()
 }).describe("Defines a courtyard outline on the PCB");
+expectTypesMatch(true);
+var pcb_courtyard_polygon = exports_external.object({
+  type: exports_external.literal("pcb_courtyard_polygon"),
+  pcb_courtyard_polygon_id: getZodPrefixedIdWithDefault("pcb_courtyard_polygon"),
+  pcb_component_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  layer: visible_layer,
+  points: exports_external.array(point).min(3),
+  color: exports_external.string().optional()
+}).describe("Defines a courtyard polygon on the PCB");
 expectTypesMatch(true);
 var cad_component = exports_external.object({
   type: exports_external.literal("cad_component"),
@@ -24521,6 +24634,7 @@ var simulation_transient_voltage_graph = exports_external.object({
   timestamps_ms: exports_external.array(exports_external.number()).optional(),
   voltage_levels: exports_external.array(exports_external.number()),
   schematic_voltage_probe_id: exports_external.string().optional(),
+  simulation_voltage_probe_id: exports_external.string().optional(),
   subcircuit_connectivity_map_key: exports_external.string().optional(),
   time_per_step: duration_ms,
   start_time_ms: ms,
@@ -24531,6 +24645,7 @@ expectTypesMatch(true);
 var simulation_switch = exports_external.object({
   type: exports_external.literal("simulation_switch"),
   simulation_switch_id: getZodPrefixedIdWithDefault("simulation_switch"),
+  source_component_id: exports_external.string().optional(),
   closes_at: ms.optional(),
   opens_at: ms.optional(),
   starts_closed: exports_external.boolean().optional(),
@@ -24547,6 +24662,15 @@ var simulation_voltage_probe = exports_external.object({
 }).describe("Defines a voltage probe for simulation, connected to a port or a net").refine((data) => Boolean(data.source_port_id) !== Boolean(data.source_net_id), {
   message: "Exactly one of source_port_id or source_net_id must be provided to simulation_voltage_probe"
 });
+expectTypesMatch(true);
+var simulation_unknown_experiment_error = exports_external.object({
+  type: exports_external.literal("simulation_unknown_experiment_error"),
+  simulation_unknown_experiment_error_id: getZodPrefixedIdWithDefault("simulation_unknown_experiment_error"),
+  error_type: exports_external.literal("simulation_unknown_experiment_error").default("simulation_unknown_experiment_error"),
+  message: exports_external.string(),
+  simulation_experiment_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("An unknown error occurred during the simulation experiment.");
 expectTypesMatch(true);
 var any_circuit_element = exports_external.union([
   source_trace,
@@ -24577,6 +24701,7 @@ var any_circuit_element = exports_external.union([
   source_project_metadata,
   source_trace_not_connected_error,
   source_pin_missing_trace_warning,
+  unknown_error_finding_part,
   pcb_component,
   pcb_hole,
   pcb_missing_footprint_error,
@@ -24593,11 +24718,13 @@ var any_circuit_element = exports_external.union([
   pcb_smtpad,
   pcb_solder_paste,
   pcb_board,
+  pcb_panel,
   pcb_group,
   pcb_trace_hint,
   pcb_silkscreen_line,
   pcb_silkscreen_path,
   pcb_silkscreen_text,
+  pcb_copper_text,
   pcb_silkscreen_rect,
   pcb_silkscreen_circle,
   pcb_silkscreen_oval,
@@ -24625,8 +24752,10 @@ var any_circuit_element = exports_external.union([
   pcb_thermal_spoke,
   pcb_copper_pour,
   pcb_component_outside_board_error,
+  pcb_component_invalid_layer_error,
   pcb_courtyard_rect,
   pcb_courtyard_outline,
+  pcb_courtyard_polygon,
   schematic_box,
   schematic_text,
   schematic_line,
@@ -24644,6 +24773,7 @@ var any_circuit_element = exports_external.union([
   schematic_voltage_probe,
   schematic_manual_edit_conflict_warning,
   schematic_group,
+  schematic_sheet,
   schematic_table,
   schematic_table_cell,
   cad_component,
@@ -24651,7 +24781,8 @@ var any_circuit_element = exports_external.union([
   simulation_experiment,
   simulation_transient_voltage_graph,
   simulation_switch,
-  simulation_voltage_probe
+  simulation_voltage_probe,
+  simulation_unknown_experiment_error
 ]);
 var any_soup_element = any_circuit_element;
 expectTypesMatch(true);
@@ -30368,26 +30499,27 @@ var sot723_def = exports_external.object({
   num_pins: exports_external.literal(3).default(3),
   w: exports_external.string().default("1.2mm"),
   h: exports_external.string().default("1.2mm"),
-  pl: exports_external.string().default("0.3mm"),
-  pw: exports_external.string().default("0.32mm")
+  pw: exports_external.string().default("0.40mm"),
+  pl: exports_external.string().default("0.45mm"),
+  p: exports_external.string().default("0.575mm")
 });
 var sot723 = (raw_params) => {
   const parameters = sot723_def.parse(raw_params);
   const pad = sot723WithoutParsing(parameters);
-  const silkscreenRefText = silkscreenRef(0.4, length.parse(parameters.h), 0.2);
+  const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.2);
   return {
     circuitJson: [...pad, silkscreenRefText],
     parameters
   };
 };
 var getCcwSot723Coords = (parameters) => {
-  const { pn: pn2, w: w3, h, pl: pl2 } = parameters;
+  const { pn: pn2, w: w3, h, pl: pl2, p } = parameters;
   if (pn2 === 1) {
-    return { x: 0, y: 0 };
+    return { x: p, y: 0 };
   } else if (pn2 === 2) {
-    return { x: 1, y: -0.4 };
+    return { x: -p, y: -0.4 };
   } else {
-    return { x: 1, y: 0.4 };
+    return { x: -p, y: 0.4 };
   }
 };
 var sot723WithoutParsing = (parameters) => {
@@ -30398,9 +30530,10 @@ var sot723WithoutParsing = (parameters) => {
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
       h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl)
+      pl: Number.parseFloat(parameters.pl),
+      p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), i !== 0 ? Number.parseFloat(parameters.pw) : 0.42));
+    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -35079,7 +35212,7 @@ var content_default = [
     title: "0603_textbottom"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="316.66666666666663" y="166.66666666666677" width="166.66666666666663" height="266.66666666666663"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="291.66666666666663" y="331.66666666666674" width="49.99999999999999" height="70" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="458.33333333333326" y="406.66666666666674" width="49.99999999999999" height="53.33333333333333" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="458.33333333333326" y="273.33333333333337" width="49.99999999999999" height="53.33333333333333" data-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.333333333333336" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,383.3333333333333,166.66666666666677)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="304.1666666666667" y="166.66666666666677" width="191.66666666666663" height="266.66666666666663"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="458.3333333333333" y="333.3333333333334" width="75" height="66.66666666666667" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="266.6666666666667" y="400.0000000000001" width="75" height="66.66666666666667" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="266.6666666666667" y="266.66666666666674" width="75" height="66.66666666666667" data-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.333333333333336" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,166.66666666666677)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "sot723"
   },
   {
