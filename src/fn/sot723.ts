@@ -19,7 +19,7 @@ export const sot723 = (
   const parameters = sot723_def.parse(raw_params)
   const pad = sot723WithoutParsing(parameters)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0.4,
+    0,
     length.parse(parameters.h),
     0.2,
   )
