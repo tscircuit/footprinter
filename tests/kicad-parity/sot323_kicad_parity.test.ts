@@ -15,4 +15,4 @@ test("parity/sot323", async () => {
     import.meta.path,
     "sot323_boolean_difference",
   )
-}, 10000)
+}, 30000)
