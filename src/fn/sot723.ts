@@ -8,8 +8,8 @@ export const sot723_def = z.object({
   num_pins: z.literal(3).default(3),
   w: z.string().default("1.2mm"),
   h: z.string().default("1.2mm"),
-  pl: z.string().default("0.45mm"),
   pw: z.string().default("0.40mm"),
+  pl: z.string().default("0.45mm"),
   p: z.string().default("0.575mm"),
 })
 
