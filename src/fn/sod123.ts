@@ -10,8 +10,8 @@ export const sod_def = z.object({
   w: z.string().default("2.36mm"),
   h: z.string().default("1.22mm"),
   pl: z.string().default("0.9mm"),
-  pw: z.string().default("0.9mm"),
-  p: z.string().default("4.19mm"),
+  pw: z.string().default("1.2mm"),
+  p: z.string().default("3.30mm"),
 })
 
 export const sod123 = (
