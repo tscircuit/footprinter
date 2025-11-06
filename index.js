@@ -30544,8 +30544,8 @@ var sod_def = exports_external.object({
   w: exports_external.string().default("2.36mm"),
   h: exports_external.string().default("1.22mm"),
   pl: exports_external.string().default("0.9mm"),
-  pw: exports_external.string().default("0.9mm"),
-  p: exports_external.string().default("4.19mm")
+  pw: exports_external.string().default("1.2mm"),
+  p: exports_external.string().default("3.30mm")
 });
 var sod123 = (raw_params) => {
   const parameters = sod_def.parse(raw_params);
@@ -35668,7 +35668,7 @@ var content_default = [
     title: "electrolytic_d10mm_p7.5mm"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="129.24071082390952" y="254.4426494345719" width="541.5185783521811" height="91.11470113085622"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="71.08239095315024" y="287.39903069466885" width="116.31663974151857" height="116.31663974151857" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="612.6009693053312" y="287.39903069466885" width="116.31663974151857" height="116.31663974151857" data-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="38.77221324717286" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,254.4426494345719)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="150.9433962264151" y="246.79245283018872" width="498.11320754716985" height="106.41509433962267"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="83.01886792452831" y="262.6415094339623" width="135.8490566037736" height="181.13207547169813" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="581.1320754716982" y="262.6415094339623" width="135.8490566037736" height="181.13207547169813" data-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="45.28301886792453" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,246.79245283018872)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "sod123"
   },
   {
