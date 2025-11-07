@@ -19,6 +19,7 @@ import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
 import { ssop_def } from "src/fn/ssop"
 import { tssop_def } from "src/fn/tssop"
+import { wson_def } from "src/fn/wson"
 import { passive_def } from "../passive-fn"
 import { pad_def } from "../../fn/pad"
 import { smtpad_def } from "../../fn/smtpad"
@@ -44,6 +45,7 @@ export const any_footprinter_def = z.union([
   sot723_def,
   ssop_def,
   tssop_def,
+  wson_def,
   passive_def,
   pad_def,
   smtpad_def,
