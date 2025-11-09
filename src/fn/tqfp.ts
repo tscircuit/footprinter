@@ -4,6 +4,7 @@ import type { z } from "zod"
 
 export const tqfp_def = quad_def
 
+// TQFP (Thin Quad Flat Package) with intelligent defaults
 export const tqfp = (
   raw_params: z.input<typeof quad_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
