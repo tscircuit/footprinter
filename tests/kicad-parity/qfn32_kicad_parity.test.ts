@@ -18,4 +18,4 @@ test("parity/qfn32_thermalpad3.1x3.1mm", async () => {
     import.meta.path,
     "qfn32_thermalpad3.1x3.1mm_boolean_difference",
   )
-}, 10000)
+})
