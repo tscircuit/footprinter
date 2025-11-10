@@ -26,6 +26,7 @@ export const base_quad_def = z.object({
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
   legsoutside: z.boolean().default(false),
+  padoffset: length.optional(), // Additional offset for pad position (positive = further from center)
 })
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
@@ -80,8 +81,9 @@ export const getQuadCoords = (params: {
   p: number // pitch between pins
   pl: number // length of the pin
   legsoutside?: boolean
+  padoffset?: number // Additional offset for pad position
 }) => {
-  const { pin_count, pn, w, h, p, pl, legsoutside } = params
+  const { pin_count, pn, w, h, p, pl, legsoutside, padoffset = 0 } = params
   const sidePinCount = pin_count / 4
   const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
@@ -92,7 +94,7 @@ export const getQuadCoords = (params: {
   const ibh = p * (sidePinCount - 1)
 
   /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? pl / 2 : -pl / 2
+  const pcdfe = (legsoutside ? pl / 2 : -pl / 2) - padoffset
 
   switch (side) {
     case "left":
@@ -129,6 +131,7 @@ export const quad = (
       p: parameters.p ?? 0.5,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
+      padoffset: parameters.padoffset,
     })
 
     let pw = parameters.pw
