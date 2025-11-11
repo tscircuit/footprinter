@@ -18404,8 +18404,10 @@ __export(exports_dist, {
   pcb_manual_edit_conflict_warning: () => pcb_manual_edit_conflict_warning,
   pcb_keepout: () => pcb_keepout,
   pcb_hole_rotated_pill_shape: () => pcb_hole_rotated_pill_shape,
+  pcb_hole_rect_shape: () => pcb_hole_rect_shape,
   pcb_hole_pill_shape: () => pcb_hole_pill_shape,
   pcb_hole_oval_shape: () => pcb_hole_oval_shape,
+  pcb_hole_circle_shape: () => pcb_hole_circle_shape,
   pcb_hole_circle_or_square_shape: () => pcb_hole_circle_or_square_shape,
   pcb_hole: () => pcb_hole,
   pcb_group: () => pcb_group,
@@ -23440,6 +23442,31 @@ var pcb_component = exports_external.object({
   obstructs_within_bounds: exports_external.boolean().default(true).describe("Does this component take up all the space within its bounds on a layer. This is generally true except for when separated pin headers are being represented by a single component (in which case, chips can be placed between the pin headers) or for tall modules where chips fit underneath")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
+var pcb_hole_circle = exports_external.object({
+  type: exports_external.literal("pcb_hole"),
+  pcb_hole_id: getZodPrefixedIdWithDefault("pcb_hole"),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  hole_shape: exports_external.literal("circle"),
+  hole_diameter: exports_external.number(),
+  x: distance2,
+  y: distance2
+});
+var pcb_hole_circle_shape = pcb_hole_circle.describe("Defines a circular hole on the PCB");
+expectTypesMatch(true);
+var pcb_hole_rect = exports_external.object({
+  type: exports_external.literal("pcb_hole"),
+  pcb_hole_id: getZodPrefixedIdWithDefault("pcb_hole"),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  hole_shape: exports_external.literal("rect"),
+  hole_width: exports_external.number(),
+  hole_height: exports_external.number(),
+  x: distance2,
+  y: distance2
+});
+var pcb_hole_rect_shape = pcb_hole_rect.describe("Defines a rectangular (square-capable) hole on the PCB. Use equal width/height for square.");
+expectTypesMatch(true);
 var pcb_hole_circle_or_square = exports_external.object({
   type: exports_external.literal("pcb_hole"),
   pcb_hole_id: getZodPrefixedIdWithDefault("pcb_hole"),
@@ -23492,7 +23519,7 @@ var pcb_hole_rotated_pill = exports_external.object({
 });
 var pcb_hole_rotated_pill_shape = pcb_hole_rotated_pill.describe("Defines a rotated pill-shaped hole on the PCB");
 expectTypesMatch(true);
-var pcb_hole = pcb_hole_circle_or_square.or(pcb_hole_oval).or(pcb_hole_pill).or(pcb_hole_rotated_pill);
+var pcb_hole = pcb_hole_circle_or_square.or(pcb_hole_oval).or(pcb_hole_pill).or(pcb_hole_rotated_pill).or(pcb_hole_circle).or(pcb_hole_rect);
 var pcb_plated_hole_circle = exports_external.object({
   type: exports_external.literal("pcb_plated_hole"),
   shape: exports_external.literal("circle"),
@@ -23923,6 +23950,7 @@ var pcb_via = exports_external.object({
   pcb_via_id: getZodPrefixedIdWithDefault("pcb_via"),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
+  subcircuit_connectivity_map_key: exports_external.string().optional(),
   x: distance2,
   y: distance2,
   outer_diameter: distance2.default("0.6mm"),
@@ -23941,12 +23969,13 @@ var pcb_board = exports_external.object({
   pcb_panel_id: exports_external.string().optional(),
   is_subcircuit: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
-  width: length,
-  height: length,
+  width: length.optional(),
+  height: length.optional(),
   center: point,
   thickness: length.optional().default(1.4),
   num_layers: exports_external.number().optional().default(4),
   outline: exports_external.array(point).optional(),
+  shape: exports_external.enum(["rect", "polygon"]).optional(),
   material: exports_external.enum(["fr4", "fr1"]).default("fr4")
 }).describe("Defines the board outline of the PCB");
 expectTypesMatch(true);
