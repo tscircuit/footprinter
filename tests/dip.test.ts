@@ -56,19 +56,19 @@ test("dip4", () => {
   expect(json).toMatchInlineSnapshot(
     {
       fn: "dip",
-      id: 1,
+      id: 0.8,
       num_pins: 4,
-      od: 1.5,
+      od: 1.6,
       p: 2.54,
       w: 7.62,
     },
     `
 {
   "fn": "dip",
-  "id": 1,
+  "id": 0.8,
   "nosquareplating": false,
   "num_pins": 4,
-  "od": 1.5,
+  "od": 1.6,
   "p": 2.54,
   "w": 7.62,
 }
