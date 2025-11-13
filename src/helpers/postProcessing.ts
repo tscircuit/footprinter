@@ -2,7 +2,7 @@ import type { AnyCircuitElement } from "circuit-json"
 import { applyNoRef } from "./apply-noref"
 import { applyOrigin } from "./apply-origin"
 
-export const applyPostProcessing = (
+export const postProcessing = (
   elements: AnyCircuitElement[],
   parameters: any,
 ): AnyCircuitElement[] => {
