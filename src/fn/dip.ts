@@ -49,8 +49,8 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
           v.id = convertMilToMm("0.55mm")
           v.od = convertMilToMm("0.95mm")
         } else {
-          v.id = convertMilToMm("1.0mm")
-          v.od = convertMilToMm("1.5mm")
+          v.id = convertMilToMm("0.8mm")
+          v.od = convertMilToMm("1.6mm")
         }
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
