@@ -31,7 +31,7 @@ export const extendSoicDef = (newDefaults: {
         .boolean()
         .optional()
         .default(newDefaults.pillpads ?? false),
-      stroke_width: z.number().optional().default(0.1),
+      silkscreen_stroke_width: z.number().optional().default(0.1),
     })
     .transform((v) => {
       // Default inner diameter and outer diameter
@@ -46,7 +46,7 @@ export const extendSoicDef = (newDefaults: {
 
       return v as NowDefined<
         typeof v,
-        "w" | "p" | "pw" | "pl" | "pillpads" | "stroke_width"
+        "w" | "p" | "pw" | "pl" | "pillpads" | "silkscreen_stroke_width"
       >
     })
 
@@ -140,7 +140,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
-    stroke_width: parameters.stroke_width ?? 0.1,
+    stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
     route: [
       { x: -sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: sh / 2 },
