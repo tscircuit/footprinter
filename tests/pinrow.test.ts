@@ -204,3 +204,19 @@ test("pinrow5_bottomsidepinlabel", () => {
     "pinrow5_bottomsidepinlabel",
   )
 })
+
+test("pinrow6_rows2_faceup", () => {
+  const def = "pinrow6_rows2_faceup"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  const pinrowJson = fp.string(def).json() as any
+  expect(pinrowJson.faceup).toBe(true)
+
+  // Check for bottom-layer ref label
+
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow6_rows2_faceup",
+  )
+})

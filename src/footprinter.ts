@@ -88,6 +88,7 @@ export type Footprinter = {
     | "nopinlabels"
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
+    | "faceup"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
