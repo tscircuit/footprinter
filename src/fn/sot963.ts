@@ -28,7 +28,7 @@ export const sot963 = (
 
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < 6; i++) {
-    const { x, y } = getSot886PadCoord(i + 1, w, p, pl)
+    const { x, y } = getSot963PadCoord(i + 1, w, p, pl)
     pads.push(rectpad(i + 1, x, y, pl, pw))
   }
 
@@ -56,7 +56,7 @@ export const sot963 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const pin1Position = getSot886PadCoord(1, w, p, pl)
+  const pin1Position = getSot963PadCoord(1, w, p, pl)
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -85,7 +85,7 @@ export const sot963 = (
   }
 }
 
-export const getSot886PadCoord = (
+export const getSot963PadCoord = (
   pn: number,
   w: number,
   p: number,
