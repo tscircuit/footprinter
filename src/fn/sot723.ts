@@ -41,11 +41,10 @@ export const getCcwSot723Coords = (parameters: {
 
   if (pn === 1) {
     return { x: p, y: 0 }
-  } else if (pn === 2) {
+  }if (pn === 2) {
     return { x: -p, y: -0.4 }
-  } else {
-    return { x: -p, y: 0.4 }
   }
+    return { x: -p, y: 0.4 }
 }
 
 export const sot723WithoutParsing = (
