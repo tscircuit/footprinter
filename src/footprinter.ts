@@ -93,7 +93,7 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sot886: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
     | "w"
     | "p"
