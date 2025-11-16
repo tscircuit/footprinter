@@ -85,7 +85,7 @@ export const sot563 = (
   }
 }
 
-export const getSot886PadCoord = (
+export const getSot563PadCoord = (
   pn: number,
   w: number,
   p: number,
