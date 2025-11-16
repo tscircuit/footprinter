@@ -10,11 +10,11 @@ export const sot886 = (
   const parameters = sot886_def.parse({
     fn: "sot886",
     num_pins: 6,
-    w: 1.25,
-    p: 0.6,
-    pw: 0.325,
-    pl: 0.425,
-    legsoutside: true,
+    w: 1.01,
+    p: 0.5,
+    pw: 0.27,
+    pl: 0.33,
+    legsoutside: false,
   })
 
   return {
