@@ -10,10 +10,10 @@ export const sot363 = (
   const parameters = sot363_def.parse({
     fn: "sot363",
     num_pins: 6,
-    w: 1.94,
+    w: 2.56,
     p: 0.65,
-    pw: 0.3,
-    pl: 0.7,
+    pw: 0.4,
+    pl: 0.65,
     legoutside: true,
   })
 

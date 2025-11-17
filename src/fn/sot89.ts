@@ -6,7 +6,7 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 export const sot89_def = z.object({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(5)]).default(3),
-  w: z.string().default("4.80mm"),
+  w: z.string().default("4.20mm"),
   h: z.string().default("4.80mm"),
   pl: z.string().default("1.3mm"),
   pw: z.string().default("0.9mm"),
@@ -21,11 +21,13 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
   const padHeight = Number.parseFloat(parameters.pl)
+  const centerExtra = 0.175
+  const outerPadXShift = (padHeight - (padHeight + centerExtra)) / 2
 
   pads.push(
-    rectpad(1, -length / 2, padGap, padHeight, padWidth),
-    rectpad(2, -length / 2 + (1.5 - 1.3) / 2, 0, 1.5, padWidth),
-    rectpad(3, -length / 2, -padGap, padHeight, padWidth),
+    rectpad(1, -length / 2 + outerPadXShift, padGap, padHeight, padWidth),
+    rectpad(2, -length / 2, 0, padHeight + centerExtra, padWidth),
+    rectpad(3, -length / 2 + outerPadXShift, -padGap, padHeight, padWidth),
   )
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)

@@ -8,5 +8,11 @@ export const lqfp = (
   parameters: z.input<typeof lqfp_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   parameters.legsoutside = true
+  if (!parameters.pl) {
+    parameters.pl = 1.5
+  }
+  if (!parameters.pw) {
+    parameters.pw = 0.3
+  }
   return quad(parameters)
 }

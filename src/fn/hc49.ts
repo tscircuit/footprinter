@@ -25,8 +25,8 @@ const generate_u_curve = (
 export const hc49_def = z.object({
   fn: z.string(),
   p: length.optional().default("4.88mm"),
-  id: length.optional().default("0.6mm"),
-  od: length.optional().default("1.2mm"),
+  id: length.optional().default("0.8mm"),
+  od: length.optional().default("1.5mm"),
   w: length.optional().default("5.6mm"),
   h: length.optional().default("3.5mm"),
 })

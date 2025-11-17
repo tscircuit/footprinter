@@ -60,6 +60,7 @@ export type Footprinter = {
     | "circularpads"
   >
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  tqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -91,7 +92,8 @@ export type Footprinter = {
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  sot363: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
+  sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
     | "w"
     | "p"
@@ -105,7 +107,7 @@ export type Footprinter = {
     | "pillw"
   >
   sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
-  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "p">
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot25: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
