@@ -7,8 +7,9 @@ import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const base_quad_def = z.object({
+export const base_quad_def = base_def.extend({
   fn: z.string(),
   cc: z.boolean().default(true).optional(),
   ccw: z.boolean().default(true).optional(),

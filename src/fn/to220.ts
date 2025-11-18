@@ -6,8 +6,9 @@ import {
 import { platedhole } from "src/helpers/platedhole"
 import { z } from "zod"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const to220_def = z.object({
+export const to220_def = base_def.extend({
   fn: z.string(),
   p: length.optional().default("5.0mm"),
   id: length.optional().default("1.0mm"),

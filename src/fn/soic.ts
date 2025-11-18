@@ -6,6 +6,8 @@ import { u_curve } from "../helpers/u-curve"
 import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
+
 export const extendSoicDef = (newDefaults: {
   w?: string
   p?: string
@@ -15,8 +17,8 @@ export const extendSoicDef = (newDefaults: {
   legsoutside?: boolean
   pillpads?: boolean
 }) =>
-  z
-    .object({
+  base_def
+    .extend({
       fn: z.string(),
       num_pins: z.number().optional().default(8),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),

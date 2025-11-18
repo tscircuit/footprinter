@@ -5,9 +5,10 @@ import { platedhole as makePlatedHole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import { mm } from "@tscircuit/mm"
+import { base_def } from "../helpers/zod/base_def"
 
-export const platedhole_def = z
-  .object({
+export const platedhole_def = base_def
+  .extend({
     fn: z.string(),
     d: length.optional(),
     hd: length.optional(),

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { pillpad } from "../helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "src/helpers/zod/base_def"
 
 // Common schema properties for both SOT-457 configurations
 const commonSchema = {
@@ -18,7 +19,7 @@ const commonSchema = {
 }
 
 // Default SOT-457 schema
-const sot457DefSchema = z.object({
+const sot457DefSchema = base_def.extend({
   ...commonSchema,
   h: z.string().default("2.5mm"),
   w: z.string().default("2.7mm"),
@@ -28,8 +29,8 @@ const sot457DefSchema = z.object({
 })
 
 // Wave soldering SOT-457 schema with transform for wave/reflow defaults
-const sot457WaveSchema = z
-  .object({
+const sot457WaveSchema = base_def
+  .extend({
     ...commonSchema,
     h: z.string().default("3mm"),
     w: z.string().default("4mm"),
