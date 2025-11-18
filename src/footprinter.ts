@@ -5,6 +5,7 @@ import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinte
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import { applyOrigin } from "./helpers/apply-origin"
+import { applyNoRef } from "./helpers/apply-noref"
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | "params" | "soup" | "circuitJson"]: P extends
@@ -311,7 +312,7 @@ export const footprinter = (): Footprinter & {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
               const { circuitJson } = FOOTPRINT_FN[target.fn](target)
-              return applyOrigin(circuitJson, target.origin)
+              return applyOrigin(applyNoRef(circuitJson, target), target.origin)
             }
           }
 
