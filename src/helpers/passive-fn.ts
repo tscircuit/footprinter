@@ -5,7 +5,7 @@ import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+import { base_def } from "./zod/base_def"
 
 type StandardSize = {
   imperial: string
