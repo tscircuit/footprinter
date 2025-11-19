@@ -10,7 +10,7 @@ test("bga_footprint_noref", () => {
     .grid("3x3")
     .missing("center")
     .p(1)
-    .noref(true)
+    .norefdes(true)
     .soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_footprint_noref")

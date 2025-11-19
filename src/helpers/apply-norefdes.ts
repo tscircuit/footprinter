@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
 
-export const applyNoRef = (
+export const applyNoRefDes = (
   elements: AnyCircuitElement[],
   parameters: any,
 ): AnyCircuitElement[] => {
@@ -11,7 +11,7 @@ export const applyNoRef = (
   if (refs.length === 0) return elements
 
   for (const ref of refs) {
-    if (parameters.noref) {
+    if (parameters.norefdes) {
       ref.text = ""
     }
   }
