@@ -8,8 +8,9 @@ import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const axial_def = z.object({
+export const axial_def = base_def.extend({
   fn: z.string(),
   p: length.optional().default("2.54mm"),
   id: length.optional().default("0.7mm"),

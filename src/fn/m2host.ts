@@ -2,8 +2,9 @@ import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
+import { base_def } from "../helpers/zod/base_def"
 
-export const m2host_def = z.object({
+export const m2host_def = base_def.extend({
   fn: z.string(),
 })
 

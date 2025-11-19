@@ -3,8 +3,9 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
+import { base_def } from "../helpers/zod/base_def"
 
-export const smf_def = z.object({
+export const smf_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("4.80mm"),

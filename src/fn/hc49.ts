@@ -6,6 +6,7 @@ import {
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
 const generate_u_curve = (
   centerX: number,
@@ -22,7 +23,7 @@ const generate_u_curve = (
   })
 }
 
-export const hc49_def = z.object({
+export const hc49_def = base_def.extend({
   fn: z.string(),
   p: length.optional().default("4.88mm"),
   id: length.optional().default("0.8mm"),

@@ -5,6 +5,7 @@ import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
+import { base_def } from "./zod/base_def"
 
 type StandardSize = {
   imperial: string
@@ -124,7 +125,7 @@ const imperialMap = Object.fromEntries(
   footprintSizes.map((s) => [s.imperial, s]),
 )
 
-export const passive_def = z.object({
+export const passive_def = base_def.extend({
   tht: z.boolean(),
   p: length.optional(),
   pw: length.optional(),

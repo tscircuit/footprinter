@@ -8,8 +8,9 @@ import { z } from "zod"
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const jst_def = z.object({
+export const jst_def = base_def.extend({
   fn: z.string(),
   p: length.optional(),
   id: length.optional(),

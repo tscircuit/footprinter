@@ -2,8 +2,9 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const sot89_def = z.object({
+export const sot89_def = base_def.extend({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(5)]).default(3),
   w: z.string().default("4.20mm"),

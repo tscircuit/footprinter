@@ -4,7 +4,7 @@ import { fp } from "../src/footprinter"
 
 test("bga_footprint_noref_string", () => {
   const soup = fp
-    .string("bga8_w4_h4_grid3x3_missing(center)_p1_noref")
+    .string("bga8_w4_h4_grid3x3_missing(center)_p1_norefdes")
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(

@@ -3,6 +3,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
+import { base_def } from "../helpers/zod/base_def"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -41,7 +42,7 @@ const getDefaultValues = (num_pins: number) => {
   }
 }
 
-export const msop_def = z.object({
+export const msop_def = base_def.extend({
   fn: z.string(),
   num_pins: z
     .union([z.literal(8), z.literal(10), z.literal(12), z.literal(16)])

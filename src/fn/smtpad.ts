@@ -6,9 +6,10 @@ import { pillpad } from "../helpers/pillpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement } from "circuit-json"
 import { mm } from "@tscircuit/mm"
+import { base_def } from "../helpers/zod/base_def"
 
-export const smtpad_def = z
-  .object({
+export const smtpad_def = base_def
+  .extend({
     fn: z.string(),
     circle: z.boolean().optional(),
     rect: z.boolean().optional(),

@@ -9,8 +9,9 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const stampboard_def = z.object({
+export const stampboard_def = base_def.extend({
   fn: z.string(),
   w: length.default("22.58mm"),
   h: length.optional(),

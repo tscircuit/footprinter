@@ -3,8 +3,9 @@ import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const pushbutton_def = z.object({
+export const pushbutton_def = base_def.extend({
   fn: z.literal("pushbutton"),
   w: length.default(4.5),
   h: length.default(6.5),

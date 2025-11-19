@@ -2,8 +2,9 @@ import { string, z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
-export const potentiometer_def = z.object({
+export const potentiometer_def = base_def.extend({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(2)]).default(3),
   p: z.string().default("3.8mm"),

@@ -4,6 +4,7 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
@@ -27,8 +28,8 @@ const lengthInMm = z
   .transform((val) => convertMilToMm(val))
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
-  z
-    .object({
+  base_def
+    .extend({
       fn: z.string(),
       num_pins: z.number().optional().default(6),
       wide: z.boolean().optional(),

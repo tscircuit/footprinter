@@ -4,8 +4,9 @@ import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnySoupElement } from "circuit-json"
 import { length } from "circuit-json"
 import { mm } from "@tscircuit/mm"
+import { base_def } from "../helpers/zod/base_def"
 
-export const pad_def = z.object({
+export const pad_def = base_def.extend({
   w: length,
   h: length,
 })

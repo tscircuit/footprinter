@@ -3,8 +3,9 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
+import { base_def } from "../helpers/zod/base_def"
 
-export const sot23_def = z.object({
+export const sot23_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),

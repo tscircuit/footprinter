@@ -6,9 +6,10 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
+import { base_def } from "../helpers/zod/base_def"
 
-export const pinrow_def = z
-  .object({
+export const pinrow_def = base_def
+  .extend({
     fn: z.string(),
     num_pins: z.number().optional().default(6),
     rows: z
