@@ -2,7 +2,7 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
-test("bga_footprint_noref", () => {
+test("bga_footprint_norefdes", () => {
   const soup = fp()
     .bga(8)
     .w("4mm")
@@ -13,5 +13,5 @@ test("bga_footprint_noref", () => {
     .norefdes(true)
     .soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_footprint_noref")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_footprint_norefdes")
 })
