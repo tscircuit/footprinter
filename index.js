@@ -28773,6 +28773,11 @@ var silkscreenRef = (x, y, font_size) => {
   };
 };
 
+// src/helpers/zod/base_def.ts
+var base_def = exports_external.object({
+  norefdes: exports_external.boolean().optional().describe("disable reference designator label")
+});
+
 // node_modules/@tscircuit/mm/dist/index.js
 var unitToMm = {
   in: 25.4,
@@ -28848,7 +28853,7 @@ function convertMilToMm(value) {
   return Number(value);
 }
 var lengthInMm = exports_external.union([exports_external.string(), exports_external.number()]).transform((val) => convertMilToMm(val));
-var extendDipDef = (newDefaults) => exports_external.object({
+var extendDipDef = (newDefaults) => base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().optional().default(6),
   wide: exports_external.boolean().optional(),
@@ -29077,7 +29082,7 @@ var footprintSizes = [
 ];
 var metricMap = Object.fromEntries(footprintSizes.map((s3) => [s3.metric, s3]));
 var imperialMap = Object.fromEntries(footprintSizes.map((s3) => [s3.imperial, s3]));
-var passive_def = exports_external.object({
+var passive_def = base_def.extend({
   tht: exports_external.boolean(),
   p: length.optional(),
   pw: length.optional(),
@@ -29182,11 +29187,6 @@ var circlepad = (pn2, { x, y, radius }) => {
 
 // src/helpers/zod/ALPHABET.ts
 var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-// src/helpers/zod/base_def.ts
-var base_def = exports_external.object({
-  noref: exports_external.boolean().optional().describe("disable ref label")
-});
 
 // src/helpers/zod/dim-2d.ts
 var dim2d = exports_external.string().transform((a) => {
@@ -29397,7 +29397,7 @@ var pillpad = (pn2, x, y, w3, h) => {
 };
 
 // src/fn/soic.ts
-var extendSoicDef = (newDefaults) => exports_external.object({
+var extendSoicDef = (newDefaults) => base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().optional().default(8),
   w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
@@ -29559,7 +29559,7 @@ var getQuadPinMap = ({
 };
 
 // src/fn/quad.ts
-var base_quad_def = exports_external.object({
+var base_quad_def = base_def.extend({
   fn: exports_external.string(),
   cc: exports_external.boolean().default(true).optional(),
   ccw: exports_external.boolean().default(true).optional(),
@@ -29973,7 +29973,7 @@ var sot363 = (raw_params) => {
   };
 };
 // src/fn/sot886.ts
-var sot886_def = exports_external.object({
+var sot886_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
   w: exports_external.string().default("1.01mm"),
@@ -30051,7 +30051,7 @@ var getSot886PadCoord = (pn2, w3, p, pl2) => {
   return { x: padCenterOffset, y: -p + (pn2 - 4) * p };
 };
 // src/fn/sot23.ts
-var sot23_def = exports_external.object({
+var sot23_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
   w: exports_external.string().default("1.92mm"),
@@ -30395,7 +30395,7 @@ function determinePinlabelAnchorSide({
 }
 
 // src/fn/pinrow.ts
-var pinrow_def = exports_external.object({
+var pinrow_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().optional().default(6),
   rows: exports_external.union([exports_external.string(), exports_external.number()]).transform((val) => Number(val)).optional().default(1).describe("number of rows"),
@@ -30623,7 +30623,7 @@ var pinrow = (raw_params) => {
   };
 };
 // src/fn/sot563.ts
-var sot563_def = exports_external.object({
+var sot563_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
   w: exports_external.string().default("2.1mm"),
@@ -30727,7 +30727,7 @@ var ms013 = (raw_params) => {
   };
 };
 // src/fn/sot723.ts
-var sot723_def = exports_external.object({
+var sot723_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(3).default(3),
   w: exports_external.string().default("1.2mm"),
@@ -30771,7 +30771,7 @@ var sot723WithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sod123.ts
-var sod_def = exports_external.object({
+var sod_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("2.36mm"),
@@ -30808,7 +30808,7 @@ var sodWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/axial.ts
-var axial_def = exports_external.object({
+var axial_def = base_def.extend({
   fn: exports_external.string(),
   p: length.optional().default("2.54mm"),
   id: length.optional().default("0.7mm"),
@@ -30855,7 +30855,7 @@ var silkscreenpath = (route, options = {}) => {
 };
 
 // src/fn/pushbutton.ts
-var pushbutton_def = exports_external.object({
+var pushbutton_def = base_def.extend({
   fn: exports_external.literal("pushbutton"),
   w: length.default(4.5),
   h: length.default(6.5),
@@ -30899,7 +30899,7 @@ var pushbutton = (raw_params) => {
   };
 };
 // src/fn/stampboard.ts
-var stampboard_def = exports_external.object({
+var stampboard_def = base_def.extend({
   fn: exports_external.string(),
   w: length.default("22.58mm"),
   h: length.optional(),
@@ -31188,7 +31188,7 @@ var stampboard = (raw_params) => {
   };
 };
 // src/fn/stampreceiver.ts
-var stampreceiver_def = exports_external.object({
+var stampreceiver_def = base_def.extend({
   fn: exports_external.string(),
   w: length.default("22.58mm"),
   h: length.optional(),
@@ -31410,7 +31410,7 @@ var lqfp = (parameters) => {
   return quad(parameters);
 };
 // src/fn/breakoutheaders.ts
-var breakoutheaders_def = exports_external.object({
+var breakoutheaders_def = base_def.extend({
   fn: exports_external.string(),
   w: length.default("10mm"),
   h: length.optional(),
@@ -31567,7 +31567,7 @@ var generate_u_curve = (centerX, centerY, radius, direction) => {
     };
   });
 };
-var hc49_def = exports_external.object({
+var hc49_def = base_def.extend({
   fn: exports_external.string(),
   p: length.optional().default("4.88mm"),
   id: length.optional().default("0.8mm"),
@@ -31612,7 +31612,7 @@ var hc49 = (raw_params) => {
   };
 };
 // src/fn/pad.ts
-var pad_def = exports_external.object({
+var pad_def = base_def.extend({
   w: length,
   h: length
 });
@@ -31629,7 +31629,7 @@ var pad = (params) => {
   };
 };
 // src/fn/to92.ts
-var to92_def = exports_external.object({
+var to92_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(2)]).default(3),
   p: exports_external.string().default("1.27mm"),
@@ -31710,7 +31710,7 @@ var to92 = (raw_params) => {
   };
 };
 // src/fn/sod523.ts
-var sod_def2 = exports_external.object({
+var sod_def2 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("2.15mm"),
@@ -31810,7 +31810,7 @@ var sop8 = (raw_params) => {
   };
 };
 // src/fn/sod80.ts
-var sod80_def = exports_external.object({
+var sod80_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("5.0mm"),
@@ -31868,7 +31868,7 @@ var sod80WithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sod123w.ts
-var sod_def3 = exports_external.object({
+var sod_def3 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("4.4mm"),
@@ -31929,7 +31929,7 @@ var sodWithoutParsing3 = (parameters) => {
   return pads;
 };
 // src/fn/sod323.ts
-var sod_def4 = exports_external.object({
+var sod_def4 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3.30mm"),
@@ -31990,7 +31990,7 @@ var sodWithoutParsing4 = (parameters) => {
   return pads;
 };
 // src/fn/sod923.ts
-var sod_def5 = exports_external.object({
+var sod_def5 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("1.4mm"),
@@ -32052,7 +32052,7 @@ var sodWithoutParsing5 = (parameters) => {
   return pads;
 };
 // src/fn/sod882.ts
-var sod_def6 = exports_external.object({
+var sod_def6 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("1.3mm"),
@@ -32114,7 +32114,7 @@ var sodWithoutParsing6 = (parameters) => {
   return pads;
 };
 // src/fn/sod323f.ts
-var sod_def7 = exports_external.object({
+var sod_def7 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3,05mm"),
@@ -32176,7 +32176,7 @@ var sodWithoutParsing7 = (parameters) => {
   return pads;
 };
 // src/fn/sod123f.ts
-var sod_def8 = exports_external.object({
+var sod_def8 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("4.4mm"),
@@ -32238,7 +32238,7 @@ var sodWithoutParsing8 = (parameters) => {
   return pads;
 };
 // src/fn/sod123fl.ts
-var sod123FL_def = exports_external.object({
+var sod123FL_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("4.4mm"),
@@ -32300,7 +32300,7 @@ var sodWithoutParsing9 = (parameters) => {
   return pads;
 };
 // src/fn/sod723.ts
-var sod_def9 = exports_external.object({
+var sod_def9 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("1.80mm"),
@@ -32362,7 +32362,7 @@ var sodWithoutParsing10 = (parameters) => {
   return pads;
 };
 // src/fn/sod128.ts
-var sod_def10 = exports_external.object({
+var sod_def10 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("6.2mm"),
@@ -32424,7 +32424,7 @@ var sodWithoutParsing11 = (parameters) => {
   return pads;
 };
 // src/fn/sot89.ts
-var sot89_def = exports_external.object({
+var sot89_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(5)]).default(3),
   w: exports_external.string().default("4.20mm"),
@@ -32537,7 +32537,7 @@ var sot89 = (raw_params) => {
   throw new Error("Invalid number of pins for SOT89");
 };
 // src/fn/to220.ts
-var to220_def = exports_external.object({
+var to220_def = base_def.extend({
   fn: exports_external.string(),
   p: length.optional().default("5.0mm"),
   id: length.optional().default("1.0mm"),
@@ -32624,7 +32624,7 @@ var to220 = (raw_params) => {
   };
 };
 // src/fn/minimelf.ts
-var minimelf_def = exports_external.object({
+var minimelf_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("5.40mm"),
@@ -32682,7 +32682,7 @@ var miniMelfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sod882d.ts
-var sod_def11 = exports_external.object({
+var sod_def11 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("1.90mm"),
@@ -32744,7 +32744,7 @@ var sodWithoutParsing12 = (parameters) => {
   return pads;
 };
 // src/fn/melf.ts
-var melf_def = exports_external.object({
+var melf_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("7.0mm"),
@@ -32806,7 +32806,7 @@ var melfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/micromelf.ts
-var micromelf_def = exports_external.object({
+var micromelf_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3.0mm"),
@@ -32868,7 +32868,7 @@ var microMelfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sma.ts
-var sma_def = exports_external.object({
+var sma_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("7.10mm"),
@@ -32929,7 +32929,7 @@ var smaWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/smf.ts
-var smf_def = exports_external.object({
+var smf_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("4.80mm"),
@@ -32991,7 +32991,7 @@ var smfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/smb.ts
-var smb_def = exports_external.object({
+var smb_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("7.30mm"),
@@ -33053,7 +33053,7 @@ var smbWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/smc.ts
-var smc_def = exports_external.object({
+var smc_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("10.70mm"),
@@ -33114,7 +33114,7 @@ var smcWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sot223.ts
-var sot223_def = exports_external.object({
+var sot223_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(4),
   w: exports_external.string().default("8.50mm"),
@@ -33367,7 +33367,7 @@ var sot223_6 = (parameters) => {
   return [...pads, silkscreenPath1, silkscreenPath2, silkscreenRefText];
 };
 // src/fn/sot23w.ts
-var sot23w_def = exports_external.object({
+var sot23w_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
   w: exports_external.string().default("3.40mm"),
@@ -33450,7 +33450,7 @@ var sot23w_3 = (parameters) => {
   ];
 };
 // src/fn/to92s.ts
-var to92s_def = exports_external.object({
+var to92s_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(2)]).default(3),
   p: exports_external.string().default("1.27mm"),
@@ -33523,7 +33523,7 @@ var to92s = (raw_params) => {
   };
 };
 // src/fn/jst.ts
-var jst_def = exports_external.object({
+var jst_def = base_def.extend({
   fn: exports_external.string(),
   p: length.optional(),
   id: length.optional(),
@@ -33655,7 +33655,7 @@ var jst = (raw_params) => {
   };
 };
 // src/fn/sod110.ts
-var sod_def12 = exports_external.object({
+var sod_def12 = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3.30mm"),
@@ -33744,7 +33744,7 @@ var getDefaultValues = (num_pins) => {
       };
   }
 };
-var vssop_def = exports_external.object({
+var vssop_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(8), exports_external.literal(10)]).default(8),
   w: exports_external.string().optional(),
@@ -33870,7 +33870,7 @@ var getDefaultValues2 = (num_pins) => {
       };
   }
 };
-var msop_def = exports_external.object({
+var msop_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(8), exports_external.literal(10), exports_external.literal(12), exports_external.literal(16)]).default(8),
   w: exports_external.string().optional(),
@@ -33958,7 +33958,7 @@ var msop = (raw_params) => {
   };
 };
 // src/fn/sod323w.ts
-var sod323w_def = exports_external.object({
+var sod323w_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3.8mm"),
@@ -34020,7 +34020,7 @@ var sodWithoutParsing14 = (parameters) => {
   return pads;
 };
 // src/fn/sod323fl.ts
-var sod323FL_def = exports_external.object({
+var sod323FL_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("3.20mm"),
@@ -34082,7 +34082,7 @@ var sodWithoutParsing15 = (parameters) => {
   return pads;
 };
 // src/fn/son.ts
-var son_def = exports_external.object({
+var son_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(6), exports_external.literal(8)]).default(8),
   w: exports_external.string().default("3mm"),
@@ -34287,7 +34287,7 @@ var commonSchema = {
   wave: exports_external.boolean().optional(),
   reflow: exports_external.boolean().optional()
 };
-var sot457DefSchema = exports_external.object({
+var sot457DefSchema = base_def.extend({
   ...commonSchema,
   h: exports_external.string().default("2.5mm"),
   w: exports_external.string().default("2.7mm"),
@@ -34295,7 +34295,7 @@ var sot457DefSchema = exports_external.object({
   pw: exports_external.string().default("0.55mm"),
   p: exports_external.string().default("0.95mm")
 });
-var sot457WaveSchema = exports_external.object({
+var sot457WaveSchema = base_def.extend({
   ...commonSchema,
   h: exports_external.string().default("3mm"),
   w: exports_external.string().default("4mm"),
@@ -34428,7 +34428,7 @@ var sot457 = (rawParams) => {
   };
 };
 // src/fn/sot963.ts
-var sot963_def = exports_external.object({
+var sot963_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
   w: exports_external.string().default("1.1mm"),
@@ -34506,7 +34506,7 @@ var getSot963PadCoord = (pn2, w3, p, pl2) => {
   return { x: padCenterOffset, y: -p + (pn2 - 4) * p };
 };
 // src/fn/potentiometer.ts
-var potentiometer_def = exports_external.object({
+var potentiometer_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(2)]).default(3),
   p: exports_external.string().default("3.8mm"),
@@ -34580,7 +34580,7 @@ var potentiometer = (raw_params) => {
   };
 };
 // src/fn/electrolytic.ts
-var electrolytic_def = exports_external.object({
+var electrolytic_def = base_def.extend({
   fn: exports_external.string(),
   p: length.optional().default("7.5mm"),
   id: length.optional().default("1mm"),
@@ -34685,7 +34685,7 @@ var electrolytic = (raw_params) => {
   };
 };
 // src/fn/smbf.ts
-var smbf_def = exports_external.object({
+var smbf_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(2).default(2),
   w: exports_external.string().default("6.5mm"),
@@ -34746,7 +34746,7 @@ var smbfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sot323.ts
-var sot323_def = exports_external.object({
+var sot323_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
   w: exports_external.string().default("2.45mm"),
@@ -34829,7 +34829,7 @@ var sot323_3 = (parameters) => {
   ];
 };
 // src/fn/smtpad.ts
-var smtpad_def = exports_external.object({
+var smtpad_def = base_def.extend({
   fn: exports_external.string(),
   circle: exports_external.boolean().optional(),
   rect: exports_external.boolean().optional(),
@@ -34936,7 +34936,7 @@ var smtpad = (raw_params) => {
   };
 };
 // src/fn/platedhole.ts
-var platedhole_def = exports_external.object({
+var platedhole_def = base_def.extend({
   fn: exports_external.string(),
   d: length.optional(),
   hd: length.optional(),
@@ -34983,7 +34983,7 @@ var platedhole2 = (raw_params) => {
   };
 };
 // src/fn/sot.ts
-var sot_def = exports_external.object({
+var sot_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
   h: exports_external.string().default("1.6mm"),
@@ -35097,7 +35097,7 @@ var sotWithoutParsing = (parameters) => {
   ];
 };
 // src/fn/m2host.ts
-var m2host_def = exports_external.object({
+var m2host_def = base_def.extend({
   fn: exports_external.string()
 });
 var m2host = (raw_params) => {
@@ -35303,13 +35303,13 @@ var applyOrigin = (elements, origin) => {
   return elements;
 };
 
-// src/helpers/apply-noref.ts
-var applyNoRef = (elements, parameters) => {
+// src/helpers/apply-norefdes.ts
+var applyNoRefDes = (elements, parameters) => {
   const refs = elements.filter((el2) => el2.type === "pcb_silkscreen_text");
   if (refs.length === 0)
     return elements;
   for (const ref of refs) {
-    if (parameters.noref) {
+    if (parameters.norefdes) {
       ref.text = "";
     }
   }
@@ -35348,7 +35348,7 @@ var footprinter = () => {
         if ("fn" in target && exports_fn[target.fn]) {
           return () => {
             const { circuitJson } = exports_fn[target.fn](target);
-            return applyOrigin(applyNoRef(circuitJson, target), target.origin);
+            return applyOrigin(applyNoRefDes(circuitJson, target), target.origin);
           };
         }
         if (!exports_fn[target.fn]) {
