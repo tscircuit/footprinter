@@ -7,7 +7,7 @@ import { base_def } from "../helpers/zod/base_def"
 export const sot89_def = base_def.extend({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(5)]).default(3),
-  w: z.string().default("4.20mm"),
+  w: z.string().default("4.00mm"),
   h: z.string().default("4.80mm"),
   pl: z.string().default("1.3mm"),
   pw: z.string().default("0.9mm"),
