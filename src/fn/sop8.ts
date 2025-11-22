@@ -33,7 +33,7 @@ export const sop8 = (
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    sh / 2 - 0.5,
+    sh / 2 + 0.8,
     sh / 12,
   )
 
