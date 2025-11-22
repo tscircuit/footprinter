@@ -1,15 +1,20 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
-export const sop8_def = extendSoicDef({})
+export const sop8_def = extendSoicDef({
+  w: "7.05mm",
+  p: "1.27mm",
+  pw: "0.65mm",
+  pl: "1.975mm",
+})
 
 export const sop8 = (
   raw_params: SoicInput,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sop8_def.parse(raw_params)
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
@@ -49,7 +54,7 @@ export const sop8 = (
       ...pads,
       silkscreenRefText,
       silkscreenLine,
-    ] as AnySoupElement[],
+    ] as AnyCircuitElement[],
     parameters,
   }
 }
