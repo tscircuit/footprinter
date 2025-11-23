@@ -18,7 +18,10 @@ export const vson_def = base_def.extend({
   w: length,
   h: length,
   grid: dim2d,
-  disableEp: z.boolean().optional().describe("use a central exposed pad"),
+  disableEp: z
+    .boolean()
+    .optional()
+    .describe("do not use a central exposed pad"),
   ep: dim2d,
   pinw: length,
   pinh: length,
