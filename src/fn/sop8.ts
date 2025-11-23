@@ -31,11 +31,7 @@ export const sop8 = (
   }
 
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    sh / 2 + 0.8,
-    sh / 12,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 1, sh / 12)
 
   const silkscreenLine: PcbSilkscreenPath = {
     layer: "top",
@@ -43,8 +39,8 @@ export const sop8 = (
     pcb_silkscreen_path_id: "",
     type: "pcb_silkscreen_path",
     route: [
-      { x: -parameters.w / 3, y: sh / 2 + 0.2 },
-      { x: parameters.w / 3, y: sh / 2 + 0.2 },
+      { x: -parameters.w / 3, y: sh / 2 + 0.4 },
+      { x: parameters.w / 3, y: sh / 2 + 0.4 },
     ],
     stroke_width: 0.1,
   }
