@@ -159,9 +159,7 @@ export type Footprinter = {
   >
   vson: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<
-    "p" | "w" | "h" | "grid" | "disableEp" | "ep" | "pinw" | "pinh"
-  >
+  ) => FootprinterParamsBuilder<"p" | "w" | "grid" | "ep" | "pinw" | "pinh">
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">

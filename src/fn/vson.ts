@@ -16,13 +16,8 @@ export const vson_def = base_def.extend({
   num_pins: z.number().optional().default(8),
   p: distance,
   w: length,
-  h: length,
   grid: dim2d,
-  disableEp: z
-    .boolean()
-    .optional()
-    .describe("do not use a central exposed pad"),
-  ep: dim2d,
+  ep: dim2d.default("0x0mm"),
   pinw: length,
   pinh: length,
 })
@@ -34,7 +29,7 @@ export const vson = (
   raw_params: VsonDefInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = vson_def.parse(raw_params)
-  const { num_pins, p, w, h, grid, disableEp, ep, pinw, pinh } = parameters
+  const { num_pins, p, w, grid, ep, pinw, pinh } = parameters
 
   if (num_pins % 2 !== 0) {
     throw new Error("invalid number of pins")
@@ -54,7 +49,7 @@ export const vson = (
   }
 
   // place the central exposed pad (ep)
-  if (!disableEp) {
+  if (ep.x > 0 && ep.y > 0) {
     pads.push(rectpad(parameters.num_pins + 1, 0, 0, ep.x, ep.y))
   }
 
@@ -97,7 +92,7 @@ const getCcwVsonCoords = (params: {
 
 const getSilkscreenPaths = (grid: { x: number; y: number }) => {
   const borderMargin = 0.1
-  const cornerLine = 0.2
+  const cornerLine = grid.y / 30
   const silkscreenPaths: PcbSilkscreenPath[] = [
     // top silkscreen path
     {
@@ -123,7 +118,7 @@ const getSilkscreenPaths = (grid: { x: number; y: number }) => {
           y: grid.y / 2 + borderMargin - cornerLine,
         },
       ],
-      stroke_width: 0.1,
+      stroke_width: grid.y / 30,
     },
     // bottom silkscreen path
     {
@@ -149,7 +144,7 @@ const getSilkscreenPaths = (grid: { x: number; y: number }) => {
           y: -grid.y / 2 - borderMargin + cornerLine,
         },
       ],
-      stroke_width: 0.1,
+      stroke_width: grid.y / 30,
     },
   ]
   return silkscreenPaths
