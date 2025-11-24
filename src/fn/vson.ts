@@ -18,6 +18,7 @@ export const vson_def = base_def.extend({
   w: length,
   grid: dim2d,
   ep: dim2d.default("0x0mm"),
+  epx: length.default("0mm"),
   pinw: length,
   pinh: length,
 })
@@ -29,7 +30,7 @@ export const vson = (
   raw_params: VsonDefInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = vson_def.parse(raw_params)
-  const { num_pins, p, w, grid, ep, pinw, pinh } = parameters
+  const { num_pins, p, w, grid, ep, epx, pinw, pinh } = parameters
 
   if (num_pins % 2 !== 0) {
     throw new Error("invalid number of pins")
@@ -50,7 +51,7 @@ export const vson = (
 
   // place the central exposed pad (ep)
   if (ep.x > 0 && ep.y > 0) {
-    pads.push(rectpad(parameters.num_pins + 1, 0, 0, ep.x, ep.y))
+    pads.push(rectpad(parameters.num_pins + 1, epx, 0, ep.x, ep.y))
   }
 
   // draw silkscreen lines around grid dimensions
