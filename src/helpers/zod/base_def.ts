@@ -8,5 +8,5 @@ export const base_def = z.object({
   invert: z
     .boolean()
     .optional()
-    .describe("hint to jscad-electronics that headers should be flipped"),
+    .describe("hint to invert the orientation of the 3D model"),
 })
