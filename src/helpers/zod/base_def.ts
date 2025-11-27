@@ -5,4 +5,8 @@ export const base_def = z.object({
     .boolean()
     .optional()
     .describe("disable reference designator label"),
+  invert: z
+    .boolean()
+    .optional()
+    .describe("hint to invert the orientation of the 3D model"),
 })
