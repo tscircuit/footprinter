@@ -28776,7 +28776,8 @@ var silkscreenRef = (x, y, font_size) => {
 // src/helpers/zod/base_def.ts
 var base_def = exports_external.object({
   norefdes: exports_external.boolean().optional().describe("disable reference designator label"),
-  invert: exports_external.boolean().optional().describe("hint to invert the orientation of the 3D model")
+  invert: exports_external.boolean().optional().describe("hint to invert the orientation of the 3D model"),
+  faceup: exports_external.boolean().optional().describe("The male pin header should face upwards, out of the top layer")
 });
 
 // node_modules/@tscircuit/mm/dist/index.js
