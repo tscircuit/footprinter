@@ -12,5 +12,5 @@ export const base_def = z.object({
   faceup: z
     .boolean()
     .optional()
-    .describe("faceup flag on pinrow flips the CAD model orientation"),
+    .describe("The male pin header should face upwards, out of the top layer"),
 })
