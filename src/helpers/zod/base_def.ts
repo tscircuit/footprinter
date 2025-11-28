@@ -9,7 +9,7 @@ export const base_def = z.object({
     .boolean()
     .optional()
     .describe("hint to invert the orientation of the 3D model"),
-  noface: z
+  faceup: z
     .boolean()
     .optional()
     .describe("faceup flag on pinrow flips the CAD model orientation"),
