@@ -28777,7 +28777,8 @@ var silkscreenRef = (x, y, font_size) => {
 var base_def = exports_external.object({
   norefdes: exports_external.boolean().optional().describe("disable reference designator label"),
   invert: exports_external.boolean().optional().describe("hint to invert the orientation of the 3D model"),
-  faceup: exports_external.boolean().optional().describe("The male pin header should face upwards, out of the top layer")
+  faceup: exports_external.boolean().optional().describe("The male pin header should face upwards, out of the top layer"),
+  nosilkscreen: exports_external.boolean().optional().describe("omit all silkscreen elements from the footprint")
 });
 
 // node_modules/@tscircuit/mm/dist/index.js
@@ -35318,6 +35319,15 @@ var applyNoRefDes = (elements, parameters) => {
   return elements;
 };
 
+// src/helpers/apply-nosilkscreen.ts
+var applyNoSilkscreen = (elements, parameters) => {
+  if (!parameters.nosilkscreen)
+    return elements;
+  return elements.filter((element) => {
+    return element.type !== "pcb_silkscreen_path" && element.type !== "pcb_silkscreen_text";
+  });
+};
+
 // src/footprinter.ts
 var string2 = (def) => {
   let fp2 = footprinter();
@@ -35350,7 +35360,9 @@ var footprinter = () => {
         if ("fn" in target && exports_fn[target.fn]) {
           return () => {
             const { circuitJson } = exports_fn[target.fn](target);
-            return applyOrigin(applyNoRefDes(circuitJson, target), target.origin);
+            const circuitWithoutSilkscreen = applyNoSilkscreen(circuitJson, target);
+            const circuitWithoutRefDes = applyNoRefDes(circuitWithoutSilkscreen, target);
+            return applyOrigin(circuitWithoutRefDes, target.origin);
           };
         }
         if (!exports_fn[target.fn]) {
