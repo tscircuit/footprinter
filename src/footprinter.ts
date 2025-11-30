@@ -6,9 +6,17 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
+import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
+
+type BaseOptionKey =
+  | "origin"
+  | "norefdes"
+  | "invert"
+  | "faceup"
+  | "nosilkscreen"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K | "params" | "soup" | "circuitJson"]: P extends
+  [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
     | "params"
     | "soup"
     | "circuitJson"
@@ -312,10 +320,15 @@ export const footprinter = (): Footprinter & {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
               const { circuitJson } = FOOTPRINT_FN[target.fn](target)
-              return applyOrigin(
-                applyNoRefDes(circuitJson, target),
-                target.origin,
+              const circuitWithoutSilkscreen = applyNoSilkscreen(
+                circuitJson,
+                target,
               )
+              const circuitWithoutRefDes = applyNoRefDes(
+                circuitWithoutSilkscreen,
+                target,
+              )
+              return applyOrigin(circuitWithoutRefDes, target.origin)
             }
           }
 
