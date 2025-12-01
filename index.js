@@ -28821,7 +28821,7 @@ var platedhole = (pn2, x, y, id, od) => {
 };
 
 // src/helpers/platedHoleWithRectPad.ts
-var platedHoleWithRectPad = (pn2, x, y, holeDiameter, rectPadWidth, rectPadHeight) => {
+var platedHoleWithRectPad = (pn2, x, y, holeDiameter, rectPadWidth, rectPadHeight, holeOffsetX, holeOffsetY) => {
   return {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
@@ -28835,7 +28835,9 @@ var platedHoleWithRectPad = (pn2, x, y, holeDiameter, rectPadWidth, rectPadHeigh
     rect_pad_height: mm2(rectPadHeight),
     pcb_port_id: "",
     layers: ["top", "bottom"],
-    port_hints: [pn2.toString()]
+    port_hints: [pn2.toString()],
+    hole_offset_x: holeOffsetX,
+    hole_offset_y: holeOffsetY
   };
 };
 
