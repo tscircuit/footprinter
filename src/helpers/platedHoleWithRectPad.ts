@@ -25,7 +25,7 @@ export const platedHoleWithRectPad = (
     pcb_port_id: "",
     layers: ["top", "bottom"],
     port_hints: [pn.toString()],
-    hole_offset_x,
-    hole_offset_y,
+    hole_offset_x: holeOffsetX,
+    hole_offset_y: holeOffsetY,
   }
 }
