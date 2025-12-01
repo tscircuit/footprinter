@@ -50,6 +50,11 @@ export const pinrow_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
+    faceup: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("mirror the pin rows vertically so the pins face up"),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -89,6 +94,7 @@ export const pinrow = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
+    faceup,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -96,8 +102,7 @@ export const pinrow = (
 
   const holes: AnySoupElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
-  const ySpacing = -p
-
+  const ySpacing = faceup ? p : -p
   const calculateAnchorPosition = ({
     xoff,
     yoff,
@@ -291,8 +296,7 @@ export const pinrow = (
   }
 
   // Add centered silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
-
+  const refText: SilkscreenRef = silkscreenRef(0, faceup ? -p : p, 0.5)
   return {
     circuitJson: [...holes, refText],
     parameters,
