@@ -2,20 +2,20 @@ import { expect, test } from "bun:test"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test("parity/VSON8_grid1.5x2mm_P0.5mm_w1.075mm_pinw0.575mm_pinh0.35mm", async () => {
+test("parity/VSON8-1EP_grid5x6_P1.27mm_ep4.35x4.51mm_epx0.33mm_w5.6mm_pinw0.7mm_pinh0.7mm", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "VSON8_grid1.5x2mm_P0.5mm_w1.075mm_pinw0.575mm_pinh0.35mm",
-      "Package_SON.pretty/VSON-8_1.5x2mm_P0.5mm.circuit.json",
+      "VSON8-1EP_grid5x6_P1.27mm_ep4.35x4.51mm_epx0.33mm_w5.6mm_pinw0.7mm_pinh0.7mm",
+      "Package_SON.pretty/VSONP-8-1EP_5x6_P1.27mm.circuit.json",
     )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "VSON-8_1.5x2mm_P0.5mm",
+    "VSONP-8-1EP_5x6_P1.27mm",
   )
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
-    "VSON-8_1.5x2mm_P0.5mm_boolean_difference",
+    "VSONP-8-1EP_5x6_P1.27mm_boolean_difference",
   )
 })
