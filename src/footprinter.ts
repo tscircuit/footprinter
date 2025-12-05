@@ -160,6 +160,7 @@ export type Footprinter = {
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
+  usbc: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "num_pins">
   son: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
