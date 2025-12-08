@@ -183,8 +183,8 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     pn: 1,
   })
   pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5
-  const triangleHeight = 0.7 // Adjust triangle size as needed
-  const triangleWidth = 0.3 // Adjust triangle width as needed
+  const triangleHeight = 0.3 // Adjust triangle size as needed
+  const triangleWidth = 0.4 // Adjust triangle width as needed
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
