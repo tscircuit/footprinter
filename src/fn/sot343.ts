@@ -45,56 +45,63 @@ export const getCcwSot343Coords = (parameters: {
   p: number
 }) => {
   const { pn, p } = parameters
-
-  if (pn === 1) {
-    return { x: -p * 1.92, y: -0.65 }
-  } else if (pn === 2) {
-    return { x: -p * 1.92, y: 0.65 }
-  } else if (pn === 3) {
-    return { x: p, y: 0.65 }
-  } else if (pn === 4) {
-    return { x: p, y: -0.65 }
-  } else {
-    return { x: 0, y: 0 }
-  }
+  if (pn === 1) return { x: -p * 1.92, y: -0.65 }
+  if (pn === 2) return { x: -p * 1.92, y: 0.65 }
+  if (pn === 3) return { x: p, y: 0.65 }
+  if (pn === 4) return { x: p, y: -0.65 }
+  return { x: 0, y: 0 }
 }
 
 export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pads: AnyCircuitElement[] = []
 
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const p = Number.parseFloat(parameters.p)
+
+  let minX = Infinity
+  let maxX = -Infinity
+  let minY = Infinity
+  let maxY = -Infinity
+
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot343Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(parameters.w),
-      h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl),
-      p: Number.parseFloat(parameters.p),
+      w,
+      h,
+      pl,
+      p,
     })
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i + 1, x, y, pl, pw))
+
+    if (x < minX) minX = x
+    if (x > maxX) maxX = x
+    if (y < minY) minY = y
+    if (y > maxY) maxY = y
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
+  const silkscreenXOffset = (minX + maxX) / 2
+  const padVerticalDistance = maxY - minY
+  const silkscreenMargin = h * 0.3
+  const offsetY = padVerticalDistance / 2 + silkscreenMargin
 
-  const width = 0.5
+  let silkscreenLineLength = w * 0.8
+  if (h <= 2.6) {
+    silkscreenLineLength /= 2
+  }
 
-  const height = Number.parseFloat(parameters.h) / 2
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(silkscreenXOffset, 0, 0.3)
 
   const silkscreenPathTop: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_top",
     route: [
-      { x: -width - 0.5, y: height + 0.1 },
-      { x: width - 0.1, y: height + 0.1 },
+      { x: silkscreenXOffset - silkscreenLineLength / 2, y: offsetY },
+      { x: silkscreenXOffset + silkscreenLineLength / 2, y: offsetY },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
@@ -105,8 +112,8 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_bottom",
     route: [
-      { x: -width - 0.5, y: -height - 0.1 },
-      { x: width - 0.1, y: -height - 0.1 },
+      { x: silkscreenXOffset - silkscreenLineLength / 2, y: -offsetY },
+      { x: silkscreenXOffset + silkscreenLineLength / 2, y: -offsetY },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
