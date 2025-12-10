@@ -7,11 +7,11 @@ import { base_def } from "../helpers/zod/base_def"
 export const sot343_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().default(4),
-  w: z.string().default("3.2mm"),    
-  h: z.string().default("2.6mm"),    
-  pl: z.string().default("0.65mm"),  
-  pw: z.string().default("0.39mm"),  
-  p: z.string().default("0.65mm"),   
+  w: z.string().default("3.2mm"),
+  h: z.string().default("2.6mm"),
+  pl: z.string().default("0.65mm"),
+  pw: z.string().default("0.39mm"),
+  p: z.string().default("0.65mm"),
   string: z.string().optional(),
 })
 
@@ -47,15 +47,15 @@ export const getCcwSot343Coords = (parameters: {
   const { pn, p } = parameters
 
   if (pn === 1) {
-    return { x: -p * 1.92, y: -0.65 } 
+    return { x: -p * 1.92, y: -0.65 }
   } else if (pn === 2) {
-    return { x: -p * 1.92, y: 0.65 }  
+    return { x: -p * 1.92, y: 0.65 }
   } else if (pn === 3) {
-    return { x: p, y: 0.65 }    
+    return { x: p, y: 0.65 }
   } else if (pn === 4) {
-    return { x: p, y: -0.65 }   
+    return { x: p, y: -0.65 }
   } else {
-    return { x: 0, y: 0 }       
+    return { x: 0, y: 0 }
   }
 }
 
@@ -82,14 +82,10 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     )
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    0, 
-    0.3, 
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const width = 0.50 
-  
+  const width = 0.5
+
   const height = Number.parseFloat(parameters.h) / 2
 
   const silkscreenPathTop: PcbSilkscreenPath = {
@@ -97,29 +93,29 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_top",
     route: [
-      { x: -width - 0.5, y: height + 0.1 }, 
-      { x: width - 0.1, y: height + 0.1 },  
+      { x: -width - 0.5, y: height + 0.1 },
+      { x: width - 0.1, y: height + 0.1 },
     ],
     type: "pcb_silkscreen_path",
-    stroke_width: 0.10, 
-}
+    stroke_width: 0.1,
+  }
 
   const silkscreenPathBottom: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_bottom",
     route: [
-      { x: -width - 0.5, y: -height - 0.1 }, 
-      { x: width - 0.1, y: -height - 0.1 },  
+      { x: -width - 0.5, y: -height - 0.1 },
+      { x: width - 0.1, y: -height - 0.1 },
     ],
     type: "pcb_silkscreen_path",
-    stroke_width: 0.10, 
+    stroke_width: 0.1,
   }
 
   return [
     ...pads,
     silkscreenPathTop,
-    silkscreenPathBottom, 
+    silkscreenPathBottom,
     silkscreenRefText as AnyCircuitElement,
   ]
 }
