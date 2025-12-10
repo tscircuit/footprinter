@@ -93,7 +93,11 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     silkscreenLineLength /= 2
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(silkscreenXOffset, 0, 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    silkscreenXOffset,
+    0,
+    0.3,
+  )
 
   const silkscreenPathTop: PcbSilkscreenPath = {
     layer: "top",
