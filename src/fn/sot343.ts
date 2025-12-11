@@ -95,7 +95,7 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     silkscreenXOffset,
-    0,
+    offsetY + 0.5,
     0.3,
   )
 
