@@ -10,9 +10,9 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const radial_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("2.54mm"),
-  id: length.optional().default("0.7mm"),
-  od: length.optional().default("1.4mm"),
+  p: length.optional().default("5mm"),
+  id: length.optional().default("0.8mm"),
+  od: length.optional().default("1.6mm"),
 })
 export type RadialDef = z.input<typeof radial_def>
 
