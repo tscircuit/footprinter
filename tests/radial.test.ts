@@ -9,9 +9,7 @@ test("radial (default)", () => {
 })
 
 test("radial with custom dimensions", () => {
-  const circuitJson = fp
-    .string("radial_w6mm_p3mm")
-    .circuitJson()
+  const circuitJson = fp.string("radial_w6mm_p3mm").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "custom_dimensions")
 })
