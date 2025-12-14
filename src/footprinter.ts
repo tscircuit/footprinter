@@ -99,6 +99,7 @@ export type Footprinter = {
     | "bottomsidepinlabel"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
+  radial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
