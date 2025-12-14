@@ -21,6 +21,22 @@ export const radial_def = base_def.extend({
 
 export type RadialDef = z.input<typeof radial_def>
 
+const generate_circle_points = (
+  centerX: number,
+  centerY: number,
+  radius: number,
+): { x: number; y: number }[] => {
+  const pts: { x: number; y: number }[] = []
+  for (let i = 0; i <= 60; i++) {
+    const theta = (i / 60) * Math.PI * 2
+    pts.push({
+      x: centerX + Math.cos(theta) * radius,
+      y: centerY + Math.sin(theta) * radius,
+    })
+  }
+  return pts
+}
+
 export const radial = (
   raw_params: RadialDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
@@ -33,38 +49,53 @@ export const radial = (
     platedhole(2, p / 2, 0, id, od),
   ]
 
-  const silkscreenLines: PcbSilkscreenPath[] = [
-    {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
-        { x: -od / 2, y: -od / 2 - 0.07 },
-        { x: od / 2, y: -od / 2 - 0.07 },
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    },
+  const bodyR = w / 2 + 0.1
 
-    {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
-        { x: -od / 2, y: od / 2 + 0.07 },
-        { x: od / 2, y: od / 2 + 0.07 },
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    },
-  ]
+  const silkscreenBody: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: generate_circle_points(0, 0, bodyR),
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
+
+  const plusSize = 0.5
+  const plusX = -(w / 2 + plusSize + 0.2)
+  const plusY = bodyR - plusSize - 0.2
+
+  const plusHoriz: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      { x: plusX - plusSize, y: plusY },
+      { x: plusX + plusSize, y: plusY },
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
+
+  const plusVert: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      { x: plusX, y: plusY - plusSize },
+      { x: plusX, y: plusY + plusSize },
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, od / 2 + 1, 0.5)
 
   return {
     circuitJson: [
       ...plated_holes,
-      ...silkscreenLines,
+      silkscreenBody,
+      plusHoriz,
+      plusVert,
       silkscreenRefText as AnySoupElement,
     ],
 

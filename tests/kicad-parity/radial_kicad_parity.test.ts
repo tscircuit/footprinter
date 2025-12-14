@@ -25,7 +25,7 @@ test("parity/radial (default)", async () => {
 test("parity/radial", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "radial_diameter10mm_height12_5mm_lead_spacing5mm",
+      "radial_w4mm_h5mm_p1.5mm",
       "Capacitor_THT.pretty/C_Radial_D4.0mm_H5.0mm_P1.50mm.circuit.json",
     )
 
