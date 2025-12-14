@@ -11,7 +11,10 @@ test("parity/radial (default)", async () => {
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
 
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "radial_default_parity")
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "radial_default_parity",
+  )
 
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
