@@ -15,8 +15,8 @@ export const radial_def = base_def.extend({
   id: length.optional().default("0.6mm"),
   od: length.optional().default("1.2mm"),
 
-  bodyDiameter: length.optional().default("5.0mm"),
-  bodyHeight: length.optional().default("12.5mm"),
+  w: length.optional().default("5.0mm"),
+  h: length.optional().default("12.5mm"),
 })
 
 export type RadialDef = z.input<typeof radial_def>
@@ -26,7 +26,7 @@ export const radial = (
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = radial_def.parse(raw_params)
 
-  const { p, id, od, bodyDiameter, bodyHeight } = parameters
+  const { p, id, od, w, h } = parameters
 
   const plated_holes = [
     platedhole(1, -p / 2, 0, id, od),
@@ -34,7 +34,6 @@ export const radial = (
   ]
 
   const silkscreenLines: PcbSilkscreenPath[] = [
-    // Top line
     {
       type: "pcb_silkscreen_path",
       layer: "top",
@@ -47,7 +46,6 @@ export const radial = (
       pcb_silkscreen_path_id: "",
     },
 
-    // Bottom line
     {
       type: "pcb_silkscreen_path",
       layer: "top",
@@ -76,12 +74,13 @@ export const radial = (
       footprint_family: "radial",
 
       model_3d: {
-        body_shape: "cylinder",
-        body_diameter: bodyDiameter,
-        body_height: bodyHeight,
+        bodyShape: "cylinder",
+        bodyWidth: w,
+        bodyHeight: h,
+        leadSpacing: p,
+        leadDiameter: id,
         orientation: "vertical",
-        pin_count: 2,
-        lead_pitch: p,
+        pinCount: 2,
       },
     },
   }
