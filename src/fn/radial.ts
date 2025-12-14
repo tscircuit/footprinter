@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 export const radial_def = base_def.extend({
   fn: z.string(),
 
-  p: length.optional().default("1.53mm"),
+  p: length.optional().default("1.5mm"),
   id: length.optional().default("0.6mm"),
   od: length.optional().default("1.2mm"),
 
