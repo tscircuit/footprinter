@@ -15,8 +15,8 @@ export const radial_def = base_def.extend({
   id: length.optional().default("0.8mm"),
   od: length.optional().default("1.6mm"),
 
-  w: length.optional().default("10mm"),
-  h: length.optional().default("12.5mm"),
+  _ceramic: z.boolean().optional(),
+  _electrolytic: z.boolean().optional(),
 })
 
 export type RadialDef = z.input<typeof radial_def>
@@ -72,14 +72,14 @@ export const radial = (
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = radial_def.parse(raw_params)
 
-  const { p, id, od, w, h } = parameters
+  const { p, id, od } = parameters
 
   const plated_holes = [
     platedhole(1, -p / 2, 0, id, od),
     platedhole(2, p / 2, 0, id, od),
   ]
 
-  const bodyR = w / 2 + 0.1
+  const bodyR = p + 0.1
 
   const { topArc, bottomArc } = generate_circle_arcs(0, 0, bodyR, od / 2, od)
 
@@ -114,7 +114,7 @@ export const radial = (
   }
 
   const plusSize = 0.5
-  const plusX = -(w / 2 + plusSize + 0.2)
+  const plusX = -(p + plusSize + 0.2)
   const plusY = bodyR - plusSize - 0.4
 
   const plusHoriz: PcbSilkscreenPath = {
@@ -154,8 +154,6 @@ export const radial = (
       silkscreenRefText as AnySoupElement,
     ],
 
-    parameters: {
-      ...parameters,
-    },
+    parameters,
   }
 }
