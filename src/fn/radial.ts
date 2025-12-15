@@ -21,22 +21,6 @@ export const radial_def = base_def.extend({
 
 export type RadialDef = z.input<typeof radial_def>
 
-const generate_circle_points = (
-  centerX: number,
-  centerY: number,
-  radius: number,
-): { x: number; y: number }[] => {
-  const pts: { x: number; y: number }[] = []
-  for (let i = 0; i <= 60; i++) {
-    const theta = (i / 60) * Math.PI * 2
-    pts.push({
-      x: centerX + Math.cos(theta) * radius,
-      y: centerY + Math.sin(theta) * radius,
-    })
-  }
-  return pts
-}
-
 const generate_circle_arcs = (
   centerX: number,
   centerY: number,
