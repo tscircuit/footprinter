@@ -10,12 +10,12 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const gbj_def = base_def.extend({
   fn: z.string(),
-  p1: length.default("10mm"),
-  p2: length.default("7.5mm"),
-  id: length.default("1.8mm"),
-  od: length.default("3.5mm"),
-  w: length.default("30mm"),
-  h: length.default("4.8mm"),
+  p1: length.default("7.5mm"),
+  p2: length.default("10mm"),
+  id: length.default("1mm"),
+  od: length.default("2mm"),
+  w: length.default("32mm"),
+  h: length.default("5.6mm"),
 })
 
 export type gbjDef = z.input<typeof gbj_def>
@@ -29,7 +29,7 @@ export const gbj = (
 
   const x1 = -12.5
   const x2 = x1 + params.p1
-  const x3 = x2 + params.p2
+  const x3 = x2 + params.p1
   const x4 = x3 + params.p2
 
   const positions = [x1, x2, x3, x4]
