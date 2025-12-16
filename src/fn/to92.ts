@@ -102,14 +102,7 @@ export const to92 = (
           0,
           0,
         ),
-        platedHolePill(
-          2,
-          0,
-          holeY - padSpacing,
-          holeDia,
-          padWidth,
-          padHeight,
-        ),
+        platedHolePill(2, 0, holeY - padSpacing, holeDia, padWidth, padHeight),
         platedHolePill(
           3,
           padSpacing,
@@ -121,7 +114,16 @@ export const to92 = (
       ]
     } else {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, holeDia, padDia, padDia, 0, 0),
+        platedHoleWithRectPad(
+          1,
+          -padSpacing,
+          holeY - padSpacing,
+          holeDia,
+          padDia,
+          padDia,
+          0,
+          0,
+        ),
         platedhole(2, 0, holeY, holeDia, padDia),
         platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia),
       ]
