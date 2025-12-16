@@ -12,7 +12,6 @@ test("parity/gbj", async () => {
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "gbj_parity")
 
-
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "gbj_boolean_difference",
