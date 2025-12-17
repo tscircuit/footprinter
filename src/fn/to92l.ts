@@ -23,30 +23,13 @@ export const to92l = (
       0,
       params.drill,
       params.pad_size,
-      params.pad_size
-    )
+      params.pad_size,
+    ),
   )
 
-  soup.push(
-    platedhole(
-      2,
-      1.28,
-      1.27, 
-      params.drill,
-      params.pad_size
-    )
-  )
+  soup.push(platedhole(2, 1.28, 1.27, params.drill, params.pad_size))
+  soup.push(platedhole(3, 2.54, 0, params.drill, params.pad_size))
 
-  soup.push(
-    platedhole(
-      3,
-      2.54,
-      0,
-      params.drill,
-      params.pad_size
-    )
-  )
-  
   const silkBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -64,6 +47,7 @@ export const to92l = (
       { x: -0.65, y: -1.7 },
     ],
   }
+
   soup.push(silkBody)
 
   return { circuitJson: soup, parameters: params }
