@@ -14,9 +14,9 @@ export const to92l = (
   raw_params: z.input<typeof to92l_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const params = to92l_def.parse(raw_params)
-  const soup: AnySoupElement[] = []
+  const circuitJson: AnySoupElement[] = []
 
-  soup.push(
+  circuitJson.push(
     platedHoleWithRectPad(
       1,
       0,
@@ -27,8 +27,8 @@ export const to92l = (
     ),
   )
 
-  soup.push(platedhole(2, 1.28, 1.27, params.drill, params.pad_size))
-  soup.push(platedhole(3, 2.54, 0, params.drill, params.pad_size))
+  circuitJson.push(platedhole(2, 1.28, 1.27, params.drill, params.pad_size))
+  circuitJson.push(platedhole(3, 2.54, 0, params.drill, params.pad_size))
 
   const silkBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -48,7 +48,7 @@ export const to92l = (
     ],
   }
 
-  soup.push(silkBody)
+  circuitJson.push(silkBody)
 
-  return { circuitJson: soup, parameters: params }
+  return { circuitJson, parameters: params }
 }
