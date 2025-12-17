@@ -18,14 +18,7 @@ export const to92l = (
   const circuitJson: AnySoupElement[] = []
 
   circuitJson.push(
-    platedHoleWithRectPad(
-      1,
-      0,
-      0,
-      params.drill,
-      params.pw,
-      params.pl,
-    ),
+    platedHoleWithRectPad(1, 0, 0, params.drill, params.pw, params.pl),
   )
 
   circuitJson.push(platedhole(2, 1.28, 1.27, params.drill, params.pw))
