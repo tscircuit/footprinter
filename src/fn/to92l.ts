@@ -7,7 +7,8 @@ import { base_def } from "src/helpers/zod/base_def"
 export const to92l_def = base_def.extend({
   fn: z.string().default("to92l"),
   drill: z.number().default(0.75),
-  pad_size: z.number().default(1.3),
+  pw: z.number().default(1.3),
+  pl: z.number().default(1.3),
 })
 
 export const to92l = (
@@ -22,13 +23,13 @@ export const to92l = (
       0,
       0,
       params.drill,
-      params.pad_size,
-      params.pad_size,
+      params.pw,
+      params.pl,
     ),
   )
 
-  circuitJson.push(platedhole(2, 1.28, 1.27, params.drill, params.pad_size))
-  circuitJson.push(platedhole(3, 2.54, 0, params.drill, params.pad_size))
+  circuitJson.push(platedhole(2, 1.28, 1.27, params.drill, params.pw))
+  circuitJson.push(platedhole(3, 2.54, 0, params.drill, params.pw))
 
   const silkBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
