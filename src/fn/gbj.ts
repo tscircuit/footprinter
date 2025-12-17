@@ -10,12 +10,12 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const gbj_def = base_def.extend({
   fn: z.string(),
-  p1: length.default("7.5mm"),
-  p2: length.default("10mm"),
-  id: length.default("1mm"),
-  od: length.default("2mm"),
-  w: length.default("32mm"),
-  h: length.default("5.6mm"),
+  p1: length.default("10mm"),
+  p2: length.default("7.5mm"),
+  id: length.default("1.6mm"),
+  od: length.default("3mm"),
+  w: length.default("30mm"),
+  h: length.default("4.6mm"),
 })
 
 export type gbjDef = z.input<typeof gbj_def>
@@ -24,12 +24,11 @@ export const gbj = (
   raw_params: gbjDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const params = gbj_def.parse(raw_params)
-
   const pads: AnySoupElement[] = []
 
   const x1 = -12.5
   const x2 = x1 + params.p1
-  const x3 = x2 + params.p1
+  const x3 = x2 + params.p2
   const x4 = x3 + params.p2
 
   const positions = [x1, x2, x3, x4]
@@ -67,10 +66,10 @@ export const gbj = (
     pcb_silkscreen_path_id: "",
     stroke_width: 0.1,
     route: [
-      { x: x1 - 2, y: 0 },
-      { x: x1 - 1, y: 0 },
-      { x: x1 - 1.5, y: -0.5 },
-      { x: x1 - 1.5, y: 0.5 },
+      { x: x1 - 2.5, y: 0 },
+      { x: x1 - 1.9, y: 0 },
+      { x: x1 - 2.2, y: -0.3 },
+      { x: x1 - 2.2, y: 0.3 },
     ],
   }
 
