@@ -6,31 +6,41 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "src/helpers/zod/base_def"
 
 export const to92l_def = base_def.extend({
-  fn: z.string().default("to92l"),
+  fn: z.string(),
+  num_pins: z.number().default(3),
   p: z.string().default("1.27mm"),
   id: z.string().default("0.75mm"),
   od: z.string().default("1.3mm"),
+  w: z.string().default("4.8mm"),
+  h: z.string().default("4.0mm"),
 })
 
 export const to92l = (
   raw_params: z.input<typeof to92l_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to92l_def.parse(raw_params)
-  const circuitJson: AnyCircuitElement[] = []
 
   const p = Number.parseFloat(parameters.p)
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
 
-  circuitJson.push(
-    platedHoleWithRectPad(1, 0, 0, parameters.id, parameters.od, parameters.od),
-  )
+  const holes = [
+    platedHoleWithRectPad(
+      1,
+      0,
+      0,
+      parameters.id,
+      parameters.od,
+      parameters.od,
+    ),
+    platedhole(2, p, p, parameters.id, parameters.od),
+    platedhole(3, p * 2, 0, parameters.id, parameters.od),
+  ]
 
-  circuitJson.push(platedhole(2, p, p, parameters.id, parameters.od))
-
-  circuitJson.push(platedhole(3, p * 2, 0, parameters.id, parameters.od))
-
-  const radius = 2.4
+  const radius = w / 2
   const cx = p
   const cy = 0.2
+  const y_bottom = cy + radius - h
 
   const semicircle = Array.from({ length: 32 }, (_, i) => {
     const angle = (Math.PI * i) / 31
@@ -48,20 +58,20 @@ export const to92l = (
     stroke_width: 0.12,
     route: [
       ...semicircle,
-      { x: cx - radius, y: -1.7 },
-      { x: cx + radius, y: -1.7 },
+      { x: cx - radius, y: y_bottom },
+      { x: cx + radius, y: y_bottom },
       semicircle[0],
     ],
   }
-
-  circuitJson.push(silkBody)
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     cx,
     cy + radius + 1,
     0.5,
   )
-  circuitJson.push(silkscreenRefText as AnyCircuitElement)
 
-  return { circuitJson, parameters }
+  return {
+    circuitJson: [...holes, silkBody, silkscreenRefText as AnyCircuitElement],
+    parameters,
+  }
 }
