@@ -2,6 +2,7 @@ import { z } from "zod"
 import { mm } from "@tscircuit/mm"
 import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedHolePill } from "src/helpers/platedHolePill"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -32,30 +33,6 @@ const generateSemicircle = (
   })
 }
 
-const platedHolePill = (
-  pn: number,
-  x: number,
-  y: number,
-  holeDiameter: number,
-  outerWidth: number,
-  outerHeight: number,
-): AnyCircuitElement => {
-  return {
-    pcb_plated_hole_id: "",
-    type: "pcb_plated_hole",
-    shape: "pill",
-    x,
-    y,
-    outer_width: mm(outerWidth),
-    outer_height: mm(outerHeight),
-    hole_width: mm(holeDiameter),
-    hole_height: mm(holeDiameter),
-    pcb_port_id: "",
-    layers: ["top", "bottom"],
-    port_hints: [pn.toString()],
-  } as any
-}
-
 export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
   const { p, id, od, h } = parameters
   const holeY = Number.parseFloat(h) / 2
@@ -69,7 +46,10 @@ export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
 
 export const to92 = (
   raw_params: z.input<typeof to92_def>,
-): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+): {
+  circuitJson: AnyCircuitElement[]
+  parameters: z.infer<typeof to92_def>
+} => {
   const match = raw_params.string?.match(/^to92_(\d+)/)
   const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
@@ -98,7 +78,7 @@ export const to92 = (
           holeY - padSpacing,
           holeDia,
           padDia,
-          padDia,
+          padHeight,
           0,
           0,
         ),
