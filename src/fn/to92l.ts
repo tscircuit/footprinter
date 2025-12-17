@@ -25,14 +25,8 @@ export const to92l = (
   const h = Number.parseFloat(parameters.h)
 
   const holes = [
-    platedHoleWithRectPad(
-      1,
-      0,
-      0,
-      parameters.id,
-      parameters.od,
-      parameters.od,
-    ),
+    // La correction est sur la ligne suivante :
+    platedHoleWithRectPad(1, 0, 0, parameters.id, parameters.od, parameters.od),
     platedhole(2, p, p, parameters.id, parameters.od),
     platedhole(3, p * 2, 0, parameters.id, parameters.od),
   ]
