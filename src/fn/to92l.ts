@@ -14,7 +14,7 @@ export const to92l = (
   raw_params: z.input<typeof to92l_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const params = to92l_def.parse(raw_params)
-  const soup: AnySoupElement[] = []
+  const circuitJson: CircuitJson = []
 
   soup.push(
     platedHoleWithRectPad(
