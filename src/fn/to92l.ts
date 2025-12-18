@@ -8,12 +8,12 @@ import { base_def } from "src/helpers/zod/base_def"
 export const to92l_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().default(3),
+  inline: z.boolean().default(false),
   p: z.string().default("1.27mm"),
   id: z.string().default("0.75mm"),
   od: z.string().default("1.3mm"),
   w: z.string().default("4.8mm"),
   h: z.string().default("4.0mm"),
-  string: z.string().optional(),
 })
 
 export const to92l = (
@@ -24,19 +24,24 @@ export const to92l = (
   const p = Number.parseFloat(parameters.p)
   const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
-  const isInline = (parameters.fn + (parameters.string || "")).includes(
-    "inline",
-  )
-  const od = isInline ? 1.0 : Number.parseFloat(parameters.od)
+
+  const od = parameters.inline ? 1.05 : Number.parseFloat(parameters.od)
+  const padH = parameters.inline ? 1.5 : od
 
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, od, od),
-    platedhole(2, p, isInline ? 0 : p, parameters.id, od),
+    platedHoleWithRectPad(1, 0, 0, parameters.id, od, padH),
+    platedhole(
+      2,
+      p,
+      parameters.inline ? 0 : p,
+      parameters.id,
+      od,
+    ),
     platedhole(3, p * 2, 0, parameters.id, od),
   ]
 
   const radius = w / 2
-  const cx = p
+  const cx = parameters.inline ? p - 0.09 : p
   const cy = 0.2
   const y_bottom = cy + radius - h
 
