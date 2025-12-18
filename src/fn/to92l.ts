@@ -13,6 +13,7 @@ export const to92l_def = base_def.extend({
   od: z.string().default("1.3mm"),
   w: z.string().default("4.8mm"),
   h: z.string().default("4.0mm"),
+  string: z.string().optional(),
 })
 
 export const to92l = (
@@ -23,11 +24,13 @@ export const to92l = (
   const p = Number.parseFloat(parameters.p)
   const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
+  const isInline = (parameters.fn + (parameters.string || "")).includes("inline")
+  const od = isInline ? 1.0 : Number.parseFloat(parameters.od)
 
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, parameters.od, parameters.od),
-    platedhole(2, p, p, parameters.id, parameters.od),
-    platedhole(3, p * 2, 0, parameters.id, parameters.od),
+    platedHoleWithRectPad(1, 0, 0, parameters.id, od, od),
+    platedhole(2, p, isInline ? 0 : p, parameters.id, od),
+    platedhole(3, p * 2, 0, parameters.id, od),
   ]
 
   const radius = w / 2
