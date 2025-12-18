@@ -24,7 +24,9 @@ export const to92l = (
   const p = Number.parseFloat(parameters.p)
   const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
-  const isInline = (parameters.fn + (parameters.string || "")).includes("inline")
+  const isInline = (parameters.fn + (parameters.string || "")).includes(
+    "inline",
+  )
   const od = isInline ? 1.0 : Number.parseFloat(parameters.od)
 
   const holes = [
