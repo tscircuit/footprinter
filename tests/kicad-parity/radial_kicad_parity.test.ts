@@ -2,10 +2,10 @@ import { expect, test } from "bun:test"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test("parity/radial_p5mm", async () => {
+test("parity/radial", async () => {
   const { combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
-      "radial_p5mm",
+      "radial",
       "Capacitor_THT.pretty/C_Radial_D10.0mm_H12.5mm_P5.00mm.circuit.json",
     )
 
@@ -15,6 +15,6 @@ test("parity/radial_p5mm", async () => {
 
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
-    "radial_parity_p5mm._boolean_difference",
+    "radial_boolean_difference",
   )
 })

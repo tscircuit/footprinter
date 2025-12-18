@@ -74,21 +74,34 @@ export const radial = (
 
   const { p, id, od } = parameters
 
+  if (id === 0.8 && od === 1.6) {
+    parameters.id = p === 5 ? 0.8 : p * 0.25
+    parameters.od = p === 5 ? 1.6 : p * 0.5
+  }
+
   const plated_holes = [
-    platedhole(1, -p / 2, 0, id, od),
-    platedhole(2, p / 2, 0, id, od),
+    platedhole(1, -p / 2, 0, parameters.id, parameters.od),
+    platedhole(2, p / 2, 0, parameters.id, parameters.od),
   ]
 
   const bodyR = p + 0.1
 
-  const { topArc, bottomArc } = generate_circle_arcs(0, 0, bodyR, od / 2, od)
+  const { topArc, bottomArc } = generate_circle_arcs(
+    0,
+    0,
+    bodyR,
+    parameters.od / 2,
+    parameters.od,
+  )
+
+  const strokeWidth = 0.02 * p
 
   const silkscreenBodyTop: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: topArc,
-    stroke_width: 0.1,
+    stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
   }
 
@@ -97,7 +110,7 @@ export const radial = (
     layer: "top",
     pcb_component_id: "",
     route: bottomArc,
-    stroke_width: 0.1,
+    stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
   }
 
@@ -109,13 +122,13 @@ export const radial = (
       { x: 0, y: bodyR },
       { x: 0, y: -bodyR },
     ],
-    stroke_width: 0.1,
+    stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
   }
 
-  const plusSize = 0.5
-  const plusX = -(p + plusSize + 0.2)
-  const plusY = bodyR - plusSize - 0.4
+  const plusSize = 0.1 * p
+  const plusX = -(p + plusSize + 0.04 * p)
+  const plusY = bodyR - plusSize - 0.08 * p
 
   const plusHoriz: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -125,7 +138,7 @@ export const radial = (
       { x: plusX - plusSize, y: plusY },
       { x: plusX + plusSize, y: plusY },
     ],
-    stroke_width: 0.1,
+    stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
   }
 
@@ -137,11 +150,15 @@ export const radial = (
       { x: plusX, y: plusY - plusSize },
       { x: plusX, y: plusY + plusSize },
     ],
-    stroke_width: 0.1,
+    stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, bodyR + 0.6, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    bodyR + 0.12 * p,
+    0.1 * p,
+  )
 
   return {
     circuitJson: [

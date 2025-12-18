@@ -265,9 +265,35 @@ export const string = (def: string): Footprinter => {
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
-      if (!m) return null
+      if (!m) {
+        // Try to match patterns like "8mm" where the value starts with a digit
+        const digitMatch = s.match(/([a-zA-Z]+)(\d+.*)?/)
+        if (!digitMatch) {
+          // Handle standalone numeric values like "8mm" - interpret as pitch
+          const numericMatch = s.match(/^(\d+.*mm)$/)
+          if (numericMatch) {
+            return { fn: "p", v: numericMatch[1] }
+          }
+          return null
+        }
+        const [, rawFn, v] = digitMatch
+        if (!rawFn) return null
+        const fn = rawFn.toLowerCase()
+        if (v?.includes("?")) return null
+        return { fn, v }
+      }
+      // If the matched function is just letters with no value and it's a unit like "mm",
+      // treat it as a standalone numeric value
       const [, rawFn, v] = m
       if (!rawFn) return null
+      if (!v && /^(mm|in|mil)$/.test(rawFn)) {
+        // This is a case like "8mm" that was parsed incorrectly, treat as standalone
+        const numericMatch = s.match(/^(\d+.*mm)$/)
+        if (numericMatch) {
+          return { fn: "p", v: numericMatch[1] }
+        }
+        return null
+      }
       const fn = rawFn.toLowerCase()
       if (v?.includes("?")) return null
       return { fn, v }
