@@ -7,3 +7,4 @@ test("radial_8mm", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "radial_8mm")
 })
+ 
