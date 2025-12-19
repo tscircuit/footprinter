@@ -1,5 +1,8 @@
 import { z } from "zod"
+import { mm } from "@tscircuit/mm"
 import { platedhole } from "src/helpers/platedhole"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedHolePill } from "src/helpers/platedHolePill"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -36,14 +39,17 @@ export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
   const padSpacing = Number.parseFloat(p)
 
   return [
-    platedhole(1, -padSpacing, holeY - padSpacing, id, od),
+    platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, id, od, od, 0, 0),
     platedhole(2, padSpacing, holeY - padSpacing, id, od),
   ]
 }
 
 export const to92 = (
   raw_params: z.input<typeof to92_def>,
-): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+): {
+  circuitJson: AnyCircuitElement[]
+  parameters: z.infer<typeof to92_def>
+} => {
   const match = raw_params.string?.match(/^to92_(\d+)/)
   const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
@@ -55,23 +61,74 @@ export const to92 = (
   const { p, id, od, w, h, inline } = parameters
   const holeY = Number.parseFloat(h) / 2
   const padSpacing = Number.parseFloat(p)
+  const holeDia = Number.parseFloat(id)
+  const padDia = Number.parseFloat(od)
+
+  const padWidth = padDia
+  const padHeight = padDia * (1.5 / 1.05)
 
   let platedHoles: AnyCircuitElement[] = []
 
   if (parameters.num_pins === 3) {
-    platedHoles = inline
-      ? [
-          platedhole(1, -padSpacing, holeY - padSpacing, id, od),
-          platedhole(2, 0, holeY - padSpacing, id, od),
-          platedhole(3, padSpacing, holeY - padSpacing, id, od),
-        ]
-      : [
-          platedhole(1, 0, holeY, id, od),
-          platedhole(2, -padSpacing, holeY - padSpacing, id, od),
-          platedhole(3, padSpacing, holeY - padSpacing, id, od),
-        ]
+    if (inline) {
+      platedHoles = [
+        platedHoleWithRectPad(
+          1,
+          -padSpacing,
+          holeY - padSpacing,
+          holeDia,
+          padDia,
+          padHeight,
+          0,
+          0,
+        ),
+        platedHolePill(2, 0, holeY - padSpacing, holeDia, padWidth, padHeight),
+        platedHolePill(
+          3,
+          padSpacing,
+          holeY - padSpacing,
+          holeDia,
+          padWidth,
+          padHeight,
+        ),
+      ]
+    } else {
+      platedHoles = [
+        platedHoleWithRectPad(
+          1,
+          -padSpacing,
+          holeY - padSpacing,
+          holeDia,
+          padDia,
+          padDia,
+          0,
+          0,
+        ),
+        platedhole(2, 0, holeY, holeDia, padDia),
+        platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia),
+      ]
+    }
   } else if (parameters.num_pins === 2) {
-    platedHoles = to92_2(parameters)
+    platedHoles = [
+      platedHoleWithRectPad(
+        1,
+        -padSpacing,
+        holeY - padSpacing,
+        holeDia,
+        padWidth,
+        padHeight,
+        0,
+        0,
+      ),
+      platedHolePill(
+        2,
+        padSpacing,
+        holeY - padSpacing,
+        holeDia,
+        padWidth,
+        padHeight,
+      ),
+    ]
   } else {
     throw new Error("Invalid number of pins for TO-92")
   }
