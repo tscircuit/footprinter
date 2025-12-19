@@ -174,10 +174,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
       }
     }
 
-    if (
-      element.type === "pcb_plated_hole" &&
-      element.shape === "pill"
-    ) {
+    if (element.type === "pcb_plated_hole" && element.shape === "pill") {
       if (
         element.outer_height &&
         element.outer_width &&
@@ -208,7 +205,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
           const leftCenterX = element.x - rectHalfWidth
 
           for (let i = 0; i <= numArcPoints; i++) {
-            const angle = (Math.PI / 2) + (i * Math.PI) / numArcPoints
+            const angle = Math.PI / 2 + (i * Math.PI) / numArcPoints
             points.push(
               new Flatten.Point(
                 rightCenterX + radius * Math.cos(angle),
@@ -234,7 +231,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
           const bottomCenterY = element.y - rectHalfHeight
 
           for (let i = 0; i <= numArcPoints; i++) {
-            const angle = i * Math.PI / numArcPoints
+            const angle = (i * Math.PI) / numArcPoints
             points.push(
               new Flatten.Point(
                 centerX + radius * Math.cos(angle),
