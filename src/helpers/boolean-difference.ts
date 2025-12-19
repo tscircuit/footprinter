@@ -19,6 +19,10 @@ interface FootprintElement {
   height?: number
   outer_diameter?: number
   hole_diameter?: number
+  outer_height?: number
+  outer_width?: number
+  hole_width?: number
+  hole_height?: number
   rect_pad_width?: number
   rect_pad_height?: number
   hole_offset_x?: number
@@ -167,6 +171,107 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
           error,
         )
         return rectPolygon
+      }
+    }
+
+    if (
+      element.type === "pcb_plated_hole" &&
+      element.shape === "pill"
+    ) {
+      if (
+        element.outer_height &&
+        element.outer_width &&
+        element.hole_width &&
+        element.hole_height &&
+        element.x !== undefined &&
+        element.y !== undefined
+      ) {
+        const halfHeight = element.outer_height / 2
+        const halfWidth = element.outer_width / 2
+        const holeRadius = element.hole_width / 2
+
+        const radius = Math.min(halfHeight, halfWidth)
+        const isHorizontal = halfWidth > halfHeight
+
+        const numArcPoints = 32
+        const points: Flatten.Point[] = []
+
+        if (radius === 0) {
+          return null
+        }
+
+        if (isHorizontal) {
+          const rectHalfWidth = halfWidth - radius
+          const centerY = element.y
+
+          const rightCenterX = element.x + rectHalfWidth
+          const leftCenterX = element.x - rectHalfWidth
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = (Math.PI / 2) + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                rightCenterX + radius * Math.cos(angle),
+                centerY + radius * Math.sin(angle),
+              ),
+            )
+          }
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = (3 * Math.PI) / 2 + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                leftCenterX + radius * Math.cos(angle),
+                centerY + radius * Math.sin(angle),
+              ),
+            )
+          }
+        } else {
+          const rectHalfHeight = halfHeight - radius
+          const centerX = element.x
+
+          const topCenterY = element.y + rectHalfHeight
+          const bottomCenterY = element.y - rectHalfHeight
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = i * Math.PI / numArcPoints
+            points.push(
+              new Flatten.Point(
+                centerX + radius * Math.cos(angle),
+                topCenterY + radius * Math.sin(angle),
+              ),
+            )
+          }
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = Math.PI + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                centerX + radius * Math.cos(angle),
+                bottomCenterY + radius * Math.sin(angle),
+              ),
+            )
+          }
+        }
+
+        const stadiumPolygon = new Flatten.Polygon(points)
+
+        const drillCenter = new Flatten.Point(element.x, element.y)
+        const drillCircle = new Flatten.Circle(drillCenter, holeRadius)
+        const drillPolygon = new Flatten.Polygon(drillCircle)
+
+        try {
+          return Flatten.BooleanOperations.subtract(
+            stadiumPolygon,
+            drillPolygon,
+          )
+        } catch (error) {
+          console.warn(
+            "Failed to subtract circular drill from pill pad, returning solid stadium:",
+            error,
+          )
+          return stadiumPolygon
+        }
       }
     }
 
@@ -469,17 +574,6 @@ export function createBooleanDifferenceVisualization(
         const centeredY = element.y! - centerAY
 
         svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorA}" stroke-width="${strokeWidth}" opacity="0.8"/>`
-      } else if (
-        element.type === "pcb_plated_hole" &&
-        element.shape === "circular_hole_with_rect_pad" &&
-        element.rect_pad_width &&
-        element.rect_pad_height &&
-        element.hole_diameter
-      ) {
-        // Render plated holes with rectangular pads using the pre-calculated path
-        if (path) {
-          svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
-        }
       } else if (path) {
         // Regular pads with fill
         svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
@@ -510,17 +604,6 @@ export function createBooleanDifferenceVisualization(
         const centeredY = element.y! - centerBY
 
         svg += `<circle cx="${centeredX}" cy="${centeredY}" r="${avgRadius}" fill="none" stroke="${colorB}" stroke-width="${strokeWidth}" opacity="0.8"/>`
-      } else if (
-        element.type === "pcb_plated_hole" &&
-        element.shape === "circular_hole_with_rect_pad" &&
-        element.rect_pad_width &&
-        element.rect_pad_height &&
-        element.hole_diameter
-      ) {
-        // Render plated holes with rectangular pads using the pre-calculated path
-        if (path) {
-          svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
-        }
       } else if (path) {
         // Regular pads with fill
         svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
