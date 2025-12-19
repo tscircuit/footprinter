@@ -8,9 +8,16 @@ export const platedHolePill = (
   pill_width: string | number,
   pill_height: string | number,
 ): AnyCircuitElement => {
-  const diameter = typeof hole_diameter === "string" ? Number.parseFloat(hole_diameter) : hole_diameter
-  const width = typeof pill_width === "string" ? Number.parseFloat(pill_width) : pill_width
-  const height = typeof pill_height === "string" ? Number.parseFloat(pill_height) : pill_height
+  const diameter =
+    typeof hole_diameter === "string"
+      ? Number.parseFloat(hole_diameter)
+      : hole_diameter
+  const width =
+    typeof pill_width === "string" ? Number.parseFloat(pill_width) : pill_width
+  const height =
+    typeof pill_height === "string"
+      ? Number.parseFloat(pill_height)
+      : pill_height
 
   return {
     type: "pcb_plated_hole",
