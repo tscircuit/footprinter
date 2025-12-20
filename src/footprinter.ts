@@ -282,8 +282,8 @@ export const string = (def: string): Footprinter => {
         if (v?.includes("?")) return null
         return { fn, v }
       }
-      // If the matched function is just letters with no value and it's a unit like "mm",
-      // treat it as a standalone numeric value
+
+      if (!m) return null
       const [, rawFn, v] = m
       if (!rawFn) return null
       if (!v && /^(mm|in|mil)$/.test(rawFn)) {
