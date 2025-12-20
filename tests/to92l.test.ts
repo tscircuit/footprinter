@@ -7,3 +7,9 @@ test("to92l", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l")
 })
+
+test("to92l_inline", () => {
+  const circuitJson = fp.string("to92l_inline").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_inline")
+})

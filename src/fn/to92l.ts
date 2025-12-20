@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedHolePill } from "src/helpers/platedHolePill"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "src/helpers/zod/base_def"
@@ -8,6 +9,7 @@ import { base_def } from "src/helpers/zod/base_def"
 export const to92l_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().default(3),
+  inline: z.boolean().default(false),
   p: z.string().default("1.27mm"),
   id: z.string().default("0.75mm"),
   od: z.string().default("1.3mm"),
@@ -24,14 +26,21 @@ export const to92l = (
   const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
 
+  const od = parameters.inline ? 1.05 : Number.parseFloat(parameters.od)
+  const padH = parameters.inline ? 1.5 : od
+
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, parameters.od, parameters.od),
-    platedhole(2, p, p, parameters.id, parameters.od),
-    platedhole(3, p * 2, 0, parameters.id, parameters.od),
+    platedHoleWithRectPad(1, 0, 0, parameters.id, od, padH, 0, 0),
+    parameters.inline
+      ? platedHolePill(2, p, 0, parameters.id, od, padH)
+      : platedhole(2, p, p, parameters.id, od),
+    parameters.inline
+      ? platedHolePill(3, p * 2, 0, parameters.id, od, padH)
+      : platedhole(3, p * 2, 0, parameters.id, od),
   ]
 
   const radius = w / 2
-  const cx = p
+  const cx = parameters.inline ? p - 0.09 : p
   const cy = 0.2
   const y_bottom = cy + radius - h
 
