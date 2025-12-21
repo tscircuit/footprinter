@@ -4,6 +4,7 @@ import {
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
+import { generateCircleArcs } from "../helpers/generateCircleArcs"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -15,57 +16,17 @@ export const radial_def = base_def.extend({
   id: length.optional().default("0.8mm"),
   od: length.optional().default("1.6mm"),
 
-  _ceramic: z.boolean().optional(),
-  _electrolytic: z.boolean().optional(),
+  _ceramic: z
+    .boolean()
+    .optional()
+    .describe("hint for 3D model rendering: ceramic capacitor style"),
+  _electrolytic: z
+    .boolean()
+    .optional()
+    .describe("hint for 3D model rendering: electrolytic capacitor style"),
 })
 
 export type RadialDef = z.input<typeof radial_def>
-
-const generate_circle_arcs = (
-  centerX: number,
-  centerY: number,
-  radius: number,
-  cut: number,
-  cutHeight: number,
-): {
-  topArc: { x: number; y: number }[]
-  bottomArc: { x: number; y: number }[]
-} => {
-  const topArc: { x: number; y: number }[] = []
-  const bottomArc: { x: number; y: number }[] = []
-
-  for (let i = 0; i <= 60; i++) {
-    const theta = (i / 60) * Math.PI
-    const x = centerX + Math.cos(theta) * radius
-    const y = centerY + Math.sin(theta) * radius
-
-    if (
-      x < centerX - cut &&
-      y >= centerY - cutHeight / 2 &&
-      y <= centerY + cutHeight / 2
-    ) {
-      continue
-    }
-    topArc.push({ x, y })
-  }
-
-  for (let i = 0; i <= 60; i++) {
-    const theta = Math.PI + (i / 60) * Math.PI
-    const x = centerX + Math.cos(theta) * radius
-    const y = centerY + Math.sin(theta) * radius
-
-    if (
-      x < centerX - cut &&
-      y >= centerY - cutHeight / 2 &&
-      y <= centerY + cutHeight / 2
-    ) {
-      continue
-    }
-    bottomArc.push({ x, y })
-  }
-
-  return { topArc, bottomArc }
-}
 
 export const radial = (
   raw_params: RadialDef,
@@ -86,7 +47,7 @@ export const radial = (
 
   const bodyR = p + 0.1
 
-  const { topArc, bottomArc } = generate_circle_arcs(
+  const { topArc, bottomArc } = generateCircleArcs(
     0,
     0,
     bodyR,
