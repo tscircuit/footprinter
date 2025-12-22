@@ -16,11 +16,11 @@ export const radial_def = base_def.extend({
   id: length.optional().default("0.8mm"),
   od: length.optional().default("1.6mm"),
 
-  _ceramic: z
+  ceramic: z
     .boolean()
     .optional()
     .describe("hint for 3D model rendering: ceramic capacitor style"),
-  _electrolytic: z
+  electrolytic: z
     .boolean()
     .optional()
     .describe("hint for 3D model rendering: electrolytic capacitor style"),
