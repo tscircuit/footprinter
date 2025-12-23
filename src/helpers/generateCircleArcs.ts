@@ -6,7 +6,7 @@ export const generateCircleArcs = (
   radius: number,
   cut: number,
   cutHeight: number,
-  segments = 60,
+  segmentLength = 0.1,
 ): {
   topArc: CircleArcPoint[]
   bottomArc: CircleArcPoint[]
@@ -14,8 +14,12 @@ export const generateCircleArcs = (
   const topArc: CircleArcPoint[] = []
   const bottomArc: CircleArcPoint[] = []
 
+  // choose angular step so the arc length between points is ~segmentLength
+  const segments = Math.max(1, Math.ceil((Math.PI * radius) / segmentLength))
+  const thetaStep = Math.PI / segments
+
   for (let i = 0; i <= segments; i++) {
-    const theta = (i / segments) * Math.PI
+    const theta = i * thetaStep
     const x = centerX + Math.cos(theta) * radius
     const y = centerY + Math.sin(theta) * radius
 
@@ -30,7 +34,7 @@ export const generateCircleArcs = (
   }
 
   for (let i = 0; i <= segments; i++) {
-    const theta = Math.PI + (i / segments) * Math.PI
+    const theta = Math.PI + i * thetaStep
     const x = centerX + Math.cos(theta) * radius
     const y = centerY + Math.sin(theta) * radius
 

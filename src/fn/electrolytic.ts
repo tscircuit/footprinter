@@ -38,7 +38,6 @@ export const electrolytic = (
     d / 2 + 0.1,
     od / 2,
     od,
-    50,
   )
 
   const silkscreenBody2: PcbSilkscreenPath = {

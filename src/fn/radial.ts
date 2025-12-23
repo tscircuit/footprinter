@@ -16,14 +16,9 @@ export const radial_def = base_def.extend({
   id: length.optional().default("0.8mm"),
   od: length.optional().default("1.6mm"),
 
-  ceramic: z
-    .boolean()
-    .optional()
-    .describe("hint for 3D model rendering: ceramic capacitor style"),
-  electrolytic: z
-    .boolean()
-    .optional()
-    .describe("hint for 3D model rendering: electrolytic capacitor style"),
+  ceramic: z.boolean().optional(),
+  electrolytic: z.boolean().optional(),
+  polarized: z.boolean().optional(),
 })
 
 export type RadialDef = z.input<typeof radial_def>
@@ -121,17 +116,22 @@ export const radial = (
     0.1 * p,
   )
 
-  return {
-    circuitJson: [
-      ...plated_holes,
-      silkscreenBodyTop,
-      silkscreenBodyBottom,
-      silkscreenCenterLine,
-      plusHoriz,
-      plusVert,
-      silkscreenRefText as AnySoupElement,
-    ],
+  const circuitJson: AnySoupElement[] = [
+    ...plated_holes,
+    silkscreenBodyTop,
+    silkscreenBodyBottom,
+    silkscreenCenterLine,
+    silkscreenRefText as AnySoupElement,
+  ]
 
+  const hasPolarity =
+    parameters.electrolytic === true || parameters.polarized === true
+  if (hasPolarity) {
+    circuitJson.push(plusHoriz, plusVert)
+  }
+
+  return {
+    circuitJson,
     parameters,
   }
 }

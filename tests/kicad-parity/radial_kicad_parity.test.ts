@@ -13,8 +13,5 @@ test("parity/radial", async () => {
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "radial_parity_p5mm")
 
-  expect(booleanDifferenceSvg).toMatchSvgSnapshot(
-    import.meta.path,
-    "radial_boolean_difference",
-  )
+  expect(booleanDifferenceSvg).toMatchSvgSnapshot(import.meta.path)
 })
