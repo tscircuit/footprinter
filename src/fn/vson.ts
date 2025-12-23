@@ -14,13 +14,13 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 export const vson_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().optional().default(8),
-  p: distance, // pitch length (distance between center of each pin)
-  w: length, // width between vertical rows of pins
-  grid: dim2d, // width and height of the border of the footprint (used for silkscreen lines)
-  ep: dim2d.default("0x0mm"), // width and height of the central exposed thermal pad
-  epx: length.default("0mm"), // x offset of the center of the central exposed thermal pad
-  pinw: length, // width of the pin pads
-  pinh: length, // height of the pin pads
+  p: distance.describe("pitch (distance between center of each pin)"),
+  w: length.describe("width between vertical rows of pins"),
+  grid: dim2d.describe("width and height of the border of the footprint"),
+  ep: dim2d.default("0x0mm").describe("width and height of the central exposed thermal pad"),
+  epx: length.default("0mm").describe("x offset of the center of the central exposed thermal pad"),
+  pinw: length.describe("width of the pin pads"),
+  pinh: length.describe("height of the pin pads"),
 })
 
 export type VsonDefInput = z.input<typeof vson_def>
