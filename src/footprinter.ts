@@ -6,9 +6,17 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
+import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
+
+type BaseOptionKey =
+  | "origin"
+  | "norefdes"
+  | "invert"
+  | "faceup"
+  | "nosilkscreen"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K | "params" | "soup" | "circuitJson"]: P extends
+  [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
     | "params"
     | "soup"
     | "circuitJson"
@@ -114,6 +122,7 @@ export type Footprinter = {
   sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
+  sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -150,6 +159,7 @@ export type Footprinter = {
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
   son: (
@@ -317,10 +327,15 @@ export const footprinter = (): Footprinter & {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
               const { circuitJson } = FOOTPRINT_FN[target.fn](target)
-              return applyOrigin(
-                applyNoRefDes(circuitJson, target),
-                target.origin,
+              const circuitWithoutSilkscreen = applyNoSilkscreen(
+                circuitJson,
+                target,
               )
+              const circuitWithoutRefDes = applyNoRefDes(
+                circuitWithoutSilkscreen,
+                target,
+              )
+              return applyOrigin(circuitWithoutRefDes, target.origin)
             }
           }
 

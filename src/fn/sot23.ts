@@ -10,8 +10,8 @@ export const sot23_def = base_def.extend({
   num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
-  pl: z.string().default("0.8mm"),
-  pw: z.string().default("0.764mm"),
+  pl: z.string().default("1.32mm"),
+  pw: z.string().default("0.6mm"),
   p: z.string().default("0.95mm"),
   string: z.string().optional(),
 })
@@ -64,17 +64,18 @@ export const getCcwSot23Coords = (parameters: {
   w: number
   h: number
   pl: number
+  p: number
 }) => {
-  const { pn, w, h, pl } = parameters
+  const { pn, w, h, pl, p } = parameters
 
   if (pn === 1) {
-    return { x: -1.7, y: 0 }
+    return { x: -1.155, y: p }
   }
   if (pn === 2) {
-    return { x: 1.7, y: -0.95 }
+    return { x: -1.155, y: -p }
   }
 
-  return { x: 1.7, y: 0.95 }
+  return { x: 1.15, y: 0 }
 }
 
 export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
@@ -87,6 +88,7 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
       w: Number.parseFloat(parameters.w),
       h: Number.parseFloat(parameters.h),
       pl: Number.parseFloat(parameters.pl),
+      p: Number.parseFloat(parameters.p),
     })
     pads.push(
       rectpad(
@@ -181,8 +183,8 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     pn: 1,
   })
   pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5
-  const triangleHeight = 0.7 // Adjust triangle size as needed
-  const triangleWidth = 0.3 // Adjust triangle width as needed
+  const triangleHeight = 0.3 // Adjust triangle size as needed
+  const triangleWidth = 0.4 // Adjust triangle width as needed
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
