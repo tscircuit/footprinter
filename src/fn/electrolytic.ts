@@ -4,7 +4,6 @@ import {
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
-import { generateCircleArcs } from "../helpers/generateCircleArcs"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -20,6 +19,52 @@ const electrolytic_def = base_def.extend({
 export default electrolytic_def
 export type ElectrolyticDef = z.input<typeof electrolytic_def>
 
+const generate_circle_arcs = (
+  centerX: number,
+  centerY: number,
+  radius: number,
+  cut: number,
+  cutHeight: number,
+): {
+  topArc: { x: number; y: number }[]
+  bottomArc: { x: number; y: number }[]
+} => {
+  const topArc: { x: number; y: number }[] = []
+  const bottomArc: { x: number; y: number }[] = []
+
+  for (let i = 0; i <= 50; i++) {
+    const theta = (i / 50) * Math.PI
+    const x = centerX + Math.cos(theta) * radius
+    const y = centerY + Math.sin(theta) * radius
+
+    if (
+      x < centerX - cut &&
+      y >= centerY - cutHeight / 2 &&
+      y <= centerY + cutHeight / 2
+    ) {
+      continue
+    }
+    topArc.push({ x, y })
+  }
+
+  for (let i = 0; i <= 50; i++) {
+    const theta = Math.PI + (i / 50) * Math.PI
+    const x = centerX + Math.cos(theta) * radius
+    const y = centerY + Math.sin(theta) * radius
+
+    if (
+      x < centerX - cut &&
+      y >= centerY - cutHeight / 2 &&
+      y <= centerY + cutHeight / 2
+    ) {
+      continue
+    }
+    bottomArc.push({ x, y })
+  }
+
+  return { topArc, bottomArc }
+}
+
 export const electrolytic = (
   raw_params: ElectrolyticDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
@@ -32,7 +77,7 @@ export const electrolytic = (
     platedhole(2, p / 2, 0, id, od),
   ]
 
-  const { topArc, bottomArc } = generateCircleArcs(
+  const { topArc, bottomArc } = generate_circle_arcs(
     0,
     0,
     d / 2 + 0.1,

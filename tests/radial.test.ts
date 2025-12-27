@@ -5,5 +5,5 @@ import { fp } from "../src/footprinter"
 test("radial", () => {
   const soup = fp.string("radial").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "radial")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path)
 })
