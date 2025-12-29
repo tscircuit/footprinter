@@ -29,8 +29,7 @@ export const pinrow_def = base_def
       .boolean()
       .optional()
       .describe("surface mount device (verbose)"),
-    ra: z.boolean().optional().describe("right angle"),
-    rightangle: z.boolean().optional().describe("right angle (verbose)"),
+    rightangle: z.boolean().optional().describe("right angle"),
     pw: length.optional().default("1.0mm").describe("pad width for SMD"),
     pl: length.optional().default("2.0mm").describe("pad length for SMD"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
@@ -69,7 +68,7 @@ export const pinrow_def = base_def
       male: data.male ?? (data.female ? false : true),
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
-      ra: data.ra ?? data.rightangle ?? false,
+      rightangle: data.rightangle ?? false,
     }
   })
   .superRefine((data, ctx) => {

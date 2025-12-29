@@ -90,7 +90,6 @@ export type Footprinter = {
     | "rows"
     | "smd"
     | "surfacemount"
-    | "ra"
     | "rightangle"
     | "pw"
     | "pl"
