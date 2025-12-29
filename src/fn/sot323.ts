@@ -9,9 +9,9 @@ export const sot323_def = base_def.extend({
   num_pins: z.number().default(3),
   w: z.string().default("2.45mm"),
   h: z.string().default("2.40mm"),
-  pl: z.string().default("0.70mm"),
-  pw: z.string().default("0.45mm"),
-  p: z.string().default("1mm"),
+  pl: z.string().default("1.225mm"),
+  pw: z.string().default("0.5mm"),
+  p: z.string().default("0.95mm"),
   string: z.string().optional(),
 })
 
