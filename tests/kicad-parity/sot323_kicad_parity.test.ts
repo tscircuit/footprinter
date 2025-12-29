@@ -10,6 +10,7 @@ test("parity/sot323", async () => {
     )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  console.log("Average relative difference:", svgContent)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot323")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
