@@ -133,7 +133,16 @@ export const pinrow = (
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
     if (pinNumber === 1 && !parameters.nosquareplating) {
       // Always use square plating for pin 1 (no need to check nosquareplating anymore)
-      holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id, od, od))
+      holes.push(
+        platedHoleWithRectPad({
+          pn: pinNumber,
+          x: xoff,
+          y: yoff,
+          holeDiameter: id,
+          rectPadWidth: od,
+          rectPadHeight: od,
+        }),
+      )
     } else {
       // Other pins with standard circular pad
       holes.push(platedhole(pinNumber, xoff, yoff, id, od))

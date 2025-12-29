@@ -30,7 +30,16 @@ export const to92l = (
   const padH = parameters.inline ? 1.5 : od
 
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, od, padH, 0, 0),
+    platedHoleWithRectPad({
+      pn: 1,
+      x: 0,
+      y: 0,
+      holeDiameter: parameters.id,
+      rectPadWidth: od,
+      rectPadHeight: padH,
+      holeOffsetX: 0,
+      holeOffsetY: 0,
+    }),
     parameters.inline
       ? platedHolePill(2, p, 0, parameters.id, od, padH)
       : platedhole(2, p, p, parameters.id, od),
