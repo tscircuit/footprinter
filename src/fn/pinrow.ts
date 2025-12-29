@@ -65,7 +65,7 @@ export const pinrow_def = base_def
     return {
       ...data,
       pinlabelAnchorSide,
-      male: data.male ?? (data.female ? false : true),
+      male: data.male ?? (!data.female),
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
       rightangle: data.rightangle ?? false,
@@ -114,28 +114,52 @@ export const pinrow = (
     yoff,
     od,
     anchorSide,
+    smd,
+    pw,
+    pl,
   }: {
     xoff: number
     yoff: number
     od: number
     anchorSide: "top" | "bottom" | "left" | "right"
+    smd: boolean
+    pw: number
+    pl: number
   }): { anchor_x: number; anchor_y: number } => {
-    let dx = 0,
-      dy = 0
-    const offset = od * 0.75
-    switch (anchorSide) {
-      case "right":
-        dx = offset
-        break
-      case "top":
-        dy = offset
-        break
-      case "bottom":
-        dy = -offset
-        break
-      case "left":
-        dx = -offset
-        break
+    let dx = 0
+    let dy = 0
+    if (smd) {
+      const offset = od / 5
+      switch (anchorSide) {
+        case "right":
+          dx = pw / 2 + offset
+          break
+        case "top":
+          dy = pl / 2 + offset
+          break
+        case "bottom":
+          dy = -(pl / 2 + offset)
+          break
+        case "left":
+          dx = -(pw / 2 + offset)
+          break
+      }
+    } else {
+      const offset = od * 0.75
+      switch (anchorSide) {
+        case "right":
+          dx = offset
+          break
+        case "top":
+          dy = offset
+          break
+        case "bottom":
+          dy = -offset
+          break
+        case "left":
+          dx = -offset
+          break
+      }
     }
     return { anchor_x: xoff + dx, anchor_y: yoff + dy }
   }
@@ -162,6 +186,9 @@ export const pinrow = (
       yoff,
       od,
       anchorSide: pinlabelAnchorSide,
+      smd: parameters.smd,
+      pw: parameters.pw,
+      pl: parameters.pl,
     })
     if (!nopinlabels) {
       if (!bottomsidepinlabel) {
