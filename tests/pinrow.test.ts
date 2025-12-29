@@ -227,11 +227,11 @@ test("pinrow3_smd", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd")
 })
 
-test("pinrow3_smd_ra_male", () => {
-  const circuitJson = fp.string("pinrow3_smd_ra_male").circuitJson()
+test("pinrow3_smd_rightangle_male", () => {
+  const circuitJson = fp.string("pinrow3_smd_rightangle_male").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
 
-  const pinrowJson = fp.string("pinrow3_smd_ra_male").json()
+  const pinrowJson = fp.string("pinrow3_smd_rightangle_male").json()
   expect(pinrowJson).toMatchObject({
     fn: "pinrow",
     num_pins: 3,
