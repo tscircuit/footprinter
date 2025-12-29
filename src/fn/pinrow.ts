@@ -65,7 +65,7 @@ export const pinrow_def = base_def
     return {
       ...data,
       pinlabelAnchorSide,
-      male: data.male ?? (!data.female),
+      male: data.male ?? !data.female,
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
       rightangle: data.rightangle ?? false,
