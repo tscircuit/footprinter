@@ -83,8 +83,8 @@ function generatePads(
 
   if (variant === "ph") {
     const half_p = p / 2
-    pads.push(platedHoleWithRectPad(1, -half_p, 2, id, pw, pl))
-    pads.push(platedHoleWithRectPad(2, half_p, 2, id, pw, pl))
+    pads.push(platedHoleWithRectPad(1, -half_p, 2, id, pw, pl, 0, 0))
+    pads.push(platedHoleWithRectPad(2, half_p, 2, id, pw, pl, 0, 0))
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {

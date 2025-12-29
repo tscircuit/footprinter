@@ -2,6 +2,7 @@ import { z } from "zod"
 import { length, rotation, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
@@ -23,6 +24,15 @@ export const pinrow_def = base_def
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
+    smd: z.boolean().optional().describe("surface mount device"),
+    surfacemount: z
+      .boolean()
+      .optional()
+      .describe("surface mount device (verbose)"),
+    ra: z.boolean().optional().describe("right angle"),
+    rightangle: z.boolean().optional().describe("right angle (verbose)"),
+    pw: length.optional().default("1.0mm").describe("pad width for SMD"),
+    pl: length.optional().default("2.0mm").describe("pad length for SMD"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -58,6 +68,8 @@ export const pinrow_def = base_def
       pinlabelAnchorSide,
       male: data.male ?? (data.female ? false : true),
       female: data.female ?? false,
+      smd: data.smd ?? data.surfacemount ?? false,
+      ra: data.ra ?? data.rightangle ?? false,
     }
   })
   .superRefine((data, ctx) => {
@@ -131,12 +143,20 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    if (pinNumber === 1 && !parameters.nosquareplating) {
-      // Always use square plating for pin 1 (no need to check nosquareplating anymore)
-      holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id, od, od))
+    if (parameters.smd) {
+      // SMD pads
+      holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
     } else {
-      // Other pins with standard circular pad
-      holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+      // Through-hole
+      if (pinNumber === 1 && !parameters.nosquareplating) {
+        // Always use square plating for pin 1 (no need to check nosquareplating anymore)
+        holes.push(
+          platedHoleWithRectPad(pinNumber, xoff, yoff, id, od, od, 0, 0),
+        )
+      } else {
+        // Other pins with standard circular pad
+        holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+      }
     }
     const { anchor_x, anchor_y } = calculateAnchorPosition({
       xoff,
