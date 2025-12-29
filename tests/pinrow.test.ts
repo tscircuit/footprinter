@@ -215,7 +215,7 @@ test("pinrow3_smd", () => {
     num_pins: 3,
     p: 2.54,
     smd: true,
-    ra: false,
+    rightangle: false,
     pw: 1,
     pl: 2,
   })
@@ -237,7 +237,7 @@ test("pinrow3_smd_ra_male", () => {
     num_pins: 3,
     p: 2.54,
     smd: true,
-    ra: true,
+    rightangle: true,
     male: true,
     female: false,
     pw: 1,
