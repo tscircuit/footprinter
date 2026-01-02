@@ -27,6 +27,7 @@ export const base_quad_def = base_def.extend({
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
   legsoutside: z.boolean().default(false),
+  pcdfe: length.optional(),
 })
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
@@ -81,8 +82,9 @@ export const getQuadCoords = (params: {
   p: number // pitch between pins
   pl: number // length of the pin
   legsoutside?: boolean
+  pcdfe?: number
 }) => {
-  const { pin_count, pn, w, h, p, pl, legsoutside } = params
+  const { pin_count, pn, w, h, p, pl, legsoutside, pcdfe: pcdfe_param } = params
   const sidePinCount = pin_count / 4
   const side = SIDES_CCW[Math.floor((pn - 1) / sidePinCount)]
   const pos = (pn - 1) % sidePinCount
@@ -93,17 +95,21 @@ export const getQuadCoords = (params: {
   const ibh = p * (sidePinCount - 1)
 
   /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? pl / 2 : -pl / 2
+  const pcdfe = pcdfe_param ?? (legsoutside ? pl / 2 : -pl / 2)
+
+  // COMPATIBILITY: If pcdfe is NOT explicitly provided, we keep the old "magic offsets" (+0.1/-0.1)
+  // to avoid breaking 100+ existing snapshots. If it IS provided, we use the precise math.
+  const offset = pcdfe_param === undefined ? 0.1 : 0
 
   switch (side) {
     case "left":
-      return { x: -w / 2 - pcdfe + 0.1, y: ibh / 2 - pos * p, o: "vert" }
+      return { x: -w / 2 - pcdfe + offset, y: ibh / 2 - pos * p, o: "vert" }
     case "bottom":
-      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe + 0.1, o: "horz" }
+      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe + offset, o: "horz" }
     case "right":
-      return { x: w / 2 + pcdfe - 0.1, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2 + pcdfe - offset, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
-      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe - 0.1, o: "horz" }
+      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe - offset, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }
@@ -130,6 +136,7 @@ export const quad = (
       p: parameters.p ?? 0.5,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
+      pcdfe: parameters.pcdfe,
     })
 
     let pw = parameters.pw
