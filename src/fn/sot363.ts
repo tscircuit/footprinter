@@ -92,9 +92,7 @@ export const getSot363PadCoord = (
   p: number,
   pl: number,
 ) => {
-  // Calculate pad center offset from package center
-  // Similar to sot563/sot963: padCenterOffset = w/2 - pl/2
-  // This positions pads so they extend outside the package body
+
   const padCenterOffset = w / 2 - pl / 2
 
   if (pn <= 3) {
