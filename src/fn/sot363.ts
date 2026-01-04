@@ -92,7 +92,6 @@ export const getSot363PadCoord = (
   p: number,
   pl: number,
 ) => {
-
   const padCenterOffset = w / 2 - pl / 2
 
   if (pn <= 3) {
