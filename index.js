@@ -29309,6 +29309,22 @@ var res0603Array2 = (params) => {
   });
 };
 
+// src/helpers/res0603-array4.ts
+var padSpacing4 = 1.7;
+var padWidth4 = 0.9;
+var padHeight4 = 0.4;
+var padPitch4 = 0.8;
+var res0603Array4 = (params) => {
+  return chipArray({
+    padSpacing: padSpacing4,
+    padWidth: padWidth4,
+    padHeight: padHeight4,
+    padPitch: padPitch4,
+    numRows: 4,
+    textbottom: params.textbottom
+  });
+};
+
 // src/fn/res.ts
 var getArrayCount = (parameters) => {
   const arrayValue = parameters.array ?? parameters.x;
@@ -29352,6 +29368,12 @@ var res = (rawParameters) => {
   if (arrayCount === 2 && imperialBase === "0603") {
     return {
       circuitJson: res0603Array2(rawParameters),
+      parameters: rawParameters
+    };
+  }
+  if (arrayCount === 4 && imperialBase === "0603") {
+    return {
+      circuitJson: res0603Array4(rawParameters),
       parameters: rawParameters
     };
   }
@@ -32020,30 +32042,30 @@ var to92 = (raw_params) => {
   });
   const { p, id: id2, od: od2, w: w3, h, inline } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing4 = Number.parseFloat(p);
+  const padSpacing5 = Number.parseFloat(p);
   const holeDia = Number.parseFloat(id2);
   const padDia = Number.parseFloat(od2);
-  const padWidth4 = padDia;
-  const padHeight4 = padDia * (1.5 / 1.05);
+  const padWidth5 = padDia;
+  const padHeight5 = padDia * (1.5 / 1.05);
   let platedHoles = [];
   if (parameters.num_pins === 3) {
     if (inline) {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing4, holeY - padSpacing4, holeDia, padDia, padHeight4, 0, 0),
-        platedHolePill(2, 0, holeY - padSpacing4, holeDia, padWidth4, padHeight4),
-        platedHolePill(3, padSpacing4, holeY - padSpacing4, holeDia, padWidth4, padHeight4)
+        platedHoleWithRectPad(1, -padSpacing5, holeY - padSpacing5, holeDia, padDia, padHeight5, 0, 0),
+        platedHolePill(2, 0, holeY - padSpacing5, holeDia, padWidth5, padHeight5),
+        platedHolePill(3, padSpacing5, holeY - padSpacing5, holeDia, padWidth5, padHeight5)
       ];
     } else {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing4, holeY - padSpacing4, holeDia, padDia, padDia, 0, 0),
+        platedHoleWithRectPad(1, -padSpacing5, holeY - padSpacing5, holeDia, padDia, padDia, 0, 0),
         platedhole(2, 0, holeY, holeDia, padDia),
-        platedhole(3, padSpacing4, holeY - padSpacing4, holeDia, padDia)
+        platedhole(3, padSpacing5, holeY - padSpacing5, holeDia, padDia)
       ];
     }
   } else if (parameters.num_pins === 2) {
     platedHoles = [
-      platedHoleWithRectPad(1, -padSpacing4, holeY - padSpacing4, holeDia, padWidth4, padHeight4, 0, 0),
-      platedHolePill(2, padSpacing4, holeY - padSpacing4, holeDia, padWidth4, padHeight4)
+      platedHoleWithRectPad(1, -padSpacing5, holeY - padSpacing5, holeDia, padWidth5, padHeight5, 0, 0),
+      platedHolePill(2, padSpacing5, holeY - padSpacing5, holeDia, padWidth5, padHeight5)
     ];
   } else {
     throw new Error("Invalid number of pins for TO-92");
@@ -32801,12 +32823,12 @@ var sot89_def = base_def.extend({
 var sot89_3 = (parameters) => {
   const pads = [];
   const padGap = Number.parseFloat(parameters.p);
-  const padWidth4 = Number.parseFloat(parameters.pw);
+  const padWidth5 = Number.parseFloat(parameters.pw);
   const length2 = Number.parseFloat(parameters.w);
-  const padHeight4 = Number.parseFloat(parameters.pl);
+  const padHeight5 = Number.parseFloat(parameters.pl);
   const centerExtra = 0.175;
-  const outerPadXShift = (padHeight4 - (padHeight4 + centerExtra)) / 2;
-  pads.push(rectpad(1, -length2 / 2 + outerPadXShift, padGap, padHeight4, padWidth4), rectpad(2, -length2 / 2, 0, padHeight4 + centerExtra, padWidth4), rectpad(3, -length2 / 2 + outerPadXShift, -padGap, padHeight4, padWidth4));
+  const outerPadXShift = (padHeight5 - (padHeight5 + centerExtra)) / 2;
+  pads.push(rectpad(1, -length2 / 2 + outerPadXShift, padGap, padHeight5, padWidth5), rectpad(2, -length2 / 2, 0, padHeight5 + centerExtra, padWidth5), rectpad(3, -length2 / 2 + outerPadXShift, -padGap, padHeight5, padWidth5));
   const silkscreenRefText = silkscreenRef(0, 0, 0.3);
   const width = Number.parseFloat(parameters.w) / 2 - 1;
   const height = Number.parseFloat(parameters.h) / 2;
@@ -32844,7 +32866,7 @@ var sot89_3 = (parameters) => {
 var sot89_5 = (parameters) => {
   const pads = [];
   const padGap = Number.parseFloat(parameters.p);
-  const padWidth4 = Number.parseFloat(parameters.pw);
+  const padWidth5 = Number.parseFloat(parameters.pw);
   const length2 = Number.parseFloat(parameters.w);
   pads.push(rectpad(1, -1.85, -1.5, 1.5, 0.7), rectpad(2, -1.85, 1.5, 1.5, 0.7), rectpad(3, 0, 0, 0.8, 2), rectpad(4, 1.85, -1.5, 1.5, 0.7), rectpad(5, 1.85, 1.5, 1.5, 0.7));
   const silkscreenRefText = silkscreenRef(0, Number.parseFloat(parameters.h) / 2 + 0.5, 0.3);
@@ -33827,20 +33849,20 @@ var to92s_def = base_def.extend({
 var to92s_3 = (parameters) => {
   const { p, id: id2, od: od2, w: w3, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing4 = Number.parseFloat(p);
+  const padSpacing5 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing4, holeY - padSpacing4, id2, od2),
-    platedhole(2, 0, holeY - padSpacing4, id2, od2),
-    platedhole(3, padSpacing4, holeY - padSpacing4, id2, od2)
+    platedhole(1, -padSpacing5, holeY - padSpacing5, id2, od2),
+    platedhole(2, 0, holeY - padSpacing5, id2, od2),
+    platedhole(3, padSpacing5, holeY - padSpacing5, id2, od2)
   ];
 };
 var to92s_2 = (parameters) => {
   const { p, id: id2, od: od2, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing4 = Number.parseFloat(p);
+  const padSpacing5 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing4, holeY - padSpacing4, id2, od2),
-    platedhole(2, padSpacing4, holeY - padSpacing4, id2, od2)
+    platedhole(1, -padSpacing5, holeY - padSpacing5, id2, od2),
+    platedhole(2, padSpacing5, holeY - padSpacing5, id2, od2)
   ];
 };
 var to92s = (raw_params) => {
@@ -33859,19 +33881,19 @@ var to92s = (raw_params) => {
     throw new Error("Invalid number of pins for TO-92");
   }
   const holeY = Number.parseFloat(parameters.h) / 2;
-  const padSpacing4 = Number.parseFloat(parameters.p);
+  const padSpacing5 = Number.parseFloat(parameters.p);
   const silkscreenBody = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -holeY, y: holeY - padSpacing4 },
+      { x: -holeY, y: holeY - padSpacing5 },
       { x: -1.9, y: 0 },
       { x: 1.9, y: 0 },
-      { x: holeY, y: holeY - padSpacing4 },
+      { x: holeY, y: holeY - padSpacing5 },
       { x: 1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
       { x: -1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
-      { x: -holeY, y: holeY - padSpacing4 }
+      { x: -holeY, y: holeY - padSpacing5 }
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
@@ -34551,13 +34573,13 @@ var getSonPadCoord = (num_pins, pn2, w3, p) => {
 // src/fn/solderjumper.ts
 var solderjumper = (params) => {
   const { num_pins, bridged, p = 2.54, pw = 1.5, ph: ph2 = 1.5 } = params;
-  const padSpacing4 = length.parse(p);
-  const padWidth4 = length.parse(pw);
-  const padHeight4 = length.parse(ph2);
-  const traceWidth = Math.min(padHeight4 / 4, 0.5);
+  const padSpacing5 = length.parse(p);
+  const padWidth5 = length.parse(pw);
+  const padHeight5 = length.parse(ph2);
+  const traceWidth = Math.min(padHeight5 / 4, 0.5);
   const pads = [];
   for (let i = 0;i < num_pins; i++) {
-    pads.push(rectpad(i + 1, i * padSpacing4, 0, padWidth4, padHeight4));
+    pads.push(rectpad(i + 1, i * padSpacing5, 0, padWidth5, padHeight5));
   }
   let traces = [];
   if (bridged) {
@@ -34567,11 +34589,11 @@ var solderjumper = (params) => {
         const from = pins[i];
         const to2 = pins[i + 1];
         if (typeof from === "number" && typeof to2 === "number" && !isNaN(from) && !isNaN(to2)) {
-          const xCenterFrom = (from - 1) * padSpacing4;
-          const xCenterTo = (to2 - 1) * padSpacing4;
+          const xCenterFrom = (from - 1) * padSpacing5;
+          const xCenterTo = (to2 - 1) * padSpacing5;
           const directionMult = Math.sign(xCenterTo - xCenterFrom);
-          const x12 = xCenterFrom + directionMult * (padWidth4 / 2);
-          const x22 = xCenterTo - directionMult * (padWidth4 / 2);
+          const x12 = xCenterFrom + directionMult * (padWidth5 / 2);
+          const x22 = xCenterTo - directionMult * (padWidth5 / 2);
           traces.push({
             type: "pcb_trace",
             pcb_trace_id: "",
@@ -34598,9 +34620,9 @@ var solderjumper = (params) => {
       }
     }
   }
-  const outlineWidth = (num_pins - 1) * padSpacing4 + padWidth4 + 0.7;
-  const outlineHeight = padHeight4 + 1;
-  const outlineCenterX = (num_pins - 1) * padSpacing4 / 2;
+  const outlineWidth = (num_pins - 1) * padSpacing5 + padWidth5 + 0.7;
+  const outlineHeight = padHeight5 + 1;
+  const outlineCenterX = (num_pins - 1) * padSpacing5 / 2;
   const outlineCenterY = 0;
   const silkscreenRect = {
     type: "pcb_silkscreen_path",
@@ -34699,28 +34721,28 @@ var generateSot457Elements = (params) => {
   const pads = [];
   const pitch = parseDimension(params.p);
   const padLength = parseDimension(params.pl);
-  const padWidth4 = parseDimension(params.pw);
+  const padWidth5 = parseDimension(params.pw);
   const width = parseDimension(params.w);
   const height = parseDimension(params.h);
   if (params.wave) {
     const pinConfigs = {
-      1: ({ padWidth: padWidth5, padHeight: padHeight4 }) => rectpad(1, -pitch, pitch, padHeight4, padWidth5),
-      2: ({ padWidth: padWidth5, padHeight: padHeight4 }) => rectpad(2, -pitch, -pitch, padHeight4, padWidth5),
-      3: ({ padWidth: padWidth5, padHeight: padHeight4 }) => pillpad(3, -pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
-      4: ({ padWidth: padWidth5, padHeight: padHeight4 }) => pillpad(4, pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
-      5: ({ padWidth: padWidth5, padHeight: padHeight4 }) => rectpad(5, pitch, pitch, padHeight4, padWidth5),
-      6: ({ padWidth: padWidth5, padHeight: padHeight4 }) => rectpad(6, pitch, -pitch, padHeight4, padWidth5)
+      1: ({ padWidth: padWidth6, padHeight: padHeight5 }) => rectpad(1, -pitch, pitch, padHeight5, padWidth6),
+      2: ({ padWidth: padWidth6, padHeight: padHeight5 }) => rectpad(2, -pitch, -pitch, padHeight5, padWidth6),
+      3: ({ padWidth: padWidth6, padHeight: padHeight5 }) => pillpad(3, -pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
+      4: ({ padWidth: padWidth6, padHeight: padHeight5 }) => pillpad(4, pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
+      5: ({ padWidth: padWidth6, padHeight: padHeight5 }) => rectpad(5, pitch, pitch, padHeight5, padWidth6),
+      6: ({ padWidth: padWidth6, padHeight: padHeight5 }) => rectpad(6, pitch, -pitch, padHeight5, padWidth6)
     };
     for (let i = 1;i <= params.num_pins; i++) {
       const config = pinConfigs[i];
       if (config) {
-        pads.push(config({ padWidth: padLength, padHeight: padWidth4 }));
+        pads.push(config({ padWidth: padLength, padHeight: padWidth5 }));
       }
     }
   } else {
     for (let i = 1;i <= params.num_pins; i++) {
       const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i });
-      pads.push(rectpad(i, x, y, padLength, padWidth4));
+      pads.push(rectpad(i, x, y, padLength, padWidth5));
     }
   }
   const silkscreenPath1 = {
@@ -34749,7 +34771,7 @@ var generateSot457Elements = (params) => {
   const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 });
   const triangleHeight = params.wave ? 1 : 0.5;
   const triangleWidth = params.wave ? 0.7 : 0.3;
-  pin1Position.x -= params.wave ? padWidth4 : padWidth4 * 1.7;
+  pin1Position.x -= params.wave ? padWidth5 : padWidth5 * 1.7;
   const pin1Indicator = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -35573,7 +35595,7 @@ var m2host_def = base_def.extend({
 var m2host = (raw_params) => {
   const parameters = m2host_def.parse(raw_params);
   const pads = [];
-  const padWidth4 = 0.5 - 0.15;
+  const padWidth5 = 0.5 - 0.15;
   const padLength = 1.5;
   const pitch = 0.5;
   const halfPitch = pitch / 2;
@@ -35589,7 +35611,7 @@ var m2host = (raw_params) => {
     const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0);
     const rightEdgeOffset = 0.5;
     const x = rightEdgeOffset - padLengthWithOffset / 2;
-    const pad2 = rectpad(pn2, x, y, padLengthWithOffset, padWidth4);
+    const pad2 = rectpad(pn2, x, y, padLengthWithOffset, padWidth5);
     pad2.layer = isBottomLayer ? "bottom" : "top";
     pads.push(pad2);
   }
@@ -36358,6 +36380,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="181.81818181818187" y="109.09090909090907" width="436.3636363636364" height="381.8181818181818"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="273.4545454545455" y="201.81818181818178" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="273.4545454545455" y="272.72727272727275" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="273.4545454545455" y="343.6363636363636" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="273.4545454545455" y="414.54545454545456" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="578.909090909091" y="201.81818181818178" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="578.909090909091" y="272.72727272727275" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="578.909090909091" y="343.6363636363636" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="578.909090909091" y="414.54545454545456" width="56.727272727272734" height="38.18181818181818" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 290.909090909091 163.63636363636363 L 618.1818181818182 163.63636363636363" fill="none" stroke="#f2eda1" stroke-width="5.454545454545455" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 290.909090909091 490.9090909090909 L 618.1818181818182 490.9090909090909" fill="none" stroke="#f2eda1" stroke-width="5.454545454545455" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 214.54545454545465 220.90909090909088 L 181.81818181818187 188.18181818181813 L 181.81818181818187 253.63636363636363 L 214.54545454545465 220.90909090909088 Z" fill="none" stroke="#f2eda1" stroke-width="5.454545454545455" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="pin_marker_1" data-pcb-silkscreen-path-id="pin_marker_1"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="32.72727272727273" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,454.5454545454546,109.09090909090907)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "son8_w3.0mm_h3.0mm_p0.65mm"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="286.9230769230769" y="92.30769230769224" width="226.1538461538462" height="415.3846153846155"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="314.61538461538464" y="212.30769230769226" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="314.61538461538464" y="286.1538461538461" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="314.61538461538464" y="359.99999999999994" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="314.61538461538464" y="433.8461538461538" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="471.53846153846155" y="433.8461538461538" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="471.53846153846155" y="359.99999999999994" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="471.53846153846155" y="286.1538461538461" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="471.53846153846155" y="212.30769230769226" width="83.07692307692308" height="36.92307692307693" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 513.0769230769231 175.3846153846153 L 356.1538461538462 175.3846153846153" fill="none" stroke="#f2eda1" stroke-width="11.076923076923077" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 513.0769230769231 507.6923076923077 L 356.1538461538462 507.6923076923077" fill="none" stroke="#f2eda1" stroke-width="11.076923076923077" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_bottom"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 305.38461538461536 203.076923076923 L 286.9230769230769 203.076923076923 L 305.38461538461536 184.61538461538456 L 305.38461538461536 203.076923076923 Z" fill="none" stroke="#f2eda1" stroke-width="9.230769230769232" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="pin1_marker"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.461538461538463" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,434.61538461538464,92.30769230769224)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    title: "0603_x4"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="60.21829130598417" y="223.52277004140012" width="679.5634173880317" height="152.95445991719987"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.06548739179526" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,60.21829130598417,376.4772299586)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{PIN1}</text><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.06548739179526" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,213.172751223184,376.4772299586)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{PIN2}</text><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.06548739179526" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,366.1272111403839,376.4772299586)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{PIN3}</text><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.06548739179526" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,519.0816710575838,376.4772299586)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{PIN4}</text><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="18.06548739179526" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,-1,1,-1.8369701987210297e-16,672.0361309747836,376.4772299586)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{PIN5}</text><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="30.109145652992098" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,433.8727888596161,223.52277004140012)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text><g><rect class="pcb-hole-outer-pad" fill="rgb(200, 52, 52)" x="82.8001505457282" y="331.31351147911187" width="90.32743695897629" height="90.32743695897629"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="127.96386902521635" cy="376.4772299586" r="30.109145652992098"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="280.9183289424162" cy="376.4772299586" r="45.163718479488146"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="280.9183289424162" cy="376.4772299586" r="30.109145652992098"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="433.8727888596161" cy="376.4772299586" r="45.163718479488146"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="433.8727888596161" cy="376.4772299586" r="30.109145652992098"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="586.827248776816" cy="376.4772299586" r="45.163718479488146"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="586.827248776816" cy="376.4772299586" r="30.109145652992098"/></g><g><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="739.7817086940158" cy="376.4772299586" r="45.163718479488146"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="739.7817086940158" cy="376.4772299586" r="30.109145652992098"/></g></svg>',
