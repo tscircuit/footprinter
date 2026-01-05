@@ -3,6 +3,7 @@ import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { res0402Array2 } from "../helpers/res0402-array2"
 import { res0402Array4 } from "../helpers/res0402-array4"
 import { res0603Array2 } from "../helpers/res0603-array2"
+import { res0603Array4 } from "../helpers/res0603-array4"
 
 type ResArrayParams = PassiveDef & {
   array?: number | string
@@ -59,6 +60,13 @@ export const res = (
   if (arrayCount === 2 && imperialBase === "0603") {
     return {
       circuitJson: res0603Array2(rawParameters),
+      parameters: rawParameters,
+    }
+  }
+
+  if (arrayCount === 4 && imperialBase === "0603") {
+    return {
+      circuitJson: res0603Array4(rawParameters),
       parameters: rawParameters,
     }
   }

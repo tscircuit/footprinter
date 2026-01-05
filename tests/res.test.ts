@@ -49,3 +49,9 @@ test("0603_x2", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603_x2")
 })
+
+test("0603_x4", () => {
+  const soup = fp.string("0603_x4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603_x4")
+})
