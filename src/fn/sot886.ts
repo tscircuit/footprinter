@@ -19,7 +19,7 @@ export const sot886_def = base_def.extend({
 export const sot886 = (
   raw_params: z.input<typeof sot886_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sot886_def.parse({ fn: "sot886", ...raw_params })
+  const parameters = sot886_def.parse({ ...raw_params, fn: "sot886" })
 
   const w = length.parse(parameters.w)
   const h = length.parse(parameters.h)
