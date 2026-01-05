@@ -26316,12 +26316,12 @@ var { paths: e2, texts: $P, bounds: s0, refblocks: Ko, circles: r2 } = g;
 var Ls = e({ primitives: [...Object.values(e2), ...Object.values(r2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...Ko.top1, labels: ["1", "collector"] }, { ...Ko.bottom1, labels: ["2", "emitter"] }, { ...Ko.left1, labels: ["3", "base"] }], size: { width: s0.width, height: s0.height }, center: { x: s0.centerX, y: s0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var { paths: o2, texts: IP, bounds: m0, refblocks: ti, circles: i2 } = g;
 var Vs = e({ primitives: [...Object.values(o2), ...Object.values(i2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ti.top1, labels: ["1", "collector"] }, { ...ti.bottom1, labels: ["2", "emitter"] }, { ...ti.left1, labels: ["3", "base"] }], size: { width: m0.width, height: m0.height }, center: { x: m0.centerX, y: m0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.2, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.2, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.3 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
+var js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.3 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
 var W = e(js).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["3", "out"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
 var ks = r(W, "down");
 var zs = v(r(W, "left"));
 var Os = r(W, "up");
-var Js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path44-1": { type: "path", points: [{ x: -0.1, y: 0.44 }, { x: -0.1, y: 0.18 }], color: "primary", fill: false }, "path44-2": { type: "path", points: [{ x: -0.09, y: -0.34 }, { x: -0.09, y: -0.09 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.2, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.2, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.25, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.25, y: -0.24 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 }, top2: { x: -0.1, y: 0.44 }, bottom1: { x: -0.09, y: -0.34 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
+var Js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path44-1": { type: "path", points: [{ x: -0.1, y: 0.44 }, { x: -0.1, y: 0.18 }], color: "primary", fill: false }, "path44-2": { type: "path", points: [{ x: -0.09, y: -0.34 }, { x: -0.09, y: -0.09 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.25, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.25, y: -0.24 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 }, top2: { x: -0.1, y: 0.44 }, bottom1: { x: -0.09, y: -0.34 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
 var H = e(Js).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["4", "out"]).labelPort("top2", ["5", "V+"]).labelPort("bottom1", ["3", "V-"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
 var $s = r(H, "down");
 var Ms = v(r(H, "left"));
@@ -29191,9 +29191,126 @@ var cap = (parameters) => {
 var led = (parameters) => {
   return { circuitJson: passive(parameters), parameters };
 };
+// src/helpers/res0402-array2.ts
+var padSpacing = 1.02;
+var padWidth = 0.54;
+var padHeight = 0.64;
+var padPitch = 0.9;
+var res0402Array2 = (params) => {
+  const yPositions = [padPitch / 2, -padPitch / 2];
+  const pads = [];
+  yPositions.forEach((y, index) => {
+    pads.push(rectpad(index + 1, -padSpacing / 2, y, padWidth, padHeight));
+  });
+  yPositions.slice().reverse().forEach((y, index) => {
+    pads.push(rectpad(index + 3, padSpacing / 2, y, padWidth, padHeight));
+  });
+  const top = Math.max(...yPositions) + padHeight / 2 + 0.4;
+  const bottom = Math.min(...yPositions) - padHeight / 2 - 0.4;
+  const left = -padSpacing / 2 - padWidth / 2 - 0.4;
+  const right = padSpacing / 2 + padWidth / 2 + 0.4;
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      { x: right, y: top },
+      { x: left, y: top },
+      { x: left, y: bottom },
+      { x: right, y: bottom },
+      { x: right, y: top }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  const textY = params.textbottom ? bottom - 0.9 : top + 0.9;
+  const silkscreenRefText = silkscreenRef(0, textY, 0.2);
+  return [...pads, silkscreenLine, silkscreenRefText];
+};
+
+// src/helpers/res0402-array4.ts
+var padSpacing2 = 1.02;
+var padWidth2 = 0.54;
+var padHeight2 = 0.64;
+var padPitch2 = 0.9;
+var res0402Array4 = (params) => {
+  const yPositions = [
+    padPitch2 * 1.5,
+    padPitch2 * 0.5,
+    -padPitch2 * 0.5,
+    -padPitch2 * 1.5
+  ];
+  const pads = [];
+  yPositions.forEach((y, index) => {
+    pads.push(rectpad(index + 1, -padSpacing2 / 2, y, padWidth2, padHeight2));
+  });
+  yPositions.slice().reverse().forEach((y, index) => {
+    pads.push(rectpad(index + 5, padSpacing2 / 2, y, padWidth2, padHeight2));
+  });
+  const top = Math.max(...yPositions) + padHeight2 / 2 + 0.4;
+  const bottom = Math.min(...yPositions) - padHeight2 / 2 - 0.4;
+  const left = -padSpacing2 / 2 - padWidth2 / 2 - 0.4;
+  const right = padSpacing2 / 2 + padWidth2 / 2 + 0.4;
+  const silkscreenLine = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      { x: right, y: top },
+      { x: left, y: top },
+      { x: left, y: bottom },
+      { x: right, y: bottom },
+      { x: right, y: top }
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: ""
+  };
+  const textY = params.textbottom ? bottom - 0.9 : top + 0.9;
+  const silkscreenRefText = silkscreenRef(0, textY, 0.2);
+  return [...pads, silkscreenLine, silkscreenRefText];
+};
+
 // src/fn/res.ts
-var res = (parameters) => {
-  return { circuitJson: passive(parameters), parameters };
+var getArrayCount = (parameters) => {
+  const arrayValue = parameters.array ?? parameters.x;
+  if (typeof arrayValue === "number") {
+    return Number.isNaN(arrayValue) ? undefined : arrayValue;
+  }
+  if (typeof arrayValue === "string") {
+    const parsed = Number.parseInt(arrayValue, 10);
+    return Number.isNaN(parsed) ? undefined : parsed;
+  }
+  if (typeof parameters.imperial === "string") {
+    const match = parameters.imperial.match(/(?:array|x)(2|4)$/);
+    const count = match?.[1];
+    if (count) {
+      return Number.parseInt(count, 10);
+    }
+  }
+  return;
+};
+var getImperialBase = (imperial) => {
+  if (!imperial)
+    return;
+  const imperialString = typeof imperial === "number" ? `${imperial}` : imperial;
+  return imperialString.split("_")[0];
+};
+var res = (rawParameters) => {
+  const arrayCount = getArrayCount(rawParameters);
+  const imperialBase = getImperialBase(rawParameters.imperial);
+  if (arrayCount === 2 && imperialBase === "0402") {
+    return {
+      circuitJson: res0402Array2(rawParameters),
+      parameters: rawParameters
+    };
+  }
+  if (arrayCount === 4 && imperialBase === "0402") {
+    return {
+      circuitJson: res0402Array4(rawParameters),
+      parameters: rawParameters
+    };
+  }
+  return { circuitJson: passive(rawParameters), parameters: rawParameters };
 };
 // src/helpers/circlepad.ts
 var circlepad = (pn2, { x, y, radius }) => {
@@ -31858,30 +31975,30 @@ var to92 = (raw_params) => {
   });
   const { p, id: id2, od: od2, w: w3, h, inline } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing = Number.parseFloat(p);
+  const padSpacing3 = Number.parseFloat(p);
   const holeDia = Number.parseFloat(id2);
   const padDia = Number.parseFloat(od2);
-  const padWidth = padDia;
-  const padHeight = padDia * (1.5 / 1.05);
+  const padWidth3 = padDia;
+  const padHeight3 = padDia * (1.5 / 1.05);
   let platedHoles = [];
   if (parameters.num_pins === 3) {
     if (inline) {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, holeDia, padDia, padHeight, 0, 0),
-        platedHolePill(2, 0, holeY - padSpacing, holeDia, padWidth, padHeight),
-        platedHolePill(3, padSpacing, holeY - padSpacing, holeDia, padWidth, padHeight)
+        platedHoleWithRectPad(1, -padSpacing3, holeY - padSpacing3, holeDia, padDia, padHeight3, 0, 0),
+        platedHolePill(2, 0, holeY - padSpacing3, holeDia, padWidth3, padHeight3),
+        platedHolePill(3, padSpacing3, holeY - padSpacing3, holeDia, padWidth3, padHeight3)
       ];
     } else {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, holeDia, padDia, padDia, 0, 0),
+        platedHoleWithRectPad(1, -padSpacing3, holeY - padSpacing3, holeDia, padDia, padDia, 0, 0),
         platedhole(2, 0, holeY, holeDia, padDia),
-        platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia)
+        platedhole(3, padSpacing3, holeY - padSpacing3, holeDia, padDia)
       ];
     }
   } else if (parameters.num_pins === 2) {
     platedHoles = [
-      platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, holeDia, padWidth, padHeight, 0, 0),
-      platedHolePill(2, padSpacing, holeY - padSpacing, holeDia, padWidth, padHeight)
+      platedHoleWithRectPad(1, -padSpacing3, holeY - padSpacing3, holeDia, padWidth3, padHeight3, 0, 0),
+      platedHolePill(2, padSpacing3, holeY - padSpacing3, holeDia, padWidth3, padHeight3)
     ];
   } else {
     throw new Error("Invalid number of pins for TO-92");
@@ -32639,12 +32756,12 @@ var sot89_def = base_def.extend({
 var sot89_3 = (parameters) => {
   const pads = [];
   const padGap = Number.parseFloat(parameters.p);
-  const padWidth = Number.parseFloat(parameters.pw);
+  const padWidth3 = Number.parseFloat(parameters.pw);
   const length2 = Number.parseFloat(parameters.w);
-  const padHeight = Number.parseFloat(parameters.pl);
+  const padHeight3 = Number.parseFloat(parameters.pl);
   const centerExtra = 0.175;
-  const outerPadXShift = (padHeight - (padHeight + centerExtra)) / 2;
-  pads.push(rectpad(1, -length2 / 2 + outerPadXShift, padGap, padHeight, padWidth), rectpad(2, -length2 / 2, 0, padHeight + centerExtra, padWidth), rectpad(3, -length2 / 2 + outerPadXShift, -padGap, padHeight, padWidth));
+  const outerPadXShift = (padHeight3 - (padHeight3 + centerExtra)) / 2;
+  pads.push(rectpad(1, -length2 / 2 + outerPadXShift, padGap, padHeight3, padWidth3), rectpad(2, -length2 / 2, 0, padHeight3 + centerExtra, padWidth3), rectpad(3, -length2 / 2 + outerPadXShift, -padGap, padHeight3, padWidth3));
   const silkscreenRefText = silkscreenRef(0, 0, 0.3);
   const width = Number.parseFloat(parameters.w) / 2 - 1;
   const height = Number.parseFloat(parameters.h) / 2;
@@ -32682,7 +32799,7 @@ var sot89_3 = (parameters) => {
 var sot89_5 = (parameters) => {
   const pads = [];
   const padGap = Number.parseFloat(parameters.p);
-  const padWidth = Number.parseFloat(parameters.pw);
+  const padWidth3 = Number.parseFloat(parameters.pw);
   const length2 = Number.parseFloat(parameters.w);
   pads.push(rectpad(1, -1.85, -1.5, 1.5, 0.7), rectpad(2, -1.85, 1.5, 1.5, 0.7), rectpad(3, 0, 0, 0.8, 2), rectpad(4, 1.85, -1.5, 1.5, 0.7), rectpad(5, 1.85, 1.5, 1.5, 0.7));
   const silkscreenRefText = silkscreenRef(0, Number.parseFloat(parameters.h) / 2 + 0.5, 0.3);
@@ -33665,20 +33782,20 @@ var to92s_def = base_def.extend({
 var to92s_3 = (parameters) => {
   const { p, id: id2, od: od2, w: w3, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing = Number.parseFloat(p);
+  const padSpacing3 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing, holeY - padSpacing, id2, od2),
-    platedhole(2, 0, holeY - padSpacing, id2, od2),
-    platedhole(3, padSpacing, holeY - padSpacing, id2, od2)
+    platedhole(1, -padSpacing3, holeY - padSpacing3, id2, od2),
+    platedhole(2, 0, holeY - padSpacing3, id2, od2),
+    platedhole(3, padSpacing3, holeY - padSpacing3, id2, od2)
   ];
 };
 var to92s_2 = (parameters) => {
   const { p, id: id2, od: od2, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
-  const padSpacing = Number.parseFloat(p);
+  const padSpacing3 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing, holeY - padSpacing, id2, od2),
-    platedhole(2, padSpacing, holeY - padSpacing, id2, od2)
+    platedhole(1, -padSpacing3, holeY - padSpacing3, id2, od2),
+    platedhole(2, padSpacing3, holeY - padSpacing3, id2, od2)
   ];
 };
 var to92s = (raw_params) => {
@@ -33697,19 +33814,19 @@ var to92s = (raw_params) => {
     throw new Error("Invalid number of pins for TO-92");
   }
   const holeY = Number.parseFloat(parameters.h) / 2;
-  const padSpacing = Number.parseFloat(parameters.p);
+  const padSpacing3 = Number.parseFloat(parameters.p);
   const silkscreenBody = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -holeY, y: holeY - padSpacing },
+      { x: -holeY, y: holeY - padSpacing3 },
       { x: -1.9, y: 0 },
       { x: 1.9, y: 0 },
-      { x: holeY, y: holeY - padSpacing },
+      { x: holeY, y: holeY - padSpacing3 },
       { x: 1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
       { x: -1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
-      { x: -holeY, y: holeY - padSpacing }
+      { x: -holeY, y: holeY - padSpacing3 }
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
@@ -34389,13 +34506,13 @@ var getSonPadCoord = (num_pins, pn2, w3, p) => {
 // src/fn/solderjumper.ts
 var solderjumper = (params) => {
   const { num_pins, bridged, p = 2.54, pw = 1.5, ph: ph2 = 1.5 } = params;
-  const padSpacing = length.parse(p);
-  const padWidth = length.parse(pw);
-  const padHeight = length.parse(ph2);
-  const traceWidth = Math.min(padHeight / 4, 0.5);
+  const padSpacing3 = length.parse(p);
+  const padWidth3 = length.parse(pw);
+  const padHeight3 = length.parse(ph2);
+  const traceWidth = Math.min(padHeight3 / 4, 0.5);
   const pads = [];
   for (let i = 0;i < num_pins; i++) {
-    pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight));
+    pads.push(rectpad(i + 1, i * padSpacing3, 0, padWidth3, padHeight3));
   }
   let traces = [];
   if (bridged) {
@@ -34405,11 +34522,11 @@ var solderjumper = (params) => {
         const from = pins[i];
         const to2 = pins[i + 1];
         if (typeof from === "number" && typeof to2 === "number" && !isNaN(from) && !isNaN(to2)) {
-          const xCenterFrom = (from - 1) * padSpacing;
-          const xCenterTo = (to2 - 1) * padSpacing;
+          const xCenterFrom = (from - 1) * padSpacing3;
+          const xCenterTo = (to2 - 1) * padSpacing3;
           const directionMult = Math.sign(xCenterTo - xCenterFrom);
-          const x12 = xCenterFrom + directionMult * (padWidth / 2);
-          const x22 = xCenterTo - directionMult * (padWidth / 2);
+          const x12 = xCenterFrom + directionMult * (padWidth3 / 2);
+          const x22 = xCenterTo - directionMult * (padWidth3 / 2);
           traces.push({
             type: "pcb_trace",
             pcb_trace_id: "",
@@ -34436,9 +34553,9 @@ var solderjumper = (params) => {
       }
     }
   }
-  const outlineWidth = (num_pins - 1) * padSpacing + padWidth + 0.7;
-  const outlineHeight = padHeight + 1;
-  const outlineCenterX = (num_pins - 1) * padSpacing / 2;
+  const outlineWidth = (num_pins - 1) * padSpacing3 + padWidth3 + 0.7;
+  const outlineHeight = padHeight3 + 1;
+  const outlineCenterX = (num_pins - 1) * padSpacing3 / 2;
   const outlineCenterY = 0;
   const silkscreenRect = {
     type: "pcb_silkscreen_path",
@@ -34537,28 +34654,28 @@ var generateSot457Elements = (params) => {
   const pads = [];
   const pitch = parseDimension(params.p);
   const padLength = parseDimension(params.pl);
-  const padWidth = parseDimension(params.pw);
+  const padWidth3 = parseDimension(params.pw);
   const width = parseDimension(params.w);
   const height = parseDimension(params.h);
   if (params.wave) {
     const pinConfigs = {
-      1: ({ padWidth: padWidth2, padHeight }) => rectpad(1, -pitch, pitch, padHeight, padWidth2),
-      2: ({ padWidth: padWidth2, padHeight }) => rectpad(2, -pitch, -pitch, padHeight, padWidth2),
-      3: ({ padWidth: padWidth2, padHeight }) => pillpad(3, -pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
-      4: ({ padWidth: padWidth2, padHeight }) => pillpad(4, pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
-      5: ({ padWidth: padWidth2, padHeight }) => rectpad(5, pitch, pitch, padHeight, padWidth2),
-      6: ({ padWidth: padWidth2, padHeight }) => rectpad(6, pitch, -pitch, padHeight, padWidth2)
+      1: ({ padWidth: padWidth4, padHeight: padHeight3 }) => rectpad(1, -pitch, pitch, padHeight3, padWidth4),
+      2: ({ padWidth: padWidth4, padHeight: padHeight3 }) => rectpad(2, -pitch, -pitch, padHeight3, padWidth4),
+      3: ({ padWidth: padWidth4, padHeight: padHeight3 }) => pillpad(3, -pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
+      4: ({ padWidth: padWidth4, padHeight: padHeight3 }) => pillpad(4, pitch, 0, parseDimension(params.pillw), parseDimension(params.pillh)),
+      5: ({ padWidth: padWidth4, padHeight: padHeight3 }) => rectpad(5, pitch, pitch, padHeight3, padWidth4),
+      6: ({ padWidth: padWidth4, padHeight: padHeight3 }) => rectpad(6, pitch, -pitch, padHeight3, padWidth4)
     };
     for (let i = 1;i <= params.num_pins; i++) {
       const config = pinConfigs[i];
       if (config) {
-        pads.push(config({ padWidth: padLength, padHeight: padWidth }));
+        pads.push(config({ padWidth: padLength, padHeight: padWidth3 }));
       }
     }
   } else {
     for (let i = 1;i <= params.num_pins; i++) {
       const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i });
-      pads.push(rectpad(i, x, y, padLength, padWidth));
+      pads.push(rectpad(i, x, y, padLength, padWidth3));
     }
   }
   const silkscreenPath1 = {
@@ -34587,7 +34704,7 @@ var generateSot457Elements = (params) => {
   const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 });
   const triangleHeight = params.wave ? 1 : 0.5;
   const triangleWidth = params.wave ? 0.7 : 0.3;
-  pin1Position.x -= params.wave ? padWidth : padWidth * 1.7;
+  pin1Position.x -= params.wave ? padWidth3 : padWidth3 * 1.7;
   const pin1Indicator = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -35411,7 +35528,7 @@ var m2host_def = base_def.extend({
 var m2host = (raw_params) => {
   const parameters = m2host_def.parse(raw_params);
   const pads = [];
-  const padWidth = 0.5 - 0.15;
+  const padWidth3 = 0.5 - 0.15;
   const padLength = 1.5;
   const pitch = 0.5;
   const halfPitch = pitch / 2;
@@ -35427,7 +35544,7 @@ var m2host = (raw_params) => {
     const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0);
     const rightEdgeOffset = 0.5;
     const x = rightEdgeOffset - padLengthWithOffset / 2;
-    const pad2 = rectpad(pn2, x, y, padLengthWithOffset, padWidth);
+    const pad2 = rectpad(pn2, x, y, padLengthWithOffset, padWidth3);
     pad2.layer = isBottomLayer ? "bottom" : "top";
     pads.push(pad2);
   }
@@ -36030,6 +36147,10 @@ var content_default = [
     title: "diode0402"
   },
   {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="264.8854961832061" y="114.50381679389324" width="270.2290076335878" height="370.9923664122137"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="310.68702290076334" y="263.35877862595424" width="61.83206106870229" height="73.2824427480916" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="310.68702290076334" y="366.41221374045807" width="61.83206106870229" height="73.2824427480916" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="427.4809160305344" y="366.41221374045807" width="61.83206106870229" height="73.2824427480916" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="427.4809160305344" y="263.35877862595424" width="61.83206106870229" height="73.2824427480916" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 535.1145038167939 217.55725190839703 L 264.8854961832061 217.55725190839703 L 264.8854961832061 485.49618320610693 L 535.1145038167939 485.49618320610693 L 535.1145038167939 217.55725190839703 Z" fill="none" stroke="#f2eda1" stroke-width="11.450381679389313" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="22.900763358778626" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,114.50381679389324)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    title: "0402_x2"
+  },
+  {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="279.22077922077926" y="155.84415584415584" width="241.5584415584416" height="288.3116883116883"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="349.35064935064935" y="261.038961038961" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="349.35064935064935" y="315.5844155844156" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="349.35064935064935" y="370.12987012987014" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="489.61038961038963" y="370.12987012987014" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="489.61038961038963" y="315.5844155844156" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="489.61038961038963" y="261.038961038961" width="31.16883116883117" height="31.16883116883117" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 349.35064935064935 218.1818181818182 L 520.7792207792209 218.1818181818182" fill="none" stroke="#f2eda1" stroke-width="7.792207792207792" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 349.35064935064935 444.15584415584414 L 520.7792207792209 444.15584415584414" fill="none" stroke="#f2eda1" stroke-width="7.792207792207792" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 302.5974025974026 276.6233766233766 L 279.22077922077926 253.24675324675326 L 279.22077922077926 300 L 302.5974025974026 276.6233766233766 Z" fill="none" stroke="#f2eda1" stroke-width="7.792207792207792" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="pin_marker_1" data-pcb-silkscreen-path-id="pin_marker_1"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="38.96103896103896" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,435.06493506493507,155.84415584415584)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "sot963"
   },
@@ -36228,6 +36349,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="124.63768115942025" y="82.81573498964804" width="550.7246376811595" height="434.36853002070393"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="68.73706004140783" y="142.2360248447205" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="68.73706004140783" y="247.4120082815735" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="68.73706004140783" y="352.5879917184265" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="68.73706004140783" y="457.76397515527947" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="619.4616977225674" y="457.76397515527947" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="619.4616977225674" y="352.5879917184265" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="619.4616977225674" y="247.4120082815735" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="619.4616977225674" y="142.2360248447205" width="111.80124223602486" height="33.126293995859214" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 188.81987577639754 517.184265010352 L 188.81987577639754 115.94202898550725 L 329.60662525879917 115.94202898550725 L 334.9650018522076 142.880407247232 L 350.22436736989107 165.7176616156162 L 373.0616217382753 180.97702713329969 L 400 186.33540372670808 L 426.9383782617248 180.97702713329969 L 449.77563263010893 165.71766161561618 L 465.0349981477924 142.880407247232 L 470.39337474120083 115.94202898550725 L 611.1801242236024 115.94202898550725 L 611.1801242236024 517.184265010352 L 188.81987577639754 517.184265010352 Z" fill="none" stroke="#f2eda1" stroke-width="8.281573498964804" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.43685300207039" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,82.81573498964804)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "tssop8_w5.3mm_p1.27mm"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="299.4318181818182" y="85.22727272727275" width="201.13636363636363" height="429.5454545454545"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="333.5227272727273" y="196.02272727272728" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="333.5227272727273" y="272.72727272727275" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="333.5227272727273" y="349.43181818181824" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="333.5227272727273" y="426.1363636363637" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="420.45454545454544" y="426.1363636363637" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="420.45454545454544" y="349.43181818181824" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="420.45454545454544" y="272.72727272727275" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="420.45454545454544" y="196.02272727272728" width="46.02272727272727" height="54.54545454545454" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 500.5681818181818 161.9318181818182 L 299.4318181818182 161.9318181818182 L 299.4318181818182 514.7727272727273 L 500.5681818181818 514.7727272727273 L 500.5681818181818 161.9318181818182 Z" fill="none" stroke="#f2eda1" stroke-width="8.522727272727272" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id=""/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="17.045454545454543" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,85.22727272727275)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    title: "0402_x4"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="296.3636363636364" y="109.09090909090907" width="207.27272727272725" height="381.8181818181818"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="229.54545454545456" y="229.0909090909091" width="133.63636363636365" height="54.54545454545455" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="229.54545454545456" y="370.9090909090909" width="133.63636363636365" height="54.54545454545455" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="436.8181818181818" y="300" width="133.63636363636365" height="54.54545454545455" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 400 163.63636363636363 L 400 163.63636363636363 L 400 261.8181818181818" fill="none" stroke="#f2eda1" stroke-width="10.90909090909091" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 400 490.9090909090909 L 400 490.9090909090909 L 400 392.7272727272727" fill="none" stroke="#f2eda1" stroke-width="10.90909090909091" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_2"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="32.72727272727273" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,109.09090909090907)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
