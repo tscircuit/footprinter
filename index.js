@@ -30339,7 +30339,7 @@ var sot886_def = base_def.extend({
   string: exports_external.string().optional()
 });
 var sot886 = (raw_params) => {
-  const parameters = sot886_def.parse({ fn: "sot886", ...raw_params });
+  const parameters = sot886_def.parse({ ...raw_params, fn: "sot886" });
   const w3 = length.parse(parameters.w);
   const h = length.parse(parameters.h);
   const p = length.parse(parameters.p);
