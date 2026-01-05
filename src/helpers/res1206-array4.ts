@@ -1,14 +1,30 @@
 import type { AnyCircuitElement } from "circuit-json"
 import { chipArray } from "./chipArray"
+import { z } from "zod"
+import { base_def } from "./zod/base_def"
+import mm from "@tscircuit/mm"
+
+export const res1206Array4_def = base_def.extend({
+  pw: z.string().default("0.9mm"),
+  ph: z.string().default("0.9mm"),
+  p: z.string().default("1.34mm"),
+  textbottom: z.boolean().optional(),
+})
+
+export type Res1206Array4Params = z.input<typeof res1206Array4_def>
 
 const padSpacing = 3.0 // Horizontal spacing between columns (KiCad: 3.0mm)
-const padWidth = 0.9 // Pad width (KiCad: 0.9mm)
-const padHeight = 0.9 // Pad height (KiCad: 0.9mm)
-const padPitch = 1.34 // Vertical pitch between pads (KiCad: 1.34mm)
 
-export const res1206Array4 = (params: {
-  textbottom?: boolean
-}): AnyCircuitElement[] => {
+export const res1206Array4 = (
+  rawParams: Res1206Array4Params,
+): AnyCircuitElement[] => {
+  const params = res1206Array4_def.parse(rawParams)
+
+  // Convert string values to numbers
+  const padWidth = mm(params.pw)
+  const padHeight = mm(params.ph)
+  const padPitch = mm(params.p)
+
   return chipArray({
     padSpacing,
     padWidth,
