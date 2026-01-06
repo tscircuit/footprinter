@@ -29486,8 +29486,8 @@ var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 var dim2d = exports_external.string().transform((a) => {
   const [x, y] = a.split(/[x ]/);
   return {
-    x: parseFloat(x),
-    y: parseFloat(y)
+    x: parseFloat(x ?? ""),
+    y: parseFloat(y ?? "")
   };
 }).pipe(exports_external.object({
   x: exports_external.number(),
