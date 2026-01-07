@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -8,8 +8,8 @@ import { base_def } from "../helpers/zod/base_def"
 export const sod_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("2.36mm"),
-  h: z.string().default("1.22mm"),
+  w: z.string().default("4.5mm"),
+  h: z.string().default("2.0mm"),
   pl: z.string().default("0.9mm"),
   pw: z.string().default("1.2mm"),
   p: z.string().default("3.30mm"),
@@ -19,14 +19,43 @@ export const sod123 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
+
+  // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    length.parse(parameters.h) / 4 + 0.4,
+    length.parse(parameters.h) - 0.5,
     0.3,
   )
 
+  const silkscreenLine: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [
+      {
+        x: length.parse(parameters.p) / 2,
+        y: length.parse(parameters.h) / 2,
+      },
+      {
+        x: -length.parse(parameters.w) / 2,
+        y: length.parse(parameters.h) / 2,
+      },
+      {
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2,
+      },
+      {
+        x: length.parse(parameters.p) / 2,
+        y: -length.parse(parameters.h) / 2,
+      },
+    ],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
+
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
     ),
     parameters,
@@ -41,10 +70,8 @@ export const getSodCoords = (parameters: {
 
   if (pn === 1) {
     return { x: -p / 2, y: 0 }
-    // biome-ignore lint/style/noUselessElse: <explanation>
-  } else {
-    return { x: p / 2, y: 0 }
   }
+  return { x: p / 2, y: 0 }
 }
 
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
