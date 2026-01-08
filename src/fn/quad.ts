@@ -133,7 +133,7 @@ export const quad = (
       p: parameters.p ?? 0.5,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
-      pcdfe: parameters.pcdfe
+      pcdfe: parameters.pcdfe,
     })
 
     let pw = parameters.pw
