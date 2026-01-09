@@ -9,6 +9,8 @@ export const res0606Array2_def = base_def.extend({
   ph: z.string().default("0.64mm"),
   p: z.string().default("0.94mm"),
   textbottom: z.boolean().optional(),
+  convex: z.boolean().optional(),
+  concave: z.boolean().optional(),
 })
 
 export type Res0606Array2Params = z.input<typeof res0606Array2_def>
@@ -32,5 +34,7 @@ export const res0606Array2 = (
     padPitch,
     numRows: 2,
     textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave,
   })
 }
