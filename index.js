@@ -29545,6 +29545,9 @@ var res0402Array2_def = base_def.extend({
 var padSpacing = 1;
 var res0402Array2 = (rawParams) => {
   const params = res0402Array2_def.parse(rawParams);
+  if (params.concave === true) {
+    return [];
+  }
   const padWidth = mm_default(params.pw);
   const padHeight = mm_default(params.ph);
   const padPitch = mm_default(params.p);
