@@ -15,7 +15,7 @@ test("parity/0402_x2", async () => {
     import.meta.path,
     "0402_x2_parity._boolean_difference",
   )
-}, 100000)
+})
 
 test("parity/0402_x2_convex", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
