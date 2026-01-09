@@ -29538,7 +29538,9 @@ var res0402Array2_def = base_def.extend({
   pw: exports_external.string().default("0.5mm"),
   ph: exports_external.string().default("0.4mm"),
   p: exports_external.string().default("0.7mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing = 1;
 var res0402Array2 = (rawParams) => {
@@ -29552,7 +29554,9 @@ var res0402Array2 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 2,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
@@ -29561,7 +29565,9 @@ var res0402Array4_def = base_def.extend({
   pw: exports_external.string().default("0.5mm"),
   ph: exports_external.string().default("0.32mm"),
   p: exports_external.string().default("0.5mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing2 = 1;
 var res0402Array4 = (rawParams) => {
@@ -29575,7 +29581,9 @@ var res0402Array4 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 4,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
@@ -29584,7 +29592,9 @@ var res0603Array2_def = base_def.extend({
   pw: exports_external.string().default("0.9mm"),
   ph: exports_external.string().default("0.4mm"),
   p: exports_external.string().default("0.8mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing3 = 1.7;
 var res0603Array2 = (rawParams) => {
@@ -29598,7 +29608,9 @@ var res0603Array2 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 2,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
@@ -29607,7 +29619,9 @@ var res0603Array4_def = base_def.extend({
   pw: exports_external.string().default("0.9mm"),
   ph: exports_external.string().default("0.4mm"),
   p: exports_external.string().default("0.8mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing4 = 1.7;
 var res0603Array4 = (rawParams) => {
@@ -29621,7 +29635,9 @@ var res0603Array4 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 4,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
@@ -29630,7 +29646,9 @@ var res0606Array2_def = base_def.extend({
   pw: exports_external.string().default("0.7mm"),
   ph: exports_external.string().default("0.64mm"),
   p: exports_external.string().default("0.94mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing5 = 1.4;
 var res0606Array2 = (rawParams) => {
@@ -29644,7 +29662,9 @@ var res0606Array2 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 2,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
@@ -29653,7 +29673,9 @@ var res1206Array4_def = base_def.extend({
   pw: exports_external.string().default("0.9mm"),
   ph: exports_external.string().default("0.9mm"),
   p: exports_external.string().default("1.34mm"),
-  textbottom: exports_external.boolean().optional()
+  textbottom: exports_external.boolean().optional(),
+  convex: exports_external.boolean().optional(),
+  concave: exports_external.boolean().optional()
 });
 var padSpacing6 = 3;
 var res1206Array4 = (rawParams) => {
@@ -29667,7 +29689,9 @@ var res1206Array4 = (rawParams) => {
     padHeight,
     padPitch,
     numRows: 4,
-    textbottom: params.textbottom
+    textbottom: params.textbottom,
+    convex: params.convex,
+    concave: params.concave
   });
 };
 
