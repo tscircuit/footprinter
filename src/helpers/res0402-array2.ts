@@ -22,6 +22,12 @@ export const res0402Array2 = (
 ): AnyCircuitElement[] => {
   const params = res0402Array2_def.parse(rawParams)
 
+  // For 0402_x2: if concave is explicitly true, don't render
+  // Otherwise (default or convex), render normally
+  if (params.concave === true) {
+    return []
+  }
+
   // Convert string values to numbers
   const padWidth = mm(params.pw)
   const padHeight = mm(params.ph)
