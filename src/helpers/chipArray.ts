@@ -9,6 +9,8 @@ export interface ChipArrayParams {
   padPitch: number // Vertical spacing between pads
   numRows: number // Number of rows (2 for 0402_x2, 4 for 0402_x4)
   textbottom?: boolean
+  convex?: boolean
+  concave?: boolean
 }
 
 /**
