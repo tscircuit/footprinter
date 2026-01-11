@@ -181,8 +181,6 @@ export const pinrow = (
             holeDiameter: id,
             rectPadWidth: od,
             rectPadHeight: od,
-            holeOffsetX: 0,
-            holeOffsetY: 0,
           }),
         )
       } else {
