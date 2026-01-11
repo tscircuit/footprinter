@@ -116,14 +116,14 @@ export const dip = (raw_params: {
     )
     if (i === 0 && !parameters.nosquareplating) {
       platedHoles.push(
-        platedHoleWithRectPad(
-          i + 1,
+        platedHoleWithRectPad({
+          pn: i + 1,
           x,
           y,
-          parameters.id ?? "0.8mm",
-          parameters.od ?? "1mm",
-          parameters.od ?? "1mm",
-        ),
+          holeDiameter: parameters.id ?? "0.8mm",
+          rectPadWidth: parameters.od ?? "1mm",
+          rectPadHeight: parameters.od ?? "1mm",
+        }),
       )
       continue
     }
