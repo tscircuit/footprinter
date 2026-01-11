@@ -145,7 +145,7 @@ export const to92 = (
       ...semicircle,
       { x: -radius, y: 0 },
       { x: radius, y: 0 },
-      { x: semicircle[0]!.x, y: semicircle[0]!.y },
+      semicircle[0]!,
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
