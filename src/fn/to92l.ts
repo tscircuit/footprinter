@@ -30,12 +30,19 @@ export const to92l = (
   const padH = parameters.inline ? 1.5 : od
 
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, od, padH, 0, 0),
+    platedHoleWithRectPad({
+      pn: 1,
+      x: 0,
+      y: 0,
+      holeDiameter: parameters.id,
+      rectPadWidth: od,
+      rectPadHeight: padH,
+    }),
     parameters.inline
-      ? platedHolePill(2, p, 0, parameters.id, od, padH)
+      ? platedHolePill(2, p, 0, Number.parseFloat(parameters.id), od, padH)
       : platedhole(2, p, p, parameters.id, od),
     parameters.inline
-      ? platedHolePill(3, p * 2, 0, parameters.id, od, padH)
+      ? platedHolePill(3, p * 2, 0, Number.parseFloat(parameters.id), od, padH)
       : platedhole(3, p * 2, 0, parameters.id, od),
   ]
 
@@ -62,7 +69,7 @@ export const to92l = (
       ...semicircle,
       { x: cx - radius, y: y_bottom },
       { x: cx + radius, y: y_bottom },
-      semicircle[0],
+      semicircle[0]!,
     ],
   }
 

@@ -39,7 +39,14 @@ export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
   const padSpacing = Number.parseFloat(p)
 
   return [
-    platedHoleWithRectPad(1, -padSpacing, holeY - padSpacing, id, od, od, 0, 0),
+    platedHoleWithRectPad({
+      pn: 1,
+      x: -padSpacing,
+      y: holeY - padSpacing,
+      holeDiameter: id,
+      rectPadWidth: od,
+      rectPadHeight: od,
+    }),
     platedhole(2, padSpacing, holeY - padSpacing, id, od),
   ]
 }
@@ -72,16 +79,14 @@ export const to92 = (
   if (parameters.num_pins === 3) {
     if (inline) {
       platedHoles = [
-        platedHoleWithRectPad(
-          1,
-          -padSpacing,
-          holeY - padSpacing,
-          holeDia,
-          padDia,
-          padHeight,
-          0,
-          0,
-        ),
+        platedHoleWithRectPad({
+          pn: 1,
+          x: -padSpacing,
+          y: holeY - padSpacing,
+          holeDiameter: holeDia,
+          rectPadWidth: padDia,
+          rectPadHeight: padHeight,
+        }),
         platedHolePill(2, 0, holeY - padSpacing, holeDia, padWidth, padHeight),
         platedHolePill(
           3,
@@ -94,32 +99,28 @@ export const to92 = (
       ]
     } else {
       platedHoles = [
-        platedHoleWithRectPad(
-          1,
-          -padSpacing,
-          holeY - padSpacing,
-          holeDia,
-          padDia,
-          padDia,
-          0,
-          0,
-        ),
+        platedHoleWithRectPad({
+          pn: 1,
+          x: -padSpacing,
+          y: holeY - padSpacing,
+          holeDiameter: holeDia,
+          rectPadWidth: padDia,
+          rectPadHeight: padDia,
+        }),
         platedhole(2, 0, holeY, holeDia, padDia),
         platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia),
       ]
     }
   } else if (parameters.num_pins === 2) {
     platedHoles = [
-      platedHoleWithRectPad(
-        1,
-        -padSpacing,
-        holeY - padSpacing,
-        holeDia,
-        padWidth,
-        padHeight,
-        0,
-        0,
-      ),
+      platedHoleWithRectPad({
+        pn: 1,
+        x: -padSpacing,
+        y: holeY - padSpacing,
+        holeDiameter: holeDia,
+        rectPadWidth: padWidth,
+        rectPadHeight: padHeight,
+      }),
       platedHolePill(
         2,
         padSpacing,
@@ -144,7 +145,7 @@ export const to92 = (
       ...semicircle,
       { x: -radius, y: 0 },
       { x: radius, y: 0 },
-      semicircle[0],
+      semicircle[0]!,
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",

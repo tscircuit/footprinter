@@ -50,7 +50,14 @@ export const platedhole = (
   return {
     circuitJson: [
       squarepad
-        ? (platedHoleWithRectPad(1, 0, 0, d, pd, pd) as AnyCircuitElement)
+        ? (platedHoleWithRectPad({
+            pn: 1,
+            x: 0,
+            y: 0,
+            holeDiameter: d,
+            rectPadWidth: pd,
+            rectPadHeight: pd,
+          }) as AnyCircuitElement)
         : (makePlatedHole(1, 0, 0, d, pd) as AnyCircuitElement),
       silkscreenRef(0, pd / 2 + 0.5, 0.2) as AnyCircuitElement,
     ],
