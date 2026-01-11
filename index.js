@@ -29112,7 +29112,17 @@ var platedhole = (pn2, x, y, id2, od2) => {
 };
 
 // src/helpers/platedHoleWithRectPad.ts
-var platedHoleWithRectPad = (pn2, x, y, holeDiameter, rectPadWidth, rectPadHeight, holeOffsetX, holeOffsetY) => {
+var platedHoleWithRectPad = (options) => {
+  const {
+    pn: pn2,
+    x,
+    y,
+    holeDiameter,
+    rectPadWidth,
+    rectPadHeight,
+    holeOffsetX = 0,
+    holeOffsetY = 0
+  } = options;
   return {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
@@ -29202,7 +29212,14 @@ var dip = (raw_params) => {
   for (let i = 0;i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(parameters.num_pins, i + 1, parameters.w, parameters.p ?? 2.54, parameters.nosquareplating);
     if (i === 0 && !parameters.nosquareplating) {
-      platedHoles.push(platedHoleWithRectPad(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm", parameters.od ?? "1mm"));
+      platedHoles.push(platedHoleWithRectPad({
+        pn: i + 1,
+        x,
+        y,
+        holeDiameter: parameters.id ?? "0.8mm",
+        rectPadWidth: parameters.od ?? "1mm",
+        rectPadHeight: parameters.od ?? "1mm"
+      }));
       continue;
     }
     platedHoles.push(platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"));
@@ -31168,7 +31185,14 @@ var pinrow = (raw_params) => {
       holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl));
     } else {
       if (pinNumber === 1 && !parameters.nosquareplating) {
-        holes.push(platedHoleWithRectPad(pinNumber, xoff, yoff, id2, od2, od2, 0, 0));
+        holes.push(platedHoleWithRectPad({
+          pn: pinNumber,
+          x: xoff,
+          y: yoff,
+          holeDiameter: id2,
+          rectPadWidth: od2,
+          rectPadHeight: od2
+        }));
       } else {
         holes.push(platedhole(pinNumber, xoff, yoff, id2, od2));
       }
@@ -32497,20 +32521,41 @@ var to92 = (raw_params) => {
   if (parameters.num_pins === 3) {
     if (inline) {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing7, holeY - padSpacing7, holeDia, padDia, padHeight, 0, 0),
+        platedHoleWithRectPad({
+          pn: 1,
+          x: -padSpacing7,
+          y: holeY - padSpacing7,
+          holeDiameter: holeDia,
+          rectPadWidth: padDia,
+          rectPadHeight: padHeight
+        }),
         platedHolePill(2, 0, holeY - padSpacing7, holeDia, padWidth, padHeight),
         platedHolePill(3, padSpacing7, holeY - padSpacing7, holeDia, padWidth, padHeight)
       ];
     } else {
       platedHoles = [
-        platedHoleWithRectPad(1, -padSpacing7, holeY - padSpacing7, holeDia, padDia, padDia, 0, 0),
+        platedHoleWithRectPad({
+          pn: 1,
+          x: -padSpacing7,
+          y: holeY - padSpacing7,
+          holeDiameter: holeDia,
+          rectPadWidth: padDia,
+          rectPadHeight: padDia
+        }),
         platedhole(2, 0, holeY, holeDia, padDia),
         platedhole(3, padSpacing7, holeY - padSpacing7, holeDia, padDia)
       ];
     }
   } else if (parameters.num_pins === 2) {
     platedHoles = [
-      platedHoleWithRectPad(1, -padSpacing7, holeY - padSpacing7, holeDia, padWidth, padHeight, 0, 0),
+      platedHoleWithRectPad({
+        pn: 1,
+        x: -padSpacing7,
+        y: holeY - padSpacing7,
+        holeDiameter: holeDia,
+        rectPadWidth: padWidth,
+        rectPadHeight: padHeight
+      }),
       platedHolePill(2, padSpacing7, holeY - padSpacing7, holeDia, padWidth, padHeight)
     ];
   } else {
@@ -34401,8 +34446,22 @@ function generatePads(variant, numPins, p, id2, pw, pl2) {
   const pads = [];
   if (variant === "ph") {
     const half_p = p / 2;
-    pads.push(platedHoleWithRectPad(1, -half_p, 2, id2, pw, pl2));
-    pads.push(platedHoleWithRectPad(2, half_p, 2, id2, pw, pl2));
+    pads.push(platedHoleWithRectPad({
+      pn: 1,
+      x: -half_p,
+      y: 2,
+      holeDiameter: id2,
+      rectPadWidth: pw,
+      rectPadHeight: pl2
+    }));
+    pads.push(platedHoleWithRectPad({
+      pn: 2,
+      x: half_p,
+      y: 2,
+      holeDiameter: id2,
+      rectPadWidth: pw,
+      rectPadHeight: pl2
+    }));
   } else {
     const startX = -((numPins - 1) / 2) * p;
     for (let i = 0;i < numPins; i++) {
@@ -35808,7 +35867,14 @@ var platedhole2 = (raw_params) => {
   const { d, pd, squarepad } = params;
   return {
     circuitJson: [
-      squarepad ? platedHoleWithRectPad(1, 0, 0, d, pd, pd) : platedhole(1, 0, 0, d, pd),
+      squarepad ? platedHoleWithRectPad({
+        pn: 1,
+        x: 0,
+        y: 0,
+        holeDiameter: d,
+        rectPadWidth: pd,
+        rectPadHeight: pd
+      }) : platedhole(1, 0, 0, d, pd),
       silkscreenRef(0, pd / 2 + 0.5, 0.2)
     ],
     parameters: params
@@ -36159,9 +36225,16 @@ var to92l = (raw_params) => {
   const od2 = parameters.inline ? 1.05 : Number.parseFloat(parameters.od);
   const padH = parameters.inline ? 1.5 : od2;
   const holes = [
-    platedHoleWithRectPad(1, 0, 0, parameters.id, od2, padH, 0, 0),
-    parameters.inline ? platedHolePill(2, p, 0, parameters.id, od2, padH) : platedhole(2, p, p, parameters.id, od2),
-    parameters.inline ? platedHolePill(3, p * 2, 0, parameters.id, od2, padH) : platedhole(3, p * 2, 0, parameters.id, od2)
+    platedHoleWithRectPad({
+      pn: 1,
+      x: 0,
+      y: 0,
+      holeDiameter: parameters.id,
+      rectPadWidth: od2,
+      rectPadHeight: padH
+    }),
+    parameters.inline ? platedHolePill(2, p, 0, Number.parseFloat(parameters.id), od2, padH) : platedhole(2, p, p, parameters.id, od2),
+    parameters.inline ? platedHolePill(3, p * 2, 0, Number.parseFloat(parameters.id), od2, padH) : platedhole(3, p * 2, 0, parameters.id, od2)
   ];
   const radius = w3 / 2;
   const cx2 = parameters.inline ? p - 0.09 : p;
