@@ -69,7 +69,7 @@ export const to92l = (
       ...semicircle,
       { x: cx - radius, y: y_bottom },
       { x: cx + radius, y: y_bottom },
-      { x: semicircle[0]!.x, y: semicircle[0]!.y },
+      semicircle[0]!,
     ],
   }
 
