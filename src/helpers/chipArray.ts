@@ -11,6 +11,8 @@ export interface ChipArrayParams {
   textbottom?: boolean
   convex?: boolean
   concave?: boolean
+  padHeights?: number[] // Optional: variable pad heights per position (overrides padHeight)
+  yPositions?: number[] // Optional: custom Y positions (overrides padPitch calculation)
 }
 
 /**
@@ -22,21 +24,35 @@ export interface ChipArrayParams {
  * @returns Array of circuit elements (pads, silkscreen, pin1 marker, ref text)
  */
 export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
-  const { padSpacing, padWidth, padHeight, padPitch, numRows, textbottom } =
-    params
+  const {
+    padSpacing,
+    padWidth,
+    padHeight,
+    padPitch,
+    numRows,
+    textbottom,
+    padHeights,
+    yPositions: customYPositions,
+  } = params
 
   // Calculate Y positions for pads (centered around origin)
-  const yPositions: number[] = []
-  const halfRange = (numRows - 1) * (padPitch / 2)
-  for (let i = 0; i < numRows; i++) {
-    yPositions.push(halfRange - i * padPitch)
-  }
+  const yPositions: number[] =
+    customYPositions ??
+    (() => {
+      const positions: number[] = []
+      const halfRange = (numRows - 1) * (padPitch / 2)
+      for (let i = 0; i < numRows; i++) {
+        positions.push(halfRange - i * padPitch)
+      }
+      return positions
+    })()
 
   const pads: AnyCircuitElement[] = []
 
   // Left column: pins 1 to numRows
   yPositions.forEach((y, index) => {
-    pads.push(rectpad(index + 1, -padSpacing / 2, y, padWidth, padHeight))
+    const height = padHeights?.[index] ?? padHeight
+    pads.push(rectpad(index + 1, -padSpacing / 2, y, padWidth, height))
   })
 
   // Right column: pins numRows+1 to 2*numRows (reverse order)
@@ -44,14 +60,18 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     .slice()
     .reverse()
     .forEach((y, index) => {
+      // For right column, reverse the padHeights array as well
+      const height = padHeights?.[yPositions.length - 1 - index] ?? padHeight
       pads.push(
-        rectpad(index + numRows + 1, padSpacing / 2, y, padWidth, padHeight),
+        rectpad(index + numRows + 1, padSpacing / 2, y, padWidth, height),
       )
     })
 
   // Calculate silkscreen boundaries - match KiCad style (two horizontal lines)
-  const top = Math.max(...yPositions) + padHeight / 2 + 0.4
-  const bottom = Math.min(...yPositions) - padHeight / 2 - 0.4
+  // Use max pad height for silkscreen calculations
+  const maxPadHeight = padHeights ? Math.max(...padHeights) : padHeight
+  const top = Math.max(...yPositions) + maxPadHeight / 2 + 0.4
+  const bottom = Math.min(...yPositions) - maxPadHeight / 2 - 0.4
   const left = -padSpacing / 2 - padWidth / 2 - 0.4
   const right = padSpacing / 2 + padWidth / 2 + 0.4
 
@@ -85,8 +105,9 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
   const pin1X = -padSpacing / 2
   const pin1Y = Math.max(...yPositions)
   const pin1MarkerSize = 0.2
+  const pin1Height = padHeights?.[0] ?? padHeight
   const pin1Left = pin1X - padWidth / 2 - 0.1
-  const pin1Top = pin1Y + padHeight / 2 + 0.1
+  const pin1Top = pin1Y + pin1Height / 2 + 0.1
   const pin1Marker: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",

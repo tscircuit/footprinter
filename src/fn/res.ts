@@ -5,6 +5,7 @@ import { res0402Array4 } from "../helpers/res0402-array4"
 import { res0603Array2 } from "../helpers/res0603-array2"
 import { res0603Array4 } from "../helpers/res0603-array4"
 import { res0606Array2 } from "../helpers/res0606-array2"
+import { res0612Array4 } from "../helpers/res0612-array4"
 import { res1206Array4 } from "../helpers/res1206-array4"
 
 type ResArrayParams = PassiveDef & {
@@ -76,6 +77,13 @@ export const res = (
   if (arrayCount === 2 && imperialBase === "0606") {
     return {
       circuitJson: res0606Array2(rawParameters),
+      parameters: rawParameters,
+    }
+  }
+
+  if (arrayCount === 4 && imperialBase === "0612") {
+    return {
+      circuitJson: res0612Array4(rawParameters),
       parameters: rawParameters,
     }
   }
