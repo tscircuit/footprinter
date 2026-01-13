@@ -7,7 +7,5 @@ test("mountedpcbmodule_pinrow8_pinrowtop", () => {
     .string("mountedpcbmodule_pinrow8_pinrowtop")
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path)
 })
