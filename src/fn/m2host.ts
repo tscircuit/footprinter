@@ -1,7 +1,7 @@
 import type {
   AnyCircuitElement,
   PcbSilkscreenPath,
-  PCBSMTPad,
+  PcbSmtPad,
   PcbSmtPadRect,
   PcbCutout,
 } from "circuit-json"
@@ -19,7 +19,7 @@ export const m2host = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = m2host_def.parse(raw_params)
 
-  const pads: PCBSMTPad[] = []
+  const pads: PcbSmtPad[] = []
   const padWidth = 0.5 - 0.15
   const padLength = 1.5
   const pitch = 0.5
