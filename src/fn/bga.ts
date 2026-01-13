@@ -1,4 +1,4 @@
-import type { AnySoupElement, PCBSMTPad } from "circuit-json"
+import type { AnySoupElement, PcbSmtPad } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
@@ -74,7 +74,7 @@ export const bga = (
 
   pad ??= ball * 0.8
 
-  const pads: PCBSMTPad[] = []
+  const pads: PcbSmtPad[] = []
 
   const missing_pin_nums = (missing ?? []).filter((a) => typeof a === "number")
   const num_pins_missing = grid.x * grid.y - num_pins
