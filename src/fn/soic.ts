@@ -135,7 +135,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
-    sh / 12,
+    Math.max(0.5, Math.min(0.7, sh / 12)),
   )
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
