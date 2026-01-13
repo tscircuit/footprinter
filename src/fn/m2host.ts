@@ -1,4 +1,10 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbSilkscreenPath,
+  PCBSMTPad,
+  PcbSmtPadRect,
+  PcbCutout,
+} from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
@@ -13,7 +19,7 @@ export const m2host = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = m2host_def.parse(raw_params)
 
-  const pads: AnyCircuitElement[] = []
+  const pads: PCBSMTPad[] = []
   const padWidth = 0.5 - 0.15
   const padLength = 1.5
   const pitch = 0.5
@@ -40,10 +46,10 @@ export const m2host = (
   const cutoutWidth = 46 * 0.0254
   const cutoutDepth = 137 * 0.0254
   const cutoutOffsetFromPin1 = 261 * 0.0254
-  const cutout = {
+  const cutout: PcbCutout = {
     type: "pcb_cutout",
     pcb_cutout_id: "",
-    shape: "rect" as const,
+    shape: "rect",
     center: {
       x: -cutoutDepth / 2 + padLength / 2,
       y: startY - cutoutOffsetFromPin1,
@@ -87,7 +93,8 @@ export const m2host = (
   }
 
   for (const pad of pads) {
-    updateBounds(pad.x, pad.y, pad.width, pad.height)
+    const rectPad = pad as PcbSmtPadRect
+    updateBounds(rectPad.x, rectPad.y, rectPad.width, rectPad.height)
   }
   updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height)
   for (const point of pin1Marker.route) {
