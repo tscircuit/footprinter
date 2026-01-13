@@ -10,7 +10,6 @@ test("mountedpcbmodule_pinrow5_pinrowleft_pinrowholecentertocenterdist2mm", () =
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "mountedpcbmodule_pinrow5_1",
+    import.meta.path
   )
 })

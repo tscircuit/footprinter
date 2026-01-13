@@ -1,11 +1,10 @@
 import { z } from "zod"
-import { length, rotation, type AnySoupElement } from "circuit-json"
+import { length,  type AnyCircuitElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { mm } from "@tscircuit/mm"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
 import { base_def } from "../helpers/zod/base_def"
 import { silkscreenpath } from "../helpers/silkscreenpath"
@@ -115,7 +114,7 @@ export const mountedpcbmodule_def = base_def
 
 export const mountedpcbmodule = (
   raw_params: z.input<typeof mountedpcbmodule_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = mountedpcbmodule_def.parse(raw_params)
   const {
     p,
@@ -143,7 +142,7 @@ export const mountedpcbmodule = (
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
-  const elements: AnySoupElement[] = []
+  const elements: AnyCircuitElement[] = []
 
   // Calculate pin positions
   const pinSpacing = p
