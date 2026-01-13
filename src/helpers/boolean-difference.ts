@@ -284,7 +284,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 
     return null
   } catch (error) {
-    console.warn(`Failed to convert element to polygon:`, error)
+    console.warn("Failed to convert element to polygon:", error)
     return null
   }
 }
@@ -368,10 +368,10 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   maxX: number
   maxY: number
 } {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (const polygon of polygons) {
     if (polygon && !polygon.isEmpty()) {
@@ -384,7 +384,7 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   }
 
   // Fallback if no valid polygons
-  if (!isFinite(minX)) {
+  if (!Number.isFinite(minX)) {
     return { minX: -1, minY: -1, maxX: 1, maxY: 1 }
   }
 
@@ -449,7 +449,7 @@ export function createBooleanDifferenceVisualization(
     const viewBoxY = bbox.minY - padding
 
     // Perform boolean operations using flatten-js/core
-    let resultPolygons: Flatten.Polygon[] = []
+    const resultPolygons: Flatten.Polygon[] = []
 
     if (
       options?.operation === "difference" &&

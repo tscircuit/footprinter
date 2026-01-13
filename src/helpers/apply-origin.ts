@@ -11,12 +11,12 @@ export type OriginMode =
   | "rightcenter"
   | "centerright"
 
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json"
 
 export const applyOrigin = (
-  elements: AnySoupElement[],
+  elements: AnyCircuitElement[],
   origin: OriginMode | undefined,
-): AnySoupElement[] => {
+): AnyCircuitElement[] => {
   if (!origin) return elements
 
   const pads = elements.filter(
@@ -28,10 +28,10 @@ export const applyOrigin = (
 
   if (pads.length === 0) return elements
 
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   const updateBounds = (x: number, y: number, w = 0, h = 0) => {
     const left = x - w / 2
@@ -89,11 +89,12 @@ export const applyOrigin = (
       dx = maxX
       dy = (minY + maxY) / 2
       break
-    case "pin1":
+    case "pin1": {
       const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0]
       dx = pin1.x
       dy = pin1.y
       break
+    }
   }
 
   if (dx === 0 && dy === 0) return elements
