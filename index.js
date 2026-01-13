@@ -36169,7 +36169,8 @@ var m2host = (raw_params) => {
     maxY = Math.max(maxY, y + h / 2);
   };
   for (const pad2 of pads) {
-    updateBounds(pad2.x, pad2.y, pad2.width, pad2.height);
+    const rectPad = pad2;
+    updateBounds(rectPad.x, rectPad.y, rectPad.width, rectPad.height);
   }
   updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height);
   for (const point2 of pin1Marker.route) {
