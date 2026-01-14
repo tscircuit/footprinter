@@ -16,6 +16,7 @@ export const extendSoicDef = (newDefaults: {
   num_pins?: number
   legsoutside?: boolean
   pillpads?: boolean
+  ref_text_size?: number
 }) =>
   base_def
     .extend({
@@ -33,9 +34,16 @@ export const extendSoicDef = (newDefaults: {
         .boolean()
         .optional()
         .default(newDefaults.pillpads ?? false),
+      ref_text_size: z.number().optional(),
       silkscreen_stroke_width: z.number().optional().default(0.1),
     })
     .transform((v) => {
+      if (
+        v.ref_text_size === undefined &&
+        newDefaults.ref_text_size !== undefined
+      ) {
+        v.ref_text_size = newDefaults.ref_text_size
+      }
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
         v.pw = length.parse("0.6mm")
@@ -135,7 +143,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
-    Math.max(0.5, Math.min(0.7, sh / 12)),
+    parameters.ref_text_size ?? sh / 12,
   )
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",

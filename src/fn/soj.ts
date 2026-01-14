@@ -13,6 +13,12 @@ export const soj = (
   const parameters = soj_def.parse(raw_params)
   parameters.w += 1.8
 
+  const m = Math.min(1, parameters.p / 2)
+  const sh =
+    (parameters.num_pins / 2 - 1) * parameters.p + (parameters.pw ?? 0.6) + m
+
+  parameters.ref_text_size = Math.max(0.5, Math.min(0.7, sh / 12))
+
   return {
     circuitJson: soicWithoutParsing(parameters),
     parameters,
