@@ -29458,14 +29458,13 @@ var passive = (params) => {
       silkscreenLine,
       silkscreenRefText
     ];
-  } else {
-    return [
-      rectpad(["1", "left"], -p / 2, 0, pw, ph2),
-      rectpad(["2", "right"], p / 2, 0, pw, ph2),
-      silkscreenLine,
-      silkscreenRefText
-    ];
   }
+  return [
+    rectpad(["1", "left"], -p / 2, 0, pw, ph2),
+    rectpad(["2", "right"], p / 2, 0, pw, ph2),
+    silkscreenLine,
+    silkscreenRefText
+  ];
 };
 
 // src/fn/diode.ts
@@ -36279,10 +36278,10 @@ var applyOrigin = (elements, origin) => {
   const pads = elements.filter((el2) => el2.type === "pcb_smtpad" || el2.type === "pcb_plated_hole" || el2.type === "pcb_thtpad");
   if (pads.length === 0)
     return elements;
-  let minX = Infinity;
-  let maxX = -Infinity;
-  let minY = Infinity;
-  let maxY = -Infinity;
+  let minX = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
   const updateBounds = (x, y, w3 = 0, h = 0) => {
     const left = x - w3 / 2;
     const right = x + w3 / 2;
@@ -36337,11 +36336,12 @@ var applyOrigin = (elements, origin) => {
       dx2 = maxX;
       dy2 = (minY + maxY) / 2;
       break;
-    case "pin1":
+    case "pin1": {
       const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0];
       dx2 = pin1.x;
       dy2 = pin1.y;
       break;
+    }
   }
   if (dx2 === 0 && dy2 === 0)
     return elements;
