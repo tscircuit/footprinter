@@ -12,7 +12,7 @@ import { silkscreenpath } from "../helpers/silkscreenpath"
 export const mountedpcbmodule_def = base_def
   .extend({
     fn: z.string(),
-    num_pins: z.number().optional().default(5),
+    numPins: z.number().optional().default(0),
     rows: z
       .union([z.string(), z.number()])
       .transform((val) => Number(val))
@@ -47,7 +47,7 @@ export const mountedpcbmodule_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
-    pin_row_side: z
+    pinRowSide: z
       .enum(["left", "right", "top", "bottom"])
       .optional()
       .default("left"),
@@ -57,7 +57,7 @@ export const mountedpcbmodule_def = base_def
     pinrowbottom: z.boolean().optional().default(false),
     width: length.default("10mm"),
     height: length.default("10mm"),
-    pin_row_hole_edge_to_edge_dist: length.default("2mm"),
+    pinRowHoleEdgeToEdgeDist: length.default("2mm"),
     holes: z
       .union([z.string(), z.array(z.string())])
       .optional()
@@ -72,26 +72,26 @@ export const mountedpcbmodule_def = base_def
         }
         return [val]
       }),
-    hole_x_dist: length.optional(),
-    hole_y_dist: length.optional(),
+    holeXDist: length.optional(),
+    holeYDist: length.optional(),
     pinrow: z.union([z.string(), z.number()]).optional(),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
-    let pin_row_side = data.pin_row_side
-    if (data.pinrowleft) pin_row_side = "left"
-    if (data.pinrowright) pin_row_side = "right"
-    if (data.pinrowtop) pin_row_side = "top"
-    if (data.pinrowbottom) pin_row_side = "bottom"
+    let pinRowSide = data.pinRowSide
+    if (data.pinrowleft) pinRowSide = "left"
+    if (data.pinrowright) pinRowSide = "right"
+    if (data.pinrowtop) pinRowSide = "top"
+    if (data.pinrowbottom) pinRowSide = "bottom"
 
     if (data.pinrow !== undefined) {
-      data.num_pins = Number(data.pinrow)
+      data.numPins = Number(data.pinrow)
     }
 
     return {
       ...data,
       pinlabelAnchorSide,
-      pin_row_side,
+      pinRowSide,
       male: data.male ?? !data.female,
       female: data.female ?? false,
     }
@@ -116,7 +116,7 @@ export const mountedpcbmodule = (
     id,
     od,
     rows,
-    num_pins,
+    numPins,
     pinlabelAnchorSide,
     pinlabelverticallyinverted,
     pinlabelorthogonal,
@@ -125,13 +125,13 @@ export const mountedpcbmodule = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
-    pin_row_side,
+    pinRowSide,
     width,
     height,
-    pin_row_hole_edge_to_edge_dist,
+    pinRowHoleEdgeToEdgeDist,
     holes,
-    hole_x_dist,
-    hole_y_dist,
+    holeXDist,
+    holeYDist,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -148,36 +148,36 @@ export const mountedpcbmodule = (
   let rowDirectionX = 0
   let rowDirectionY = 0
 
-  const numPinsPerRow = Math.ceil(num_pins / rows)
+  const numPinsPerRow = Math.ceil(numPins / rows)
 
   // Determine pin row orientation
-  if (pin_row_side === "left" || pin_row_side === "right") {
+  if (pinRowSide === "left" || pinRowSide === "right") {
     pinStartX =
-      pin_row_side === "left"
-        ? -width / 2 - pin_row_hole_edge_to_edge_dist
-        : width / 2 + pin_row_hole_edge_to_edge_dist
+      pinRowSide === "left"
+        ? -width / 2 - pinRowHoleEdgeToEdgeDist
+        : width / 2 + pinRowHoleEdgeToEdgeDist
     pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing
     pinDirectionX = 0
     pinDirectionY = -pinSpacing
-    rowDirectionX = pin_row_side === "left" ? pinSpacing : -pinSpacing // stack towards center
+    rowDirectionX = pinRowSide === "left" ? pinSpacing : -pinSpacing // stack towards center
     rowDirectionY = 0
   } else {
     // top or bottom
     pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing
     pinStartY =
-      pin_row_side === "top"
-        ? height / 2 + pin_row_hole_edge_to_edge_dist
-        : -height / 2 - pin_row_hole_edge_to_edge_dist
+      pinRowSide === "top"
+        ? height / 2 + pinRowHoleEdgeToEdgeDist
+        : -height / 2 - pinRowHoleEdgeToEdgeDist
     pinDirectionX = pinSpacing
     pinDirectionY = 0
     rowDirectionX = 0
-    rowDirectionY = pin_row_side === "top" ? pinSpacing : -pinSpacing // stack away from center
+    rowDirectionY = pinRowSide === "top" ? pinSpacing : -pinSpacing // stack away from center
   }
 
   // Add pins
   let pinNumber = 1
-  for (let row = 0; row < rows && pinNumber <= num_pins; row++) {
-    for (let col = 0; col < numPinsPerRow && pinNumber <= num_pins; col++) {
+  for (let row = 0; row < rows && pinNumber <= numPins; row++) {
+    for (let col = 0; col < numPinsPerRow && pinNumber <= numPins; col++) {
       const xoff = pinStartX + col * pinDirectionX + row * rowDirectionX
       const yoff = pinStartY + col * pinDirectionY + row * rowDirectionY
 
@@ -206,11 +206,9 @@ export const mountedpcbmodule = (
 
       if (!nopinlabels) {
         const anchor_x =
-          xoff +
-          (pin_row_side === "left" ? -od : pin_row_side === "right" ? od : 0)
+          xoff + (pinRowSide === "left" ? -od : pinRowSide === "right" ? od : 0)
         const anchor_y =
-          yoff +
-          (pin_row_side === "top" ? od : pin_row_side === "bottom" ? -od : 0)
+          yoff + (pinRowSide === "top" ? od : pinRowSide === "bottom" ? -od : 0)
         if (!bottomsidepinlabel) {
           elements.push(
             silkscreenPin({
@@ -269,10 +267,10 @@ export const mountedpcbmodule = (
         hy = 0
       }
       // If hole_x_dist/hole_y_dist provided, use as offsets
-      if (hole_x_dist !== undefined) hx += hole_x_dist
-      if (hole_y_dist !== undefined) hy += hole_y_dist
+      if (holeXDist !== undefined) hx += holeXDist
+      if (holeYDist !== undefined) hy += holeYDist
       elements.push(
-        platedhole(num_pins + holes.indexOf(pos) + 1, hx, hy, id, od),
+        platedhole(numPins + holes.indexOf(pos) + 1, hx, hy, id, od),
       )
     }
   }
