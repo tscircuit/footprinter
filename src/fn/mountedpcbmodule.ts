@@ -74,6 +74,7 @@ export const mountedpcbmodule_def = base_def
       }),
     holeXDist: length.optional(),
     holeYDist: length.optional(),
+    holeInset: length.default("1mm"),
     pinrow: z.union([z.string(), z.number()]).optional(),
   })
   .transform((data) => {
@@ -132,6 +133,7 @@ export const mountedpcbmodule = (
     holes,
     holeXDist,
     holeYDist,
+    holeInset,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -251,17 +253,17 @@ export const mountedpcbmodule = (
       let hx = 0
       let hy = 0
       if (pos === "topleft") {
-        hx = -width / 2
-        hy = height / 2
+        hx = -width / 2 + holeInset
+        hy = height / 2 - holeInset
       } else if (pos === "topright") {
-        hx = width / 2
-        hy = height / 2
+        hx = width / 2 - holeInset
+        hy = height / 2 - holeInset
       } else if (pos === "bottomleft") {
-        hx = -width / 2
-        hy = -height / 2
+        hx = -width / 2 + holeInset
+        hy = -height / 2 + holeInset
       } else if (pos === "bottomright") {
-        hx = width / 2
-        hy = -height / 2
+        hx = width / 2 - holeInset
+        hy = -height / 2 + holeInset
       } else if (pos === "center") {
         hx = 0
         hy = 0
