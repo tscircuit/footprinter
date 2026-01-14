@@ -29552,9 +29552,9 @@ var chipArray = (params) => {
 
 // src/helpers/res0402-array2.ts
 var res0402Array2_def = base_def.extend({
-  pw: exports_external.string().default("0.5mm"),
-  ph: exports_external.string().default("0.4mm"),
-  p: exports_external.string().default("0.7mm"),
+  pw: length.default("0.5mm"),
+  ph: length.default("0.4mm"),
+  p: length.default("0.7mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
@@ -29582,9 +29582,9 @@ var res0402Array2 = (rawParams) => {
 
 // src/helpers/res0402-array4.ts
 var res0402Array4_def = base_def.extend({
-  pw: exports_external.string().default("0.5mm"),
-  ph: exports_external.string().default("0.32mm"),
-  p: exports_external.string().default("0.5mm"),
+  pw: length.default("0.5mm"),
+  ph: length.default("0.32mm"),
+  p: length.default("0.5mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
@@ -29609,9 +29609,9 @@ var res0402Array4 = (rawParams) => {
 
 // src/helpers/res0603-array2.ts
 var res0603Array2_def = base_def.extend({
-  pw: exports_external.string().default("0.9mm"),
-  ph: exports_external.string().default("0.4mm"),
-  p: exports_external.string().default("0.8mm"),
+  pw: length.default("0.9mm"),
+  ph: length.default("0.4mm"),
+  p: length.default("0.8mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
@@ -29636,9 +29636,9 @@ var res0603Array2 = (rawParams) => {
 
 // src/helpers/res0603-array4.ts
 var res0603Array4_def = base_def.extend({
-  pw: exports_external.string().default("0.9mm"),
-  ph: exports_external.string().default("0.4mm"),
-  p: exports_external.string().default("0.8mm"),
+  pw: length.default("0.9mm"),
+  ph: length.default("0.4mm"),
+  p: length.default("0.8mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
@@ -29663,9 +29663,9 @@ var res0603Array4 = (rawParams) => {
 
 // src/helpers/res0606-array2.ts
 var res0606Array2_def = base_def.extend({
-  pw: exports_external.string().default("0.7mm"),
-  ph: exports_external.string().default("0.64mm"),
-  p: exports_external.string().default("0.94mm"),
+  pw: length.default("0.7mm"),
+  ph: length.default("0.64mm"),
+  p: length.default("0.94mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
@@ -29690,9 +29690,9 @@ var res0606Array2 = (rawParams) => {
 
 // src/helpers/res1206-array4.ts
 var res1206Array4_def = base_def.extend({
-  pw: exports_external.string().default("0.9mm"),
-  ph: exports_external.string().default("0.9mm"),
-  p: exports_external.string().default("1.34mm"),
+  pw: length.default("0.9mm"),
+  ph: length.default("0.9mm"),
+  p: length.default("1.34mm"),
   textbottom: exports_external.boolean().optional(),
   convex: exports_external.boolean().optional(),
   concave: exports_external.boolean().optional()
