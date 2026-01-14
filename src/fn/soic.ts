@@ -16,7 +16,7 @@ export const extendSoicDef = (newDefaults: {
   num_pins?: number
   legsoutside?: boolean
   pillpads?: boolean
-  ref_text_size?: number
+  reftextsize?: number
 }) =>
   base_def
     .extend({
@@ -40,9 +40,9 @@ export const extendSoicDef = (newDefaults: {
     .transform((v) => {
       if (
         v.reftextsize === undefined &&
-        newDefaults.ref_text_size !== undefined
+        newDefaults.reftextsize !== undefined
       ) {
-        v.reftextsize = newDefaults.ref_text_size
+        v.reftextsize = newDefaults.reftextsize
       }
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
