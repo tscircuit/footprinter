@@ -156,8 +156,8 @@ export const mountedpcbmodule = (
   if (pinRowSide === "left" || pinRowSide === "right") {
     pinStartX =
       pinRowSide === "left"
-        ? -width / 2 - pinRowHoleEdgeToEdgeDist
-        : width / 2 + pinRowHoleEdgeToEdgeDist
+        ? -width / 2 + pinRowHoleEdgeToEdgeDist
+        : width / 2 - pinRowHoleEdgeToEdgeDist
     pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing
     pinDirectionX = 0
     pinDirectionY = -pinSpacing
@@ -168,12 +168,12 @@ export const mountedpcbmodule = (
     pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing
     pinStartY =
       pinRowSide === "top"
-        ? height / 2 + pinRowHoleEdgeToEdgeDist
-        : -height / 2 - pinRowHoleEdgeToEdgeDist
+        ? height / 2 - pinRowHoleEdgeToEdgeDist
+        : -height / 2 + pinRowHoleEdgeToEdgeDist
     pinDirectionX = pinSpacing
     pinDirectionY = 0
     rowDirectionX = 0
-    rowDirectionY = pinRowSide === "top" ? pinSpacing : -pinSpacing // stack away from center
+    rowDirectionY = pinRowSide === "top" ? -pinSpacing : pinSpacing // stack towards center
   }
 
   // Add pins
