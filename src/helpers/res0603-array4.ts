@@ -1,13 +1,14 @@
 import type { AnyCircuitElement } from "circuit-json"
+import { length } from "circuit-json"
 import { chipArray } from "./chipArray"
 import { z } from "zod"
 import { base_def } from "./zod/base_def"
 import mm from "@tscircuit/mm"
 
 export const res0603Array4_def = base_def.extend({
-  pw: z.string().default("0.9mm"),
-  ph: z.string().default("0.4mm"),
-  p: z.string().default("0.8mm"),
+  pw: length.default("0.9mm"),
+  ph: length.default("0.4mm"),
+  p: length.default("0.8mm"),
   textbottom: z.boolean().optional(),
   convex: z.boolean().optional(),
   concave: z.boolean().optional(),
