@@ -4,7 +4,7 @@ export const silkscreenpath = (
   route: Array<{ x: number; y: number }>,
   options: {
     stroke_width?: number
-    layer?: string
+    layer?: "top" | "bottom"
     pcb_component_id?: string
     pcb_silkscreen_path_id?: string
   } = {},
