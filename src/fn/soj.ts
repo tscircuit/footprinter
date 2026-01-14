@@ -17,7 +17,7 @@ export const soj = (
   const sh =
     (parameters.num_pins / 2 - 1) * parameters.p + (parameters.pw ?? 0.6) + m
 
-  parameters.ref_text_size = Math.max(0.5, Math.min(0.7, sh / 12))
+  parameters.reftextsize = Math.max(0.5, Math.min(0.7, sh / 12))
 
   return {
     circuitJson: soicWithoutParsing(parameters),

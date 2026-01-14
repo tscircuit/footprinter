@@ -34,15 +34,15 @@ export const extendSoicDef = (newDefaults: {
         .boolean()
         .optional()
         .default(newDefaults.pillpads ?? false),
-      ref_text_size: z.number().optional(),
+      reftextsize: z.number().optional(),
       silkscreen_stroke_width: z.number().optional().default(0.1),
     })
     .transform((v) => {
       if (
-        v.ref_text_size === undefined &&
+        v.reftextsize === undefined &&
         newDefaults.ref_text_size !== undefined
       ) {
-        v.ref_text_size = newDefaults.ref_text_size
+        v.reftextsize = newDefaults.ref_text_size
       }
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
@@ -143,7 +143,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
-    parameters.ref_text_size ?? sh / 12,
+    parameters.reftextsize ?? sh / 12,
   )
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
