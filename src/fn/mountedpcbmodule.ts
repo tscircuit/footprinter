@@ -22,13 +22,9 @@ export const mountedpcbmodule_def = base_def
     p: length.default("2.54mm").describe("pitch"),
     id: length.default("1.0mm").describe("inner diameter"),
     od: length.default("1.5mm").describe("outer diameter"),
-    male: z.boolean().optional().describe("for male pin headers"),
-    female: z.boolean().optional().describe("for female pin headers"),
+    male: z.boolean().optional().describe("the module uses male headers"),
+    female: z.boolean().optional().describe("the module uses female headers"),
     smd: z.boolean().optional().describe("surface mount device"),
-    surfacemount: z
-      .boolean()
-      .optional()
-      .describe("surface mount device (verbose)"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -98,7 +94,6 @@ export const mountedpcbmodule_def = base_def
       pin_row_side,
       male: data.male ?? !data.female,
       female: data.female ?? false,
-      smd: data.smd ?? data.surfacemount ?? false,
     }
   })
   .superRefine((data, ctx) => {
