@@ -265,7 +265,7 @@ export const string = (def: string): Footprinter => {
 
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
-  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1")
+  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
