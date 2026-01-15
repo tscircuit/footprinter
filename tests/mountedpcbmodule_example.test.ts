@@ -9,7 +9,5 @@ test("mountedpcbmodule_pinrow10_holexdist_holeydist_pinrowleft_pinrowholeedgetoe
     )
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path)
 })
