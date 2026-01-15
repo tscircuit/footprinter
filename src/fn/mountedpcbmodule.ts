@@ -55,8 +55,8 @@ export const mountedpcbmodule_def = base_def
     pinrowright: z.boolean().optional().default(false),
     pinrowtop: z.boolean().optional().default(false),
     pinrowbottom: z.boolean().optional().default(false),
-    width: length.default("10mm"),
-    height: length.default("10mm"),
+    width: length.optional(),
+    height: length.optional(),
     pinRowHoleEdgeToEdgeDist: length.default("2mm"),
     holes: z
       .union([z.string(), z.array(z.string())])
@@ -89,12 +89,33 @@ export const mountedpcbmodule_def = base_def
       data.numPins = Number(data.pinrow)
     }
 
+    const numPinsPerRow = Math.ceil(data.numPins / data.rows)
+    let calculatedWidth: number
+    let calculatedHeight: number
+    if (pinRowSide === "left" || pinRowSide === "right") {
+      calculatedWidth =
+        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+      calculatedHeight =
+        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+    } else {
+      calculatedHeight =
+        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+      calculatedWidth =
+        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+    }
+    if (data.numPins === 0) {
+      calculatedWidth = 10
+      calculatedHeight = 10
+    }
+
     return {
       ...data,
       pinlabelAnchorSide,
       pinRowSide,
       male: data.male ?? !data.female,
       female: data.female ?? false,
+      width: data.width ?? calculatedWidth,
+      height: data.height ?? calculatedHeight,
     }
   })
   .superRefine((data, ctx) => {
