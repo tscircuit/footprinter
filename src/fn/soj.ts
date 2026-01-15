@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 export const soj_def = extendSoicDef({
@@ -9,7 +9,7 @@ export const soj_def = extendSoicDef({
 
 export const soj = (
   raw_params: any,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = soj_def.parse(raw_params)
   parameters.w += 1.8
 
