@@ -23,7 +23,7 @@ const getArrayCount = (parameters: ResArrayParams): number | undefined => {
   }
 
   if (typeof parameters.imperial === "string") {
-    const match = parameters.imperial.match(/(?:array|x)(2|4)$/)
+    const match = parameters.imperial.match(/x(2|4)$/)
     const count = match?.[1]
     if (count) {
       return Number.parseInt(count, 10)
@@ -36,7 +36,7 @@ const getArrayCount = (parameters: ResArrayParams): number | undefined => {
 const getImperialBase = (imperial?: string | number): string | undefined => {
   if (!imperial) return undefined
   const imperialString = typeof imperial === "number" ? `${imperial}` : imperial
-  return imperialString.split("_")[0]
+  return imperialString.split(/[_x]/)[0]
 }
 
 export const res = (
