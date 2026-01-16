@@ -1,13 +1,13 @@
-import { z } from "zod"
-import { length, type AnyCircuitElement } from "circuit-json"
-import { platedhole } from "../helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { type AnyCircuitElement, length } from "circuit-json"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
-import { base_def } from "../helpers/zod/base_def"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
+import { rectpad } from "../helpers/rectpad"
 import { silkscreenpath } from "../helpers/silkscreenpath"
+import { base_def } from "../helpers/zod/base_def"
 
 export const mountedpcbmodule_def = base_def
   .extend({
@@ -76,6 +76,17 @@ export const mountedpcbmodule_def = base_def
     holeYDist: length.optional(),
     holeInset: length.default("1mm"),
     pinrow: z.union([z.string(), z.number()]).optional(),
+    usbposition: z
+      .enum(["left", "right", "top", "bottom"])
+      .optional()
+      .default("left"),
+    usbleft: z.boolean().optional().default(false),
+    usbtop: z.boolean().optional().default(false),
+    usbright: z.boolean().optional().default(false),
+    usbbottom: z.boolean().optional().default(false),
+    usbtype: z.enum(["micro", "c"]).optional(),
+    usbmicro: z.boolean().optional().default(false),
+    usbc: z.boolean().optional().default(false),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -84,6 +95,16 @@ export const mountedpcbmodule_def = base_def
     if (data.pinrowright) pinRowSide = "right"
     if (data.pinrowtop) pinRowSide = "top"
     if (data.pinrowbottom) pinRowSide = "bottom"
+
+    let usbposition = data.usbposition
+    if (data.usbleft) usbposition = "left"
+    if (data.usbtop) usbposition = "top"
+    if (data.usbright) usbposition = "right"
+    if (data.usbbottom) usbposition = "bottom"
+
+    let usbtype = data.usbtype
+    if (data.usbmicro) usbtype = "micro"
+    if (data.usbc) usbtype = "c"
 
     if (data.pinrow !== undefined) {
       data.numPins = Number(data.pinrow)
