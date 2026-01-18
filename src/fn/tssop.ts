@@ -53,8 +53,9 @@ export const tssop = (
 
   const parameters = tssop_def.parse(params)
   const pads: AnyCircuitElement[] = []
-  const wForPads =
-    isFinePitch ? parameters.w - length.parse("0.15mm") : parameters.w
+  const wForPads = isFinePitch
+    ? parameters.w - length.parse("0.15mm")
+    : parameters.w
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
