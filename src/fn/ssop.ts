@@ -85,8 +85,7 @@ export const ssop = (
   }
 
   const m = Math.min(1, parameters.p / 2)
-  const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
+  const sw = parameters.w - (parameters.legsoutside ? 0 : parameters.pl) - 0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
