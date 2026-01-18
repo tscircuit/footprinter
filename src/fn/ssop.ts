@@ -21,12 +21,12 @@ export const ssop_def = base_def
   })
   .transform((v) => {
     if (v.pw == null && v.pl == null) {
-      v.pw = length.parse("0.6mm")
-      v.pl = length.parse("1.0mm")
+      v.pw = length.parse("0.51mm")
+      v.pl = length.parse("1.1mm")
     } else if (v.pw == null) {
-      v.pw = v.pl! * (0.6 / 1.0)
+      v.pw = v.pl! * (0.51 / 1.1)
     } else if (v.pl == null) {
-      v.pl = v.pw! * (1.0 / 0.6)
+      v.pl = v.pw! * (1.1 / 0.51)
     }
 
     return v as {
@@ -51,18 +51,19 @@ const getSsopCoords = (parameters: {
   pl: number
   legsoutside: boolean
 }) => {
-  const { num_pins, pn, w, p, pl, legsoutside } = parameters
+  const { num_pins, pn, w, p } = parameters
   const ph = num_pins / 2
   const isLeft = pn <= ph
   const leftPinGaps = ph - 1
   const gs = p
   const h = gs * leftPinGaps
-  const legoffset = legsoutside ? pl / 2 : -pl / 2
+  const padRowSpan = w + length.parse("0.2mm")
+  const x = (isLeft ? -1 : 1) * (padRowSpan / 2)
 
   if (isLeft) {
-    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs }
+    return { x, y: h / 2 - (pn - 1) * gs }
   }
-  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
+  return { x, y: -h / 2 + (pn - ph - 1) * gs }
 }
 
 export const ssop = (
