@@ -6,38 +6,16 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { u_curve } from "../helpers/u-curve"
 
-export const tssop_def = base_def
-  .extend({
-    fn: z.string(),
-    num_pins: z.number().optional().default(8),
-    w: length.default(length.parse("7.1mm")),
-    p: length.default(length.parse("0.65mm")),
-    pw: length.default(length.parse("0.40mm")),
-    pl: length.default(length.parse("1.35mm")),
-    legsoutside: z.boolean().optional().default(true),
-    silkscreen_stroke_width: z.number().optional().default(0.1),
-  })
-  .transform((v) => {
-    if (!v.pw && !v.pl) {
-      v.pw = length.parse("0.40mm")
-      v.pl = length.parse("1.35mm")
-    } else if (!v.pw) {
-      v.pw = v.pl! * (0.4 / 1.35)
-    } else if (!v.pl) {
-      v.pl = v.pw! * (1.35 / 0.4)
-    }
-
-    return v as {
-      w: number
-      p: number
-      pw: number
-      pl: number
-      num_pins: number
-      legsoutside: boolean
-      silkscreen_stroke_width?: number
-      fn: string
-    }
-  })
+export const tssop_def = base_def.extend({
+  fn: z.string(),
+  num_pins: z.number().optional().default(8),
+  w: length.default(length.parse("7.1mm")),
+  p: length.default(length.parse("0.65mm")),
+  pw: length.default(length.parse("0.40mm")),
+  pl: length.default(length.parse("1.35mm")),
+  legsoutside: z.boolean().optional().default(true),
+  silkscreen_stroke_width: z.number().optional().default(0.1),
+})
 
 export type TssopInput = z.infer<typeof tssop_def>
 
