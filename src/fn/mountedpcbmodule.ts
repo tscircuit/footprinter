@@ -55,6 +55,22 @@ export const mountedpcbmodule_def = base_def
     pinrowright: z.boolean().optional().default(false),
     pinrowtop: z.boolean().optional().default(false),
     pinrowbottom: z.boolean().optional().default(false),
+    pinrowleftpins: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional(),
+    pinrowrightpins: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional(),
+    pinrowtoppins: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional(),
+    pinrowbottompins: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional(),
     width: length.optional(),
     height: length.optional(),
     pinRowHoleEdgeToEdgeDist: length.default("2mm"),
@@ -110,10 +126,56 @@ export const mountedpcbmodule_def = base_def
       data.numPins = Number(data.pinrow)
     }
 
+    const sidePinCounts = {
+      left: data.pinrowleftpins,
+      right: data.pinrowrightpins,
+      top: data.pinrowtoppins,
+      bottom: data.pinrowbottompins,
+    }
+    const hasSidePins = Object.values(sidePinCounts).some(
+      (value) => value !== undefined && value > 0,
+    )
+    const leftRightBoth =
+      (sidePinCounts.left ?? 0) > 0 && (sidePinCounts.right ?? 0) > 0
+    const topBottomBoth =
+      (sidePinCounts.top ?? 0) > 0 && (sidePinCounts.bottom ?? 0) > 0
+
+    if (hasSidePins) {
+      if ((sidePinCounts.left ?? 0) > 0) pinRowSide = "left"
+      else if ((sidePinCounts.right ?? 0) > 0) pinRowSide = "right"
+      else if ((sidePinCounts.top ?? 0) > 0) pinRowSide = "top"
+      else if ((sidePinCounts.bottom ?? 0) > 0) pinRowSide = "bottom"
+
+      data.numPins =
+        (sidePinCounts.left ?? 0) +
+        (sidePinCounts.right ?? 0) +
+        (sidePinCounts.top ?? 0) +
+        (sidePinCounts.bottom ?? 0)
+    }
+
     const numPinsPerRow = Math.ceil(data.numPins / data.rows)
+    const verticalPins = Math.max(
+      sidePinCounts.left ?? 0,
+      sidePinCounts.right ?? 0,
+    )
+    const horizontalPins = Math.max(
+      sidePinCounts.top ?? 0,
+      sidePinCounts.bottom ?? 0,
+    )
     let calculatedWidth: number
     let calculatedHeight: number
-    if (pinRowSide === "left" || pinRowSide === "right") {
+    if (hasSidePins) {
+      const widthGap = leftRightBoth ? data.p : 0
+      const heightGap = topBottomBoth ? data.p : 0
+      calculatedWidth =
+        (horizontalPins > 0 ? (horizontalPins - 1) * data.p : 0) +
+        2 * data.pinRowHoleEdgeToEdgeDist +
+        widthGap
+      calculatedHeight =
+        (verticalPins > 0 ? (verticalPins - 1) * data.p : 0) +
+        2 * data.pinRowHoleEdgeToEdgeDist +
+        heightGap
+    } else if (pinRowSide === "left" || pinRowSide === "right") {
       calculatedWidth =
         (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
       calculatedHeight =
@@ -137,6 +199,10 @@ export const mountedpcbmodule_def = base_def
       female: data.female ?? false,
       width: data.width ?? calculatedWidth,
       height: data.height ?? calculatedHeight,
+      pinrowleftpins: sidePinCounts.left,
+      pinrowrightpins: sidePinCounts.right,
+      pinrowtoppins: sidePinCounts.top,
+      pinrowbottompins: sidePinCounts.bottom,
     }
   })
   .superRefine((data, ctx) => {
@@ -176,6 +242,10 @@ export const mountedpcbmodule = (
     holeXDist,
     holeYDist,
     holeInset,
+    pinrowleftpins,
+    pinrowrightpins,
+    pinrowtoppins,
+    pinrowbottompins,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -183,109 +253,226 @@ export const mountedpcbmodule = (
 
   const elements: AnyCircuitElement[] = []
 
-  // Calculate pin positions
-  const pinSpacing = p
-  let pinStartX = 0
-  let pinStartY = 0
-  let pinDirectionX = 0
-  let pinDirectionY = 0
-  let rowDirectionX = 0
-  let rowDirectionY = 0
+  const sidePinCounts = {
+    left: pinrowleftpins,
+    right: pinrowrightpins,
+    top: pinrowtoppins,
+    bottom: pinrowbottompins,
+  }
+  const hasSidePins = Object.values(sidePinCounts).some(
+    (value) => value !== undefined && value > 0,
+  )
 
-  const numPinsPerRow = Math.ceil(numPins / rows)
+  const addPin = (
+    pinNumber: number,
+    xoff: number,
+    yoff: number,
+    anchorSide: "left" | "right" | "top" | "bottom",
+  ) => {
+    if (parameters.smd) {
+      elements.push(
+        rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
+      )
+    } else if (pinNumber === 1) {
+      elements.push(
+        platedHoleWithRectPad({
+          pn: pinNumber,
+          x: xoff,
+          y: yoff,
+          holeDiameter: id,
+          rectPadWidth: od,
+          rectPadHeight: od,
+        }),
+      )
+    } else {
+      elements.push(platedhole(pinNumber, xoff, yoff, id, od))
+    }
 
-  // Determine pin row orientation
-  if (pinRowSide === "left" || pinRowSide === "right") {
-    pinStartX =
-      pinRowSide === "left"
-        ? -width / 2 + pinRowHoleEdgeToEdgeDist
-        : width / 2 - pinRowHoleEdgeToEdgeDist
-    pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing
-    pinDirectionX = 0
-    pinDirectionY = -pinSpacing
-    rowDirectionX = pinRowSide === "left" ? pinSpacing : -pinSpacing // stack towards center
-    rowDirectionY = 0
-  } else {
-    // top or bottom
-    pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing
-    pinStartY =
-      pinRowSide === "top"
-        ? height / 2 - pinRowHoleEdgeToEdgeDist
-        : -height / 2 + pinRowHoleEdgeToEdgeDist
-    pinDirectionX = pinSpacing
-    pinDirectionY = 0
-    rowDirectionX = 0
-    rowDirectionY = pinRowSide === "top" ? -pinSpacing : pinSpacing // stack towards center
+    if (!nopinlabels) {
+      const anchor_x =
+        xoff + (anchorSide === "left" ? -od : anchorSide === "right" ? od : 0)
+      const anchor_y =
+        yoff + (anchorSide === "top" ? od : anchorSide === "bottom" ? -od : 0)
+      if (!bottomsidepinlabel) {
+        elements.push(
+          silkscreenPin({
+            fs: od / 5,
+            pn: pinNumber,
+            anchor_x,
+            anchor_y,
+            anchorplacement: anchorSide,
+            textalign: pinlabelTextAlign,
+            orthogonal: pinlabelorthogonal,
+            verticallyinverted: pinlabelverticallyinverted,
+            layer: "top",
+          }),
+        )
+      }
+      if (doublesidedpinlabel || bottomsidepinlabel) {
+        elements.push(
+          silkscreenPin({
+            fs: od / 5,
+            pn: pinNumber,
+            anchor_x,
+            anchor_y,
+            anchorplacement: anchorSide,
+            textalign: pinlabelTextAlign,
+            orthogonal: pinlabelorthogonal,
+            verticallyinverted: pinlabelverticallyinverted,
+            layer: "bottom",
+          }),
+        )
+      }
+    }
   }
 
-  // Add pins
-  let pinNumber = 1
-  for (let row = 0; row < rows && pinNumber <= numPins; row++) {
-    for (let col = 0; col < numPinsPerRow && pinNumber <= numPins; col++) {
-      const xoff = pinStartX + col * pinDirectionX + row * rowDirectionX
-      const yoff = pinStartY + col * pinDirectionY + row * rowDirectionY
+  if (hasSidePins) {
+    const pinSpacing = p
+    let pinNumber = 1
+    const leftCount = sidePinCounts.left ?? 0
+    const rightCount = sidePinCounts.right ?? 0
+    const topCount = sidePinCounts.top ?? 0
+    const bottomCount = sidePinCounts.bottom ?? 0
 
-      if (parameters.smd) {
-        // SMD pads
-        elements.push(
-          rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
-        ) // Assuming pw/pl same as od for simplicity
+    const addSidePins = (
+      side: "left" | "right" | "top" | "bottom",
+      count: number,
+    ) => {
+      if (count <= 0) return
+      if (side === "left" || side === "right") {
+        const xoff =
+          side === "left"
+            ? -width / 2 + pinRowHoleEdgeToEdgeDist
+            : width / 2 - pinRowHoleEdgeToEdgeDist
+        const startY = ((count - 1) / 2) * pinSpacing
+        for (let i = 0; i < count; i++) {
+          addPin(pinNumber, xoff, startY - i * pinSpacing, side)
+          pinNumber++
+        }
       } else {
-        // Through-hole
-        if (pinNumber === 1) {
+        const yoff =
+          side === "top"
+            ? height / 2 - pinRowHoleEdgeToEdgeDist
+            : -height / 2 + pinRowHoleEdgeToEdgeDist
+        const startX = -((count - 1) / 2) * pinSpacing
+        for (let i = 0; i < count; i++) {
+          addPin(pinNumber, startX + i * pinSpacing, yoff, side)
+          pinNumber++
+        }
+      }
+    }
+
+    addSidePins("left", leftCount)
+    addSidePins("right", rightCount)
+    addSidePins("top", topCount)
+    addSidePins("bottom", bottomCount)
+  } else {
+    // Calculate pin positions
+    const pinSpacing = p
+    let pinStartX = 0
+    let pinStartY = 0
+    let pinDirectionX = 0
+    let pinDirectionY = 0
+    let rowDirectionX = 0
+    let rowDirectionY = 0
+
+    const numPinsPerRow = Math.ceil(numPins / rows)
+
+    // Determine pin row orientation
+    if (pinRowSide === "left" || pinRowSide === "right") {
+      pinStartX =
+        pinRowSide === "left"
+          ? -width / 2 + pinRowHoleEdgeToEdgeDist
+          : width / 2 - pinRowHoleEdgeToEdgeDist
+      pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing
+      pinDirectionX = 0
+      pinDirectionY = -pinSpacing
+      rowDirectionX = pinRowSide === "left" ? pinSpacing : -pinSpacing // stack towards center
+      rowDirectionY = 0
+    } else {
+      // top or bottom
+      pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing
+      pinStartY =
+        pinRowSide === "top"
+          ? height / 2 - pinRowHoleEdgeToEdgeDist
+          : -height / 2 + pinRowHoleEdgeToEdgeDist
+      pinDirectionX = pinSpacing
+      pinDirectionY = 0
+      rowDirectionX = 0
+      rowDirectionY = pinRowSide === "top" ? -pinSpacing : pinSpacing // stack towards center
+    }
+
+    // Add pins
+    let pinNumber = 1
+    for (let row = 0; row < rows && pinNumber <= numPins; row++) {
+      for (let col = 0; col < numPinsPerRow && pinNumber <= numPins; col++) {
+        const xoff = pinStartX + col * pinDirectionX + row * rowDirectionX
+        const yoff = pinStartY + col * pinDirectionY + row * rowDirectionY
+
+        if (parameters.smd) {
+          // SMD pads
           elements.push(
-            platedHoleWithRectPad({
-              pn: pinNumber,
-              x: xoff,
-              y: yoff,
-              holeDiameter: id,
-              rectPadWidth: od,
-              rectPadHeight: od,
-            }),
-          )
+            rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
+          ) // Assuming pw/pl same as od for simplicity
         } else {
-          elements.push(platedhole(pinNumber, xoff, yoff, id, od))
+          // Through-hole
+          if (pinNumber === 1) {
+            elements.push(
+              platedHoleWithRectPad({
+                pn: pinNumber,
+                x: xoff,
+                y: yoff,
+                holeDiameter: id,
+                rectPadWidth: od,
+                rectPadHeight: od,
+              }),
+            )
+          } else {
+            elements.push(platedhole(pinNumber, xoff, yoff, id, od))
+          }
         }
-      }
 
-      if (!nopinlabels) {
-        const anchor_x =
-          xoff + (pinRowSide === "left" ? -od : pinRowSide === "right" ? od : 0)
-        const anchor_y =
-          yoff + (pinRowSide === "top" ? od : pinRowSide === "bottom" ? -od : 0)
-        if (!bottomsidepinlabel) {
-          elements.push(
-            silkscreenPin({
-              fs: od / 5,
-              pn: pinNumber,
-              anchor_x,
-              anchor_y,
-              anchorplacement: pinlabelAnchorSide,
-              textalign: pinlabelTextAlign,
-              orthogonal: pinlabelorthogonal,
-              verticallyinverted: pinlabelverticallyinverted,
-              layer: "top",
-            }),
-          )
+        if (!nopinlabels) {
+          const anchor_x =
+            xoff +
+            (pinRowSide === "left" ? -od : pinRowSide === "right" ? od : 0)
+          const anchor_y =
+            yoff +
+            (pinRowSide === "top" ? od : pinRowSide === "bottom" ? -od : 0)
+          if (!bottomsidepinlabel) {
+            elements.push(
+              silkscreenPin({
+                fs: od / 5,
+                pn: pinNumber,
+                anchor_x,
+                anchor_y,
+                anchorplacement: pinlabelAnchorSide,
+                textalign: pinlabelTextAlign,
+                orthogonal: pinlabelorthogonal,
+                verticallyinverted: pinlabelverticallyinverted,
+                layer: "top",
+              }),
+            )
+          }
+          if (doublesidedpinlabel || bottomsidepinlabel) {
+            elements.push(
+              silkscreenPin({
+                fs: od / 5,
+                pn: pinNumber,
+                anchor_x,
+                anchor_y,
+                anchorplacement: pinlabelAnchorSide,
+                textalign: pinlabelTextAlign,
+                orthogonal: pinlabelorthogonal,
+                verticallyinverted: pinlabelverticallyinverted,
+                layer: "bottom",
+              }),
+            )
+          }
         }
-        if (doublesidedpinlabel || bottomsidepinlabel) {
-          elements.push(
-            silkscreenPin({
-              fs: od / 5,
-              pn: pinNumber,
-              anchor_x,
-              anchor_y,
-              anchorplacement: pinlabelAnchorSide,
-              textalign: pinlabelTextAlign,
-              orthogonal: pinlabelorthogonal,
-              verticallyinverted: pinlabelverticallyinverted,
-              layer: "bottom",
-            }),
-          )
-        }
-      }
 
-      pinNumber++
+        pinNumber++
+      }
     }
   }
 
