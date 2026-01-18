@@ -84,27 +84,21 @@ export const tssop = (
 
   const parameters = tssop_def.parse(params)
   const pads: AnyCircuitElement[] = []
+  const wForPads =
+    pValue != null && pValue <= length.parse("0.5mm")
+      ? parameters.w - length.parse("0.15mm")
+      : parameters.w
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: parameters.w,
+      w: wForPads,
       p: parameters.p,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
     pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
-  }
-
-  if (pValue != null && pValue <= length.parse("0.5mm")) {
-    const inset = length.parse("0.075mm")
-    for (const element of pads) {
-      if (element.type === "pcb_smtpad" && "x" in element) {
-        const x = element.x
-        element.x = x + (x >= 0 ? -inset : inset)
-      }
-    }
   }
 
   const m = Math.min(1, parameters.p / 2)
