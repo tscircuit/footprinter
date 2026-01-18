@@ -9,10 +9,10 @@ import { u_curve } from "../helpers/u-curve"
 export const tssop_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().optional().default(8),
-  w: length.default(length.parse("7.1mm")),
-  p: length.default(length.parse("0.65mm")),
-  pw: length.default(length.parse("0.40mm")),
-  pl: length.default(length.parse("1.35mm")),
+  w: length.default(length.parse("3.0mm")),
+  p: length.default(length.parse("0.5mm")),
+  pw: length.default(length.parse("0.30mm")),
+  pl: length.default(length.parse("1.45mm")),
   legsoutside: z.boolean().optional().default(true),
   silkscreen_stroke_width: z.number().optional().default(0.1),
 })
@@ -31,14 +31,13 @@ const getTssopCoords = (parameters: {
   const ph = num_pins / 2
   const isLeft = pn <= ph
   const leftPinGaps = ph - 1
-  const gs = p
-  const h = gs * leftPinGaps
+  const h = p * leftPinGaps
   const legoffset = legsoutside ? pl / 2 : -pl / 2
 
   if (isLeft) {
-    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs }
+    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * p }
   }
-  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
+  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * p }
 }
 
 export const tssop = (
@@ -50,22 +49,12 @@ export const tssop = (
     typeof pRaw === "string" || typeof pRaw === "number"
       ? length.parse(pRaw)
       : undefined
-
-  if (pValue != null && pValue <= length.parse("0.5mm")) {
-    if (params.pl == null) {
-      params.pl = "1.45mm"
-    }
-    if (params.pw == null) {
-      params.pw = "0.3mm"
-    }
-  }
+  const isFinePitch = pValue != null && pValue <= length.parse("0.5mm")
 
   const parameters = tssop_def.parse(params)
   const pads: AnyCircuitElement[] = []
   const wForPads =
-    pValue != null && pValue <= length.parse("0.5mm")
-      ? parameters.w - length.parse("0.15mm")
-      : parameters.w
+    isFinePitch ? parameters.w - length.parse("0.15mm") : parameters.w
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
