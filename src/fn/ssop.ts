@@ -14,18 +14,18 @@ export const ssop_def = base_def
     num_pins: z.number().optional().default(8),
     w: length.default(length.parse("3.9mm")),
     p: length.default(length.parse("1.27mm")),
-    pw: length.default(length.parse("0.6mm")),
-    pl: length.default(length.parse("1.0mm")),
+    pw: length.optional(),
+    pl: length.optional(),
     legsoutside: z.boolean().optional().default(false),
     silkscreen_stroke_width: z.number().optional().default(0.1),
   })
   .transform((v) => {
-    if (!v.pw && !v.pl) {
+    if (v.pw == null && v.pl == null) {
       v.pw = length.parse("0.6mm")
       v.pl = length.parse("1.0mm")
-    } else if (!v.pw) {
+    } else if (v.pw == null) {
       v.pw = v.pl! * (0.6 / 1.0)
-    } else if (!v.pl) {
+    } else if (v.pl == null) {
       v.pl = v.pw! * (1.0 / 0.6)
     }
 
