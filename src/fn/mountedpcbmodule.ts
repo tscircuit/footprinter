@@ -133,6 +133,8 @@ export const mountedpcbmodule_def = base_def
       ...data,
       pinlabelAnchorSide,
       pinRowSide,
+      usbposition,
+      usbtype,
       male: data.male ?? !data.female,
       female: data.female ?? false,
       width: data.width ?? calculatedWidth,
@@ -176,6 +178,8 @@ export const mountedpcbmodule = (
     holeXDist,
     holeYDist,
     holeInset,
+    usbposition,
+    usbtype,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -334,6 +338,68 @@ export const mountedpcbmodule = (
   // Add silkscreen reference text
   const refText: SilkscreenRef = silkscreenRef(0, height / 2 + 1, 0.5)
   elements.push(refText)
+
+  // Add USB silkscreen rectangle if USB is configured
+  if (usbposition && usbtype) {
+    let usbRectWidth: number
+    let usbRectHeight: number
+
+    if (usbtype === "c") {
+      usbRectWidth = 8
+      usbRectHeight = 3
+    } else if (usbtype === "micro") {
+      usbRectWidth = 6
+      usbRectHeight = 2
+    } else {
+      return {
+        circuitJson: elements,
+        parameters,
+      }
+    }
+
+    let usbRect: Array<{ x: number; y: number }>
+
+    if (usbposition === "left") {
+      usbRect = [
+        { x: -width / 2, y: -usbRectWidth / 2 },
+        { x: -width / 2 + usbRectHeight, y: -usbRectWidth / 2 },
+        { x: -width / 2 + usbRectHeight, y: usbRectWidth / 2 },
+        { x: -width / 2, y: usbRectWidth / 2 },
+        { x: -width / 2, y: -usbRectWidth / 2 },
+      ]
+    } else if (usbposition === "right") {
+      usbRect = [
+        { x: width / 2 - usbRectHeight, y: -usbRectWidth / 2 },
+        { x: width / 2, y: -usbRectWidth / 2 },
+        { x: width / 2, y: usbRectWidth / 2 },
+        { x: width / 2 - usbRectHeight, y: usbRectWidth / 2 },
+        { x: width / 2 - usbRectHeight, y: -usbRectWidth / 2 },
+      ]
+    } else if (usbposition === "top") {
+      usbRect = [
+        { x: -usbRectWidth / 2, y: height / 2 - usbRectHeight },
+        { x: usbRectWidth / 2, y: height / 2 - usbRectHeight },
+        { x: usbRectWidth / 2, y: height / 2 },
+        { x: -usbRectWidth / 2, y: height / 2 },
+        { x: -usbRectWidth / 2, y: height / 2 - usbRectHeight },
+      ]
+    } else if (usbposition === "bottom") {
+      usbRect = [
+        { x: -usbRectWidth / 2, y: -height / 2 },
+        { x: usbRectWidth / 2, y: -height / 2 },
+        { x: usbRectWidth / 2, y: -height / 2 + usbRectHeight },
+        { x: -usbRectWidth / 2, y: -height / 2 + usbRectHeight },
+        { x: -usbRectWidth / 2, y: -height / 2 },
+      ]
+    } else {
+      return {
+        circuitJson: elements,
+        parameters,
+      }
+    }
+
+    elements.push(silkscreenpath(usbRect, { stroke_width: 0.1, layer: "top" }))
+  }
 
   return {
     circuitJson: elements,
