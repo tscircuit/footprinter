@@ -272,12 +272,13 @@ export const mountedpcbmodule = (
     xoff: number,
     yoff: number,
     anchorSide: "left" | "right" | "top" | "bottom",
+    isFirstOnSide?: boolean,
   ) => {
     if (parameters.smd) {
       elements.push(
         rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
       )
-    } else if (pinNumber === 1) {
+    } else if (isFirstOnSide ?? pinNumber === 1) {
       elements.push(
         platedHoleWithRectPad({
           pn: pinNumber,
@@ -332,6 +333,7 @@ export const mountedpcbmodule = (
 
   if (hasSidePins) {
     const pinSpacing = p
+    let pinNumber = 1
     const leftCount = sidePinCounts.left ?? 0
     const rightCount = sidePinCounts.right ?? 0
     const topCount = sidePinCounts.top ?? 0
@@ -342,7 +344,6 @@ export const mountedpcbmodule = (
       count: number,
     ) => {
       if (count <= 0) return
-      let pinNumber = 1
       if (side === "left" || side === "right") {
         const xoff =
           side === "left"
@@ -350,7 +351,7 @@ export const mountedpcbmodule = (
             : width / 2 - pinRowHoleEdgeToEdgeDist
         const startY = ((count - 1) / 2) * pinSpacing
         for (let i = 0; i < count; i++) {
-          addPin(pinNumber, xoff, startY - i * pinSpacing, side)
+          addPin(pinNumber, xoff, startY - i * pinSpacing, side, i === 0)
           pinNumber++
         }
       } else {
@@ -360,7 +361,7 @@ export const mountedpcbmodule = (
             : -height / 2 + pinRowHoleEdgeToEdgeDist
         const startX = -((count - 1) / 2) * pinSpacing
         for (let i = 0; i < count; i++) {
-          addPin(pinNumber, startX + i * pinSpacing, yoff, side)
+          addPin(pinNumber, startX + i * pinSpacing, yoff, side, i === 0)
           pinNumber++
         }
       }
