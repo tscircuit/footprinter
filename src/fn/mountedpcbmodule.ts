@@ -332,7 +332,6 @@ export const mountedpcbmodule = (
 
   if (hasSidePins) {
     const pinSpacing = p
-    let pinNumber = 1
     const leftCount = sidePinCounts.left ?? 0
     const rightCount = sidePinCounts.right ?? 0
     const topCount = sidePinCounts.top ?? 0
@@ -343,6 +342,7 @@ export const mountedpcbmodule = (
       count: number,
     ) => {
       if (count <= 0) return
+      let pinNumber = 1
       if (side === "left" || side === "right") {
         const xoff =
           side === "left"
