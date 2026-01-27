@@ -46,7 +46,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       return typeof obj.readFloatLE === "function" && typeof obj.slice === "function" && isBuffer(obj.slice(0, 0));
     }
     var toString = Object.prototype.toString;
-    var kindOf = function kindOf(val) {
+    var kindOf = function kindOf2(val) {
       if (typeof val === "undefined") {
         return "undefined";
       }
@@ -369,7 +369,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       }
       return obj;
     }
-    var noop = function noop() {};
+    var noop = function noop2() {};
     var State = {
       data: "state-data",
       cdata: "state-cdata",
@@ -411,10 +411,10 @@ var require_svgson_umd = __commonJS((exports, module) => {
       "=": Action.equal,
       "/": Action.slash
     };
-    var getAction = function getAction(char) {
+    var getAction = function getAction2(char) {
       return charToAction[char] || Action.char;
     };
-    var create$1 = function create(options) {
+    var create$1 = function create2(options) {
       var _State$data, _State$tagBegin, _State$tagName, _State$tagEnd, _State$attributeNameS, _State$attributeName, _State$attributeNameE, _State$attributeValue, _State$attributeValue2, _lexer$stateMachine;
       options = Object.assign({ debug: false }, options);
       var lexer2 = new eventemitter3;
@@ -425,7 +425,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       var attrValue = "";
       var isClosing = "";
       var openingQuote = "";
-      var emit = function emit(type, value) {
+      var emit = function emit2(type, value) {
         if (tagName[0] === "?" || tagName[0] === "!") {
           return;
         }
@@ -575,7 +575,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       }), _defineProperty(_State$attributeValue2, Action.char, function(char) {
         attrValue += char;
       }), _State$attributeValue2)), _lexer$stateMachine);
-      var step = function step(char) {
+      var step = function step2(char) {
         if (options.debug) {
           console.log(state, char);
         }
@@ -602,7 +602,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       element: "element",
       text: "text"
     };
-    var createNode = function createNode(params) {
+    var createNode = function createNode2(params) {
       return Object.assign({
         name: "",
         type: NodeType.element,
@@ -612,7 +612,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
         children: []
       }, params);
     };
-    var create = function create(options) {
+    var create = function create2(options) {
       options = Object.assign({
         stream: false,
         parentNodes: true,
@@ -623,7 +623,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       }, options);
       var lexer$1 = undefined, rootNode = undefined, current = undefined, attrName = undefined;
       var reader2 = new eventemitter3;
-      var handleLexerData = function handleLexerData(data) {
+      var handleLexerData = function handleLexerData2(data) {
         switch (data.type) {
           case Type.openTag:
             if (current === null) {
@@ -690,7 +690,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       reader2.reset();
       return reader2;
     };
-    var parseSync = function parseSync(xml, options) {
+    var parseSync = function parseSync2(xml, options) {
       options = Object.assign({}, options, { stream: false, tagPrefix: ":" });
       var reader2 = create(options);
       var res = undefined;
@@ -706,7 +706,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       NodeType
     };
     var reader_1 = reader.parseSync;
-    var parseInput = function parseInput(input) {
+    var parseInput = function parseInput2(input) {
       var parsed = reader_1("<root>".concat(input, "</root>"), {
         parentNodes: false
       });
@@ -719,7 +719,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
         throw Error("nothing to parse");
       }
     };
-    var camelize = function camelize(node) {
+    var camelize = function camelize2(node) {
       return deepRenameKeys(node, function(key) {
         if (!notCamelcase(key)) {
           return toCamelCase(key);
@@ -727,29 +727,29 @@ var require_svgson_umd = __commonJS((exports, module) => {
         return key;
       });
     };
-    var toCamelCase = function toCamelCase(prop) {
+    var toCamelCase = function toCamelCase2(prop) {
       return prop.replace(/[-|:]([a-z])/gi, function(all, letter) {
         return letter.toUpperCase();
       });
     };
-    var notCamelcase = function notCamelcase(prop) {
+    var notCamelcase = function notCamelcase2(prop) {
       return /^(data|aria)(-\w+)/.test(prop);
     };
-    var escapeText = function escapeText(text) {
+    var escapeText = function escapeText2(text) {
       if (text) {
         var str = String(text);
         return /[&<>]/.test(str) ? "<![CDATA[".concat(str.replace(/]]>/, "]]]]><![CDATA[>"), "]]>") : str;
       }
       return "";
     };
-    var escapeAttr = function escapeAttr(attr) {
+    var escapeAttr = function escapeAttr2(attr) {
       return String(attr).replace(/&/g, "&amp;").replace(/'/g, "&apos;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
     };
-    var svgsonSync = function svgsonSync(input) {
+    var svgsonSync = function svgsonSync2(input) {
       var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {}, _ref$transformNode = _ref.transformNode, transformNode = _ref$transformNode === undefined ? function(node) {
         return node;
       } : _ref$transformNode, _ref$camelcase = _ref.camelcase, camelcase = _ref$camelcase === undefined ? false : _ref$camelcase;
-      var applyFilters = function applyFilters(input2) {
+      var applyFilters = function applyFilters2(input2) {
         var n;
         n = transformNode(input2);
         if (camelcase) {
@@ -772,7 +772,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
         }
       });
     }
-    var stringify = function stringify(_ast) {
+    var stringify = function stringify2(_ast) {
       var _ref = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {}, _ref$transformAttr = _ref.transformAttr, transformAttr = _ref$transformAttr === undefined ? function(key, value, escape) {
         return "".concat(key, '="').concat(escape(value), '"');
       } : _ref$transformAttr, _ref$transformNode = _ref.transformNode, transformNode = _ref$transformNode === undefined ? function(node) {
@@ -780,7 +780,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
       } : _ref$transformNode, _ref$selfClose = _ref.selfClose, selfClose = _ref$selfClose === undefined ? true : _ref$selfClose;
       if (Array.isArray(_ast)) {
         return _ast.map(function(ast2) {
-          return stringify(ast2, {
+          return stringify2(ast2, {
             transformAttr,
             selfClose,
             transformNode
@@ -796,7 +796,7 @@ var require_svgson_umd = __commonJS((exports, module) => {
         var attrStr = transformAttr(attr, ast.attributes[attr], escapeAttr, ast.name);
         attributes += attrStr ? " ".concat(attrStr) : "";
       }
-      return ast.children && ast.children.length > 0 || !selfClose ? "<".concat(ast.name).concat(attributes, ">").concat(stringify(ast.children, {
+      return ast.children && ast.children.length > 0 || !selfClose ? "<".concat(ast.name).concat(attributes, ">").concat(stringify2(ast.children, {
         transformAttr,
         transformNode,
         selfClose
@@ -853,7 +853,7 @@ var require_react_development = __commonJS((exports, module) => {
       try {
         testStringCoercion(value);
         var JSCompiler_inline_result = false;
-      } catch (e3) {
+      } catch (e2) {
         JSCompiler_inline_result = true;
       }
       if (JSCompiler_inline_result) {
@@ -905,7 +905,7 @@ var require_react_development = __commonJS((exports, module) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {}
+            } catch (x3) {}
         }
       return null;
     }
@@ -917,7 +917,7 @@ var require_react_development = __commonJS((exports, module) => {
       try {
         var name = getComponentNameFromType(type);
         return name ? "<" + name + ">" : "<...>";
-      } catch (x) {
+      } catch (x3) {
         return "<...>";
       }
     }
@@ -1629,7 +1629,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useTransition = function() {
       return resolveDispatcher().useTransition();
     };
-    exports.version = "19.2.3";
+    exports.version = "19.2.4";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -1918,7 +1918,7 @@ var require_react_dom_development = __commonJS((exports) => {
       try {
         testStringCoercion(key);
         var JSCompiler_inline_result = false;
-      } catch (e3) {
+      } catch (e2) {
         JSCompiler_inline_result = true;
       }
       JSCompiler_inline_result && (console.error("The provided key is an unsupported type %s. This value must be coerced to a string before using it here.", typeof Symbol === "function" && Symbol.toStringTag && key[Symbol.toStringTag] || key.constructor.name || "Object"), testStringCoercion(key));
@@ -2083,7 +2083,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
     exports.useFormStatus = function() {
       return resolveDispatcher().useHostTransitionStatus();
     };
-    exports.version = "19.2.3";
+    exports.version = "19.2.4";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -2102,9 +2102,9 @@ var require_react_dom_client_development = __commonJS((exports) => {
   var React = __toESM(require_react());
   var ReactDOM = __toESM(require_react_dom());
   (function() {
-    function findHook(fiber, id2) {
-      for (fiber = fiber.memoizedState;fiber !== null && 0 < id2; )
-        fiber = fiber.next, id2--;
+    function findHook(fiber, id) {
+      for (fiber = fiber.memoizedState;fiber !== null && 0 < id; )
+        fiber = fiber.next, id--;
       return fiber;
     }
     function copyWithSetImpl(obj, path, index, value) {
@@ -2350,7 +2350,7 @@ var require_react_dom_client_development = __commonJS((exports) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {}
+            } catch (x3) {}
         }
       return null;
     }
@@ -2560,11 +2560,11 @@ var require_react_dom_client_development = __commonJS((exports) => {
       if (prefix === undefined)
         try {
           throw Error();
-        } catch (x) {
-          var match = x.stack.trim().match(/\n( *(at )?)/);
+        } catch (x3) {
+          var match = x3.stack.trim().match(/\n( *(at )?)/);
           prefix = match && match[1] || "";
-          suffix = -1 < x.stack.indexOf(`
-    at`) ? " (<anonymous>)" : -1 < x.stack.indexOf("@") ? "@unknown:0:0" : "";
+          suffix = -1 < x3.stack.indexOf(`
+    at`) ? " (<anonymous>)" : -1 < x3.stack.indexOf("@") ? "@unknown:0:0" : "";
         }
       return `
 ` + prefix + name + suffix;
@@ -2598,8 +2598,8 @@ var require_react_dom_client_development = __commonJS((exports) => {
                 if (typeof Reflect === "object" && Reflect.construct) {
                   try {
                     Reflect.construct(Fake, []);
-                  } catch (x) {
-                    var control = x;
+                  } catch (x3) {
+                    var control = x3;
                   }
                   Reflect.construct(fn2, [], Fake);
                 } else {
@@ -2719,10 +2719,10 @@ var require_react_dom_client_development = __commonJS((exports) => {
           workInProgress2 = workInProgress2.return;
         } while (workInProgress2);
         return info;
-      } catch (x) {
+      } catch (x3) {
         return `
-Error generating stack: ` + x.message + `
-` + x.stack;
+Error generating stack: ` + x3.message + `
+` + x3.stack;
       }
     }
     function describeFunctionComponentFrameWithoutLineNumber(fn2) {
@@ -2782,10 +2782,10 @@ Error generating stack: ` + x.message + `
           } else
             break;
         var JSCompiler_inline_result = info;
-      } catch (x) {
+      } catch (x3) {
         JSCompiler_inline_result = `
-Error generating stack: ` + x.message + `
-` + x.stack;
+Error generating stack: ` + x3.message + `
+` + x3.stack;
       }
       return JSCompiler_inline_result;
     }
@@ -2810,7 +2810,7 @@ Error generating stack: ` + x.message + `
     function willCoercionThrow(value) {
       try {
         return testStringCoercion(value), false;
-      } catch (e3) {
+      } catch (e2) {
         return true;
       }
     }
@@ -2853,9 +2853,9 @@ Error generating stack: ` + x.message + `
           hasLoggedError || (hasLoggedError = true, console.error("React instrumentation encountered an error: %o", err));
         }
     }
-    function clz32Fallback(x) {
-      x >>>= 0;
-      return x === 0 ? 32 : 31 - (log2(x) / LN2 | 0) | 0;
+    function clz32Fallback(x3) {
+      x3 >>>= 0;
+      return x3 === 0 ? 32 : 31 - (log2(x3) / LN2 | 0) | 0;
     }
     function getHighestPriorityLanes(lanes) {
       var pendingSyncLanes = lanes & 42;
@@ -3335,7 +3335,7 @@ Error generating stack: ` + x.message + `
         return null;
       try {
         return doc.activeElement || doc.body;
-      } catch (e3) {
+      } catch (e2) {
         return doc.body;
       }
     }
@@ -3708,7 +3708,7 @@ Check the render method of \`` + ownerName + "`." : "";
         return `
 
 ` + describeNode(rootNode, 0);
-      } catch (x) {
+      } catch (x3) {
         return "";
       }
     }
@@ -3917,7 +3917,7 @@ This will cause a hydration error.%s`, parentTag, implicitRootScope);
       node.textContent = text;
     }
     function camelize(string) {
-      return string.replace(hyphenPattern, function(_2, character) {
+      return string.replace(hyphenPattern, function(_3, character) {
         return character.toUpperCase();
       });
     }
@@ -4422,8 +4422,8 @@ This will cause a hydration error.%s`, parentTag, implicitRootScope);
       if (domEventName === "input" || domEventName === "change")
         return getInstIfValueChanged(targetInst);
     }
-    function is2(x, y) {
-      return x === y && (x !== 0 || 1 / x === 1 / y) || x !== x && y !== y;
+    function is2(x3, y) {
+      return x3 === y && (x3 !== 0 || 1 / x3 === 1 / y) || x3 !== x3 && y !== y;
     }
     function shallowEqual(objA, objB) {
       if (objectIs(objA, objB))
@@ -5826,10 +5826,10 @@ It can also happen if the client has a browser extension installed which messes 
     function resolveLazy(lazyType2) {
       try {
         return callLazyInitInDEV(lazyType2);
-      } catch (x) {
-        if (x !== null && typeof x === "object" && typeof x.then === "function")
-          throw suspendedThenable = x, needsToResetSuspendedThenableDEV = true, SuspenseException;
-        throw x;
+      } catch (x3) {
+        if (x3 !== null && typeof x3 === "object" && typeof x3.then === "function")
+          throw suspendedThenable = x3, needsToResetSuspendedThenableDEV = true, SuspenseException;
+        throw x3;
       }
     }
     function getSuspendedThenable() {
@@ -6276,10 +6276,10 @@ It can also happen if the client has a browser extension installed which messes 
           var firstChildFiber = reconcileChildFibersImpl(returnFiber, currentFirstChild, newChild, lanes);
           thenableState$1 = null;
           return firstChildFiber;
-        } catch (x) {
-          if (x === SuspenseException || x === SuspenseActionException)
-            throw x;
-          var fiber = createFiber(29, x, null, returnFiber.mode);
+        } catch (x3) {
+          if (x3 === SuspenseException || x3 === SuspenseActionException)
+            throw x3;
+          var fiber = createFiber(29, x3, null, returnFiber.mode);
           fiber.lanes = lanes;
           fiber.return = returnFiber;
           var debugInfo = fiber._debugInfo = currentDebugInfo;
@@ -7253,10 +7253,10 @@ Incoming: %s`, currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + next
       if (typeof currentStateHook === "object" && currentStateHook !== null && typeof currentStateHook.then === "function")
         try {
           var state = useThenable(currentStateHook);
-        } catch (x) {
-          if (x === SuspenseException)
+        } catch (x3) {
+          if (x3 === SuspenseException)
             throw SuspenseActionException;
-          throw x;
+          throw x3;
         }
       else
         state = currentStateHook;
@@ -9455,12 +9455,12 @@ Learn more about data fetching with Hooks: https://react.dev/link/hooks-data-fet
           ref.current = null;
     }
     function commitProfiler(finishedWork, current3, commitStartTime2, effectDuration) {
-      var _finishedWork$memoize = finishedWork.memoizedProps, id2 = _finishedWork$memoize.id, onCommit = _finishedWork$memoize.onCommit;
+      var _finishedWork$memoize = finishedWork.memoizedProps, id = _finishedWork$memoize.id, onCommit = _finishedWork$memoize.onCommit;
       _finishedWork$memoize = _finishedWork$memoize.onRender;
       current3 = current3 === null ? "mount" : "update";
       currentUpdateIsNested && (current3 = "nested-update");
-      typeof _finishedWork$memoize === "function" && _finishedWork$memoize(id2, current3, finishedWork.actualDuration, finishedWork.treeBaseDuration, finishedWork.actualStartTime, commitStartTime2);
-      typeof onCommit === "function" && onCommit(id2, current3, effectDuration, commitStartTime2);
+      typeof _finishedWork$memoize === "function" && _finishedWork$memoize(id, current3, finishedWork.actualDuration, finishedWork.treeBaseDuration, finishedWork.actualStartTime, commitStartTime2);
+      typeof onCommit === "function" && onCommit(id, current3, effectDuration, commitStartTime2);
     }
     function commitProfilerPostCommitImpl(finishedWork, current3, commitStartTime2, passiveEffectDuration) {
       var _finishedWork$memoize2 = finishedWork.memoizedProps;
@@ -15722,7 +15722,7 @@ Check the render method of %s.`, getComponentNameFromFiber(current2) || "Unknown
         });
         window.addEventListener("test", options$jscomp$0, options$jscomp$0);
         window.removeEventListener("test", options$jscomp$0, options$jscomp$0);
-      } catch (e3) {
+      } catch (e2) {
         passiveBrowserEventsSupported = false;
       }
     var root = null, startText = null, fallbackText = null, EventInterface = {
@@ -17493,17 +17493,17 @@ Check the top-level render call using <` + componentName2 + ">.");
     }, badgeFormat = "%c%s%c", badgeStyle = "background: #e6e6e6;background: light-dark(rgba(0,0,0,0.1), rgba(255,255,255,0.25));color: #000000;color: light-dark(#000000, #ffffff);border-radius: 2px", resetStyle = "", pad = " ", bind = Function.prototype.bind;
     var didWarnAboutNestedUpdates = false;
     var overrideHookState = null, overrideHookStateDeletePath = null, overrideHookStateRenamePath = null, overrideProps = null, overridePropsDeletePath = null, overridePropsRenamePath = null, scheduleUpdate = null, scheduleRetry = null, setErrorHandler = null, setSuspenseHandler = null;
-    overrideHookState = function(fiber, id2, path, value) {
-      id2 = findHook(fiber, id2);
-      id2 !== null && (path = copyWithSetImpl(id2.memoizedState, path, 0, value), id2.memoizedState = path, id2.baseState = path, fiber.memoizedProps = assign({}, fiber.memoizedProps), path = enqueueConcurrentRenderForLane(fiber, 2), path !== null && scheduleUpdateOnFiber(path, fiber, 2));
+    overrideHookState = function(fiber, id, path, value) {
+      id = findHook(fiber, id);
+      id !== null && (path = copyWithSetImpl(id.memoizedState, path, 0, value), id.memoizedState = path, id.baseState = path, fiber.memoizedProps = assign({}, fiber.memoizedProps), path = enqueueConcurrentRenderForLane(fiber, 2), path !== null && scheduleUpdateOnFiber(path, fiber, 2));
     };
-    overrideHookStateDeletePath = function(fiber, id2, path) {
-      id2 = findHook(fiber, id2);
-      id2 !== null && (path = copyWithDeleteImpl(id2.memoizedState, path, 0), id2.memoizedState = path, id2.baseState = path, fiber.memoizedProps = assign({}, fiber.memoizedProps), path = enqueueConcurrentRenderForLane(fiber, 2), path !== null && scheduleUpdateOnFiber(path, fiber, 2));
+    overrideHookStateDeletePath = function(fiber, id, path) {
+      id = findHook(fiber, id);
+      id !== null && (path = copyWithDeleteImpl(id.memoizedState, path, 0), id.memoizedState = path, id.baseState = path, fiber.memoizedProps = assign({}, fiber.memoizedProps), path = enqueueConcurrentRenderForLane(fiber, 2), path !== null && scheduleUpdateOnFiber(path, fiber, 2));
     };
-    overrideHookStateRenamePath = function(fiber, id2, oldPath, newPath) {
-      id2 = findHook(fiber, id2);
-      id2 !== null && (oldPath = copyWithRename(id2.memoizedState, oldPath, newPath), id2.memoizedState = oldPath, id2.baseState = oldPath, fiber.memoizedProps = assign({}, fiber.memoizedProps), oldPath = enqueueConcurrentRenderForLane(fiber, 2), oldPath !== null && scheduleUpdateOnFiber(oldPath, fiber, 2));
+    overrideHookStateRenamePath = function(fiber, id, oldPath, newPath) {
+      id = findHook(fiber, id);
+      id !== null && (oldPath = copyWithRename(id.memoizedState, oldPath, newPath), id.memoizedState = oldPath, id.baseState = oldPath, fiber.memoizedProps = assign({}, fiber.memoizedProps), oldPath = enqueueConcurrentRenderForLane(fiber, 2), oldPath !== null && scheduleUpdateOnFiber(oldPath, fiber, 2));
     };
     overrideProps = function(fiber, path, value) {
       fiber.pendingProps = copyWithSetImpl(fiber.memoizedProps, path, 0, value);
@@ -17573,10 +17573,10 @@ Check the top-level render call using <` + componentName2 + ">.");
     };
     (function() {
       var isomorphicReactPackageVersion = React.version;
-      if (isomorphicReactPackageVersion !== "19.2.3")
+      if (isomorphicReactPackageVersion !== "19.2.4")
         throw Error(`Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
   - react:      ` + (isomorphicReactPackageVersion + `
-  - react-dom:  19.2.3
+  - react-dom:  19.2.4
 Learn more: https://react.dev/warnings/version-mismatch`));
     })();
     typeof Map === "function" && Map.prototype != null && typeof Map.prototype.forEach === "function" && typeof Set === "function" && Set.prototype != null && typeof Set.prototype.clear === "function" && typeof Set.prototype.forEach === "function" || console.error("React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://react.dev/link/react-polyfills");
@@ -17596,10 +17596,10 @@ Learn more: https://react.dev/warnings/version-mismatch`));
     if (!function() {
       var internals = {
         bundleType: 1,
-        version: "19.2.3",
+        version: "19.2.4",
         rendererPackageName: "react-dom",
         currentDispatcherRef: ReactSharedInternals,
-        reconcilerVersion: "19.2.3"
+        reconcilerVersion: "19.2.4"
       };
       internals.overrideHookState = overrideHookState;
       internals.overrideHookStateDeletePath = overrideHookStateDeletePath;
@@ -17659,7 +17659,7 @@ You might need to use a local HTTP server (instead of file://): https://react.de
       listenToAllSupportedEvents(container);
       return new ReactDOMHydrationRoot(initialChildren);
     };
-    exports.version = "19.2.3";
+    exports.version = "19.2.4";
     typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
   })();
 });
@@ -17717,7 +17717,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
             type = type._init;
             try {
               return getComponentNameFromType(type(innerType));
-            } catch (x) {}
+            } catch (x3) {}
         }
       return null;
     }
@@ -17728,7 +17728,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
       try {
         testStringCoercion(value);
         var JSCompiler_inline_result = false;
-      } catch (e3) {
+      } catch (e2) {
         JSCompiler_inline_result = true;
       }
       if (JSCompiler_inline_result) {
@@ -17747,7 +17747,7 @@ var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
       try {
         var name = getComponentNameFromType(type);
         return name ? "<" + name + ">" : "<...>";
-      } catch (x) {
+      } catch (x3) {
         return "<...>";
       }
     }
@@ -25748,13 +25748,13 @@ var import_svgson4 = __toESM(require_svgson_umd(), 1);
 function _(t, o) {
   return Array.isArray(o) ? [t.a * o[0] + t.c * o[1] + t.e, t.b * o[0] + t.d * o[1] + t.f] : { x: t.a * o.x + t.c * o.y + t.e, y: t.b * o.x + t.d * o.y + t.f };
 }
-function Jt(t) {
+function $t(t) {
   return typeof t > "u";
 }
-function bt(t, o = 0) {
+function _t(t, o = 0) {
   return { a: 1, c: 0, e: t, b: 0, d: 1, f: o };
 }
-function L(...t) {
+function V(...t) {
   t = Array.isArray(t[0]) ? t[0] : t;
   let o = (i, l) => ({ a: i.a * l.a + i.c * l.b, c: i.a * l.c + i.c * l.d, e: i.a * l.e + i.c * l.f + i.e, b: i.b * l.a + i.d * l.b, d: i.b * l.c + i.d * l.d, f: i.b * l.e + i.d * l.f + i.f });
   switch (t.length) {
@@ -25766,30 +25766,30 @@ function L(...t) {
       return o(t[0], t[1]);
     default: {
       let [i, l, ...a] = t, y = o(i, l);
-      return L(y, ...a);
+      return V(y, ...a);
     }
   }
 }
-var { cos: _f, sin: gf, PI: d_ } = Math;
-function cr(t, o, i) {
-  let l = _f(t), a = gf(t), y = { a: l, c: -a, e: 0, b: a, d: l, f: 0 };
-  return Jt(o) || Jt(i) ? y : L([bt(o, i), y, bt(-o, -i)]);
+var { cos: Of, sin: Jf, PI: O_ } = Math;
+function dr(t, o, i) {
+  let l = Of(t), a = Jf(t), y = { a: l, c: -a, e: 0, b: a, d: l, f: 0 };
+  return $t(o) || $t(i) ? y : V([_t(o, i), y, _t(-o, -i)]);
 }
-function uf(t, o) {
+function $f(t, o) {
   function i() {
     this.constructor = t;
   }
   i.prototype = o.prototype, t.prototype = new i;
 }
-function $t(t, o, i, l) {
+function Mt(t, o, i, l) {
   var a = Error.call(this, t);
-  return Object.setPrototypeOf && Object.setPrototypeOf(a, $t.prototype), a.expected = o, a.found = i, a.location = l, a.name = "SyntaxError", a;
+  return Object.setPrototypeOf && Object.setPrototypeOf(a, Mt.prototype), a.expected = o, a.found = i, a.location = l, a.name = "SyntaxError", a;
 }
-uf($t, Error);
-function hr(t, o, i) {
+$f(Mt, Error);
+function br(t, o, i) {
   return i = i || " ", t.length > o ? t : (o -= t.length, i += i.repeat(o), t + i.slice(0, o));
 }
-$t.prototype.format = function(t) {
+Mt.prototype.format = function(t) {
   var o = "Error: " + this.message;
   if (this.location) {
     var i = null, l;
@@ -25800,26 +25800,26 @@ $t.prototype.format = function(t) {
       }
     var a = this.location.start, y = this.location.source && typeof this.location.source.offset == "function" ? this.location.source.offset(a) : a, n = this.location.source + ":" + y.line + ":" + y.column;
     if (i) {
-      var m = this.location.end, h = hr("", y.line.toString().length, " "), p = i[a.line - 1], x = a.line === m.line ? m.column : p.length + 1, f = x - a.column || 1;
+      var m = this.location.end, h = br("", y.line.toString().length, " "), p = i[a.line - 1], s = a.line === m.line ? m.column : p.length + 1, f = s - a.column || 1;
       o += `
  --> ` + n + `
 ` + h + ` |
 ` + y.line + " | " + p + `
-` + h + " | " + hr("", a.column - 1, " ") + hr("", f, "^");
+` + h + " | " + br("", a.column - 1, " ") + br("", f, "^");
     } else
       o += `
  at ` + n;
   }
   return o;
 };
-$t.buildMessage = function(t, o) {
+Mt.buildMessage = function(t, o) {
   var i = { literal: function(p) {
     return '"' + a(p.text) + '"';
   }, class: function(p) {
-    var x = p.parts.map(function(f) {
+    var s = p.parts.map(function(f) {
       return Array.isArray(f) ? y(f[0]) + "-" + y(f[1]) : y(f);
     });
-    return "[" + (p.inverted ? "^" : "") + x.join("") + "]";
+    return "[" + (p.inverted ? "^" : "") + s.join("") + "]";
   }, any: function() {
     return "any character";
   }, end: function() {
@@ -25831,36 +25831,36 @@ $t.buildMessage = function(t, o) {
     return p.charCodeAt(0).toString(16).toUpperCase();
   }
   function a(p) {
-    return p.replace(/\\/g, "\\\\").replace(/"/g, "\\\"").replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(x) {
-      return "\\x0" + l(x);
-    }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(x) {
-      return "\\x" + l(x);
+    return p.replace(/\\/g, "\\\\").replace(/"/g, "\\\"").replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(s) {
+      return "\\x0" + l(s);
+    }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(s) {
+      return "\\x" + l(s);
     });
   }
   function y(p) {
-    return p.replace(/\\/g, "\\\\").replace(/\]/g, "\\]").replace(/\^/g, "\\^").replace(/-/g, "\\-").replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(x) {
-      return "\\x0" + l(x);
-    }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(x) {
-      return "\\x" + l(x);
+    return p.replace(/\\/g, "\\\\").replace(/\]/g, "\\]").replace(/\^/g, "\\^").replace(/-/g, "\\-").replace(/\0/g, "\\0").replace(/\t/g, "\\t").replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/[\x00-\x0F]/g, function(s) {
+      return "\\x0" + l(s);
+    }).replace(/[\x10-\x1F\x7F-\x9F]/g, function(s) {
+      return "\\x" + l(s);
     });
   }
   function n(p) {
     return i[p.type](p);
   }
   function m(p) {
-    var x = p.map(n), f, d;
-    if (x.sort(), x.length > 0) {
-      for (f = 1, d = 1;f < x.length; f++)
-        x[f - 1] !== x[f] && (x[d] = x[f], d++);
-      x.length = d;
+    var s = p.map(n), f, d;
+    if (s.sort(), s.length > 0) {
+      for (f = 1, d = 1;f < s.length; f++)
+        s[f - 1] !== s[f] && (s[d] = s[f], d++);
+      s.length = d;
     }
-    switch (x.length) {
+    switch (s.length) {
       case 1:
-        return x[0];
+        return s[0];
       case 2:
-        return x[0] + " or " + x[1];
+        return s[0] + " or " + s[1];
       default:
-        return x.slice(0, -1).join(", ") + ", or " + x[x.length - 1];
+        return s.slice(0, -1).join(", ") + ", or " + s[s.length - 1];
     }
   }
   function h(p) {
@@ -25868,7 +25868,7 @@ $t.buildMessage = function(t, o) {
   }
   return "Expected " + m(t) + " but " + h(o) + " found.";
 };
-function _t(t) {
+function gt(t) {
   if (t.length === 0)
     return { minX: 0, maxX: 0, minY: 0, maxY: 0 };
   let o = 1 / 0, i = -1 / 0, l = 1 / 0, a = -1 / 0, y = (n) => {
@@ -25888,14 +25888,14 @@ function _t(t) {
         break;
       }
       case "box": {
-        let { x: m, y: h, width: p, height: x } = n, f = p / 2, d = x / 2;
+        let { x: m, y: h, width: p, height: s } = n, f = p / 2, d = s / 2;
         y({ x: m - f, y: h - d }), y({ x: m + f, y: h + d });
         break;
       }
     }
   }), { minX: o, maxX: i, minY: l, maxY: a };
 }
-var wf = (t, o = "right") => {
+var Cf = (t, o = "right") => {
   switch (o) {
     case "down":
       switch (t) {
@@ -25939,13 +25939,13 @@ var wf = (t, o = "right") => {
   return t;
 };
 var v = (t, o) => {
-  let { primitives: i, center: l, ports: a, size: y } = t, n = L({ a: 1, b: 0, c: 0, d: -1, e: 0, f: 2 * l.y }), m = i.map((p) => {
+  let { primitives: i, center: l, ports: a, size: y } = t, n = V({ a: 1, b: 0, c: 0, d: -1, e: 0, f: 2 * l.y }), m = i.map((p) => {
     switch (p = { ...p }, p.type) {
       case "path":
         return { ...p, points: p.points.map((c) => _(n, c)) };
       case "text":
-        let x = _(n, { x: p.x, y: p.y }), f = { top_left: "bottom_left", top_right: "bottom_right", bottom_left: "top_left", bottom_right: "top_right", center: "center", middle_top: "middle_bottom", middle_bottom: "middle_top", middle_left: "middle_left", middle_right: "middle_right" };
-        return { ...p, x: x.x, y: x.y, anchor: f[p.anchor] };
+        let s = _(n, { x: p.x, y: p.y }), f = { top_left: "bottom_left", top_right: "bottom_right", bottom_left: "top_left", bottom_right: "top_right", center: "center", middle_top: "middle_bottom", middle_bottom: "middle_top", middle_left: "middle_left", middle_right: "middle_right" };
+        return { ...p, x: s.x, y: s.y, anchor: f[p.anchor] };
       case "circle":
       case "box":
         let d = _(n, { x: p.x, y: p.y });
@@ -25955,13 +25955,13 @@ var v = (t, o) => {
   return { primitives: m, center: l, ports: h, size: y, ...o };
 };
 var Y = (t, o) => {
-  let { primitives: i, center: l, ports: a, size: y } = t, n = L({ a: -1, b: 0, c: 0, d: 1, e: 0, f: 2 * l.x }), m = i.map((p) => {
+  let { primitives: i, center: l, ports: a, size: y } = t, n = V({ a: -1, b: 0, c: 0, d: 1, e: 0, f: 2 * l.x }), m = i.map((p) => {
     switch (p = { ...p }, p.type) {
       case "path":
         return { ...p, points: p.points.map((c) => _(n, c)) };
       case "text":
-        let x = _(n, { x: p.x, y: p.y }), f = { top_left: "top_right", top_right: "top_left", bottom_left: "bottom_right", bottom_right: "bottom_left", center: "center", middle_top: "middle_top", middle_bottom: "middle_bottom", middle_left: "middle_right", middle_right: "middle_left" };
-        return { ...p, x: x.x, y: x.y, anchor: f[p.anchor] };
+        let s = _(n, { x: p.x, y: p.y }), f = { top_left: "top_right", top_right: "top_left", bottom_left: "bottom_right", bottom_right: "bottom_left", center: "center", middle_top: "middle_top", middle_bottom: "middle_bottom", middle_left: "middle_right", middle_right: "middle_left" };
+        return { ...p, x: s.x, y: s.y, anchor: f[p.anchor] };
       case "circle":
       case "box":
         let d = _(n, { x: p.x, y: p.y });
@@ -25970,26 +25970,26 @@ var Y = (t, o) => {
   }), h = a.map((p) => ({ ...p, ..._(n, p) }));
   return { primitives: m, center: l, ports: h, size: y, ...o };
 };
-var At = (t, o) => {
-  let { newOrientation: i, overrides: l } = o, a = { up: Math.PI / 2, right: 0, down: -Math.PI / 2, left: -Math.PI }, y = cr(i ? a[i] : Math.PI / 2, t.center.x, t.center.y), { primitives: n, center: m, size: h, ports: p } = t, x = n.map((c) => {
+var Pt = (t, o) => {
+  let { newOrientation: i, overrides: l } = o, a = { up: Math.PI / 2, right: 0, down: -Math.PI / 2, left: -Math.PI }, y = dr(i ? a[i] : Math.PI / 2, t.center.x, t.center.y), { primitives: n, center: m, size: h, ports: p } = t, s = n.map((c) => {
     switch (c = { ...c }, c.type) {
       case "path":
-        return { ...c, points: c.points.map((bf) => _(y, bf)) };
+        return { ...c, points: c.points.map((zf) => _(y, zf)) };
       case "text":
-        let Ql = _(y, { x: c.x, y: c.y });
-        return c.anchor = wf(c.anchor, i ?? "right"), { ...c, x: Ql.x, y: Ql.y };
+        let np = _(y, { x: c.x, y: c.y });
+        return c.anchor = Cf(c.anchor, i ?? "right"), { ...c, x: np.x, y: np.y };
       case "circle":
-        let Kl = _(y, { x: c.x, y: c.y });
-        return { ...c, x: Kl.x, y: Kl.y };
+        let fp = _(y, { x: c.x, y: c.y });
+        return { ...c, x: fp.x, y: fp.y };
       case "box":
-        let tp = _(y, { x: c.x, y: c.y });
-        return { ...c, x: tp.x, y: tp.y, width: c.height, height: c.width };
+        let cp = _(y, { x: c.x, y: c.y });
+        return { ...c, x: cp.x, y: cp.y, width: c.height, height: c.width };
     }
-  }), f = p.map((c) => ({ ...c, ..._(y, c) })), d = _t(x);
-  return { primitives: x, center: m, ports: f, size: { width: d.maxX - d.minX, height: d.maxY - d.minY }, ...l };
+  }), f = p.map((c) => ({ ...c, ..._(y, c) })), d = gt(s);
+  return { primitives: s, center: m, ports: f, size: { width: d.maxX - d.minX, height: d.maxY - d.minY }, ...l };
 };
-var r = (t, o = "down", i = {}) => At(t, { newOrientation: o, overrides: i });
-var dr = class {
+var r = (t, o = "down", i = {}) => Pt(t, { newOrientation: o, overrides: i });
+var _r = class {
   symbol;
   constructor(o) {
     this.symbol = JSON.parse(JSON.stringify(o)), this.symbol.size = this.computeSize();
@@ -26001,10 +26001,10 @@ var dr = class {
     return this.symbol = { ...this.symbol, ports: this.symbol.ports.map((l) => l.labels.includes(o) ? { ...l, labels: i } : l) }, this;
   }
   rotateRightFacingSymbol(o) {
-    return this.symbol = At(this.symbol, { newOrientation: o }), this;
+    return this.symbol = Pt(this.symbol, { newOrientation: o }), this;
   }
   computeSize() {
-    let o = _t(this.symbol.primitives);
+    let o = gt(this.symbol.primitives);
     return { width: o.maxX - o.minX, height: o.maxY - o.minY };
   }
   build() {
@@ -26013,1113 +26013,1154 @@ var dr = class {
 };
 var e = (t) => {
   let o = t.primitives ?? [...Object.values(t.paths ?? {}), ...Object.values(t.texts ?? {}), ...Object.values(t.circles ?? {}), ...Object.values(t.rects ?? {})], i = t.ports ?? Object.entries(t.refblocks).flatMap(([a, y]) => [{ ...y, labels: [a] }]), l = t.center ?? { x: t.bounds.centerX, y: t.bounds.centerY };
-  return i.length === 2 && (l = { x: (i[0].x + i[1].x) / 2, y: (i[0].y + i[1].y) / 2 }), new dr({ ...t, primitives: o, ports: i, center: l });
+  return i.length === 2 && (l = { x: (i[0].x + i[1].x) / 2, y: (i[0].y + i[1].y) / 2 }), new _r({ ...t, primitives: o, ports: i, center: l });
 };
 var w = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.04 }, { x: 0.54, y: 0.04 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0, y: -0.06 }, { x: -0.11, y: 0.13 }], color: "primary", fill: false }, path17: { type: "path", points: [{ x: 0, y: -0.13 }, { x: 0.07, y: -0.11 }], color: "primary", fill: false }, path18: { type: "path", points: [{ x: 0.07, y: -0.11 }, { x: 0.14, y: -0.13 }], color: "primary", fill: false }, path19: { type: "path", points: [{ x: -0.15, y: -0.13 }, { x: -0.07, y: -0.11 }], color: "primary", fill: false }, path20: { type: "path", points: [{ x: -0.07, y: -0.11 }, { x: 0, y: -0.13 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.17, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: -0.4 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.04 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.79, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Pf, texts: z4, bounds: Mt, refblocks: rp, circles: Sf } = w;
-var op = e({ primitives: [...Object.values(Pf), ...Object.values(Sf), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...rp.left1, labels: ["1"] }, { ...rp.right1, labels: ["2"] }], size: { width: Mt.width, height: Mt.height }, center: { x: Mt.centerX, y: Mt.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: Rf, texts: M4, bounds: Ct, refblocks: ip, circles: Ff } = w;
-var lp = e({ primitives: [...Object.values(Rf), ...Object.values(Ff), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...ip.left1, labels: ["1"] }, { ...ip.right1, labels: ["2"] }], size: { width: Ct.width, height: Ct.height }, center: { x: Ct.centerX, y: Ct.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Tf, texts: B4, bounds: Nt, refblocks: pp, circles: Ef } = w;
-var ap = e({ primitives: [...Object.values(Tf), ...Object.values(Ef), { type: "text", text: "{REF}", x: -0, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4094553499999995 }], ports: [{ ...pp.left1, labels: ["1"] }, { ...pp.right1, labels: ["2"] }], size: { width: Nt.width, height: Nt.height }, center: { x: Nt.centerX, y: Nt.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Yf, texts: U4, bounds: It, refblocks: yp, circles: Xf } = w;
-var xp = e({ primitives: [...Object.values(Yf), ...Object.values(Xf), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...yp.left1, labels: ["1"] }, { ...yp.right1, labels: ["2"] }], size: { width: It.width, height: It.height }, center: { x: It.centerX, y: It.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Lf, texts: Q4, bounds: Bt, refblocks: sp, circles: Vf } = w;
-var mp = e({ primitives: [...Object.values(Lf), ...Object.values(Vf), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...sp.left1, labels: ["1"] }, { ...sp.right1, labels: ["2"] }], size: { width: Bt.width, height: Bt.height }, center: { x: Bt.centerX, y: Bt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: jf, texts: r5, bounds: qt, refblocks: np, circles: kf } = w;
-var fp = e({ primitives: [...Object.values(jf), ...Object.values(kf), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...np.left1, labels: ["1"] }, { ...np.right1, labels: ["2"] }], size: { width: qt.width, height: qt.height }, center: { x: qt.centerX, y: qt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: If, texts: o5, bounds: Ct, refblocks: dp, circles: Bf } = w;
+var bp = e({ primitives: [...Object.values(If), ...Object.values(Bf), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...dp.left1, labels: ["1"] }, { ...dp.right1, labels: ["2"] }], size: { width: Ct.width, height: Ct.height }, center: { x: Ct.centerX, y: Ct.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: qf, texts: a5, bounds: Nt, refblocks: _p, circles: Df } = w;
+var gp = e({ primitives: [...Object.values(qf), ...Object.values(Df), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ..._p.left1, labels: ["1"] }, { ..._p.right1, labels: ["2"] }], size: { width: Nt.width, height: Nt.height }, center: { x: Nt.centerX, y: Nt.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Gf, texts: m5, bounds: It, refblocks: up, circles: Uf } = w;
+var vp = e({ primitives: [...Object.values(Gf), ...Object.values(Uf), { type: "text", text: "{REF}", x: -0, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4094553499999995 }], ports: [{ ...up.left1, labels: ["1"] }, { ...up.right1, labels: ["2"] }], size: { width: It.width, height: It.height }, center: { x: It.centerX, y: It.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Wf, texts: h5, bounds: Bt, refblocks: wp, circles: Hf } = w;
+var Ap = e({ primitives: [...Object.values(Wf), ...Object.values(Hf), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...wp.left1, labels: ["1"] }, { ...wp.right1, labels: ["2"] }], size: { width: Bt.width, height: Bt.height }, center: { x: Bt.centerX, y: Bt.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Zf, texts: g5, bounds: qt, refblocks: Pp, circles: Qf } = w;
+var Sp = e({ primitives: [...Object.values(Zf), ...Object.values(Qf), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Pp.left1, labels: ["1"] }, { ...Pp.right1, labels: ["2"] }], size: { width: qt.width, height: qt.height }, center: { x: qt.centerX, y: qt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: Kf, texts: A5, bounds: Dt, refblocks: Rp, circles: tc } = w;
+var Fp = e({ primitives: [...Object.values(Kf), ...Object.values(tc), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Rp.left1, labels: ["1"] }, { ...Rp.right1, labels: ["2"] }], size: { width: Dt.width, height: Dt.height }, center: { x: Dt.centerX, y: Dt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var A = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.08, y: 0.2 }], color: "primary", fill: false }, "path43-8-3": { type: "path", points: [{ x: 0.21, y: -0.11 }, { x: 0.15, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Of, texts: a5, bounds: Dt, refblocks: cp, circles: Jf } = A;
-var hp = e({ primitives: [...Object.values(Of), ...Object.values(Jf), { type: "text", text: "{REF}", x: -0.15, y: 0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3294553499999995 }], ports: [{ ...cp.left1, labels: ["1"] }, { ...cp.right1, labels: ["2"] }], size: { width: Dt.width, height: Dt.height }, center: { x: Dt.centerX, y: Dt.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var dp = e(A).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: $f, texts: c5, bounds: Gt, refblocks: bp, circles: Mf } = A;
-var _p = e({ primitives: [...Object.values($f), ...Object.values(Mf), { type: "text", text: "{REF}", x: -0, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.3294553499999995 }], ports: [{ ...bp.left1, labels: ["1"] }, { ...bp.right1, labels: ["2"] }], size: { width: Gt.width, height: Gt.height }, center: { x: Gt.centerX, y: Gt.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var gp = e(A).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Cf, texts: v5, bounds: Ut, refblocks: up, circles: Nf } = A;
-var vp = e({ primitives: [...Object.values(Cf), ...Object.values(Nf), { type: "text", text: "{REF}", x: 0.15, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2294553499999995 }], ports: [{ ...up.left1, labels: ["1"] }, { ...up.right1, labels: ["2"] }], size: { width: Ut.width, height: Ut.height }, center: { x: Ut.centerX, y: Ut.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: If, texts: S5, bounds: Wt, refblocks: wp, circles: Bf } = A;
-var Ap = e({ primitives: [...Object.values(If), ...Object.values(Bf), { type: "text", text: "{REF}", x: 0.15, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2294553499999995 }], ports: [{ ...wp.left1, labels: ["1"] }, { ...wp.right1, labels: ["2"] }], size: { width: Wt.width, height: Wt.height }, center: { x: Wt.centerX, y: Wt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var V = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.18, y: 0.18 }, { x: 0.11, y: 0.18 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.18, y: -0.09 }, { x: 0.11, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Df, texts: Y5, bounds: Ht, refblocks: Pp, circles: Gf } = V;
-var Sp = e({ primitives: [...Object.values(Df), ...Object.values(Gf), { type: "text", text: "{REF}", x: -0.16, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0.16, y: 0.2294553499999995 }], ports: [{ ...Pp.left1, labels: ["1"] }, { ...Pp.right1, labels: ["2"] }], size: { width: Ht.width, height: Ht.height }, center: { x: Ht.centerX, y: Ht.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: Uf, texts: j5, bounds: Zt, refblocks: Rp, circles: Wf } = V;
-var Qt = e({ primitives: [...Object.values(Uf), ...Object.values(Wf), { type: "text", text: "{REF}", x: -0.0001118, y: -0.18 }, { type: "text", text: "{VAL}", x: 0.0001118, y: 0.2738453 }], ports: [{ ...Rp.left1, labels: ["1"] }, { ...Rp.right1, labels: ["2"] }], size: { width: Zt.width, height: Zt.height }, center: { x: Zt.centerX, y: Zt.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["2"]).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Hf, texts: J5, bounds: Kt, refblocks: Fp, circles: Zf } = V;
-var Tp = e({ primitives: [...Object.values(Hf), ...Object.values(Zf), { type: "text", text: "{REF}", x: -0.0050250999999996715, y: 0.27384529999999985, anchor: "middle_left" }, { type: "text", text: "{VAL}", x: -0.00011179999999999524, y: -0.27384530000000007, anchor: "middle_left" }], ports: [{ ...Fp.left1, labels: ["1"] }, { ...Fp.right1, labels: ["2"] }], size: { width: Kt.width, height: Kt.height }, center: { x: Kt.centerX, y: Kt.centerY } }).changeTextAnchor("{VAL}", "middle_top").labelPort("right1", ["2"]).labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var br = r(Qt, "down");
-var _r = br.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var gr = br.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-_r.anchor = "middle_left";
-gr.anchor = "middle_left";
-_r.x = 0.25;
-_r.y += 0.21;
-gr.y -= 0.21;
-gr.x = 0.25;
-var Ep = br;
-function s(t) {
+var { paths: rc, texts: T5, bounds: Gt, refblocks: Tp, circles: oc } = A;
+var Ep = e({ primitives: [...Object.values(rc), ...Object.values(oc), { type: "text", text: "{REF}", x: -0.15, y: 0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3294553499999995 }], ports: [{ ...Tp.left1, labels: ["1"] }, { ...Tp.right1, labels: ["2"] }], size: { width: Gt.width, height: Gt.height }, center: { x: Gt.centerX, y: Gt.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Yp = e(A).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: ic, texts: k5, bounds: Ut, refblocks: Xp, circles: lc } = A;
+var Lp = e({ primitives: [...Object.values(ic), ...Object.values(lc), { type: "text", text: "{REF}", x: -0, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.3294553499999995 }], ports: [{ ...Xp.left1, labels: ["1"] }, { ...Xp.right1, labels: ["2"] }], size: { width: Ut.width, height: Ut.height }, center: { x: Ut.centerX, y: Ut.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Vp = e(A).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: pc, texts: N5, bounds: Wt, refblocks: jp, circles: ac } = A;
+var kp = e({ primitives: [...Object.values(pc), ...Object.values(ac), { type: "text", text: "{REF}", x: 0.15, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2294553499999995 }], ports: [{ ...jp.left1, labels: ["1"] }, { ...jp.right1, labels: ["2"] }], size: { width: Wt.width, height: Wt.height }, center: { x: Wt.centerX, y: Wt.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: yc, texts: D5, bounds: Ht, refblocks: zp, circles: xc } = A;
+var Op = e({ primitives: [...Object.values(yc), ...Object.values(xc), { type: "text", text: "{REF}", x: 0.15, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2294553499999995 }], ports: [{ ...zp.left1, labels: ["1"] }, { ...zp.right1, labels: ["2"] }], size: { width: Ht.width, height: Ht.height }, center: { x: Ht.centerX, y: Ht.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var j = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.18, y: 0.18 }, { x: 0.11, y: 0.18 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.18, y: -0.09 }, { x: 0.11, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: mc, texts: Z5, bounds: Zt, refblocks: Jp, circles: nc } = j;
+var $p = e({ primitives: [...Object.values(mc), ...Object.values(nc), { type: "text", text: "{REF}", x: -0.16, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0.16, y: 0.2294553499999995 }], ports: [{ ...Jp.left1, labels: ["1"] }, { ...Jp.right1, labels: ["2"] }], size: { width: Zt.width, height: Zt.height }, center: { x: Zt.centerX, y: Zt.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var { paths: fc, texts: eg, bounds: Qt, refblocks: Mp, circles: cc } = j;
+var Kt = e({ primitives: [...Object.values(fc), ...Object.values(cc), { type: "text", text: "{REF}", x: -0.0001118, y: -0.18 }, { type: "text", text: "{VAL}", x: 0.0001118, y: 0.2738453 }], ports: [{ ...Mp.left1, labels: ["1"] }, { ...Mp.right1, labels: ["2"] }], size: { width: Qt.width, height: Qt.height }, center: { x: Qt.centerX, y: Qt.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["2"]).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: hc, texts: lg, bounds: te, refblocks: Cp, circles: dc } = j;
+var Np = e({ primitives: [...Object.values(hc), ...Object.values(dc), { type: "text", text: "{REF}", x: -0.0050250999999996715, y: 0.27384529999999985, anchor: "middle_left" }, { type: "text", text: "{VAL}", x: -0.00011179999999999524, y: -0.27384530000000007, anchor: "middle_left" }], ports: [{ ...Cp.left1, labels: ["1"] }, { ...Cp.right1, labels: ["2"] }], size: { width: te.width, height: te.height }, center: { x: te.centerX, y: te.centerY } }).changeTextAnchor("{VAL}", "middle_top").labelPort("right1", ["2"]).labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var gr = r(Kt, "down");
+var ur = gr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var vr = gr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ur.anchor = "middle_left";
+vr.anchor = "middle_left";
+ur.x = 0.25;
+ur.y += 0.21;
+vr.y -= 0.21;
+vr.x = 0.25;
+var Ip = gr;
+function x(t) {
   let o = t.size;
   if (!o) {
-    let i = _t(t.primitives);
+    let i = gt(t.primitives);
     o = { width: i.maxX - i.minX, height: i.maxY - i.minY };
   }
   return { ...t, size: o };
 }
-var Yp = { paths: { path43: { type: "path", points: [{ x: -0.06, y: 0.19 }, { x: -0.06, y: -0.12 }], color: "primary", fill: false }, "path43-6": { type: "path", points: [{ x: 0.02, y: 0.13 }, { x: 0.02, y: -0.06 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.06, y: 0.03 }, { x: -0.45, y: 0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.03 }, { x: 0.03, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.03, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.28 } }, refblocks: { left1: { x: -0.45, y: 0.03 }, right1: { x: 0.45, y: 0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.38, maxY: 0.27, width: 0.95, height: 0.29, centerX: 0, centerY: 0.06 }, circles: {} };
-var { paths: Kf, texts: Xp, bounds: te, refblocks: Lp, circles: tc } = Yp;
-var ee = s({ primitives: [...Object.values(Kf), ...Object.values(tc), { ...Xp.top1, anchor: "middle_bottom" }, { ...Xp.bottom1, anchor: "middle_top" }], ports: [{ ...Lp.left1, labels: ["1"] }, { ...Lp.right1, labels: ["2"] }], size: { width: te.width, height: te.height }, center: { x: te.centerX, y: te.centerY } });
-var Vp = At(ee, { newOrientation: "up" });
-var j = { paths: { path1: { type: "path", points: [{ x: -0.53, y: 0.05 }, { x: -0.25, y: 0.05 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.28, y: 0.05 }, { x: 0.57, y: 0.05 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.02, y: 0.18 }, { x: 0.28, y: 0.18 }, { x: 0.28, y: -0.09 }, { x: -0.25, y: -0.09 }, { x: -0.25, y: 0.18 }, { x: 0.02, y: 0.18 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.25 } }, refblocks: { left1: { x: -0.53, y: 0.05 }, right1: { x: 0.57, y: 0.05 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.25, maxY: 0.25, width: 1.12, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: rc, texts: ag, bounds: jp, refblocks: kp, circles: oc } = j;
-var zp = e({ primitives: [...Object.values(rc), ...Object.values(oc), { type: "text", text: "{REF}", x: -0.16, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0.16, y: 0.2294553499999995 }], ports: [{ ...kp.left1, labels: ["1"] }, { ...kp.right1, labels: ["2"] }], center: { x: jp.centerX, y: jp.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: ic, texts: mg, bounds: Op, refblocks: Jp, circles: lc } = j;
-var $p = e({ primitives: [...Object.values(ic), ...Object.values(lc), { type: "text", text: "{REF}", x: 0, y: -0.1994553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.2694553499999995 }], ports: [{ ...Jp.left1, labels: ["1"] }, { ...Jp.right1, labels: ["2"] }], center: { x: Op.centerX, y: Op.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: pc, texts: hg, bounds: Mp, refblocks: Cp, circles: ac } = j;
-var Np = e({ primitives: [...Object.values(pc), ...Object.values(ac), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1594553499999995 }], ports: [{ ...Cp.left1, labels: ["1"] }, { ...Cp.right1, labels: ["2"] }], center: { x: Mp.centerX, y: Mp.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var k = { paths: { path2: { type: "path", points: [{ x: 0.15, y: -0.01 }, { x: 0.55, y: -0.01 }], color: "primary", fill: true }, "path2-5": { type: "path", points: [{ x: -0.15, y: 0.06 }, { x: 0.14, y: 0.06 }], color: "primary", fill: true }, "path2-5-1": { type: "path", points: [{ x: 0.14, y: 0.06 }, { x: 0.14, y: -0.08 }], color: "primary", fill: true }, "path2-5-1-6": { type: "path", points: [{ x: -0.16, y: 0.06 }, { x: -0.16, y: -0.08 }], color: "primary", fill: true }, "path2-5-4": { type: "path", points: [{ x: -0.15, y: -0.08 }, { x: 0.14, y: -0.08 }], color: "primary", fill: true }, "path2-9": { type: "path", points: [{ x: -0.55, y: -0.01 }, { x: -0.17, y: -0.01 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.17 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.17 } }, refblocks: { left1: { x: -0.55, y: -0.01 }, right1: { x: 0.55, y: -0.01 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.17, maxY: 0.17, width: 1.16, height: 0.35, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: xc, texts: ug, bounds: re, refblocks: Ip, circles: sc } = k;
-var Bp = e({ primitives: [...Object.values(xc), ...Object.values(sc), { type: "text", text: "{REF}", x: -0.2, y: 0.1404553499999995 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.1494553499999995 }], ports: [{ ...Ip.left1, labels: ["1"] }, { ...Ip.right1, labels: ["2"] }], size: { width: re.width, height: re.height }, center: { x: re.centerX, y: re.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: mc, texts: Pg, bounds: oe, refblocks: qp, circles: nc } = k;
-var Dp = e({ primitives: [...Object.values(mc), ...Object.values(nc), { type: "text", text: "{REF}", x: 0, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.1704553499999995 }], ports: [{ ...qp.left1, labels: ["1"] }, { ...qp.right1, labels: ["2"] }], size: { width: oe.width, height: oe.height }, center: { x: oe.centerX, y: oe.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: fc, texts: Tg, bounds: ie, refblocks: Gp, circles: cc } = k;
-var Up = e({ primitives: [...Object.values(fc), ...Object.values(cc), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1704553499999995 }], ports: [{ ...Gp.left1, labels: ["1"] }, { ...Gp.right1, labels: ["2"] }], size: { width: ie.width, height: ie.height }, center: { x: ie.centerX, y: ie.centerY } }).rotateRightFacingSymbol("right").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: hc, texts: Lg, bounds: le, refblocks: Wp, circles: dc } = k;
-var Hp = e({ primitives: [...Object.values(hc), ...Object.values(dc), { type: "text", text: "{REF}", x: 0.2, y: -0.1404553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.1494553499999995 }], ports: [{ ...Wp.left1, labels: ["1"] }, { ...Wp.right1, labels: ["2"] }], size: { width: le.width, height: le.height }, center: { x: le.centerX, y: le.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: bc, texts: zg, bounds: Zp, refblocks: Qp, circles: _c } = j;
-var Kp = e({ primitives: [...Object.values(bc), ...Object.values(_c), { type: "text", text: "{REF}", x: 0.16, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.16, y: -0.2294553499999995 }], ports: [{ ...Qp.left1, labels: ["1"] }, { ...Qp.right1, labels: ["2"] }], center: { x: Zp.centerX, y: Zp.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var gt = { paths: { "horizontal-bar": { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.4, y: 0 }], color: "primary", fill: false }, "middle-dash-1": { type: "path", points: [{ x: 0, y: 0.2 }, { x: 0, y: 0.07 }], color: "primary", fill: false }, "middle-dash-2": { type: "path", points: [{ x: 0, y: 0.01 }, { x: 0, y: -0.12 }], color: "primary", fill: false }, "middle-dash-3": { type: "path", points: [{ x: 0, y: -0.18 }, { x: 0, y: -0.31 }], color: "primary", fill: false }, "left-vertical": { type: "path", points: [{ x: -0.25, y: 0 }, { x: -0.25, y: -0.2 }], color: "primary", fill: false }, "right-vertical": { type: "path", points: [{ x: 0.25, y: 0 }, { x: 0.25, y: -0.2 }], color: "primary", fill: false }, "left-ground": { type: "path", points: [{ x: -0.3, y: -0.2 }, { x: -0.25, y: -0.3 }, { x: -0.2, y: -0.2 }, { x: -0.3, y: -0.2 }], color: "primary", fill: false }, "right-ground": { type: "path", points: [{ x: 0.2, y: -0.2 }, { x: 0.25, y: -0.3 }, { x: 0.3, y: -0.2 }, { x: 0.2, y: -0.2 }], color: "primary", fill: false } }, refblocks: { left1: { x: -0.4, y: 0 }, right1: { x: 0.4, y: 0 } }, texts: { ref: { type: "text", text: "{REF}", x: 0, y: 0.35 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.35, width: 0.8, height: 0.75, centerX: 0, centerY: -0.02 }, circles: {} };
-var { paths: uc, texts: Cg, bounds: ta, refblocks: ea, circles: vc } = gt;
-var ra = e({ primitives: [...Object.values(uc), ...Object.values(vc), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ...ea.left1, labels: ["1"] }, { ...ea.right1, labels: ["2"] }], center: { x: ta.centerX, y: ta.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: wc, texts: qg, bounds: oa, refblocks: ia, circles: Ac } = gt;
-var pe = e({ primitives: [...Object.values(wc), ...Object.values(Ac), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ...ia.left1, labels: ["1"] }, { ...ia.right1, labels: ["2"] }], center: { x: oa.centerX, y: oa.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var la = Y(pe);
-var { paths: Pc, texts: Qg, bounds: pa, refblocks: aa, circles: Sc } = gt;
-var ya = e({ primitives: [...Object.values(Pc), ...Object.values(Sc), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ...aa.left1, labels: ["1"] }, { ...aa.right1, labels: ["2"] }], center: { x: pa.centerX, y: pa.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
-var z = { paths: { path27: { type: "path", points: [{ x: 0.55, y: 0.02 }, { x: 0.07, y: 0.02 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.09, y: 0.02 }, { x: -0.55, y: 0.02 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.07, y: 0.28 }, { x: 0.07, y: -0.25 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.09, y: 0.28 }, { x: -0.09, y: -0.25 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.55, y: 0.02 }, right1: { x: 0.55, y: 0.02 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.42, maxY: 0.42, width: 1.16, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Fc, texts: ou, bounds: ae, refblocks: xa, circles: Tc } = z;
-var sa = e({ primitives: [...Object.values(Fc), ...Object.values(Tc), { type: "text", text: "{REF}", x: -0.2, y: 0.115 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.115 }], ports: [{ ...xa.left1, labels: ["1"] }, { ...xa.right1, labels: ["2"] }], size: { width: ae.width, height: ae.height }, center: { x: ae.centerX, y: ae.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
-var ma = e(z).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var O = { paths: { "path27-5": { type: "path", points: [{ x: 0.45, y: 0.02 }, { x: 0, y: 0.02 }], color: "primary", fill: false }, "path28-5": { type: "path", points: [{ x: -0.09, y: 0.02 }, { x: -0.54, y: 0.02 }], color: "primary", fill: false }, "path30-7": { type: "path", points: [{ x: 0, y: 0.28 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path8704: { type: "path", points: [{ x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.21 }, { x: -0.13, y: -0.21 }, { x: -0.13, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.09, y: -0.14 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.17 }, { x: -0.09, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }], color: "primary", fill: false }, "rect1577-4": { type: "path", points: [{ x: 0.26, y: 0.25 }, { x: 0.12, y: 0.25 }, { x: 0.12, y: 0.25 }, { x: 0.26, y: 0.25 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.2, y: 0.18 }, { x: 0.19, y: 0.18 }, { x: 0.19, y: 0.32 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.54, y: 0.02 }, right1: { x: 0.45, y: 0.02 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.42, maxY: 0.42, width: 1.16, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Yc, texts: mu, bounds: ye, refblocks: na, circles: Xc } = O;
-var fa = e({ primitives: [...Object.values(Yc), ...Object.values(Xc), { type: "text", text: "{REF}", x: 0.1, y: -0.2094553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.2094553499999995 }], ports: [{ ...na.left1, labels: ["2", "neg"] }, { ...na.right1, labels: ["1", "pos"] }], size: { width: ye.width, height: ye.height }, center: { x: ye.centerX, y: ye.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "bottom_left").build();
-var ca = e(O).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Lc, texts: _u, bounds: xe, refblocks: ha, circles: Vc } = O;
-var da = e({ primitives: [...Object.values(Lc), ...Object.values(Vc), { type: "text", text: "{REF}", x: 0, y: -0.4094553499999995 }, { type: "text", text: "{VAL}", x: -0, y: 0.4094553499999995 }], ports: [{ ...ha.left1, labels: ["2", "neg"] }, { ...ha.right1, labels: ["1", "pos"] }], size: { width: xe.width, height: xe.height }, center: { x: xe.centerX, y: xe.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: jc, texts: wu, bounds: se, refblocks: ba, circles: kc } = O;
-var _a = e({ primitives: [...Object.values(jc), ...Object.values(kc), { type: "text", text: "{REF}", x: -0.2, y: 0.2094553499999995 }, { type: "text", text: "{VAL}", x: 0.3, y: 0.2094553499999995 }], ports: [{ ...ba.left1, labels: ["2", "neg"] }, { ...ba.right1, labels: ["1", "pos"] }], size: { width: se.width, height: se.height }, center: { x: se.centerX, y: se.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "bottom_left").build();
-var ga = e(z).rotateRightFacingSymbol("right").changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: zc, texts: Eu, bounds: me, refblocks: ua, circles: Oc } = z;
-var va = e({ primitives: [...Object.values(zc), ...Object.values(Oc), { type: "text", text: "{REF}", x: 0.2, y: -0.095 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.095 }], ports: [{ ...ua.left1, labels: ["1"] }, { ...ua.right1, labels: ["2"] }], size: { width: me.width, height: me.height }, center: { x: me.centerX, y: me.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
+var Bp = { paths: { path43: { type: "path", points: [{ x: -0.06, y: 0.19 }, { x: -0.06, y: -0.12 }], color: "primary", fill: false }, "path43-6": { type: "path", points: [{ x: 0.02, y: 0.13 }, { x: 0.02, y: -0.06 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.06, y: 0.03 }, { x: -0.45, y: 0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.03 }, { x: 0.03, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.03, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.28 } }, refblocks: { left1: { x: -0.45, y: 0.03 }, right1: { x: 0.45, y: 0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.38, maxY: 0.27, width: 0.95, height: 0.29, centerX: 0, centerY: 0.06 }, circles: {} };
+var { paths: _c, texts: qp, bounds: ee, refblocks: Dp, circles: gc } = Bp;
+var re = x({ primitives: [...Object.values(_c), ...Object.values(gc), { ...qp.top1, anchor: "middle_bottom" }, { ...qp.bottom1, anchor: "middle_top" }], ports: [{ ...Dp.left1, labels: ["1"] }, { ...Dp.right1, labels: ["2"] }], size: { width: ee.width, height: ee.height }, center: { x: ee.centerX, y: ee.centerY } });
+var Gp = Pt(re, { newOrientation: "up" });
+var k = { paths: { path1: { type: "path", points: [{ x: -0.53, y: 0.05 }, { x: -0.25, y: 0.05 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.28, y: 0.05 }, { x: 0.57, y: 0.05 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.02, y: 0.18 }, { x: 0.28, y: 0.18 }, { x: 0.28, y: -0.09 }, { x: -0.25, y: -0.09 }, { x: -0.25, y: 0.18 }, { x: 0.02, y: 0.18 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.25 } }, refblocks: { left1: { x: -0.53, y: 0.05 }, right1: { x: 0.57, y: 0.05 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.25, maxY: 0.25, width: 1.12, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: vc, texts: Tg, bounds: Up, refblocks: Wp, circles: wc } = k;
+var Hp = e({ primitives: [...Object.values(vc), ...Object.values(wc), { type: "text", text: "{REF}", x: -0.16, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0.16, y: 0.2294553499999995 }], ports: [{ ...Wp.left1, labels: ["1"] }, { ...Wp.right1, labels: ["2"] }], center: { x: Up.centerX, y: Up.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var { paths: Ac, texts: Lg, bounds: Zp, refblocks: Qp, circles: Pc } = k;
+var Kp = e({ primitives: [...Object.values(Ac), ...Object.values(Pc), { type: "text", text: "{REF}", x: 0, y: -0.1994553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.2694553499999995 }], ports: [{ ...Qp.left1, labels: ["1"] }, { ...Qp.right1, labels: ["2"] }], center: { x: Zp.centerX, y: Zp.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Sc, texts: zg, bounds: ta, refblocks: ea, circles: Rc } = k;
+var ra = e({ primitives: [...Object.values(Sc), ...Object.values(Rc), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1594553499999995 }], ports: [{ ...ea.left1, labels: ["1"] }, { ...ea.right1, labels: ["2"] }], center: { x: ta.centerX, y: ta.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var z = { paths: { path2: { type: "path", points: [{ x: 0.15, y: -0.01 }, { x: 0.55, y: -0.01 }], color: "primary", fill: true }, "path2-5": { type: "path", points: [{ x: -0.15, y: 0.06 }, { x: 0.14, y: 0.06 }], color: "primary", fill: true }, "path2-5-1": { type: "path", points: [{ x: 0.14, y: 0.06 }, { x: 0.14, y: -0.08 }], color: "primary", fill: true }, "path2-5-1-6": { type: "path", points: [{ x: -0.16, y: 0.06 }, { x: -0.16, y: -0.08 }], color: "primary", fill: true }, "path2-5-4": { type: "path", points: [{ x: -0.15, y: -0.08 }, { x: 0.14, y: -0.08 }], color: "primary", fill: true }, "path2-9": { type: "path", points: [{ x: -0.55, y: -0.01 }, { x: -0.17, y: -0.01 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.17 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.17 } }, refblocks: { left1: { x: -0.55, y: -0.01 }, right1: { x: 0.55, y: -0.01 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.17, maxY: 0.17, width: 1.16, height: 0.35, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Tc, texts: Cg, bounds: oe, refblocks: oa, circles: Ec } = z;
+var ia = e({ primitives: [...Object.values(Tc), ...Object.values(Ec), { type: "text", text: "{REF}", x: -0.2, y: 0.1404553499999995 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.1494553499999995 }], ports: [{ ...oa.left1, labels: ["1"] }, { ...oa.right1, labels: ["2"] }], size: { width: oe.width, height: oe.height }, center: { x: oe.centerX, y: oe.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: Yc, texts: qg, bounds: ie, refblocks: la, circles: Xc } = z;
+var pa = e({ primitives: [...Object.values(Yc), ...Object.values(Xc), { type: "text", text: "{REF}", x: 0, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.1704553499999995 }], ports: [{ ...la.left1, labels: ["1"] }, { ...la.right1, labels: ["2"] }], size: { width: ie.width, height: ie.height }, center: { x: ie.centerX, y: ie.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: Lc, texts: Wg, bounds: le, refblocks: aa, circles: Vc } = z;
+var ya = e({ primitives: [...Object.values(Lc), ...Object.values(Vc), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1704553499999995 }], ports: [{ ...aa.left1, labels: ["1"] }, { ...aa.right1, labels: ["2"] }], size: { width: le.width, height: le.height }, center: { x: le.centerX, y: le.centerY } }).rotateRightFacingSymbol("right").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: jc, texts: Kg, bounds: pe, refblocks: xa, circles: kc } = z;
+var sa = e({ primitives: [...Object.values(jc), ...Object.values(kc), { type: "text", text: "{REF}", x: 0.2, y: -0.1404553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.1494553499999995 }], ports: [{ ...xa.left1, labels: ["1"] }, { ...xa.right1, labels: ["2"] }], size: { width: pe.width, height: pe.height }, center: { x: pe.centerX, y: pe.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: zc, texts: ou, bounds: ma, refblocks: na, circles: Oc } = k;
+var fa = e({ primitives: [...Object.values(zc), ...Object.values(Oc), { type: "text", text: "{REF}", x: 0.16, y: -0.2294553499999995 }, { type: "text", text: "{VAL}", x: -0.16, y: -0.2294553499999995 }], ports: [{ ...na.left1, labels: ["1"] }, { ...na.right1, labels: ["2"] }], center: { x: ma.centerX, y: ma.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var ut = { paths: { "horizontal-bar": { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.4, y: 0 }], color: "primary", fill: false }, "middle-dash-1": { type: "path", points: [{ x: 0, y: 0.2 }, { x: 0, y: 0.07 }], color: "primary", fill: false }, "middle-dash-2": { type: "path", points: [{ x: 0, y: 0.01 }, { x: 0, y: -0.12 }], color: "primary", fill: false }, "middle-dash-3": { type: "path", points: [{ x: 0, y: -0.18 }, { x: 0, y: -0.31 }], color: "primary", fill: false }, "left-vertical": { type: "path", points: [{ x: -0.25, y: 0 }, { x: -0.25, y: -0.2 }], color: "primary", fill: false }, "right-vertical": { type: "path", points: [{ x: 0.25, y: 0 }, { x: 0.25, y: -0.2 }], color: "primary", fill: false }, "left-ground": { type: "path", points: [{ x: -0.3, y: -0.2 }, { x: -0.25, y: -0.3 }, { x: -0.2, y: -0.2 }, { x: -0.3, y: -0.2 }], color: "primary", fill: false }, "right-ground": { type: "path", points: [{ x: 0.2, y: -0.2 }, { x: 0.25, y: -0.3 }, { x: 0.3, y: -0.2 }, { x: 0.2, y: -0.2 }], color: "primary", fill: false } }, refblocks: { left1: { x: -0.4, y: 0 }, right1: { x: 0.4, y: 0 } }, texts: { ref: { type: "text", text: "{REF}", x: 0, y: 0.35 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.35, width: 0.8, height: 0.75, centerX: 0, centerY: -0.02 }, circles: {} };
+var { paths: $c, texts: yu, bounds: ca, refblocks: ha, circles: Mc } = ut;
+var da = e({ primitives: [...Object.values($c), ...Object.values(Mc), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ...ha.left1, labels: ["1"] }, { ...ha.right1, labels: ["2"] }], center: { x: ca.centerX, y: ca.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var { paths: Cc, texts: nu, bounds: ba, refblocks: _a, circles: Nc } = ut;
+var ae = e({ primitives: [...Object.values(Cc), ...Object.values(Nc), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ..._a.left1, labels: ["1"] }, { ..._a.right1, labels: ["2"] }], center: { x: ba.centerX, y: ba.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var ga = Y(ae);
+var { paths: Ic, texts: gu, bounds: ua, refblocks: va, circles: Bc } = ut;
+var wa = e({ primitives: [...Object.values(Ic), ...Object.values(Bc), { type: "text", text: "{REF}", x: 0, y: 0.2594553499999995 }], ports: [{ ...va.left1, labels: ["1"] }, { ...va.right1, labels: ["2"] }], center: { x: ua.centerX, y: ua.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
+var O = { paths: { path27: { type: "path", points: [{ x: 0.55, y: 0.02 }, { x: 0.07, y: 0.02 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.09, y: 0.02 }, { x: -0.55, y: 0.02 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.07, y: 0.28 }, { x: 0.07, y: -0.25 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.09, y: 0.28 }, { x: -0.09, y: -0.25 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.55, y: 0.02 }, right1: { x: 0.55, y: 0.02 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.42, maxY: 0.42, width: 1.16, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Dc, texts: Pu, bounds: ye, refblocks: Aa, circles: Gc } = O;
+var Pa = e({ primitives: [...Object.values(Dc), ...Object.values(Gc), { type: "text", text: "{REF}", x: -0.2, y: 0.115 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.115 }], ports: [{ ...Aa.left1, labels: ["1"] }, { ...Aa.right1, labels: ["2"] }], size: { width: ye.width, height: ye.height }, center: { x: ye.centerX, y: ye.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
+var Sa = e(O).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var J = { paths: { "path27-5": { type: "path", points: [{ x: 0.45, y: 0.02 }, { x: 0, y: 0.02 }], color: "primary", fill: false }, "path28-5": { type: "path", points: [{ x: -0.09, y: 0.02 }, { x: -0.54, y: 0.02 }], color: "primary", fill: false }, "path30-7": { type: "path", points: [{ x: 0, y: 0.28 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path8704: { type: "path", points: [{ x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.24 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.14, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.23 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.22 }, { x: -0.13, y: -0.21 }, { x: -0.13, y: -0.21 }, { x: -0.13, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.21 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.2 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.12, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.19 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.18 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.11, y: -0.17 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.16 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.1, y: -0.14 }, { x: -0.09, y: -0.14 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.13 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.12 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.11 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.09, y: -0.1 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.09 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.08 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.07 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.06 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.05 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.04 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.03 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.02 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: -0.01 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0 }, { x: -0.08, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.07, y: 0.01 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.02 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.03 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.04 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.05 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.08 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.1 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.12 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.13 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.14 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.15 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.16 }, { x: -0.09, y: 0.17 }, { x: -0.09, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.17 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.18 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.19 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.1, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.2 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.21 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.22 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.11, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.23 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.24 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.12, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.25 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.26 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.13, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.27 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }, { x: -0.14, y: 0.28 }], color: "primary", fill: false }, "rect1577-4": { type: "path", points: [{ x: 0.26, y: 0.25 }, { x: 0.12, y: 0.25 }, { x: 0.12, y: 0.25 }, { x: 0.26, y: 0.25 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.2, y: 0.18 }, { x: 0.19, y: 0.18 }, { x: 0.19, y: 0.32 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.54, y: 0.02 }, right1: { x: 0.45, y: 0.02 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.42, maxY: 0.42, width: 1.16, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Wc, texts: Lu, bounds: xe, refblocks: Ra, circles: Hc } = J;
+var Fa = e({ primitives: [...Object.values(Wc), ...Object.values(Hc), { type: "text", text: "{REF}", x: 0.1, y: -0.2094553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.2094553499999995 }], ports: [{ ...Ra.left1, labels: ["2", "neg"] }, { ...Ra.right1, labels: ["1", "pos"] }], size: { width: xe.width, height: xe.height }, center: { x: xe.centerX, y: xe.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "bottom_left").build();
+var Ta = e(J).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Zc, texts: $u, bounds: se, refblocks: Ea, circles: Qc } = J;
+var Ya = e({ primitives: [...Object.values(Zc), ...Object.values(Qc), { type: "text", text: "{REF}", x: 0, y: -0.4094553499999995 }, { type: "text", text: "{VAL}", x: -0, y: 0.4094553499999995 }], ports: [{ ...Ea.left1, labels: ["2", "neg"] }, { ...Ea.right1, labels: ["1", "pos"] }], size: { width: se.width, height: se.height }, center: { x: se.centerX, y: se.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Kc, texts: Iu, bounds: me, refblocks: Xa, circles: th } = J;
+var La = e({ primitives: [...Object.values(Kc), ...Object.values(th), { type: "text", text: "{REF}", x: -0.2, y: 0.2094553499999995 }, { type: "text", text: "{VAL}", x: 0.3, y: 0.2094553499999995 }], ports: [{ ...Xa.left1, labels: ["2", "neg"] }, { ...Xa.right1, labels: ["1", "pos"] }], size: { width: me.width, height: me.height }, center: { x: me.centerX, y: me.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "bottom_left").build();
+var Va = e(O).rotateRightFacingSymbol("right").changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: eh, texts: Hu, bounds: ne, refblocks: ja, circles: rh } = O;
+var ka = e({ primitives: [...Object.values(eh), ...Object.values(rh), { type: "text", text: "{REF}", x: 0.2, y: -0.095 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.095 }], ports: [{ ...ja.left1, labels: ["1"] }, { ...ja.right1, labels: ["2"] }], size: { width: ne.width, height: ne.height }, center: { x: ne.centerX, y: ne.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
 var P = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.03 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.03 }, { x: 0.54, y: 0.03 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.29, y: 0.29 }, { x: 0.29, y: -0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: -0.37 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.03 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.37, maxY: 0.37, width: 1.14, height: 0.74, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
-var { paths: $c, texts: ju, bounds: ne, refblocks: wa, circles: Mc } = P;
-var Aa = e({ primitives: [...Object.values($c), ...Object.values(Mc), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...wa.left1, labels: ["1"] }, { ...wa.right1, labels: ["2"] }], size: { width: ne.width, height: ne.height }, center: { x: ne.centerX, y: ne.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var Pa = e(P).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Cc, texts: Cu, bounds: fe, refblocks: Sa, circles: Nc } = P;
-var Ra = e({ primitives: [...Object.values(Cc), ...Object.values(Nc), { type: "text", text: "{REF}", x: -0, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.3894553499999995 }], ports: [{ ...Sa.left1, labels: ["1"] }, { ...Sa.right1, labels: ["2"] }], size: { width: fe.width, height: fe.height }, center: { x: fe.centerX, y: fe.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Fa = e(P).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Ic, texts: Uu, bounds: ce, refblocks: Ta, circles: Bc } = P;
-var Ea = e({ primitives: [...Object.values(Ic), ...Object.values(Bc), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Ta.left1, labels: ["1"] }, { ...Ta.right1, labels: ["2"] }], size: { width: ce.width, height: ce.height }, center: { x: ce.centerX, y: ce.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: qc, texts: Qu, bounds: he, refblocks: Ya, circles: Dc } = P;
-var Xa = e({ primitives: [...Object.values(qc), ...Object.values(Dc), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Ya.left1, labels: ["1"] }, { ...Ya.right1, labels: ["2"] }], size: { width: he.width, height: he.height }, center: { x: he.centerX, y: he.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var J = { paths: { path27: { type: "path", points: [{ x: 0.54, y: -0.01 }, { x: 0.13, y: -0.01 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.13, y: 0.25 }, { x: 0.13, y: -0.27 }], color: "primary", fill: false }, "path29-2": { type: "path", points: [{ x: 0.07, y: 0.25 }, { x: 0.07, y: -0.28 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.14, y: 0.25 }, { x: -0.14, y: -0.27 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.08, y: 0.26 }, { x: -0.08, y: -0.27 }], color: "primary", fill: false }, "path29-2-7": { type: "path", points: [{ x: 0.07, y: 0.26 }, { x: -0.08, y: 0.26 }], color: "primary", fill: false }, "path29-2-7-6": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: -0.08, y: -0.28 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.21, y: 0.32 }, { x: 0.2, y: 0.32 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: 0.71 }, { x: 0, y: 0.33 }, { x: 0, y: 0.32 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: -0.21, y: 0.32 }, { x: -0.21, y: 0.25 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.2, y: 0.25 }], color: "primary", fill: false }, "path43-9": { type: "path", points: [{ x: 0.19, y: -0.35 }, { x: -0.22, y: -0.35 }], color: "primary", fill: false }, "path44-0-5": { type: "path", points: [{ x: -0.02, y: -0.71 }, { x: -0.02, y: -0.36 }, { x: -0.02, y: -0.35 }], color: "primary", fill: false }, "path43-8-1": { type: "path", points: [{ x: 0.19, y: -0.35 }, { x: 0.19, y: -0.28 }], color: "primary", fill: false }, "path43-8-8-9": { type: "path", points: [{ x: -0.22, y: -0.35 }, { x: -0.22, y: -0.28 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.14, y: -0.01 }, { x: -0.54, y: -0.01 }], color: "primary", fill: false } }, texts: { left1: { type: "text", text: "{REF}", x: 0.53, y: 0.28 }, right1: { type: "text", text: "{VAL}", x: 0.54, y: -0.28 } }, refblocks: { top1: { x: 0, y: 0.71 }, bottom1: { x: -0.02, y: -0.71 }, left1: { x: -0.54, y: -0.01 }, right1: { x: 0.54, y: -0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.74, maxY: 0.74, width: 1.14, height: 1.48, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Uc, texts: o3, bounds: de, refblocks: be, circles: Wc } = J;
-var La = e({ primitives: [...Object.values(Uc), ...Object.values(Wc), { type: "text", text: "{REF}", x: -0.4, y: 0.4094554499999995 }, { type: "text", text: "{VAL}", x: 0.4, y: 0.4094553499999995 }], ports: [{ ...be.left1, labels: ["1"] }, { ...be.right1, labels: ["3"] }, { ...be.bottom1, labels: ["2"] }, { ...be.top1, labels: ["4"] }], size: { width: de.width, height: de.height }, center: { x: de.centerX, y: de.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
-var Va = e(J).labelPort("top1", ["2", "gnd1"]).labelPort("bottom1", ["4", "gnd2"]).labelPort("left1", ["3"]).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
-var ja = e(J).labelPort("top1", ["4", "gnd1"]).labelPort("bottom1", ["2", "gnd2"]).labelPort("left1", ["1"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
-var { paths: Hc, texts: f3, bounds: _e, refblocks: ge, circles: Zc } = J;
-var ka = e({ primitives: [...Object.values(Hc), ...Object.values(Zc), { type: "text", text: "{VAL}", x: -0.4, y: -0.4094554499999995 }, { type: "text", text: "{REF}", x: 0.4, y: -0.4094553499999995 }], ports: [{ ...ge.left1, labels: ["1"] }, { ...ge.right1, labels: ["3"] }, { ...ge.bottom1, labels: ["2"] }, { ...ge.top1, labels: ["4"] }], size: { width: _e.width, height: _e.height }, center: { x: _e.centerX, y: _e.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
-var $ = { paths: { path27: { type: "path", points: [{ x: 0.55, y: -0.01 }, { x: 0.13, y: -0.01 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.14, y: -0.01 }, { x: -0.55, y: -0.01 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.13, y: -0.28 }, { x: 0.13, y: 0.25 }], color: "primary", fill: false }, "path29-2": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: 0.07, y: 0.25 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.14, y: -0.28 }, { x: -0.14, y: 0.25 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.08, y: -0.28 }, { x: -0.08, y: 0.25 }], color: "primary", fill: false }, "path29-2-7": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: -0.08, y: -0.28 }], color: "primary", fill: false }, "path29-2-7-6": { type: "path", points: [{ x: 0.07, y: 0.26 }, { x: -0.08, y: 0.26 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{VAL}", x: -0.01, y: -0.42 }, bottom1: { type: "text", text: "{REF}", x: 0, y: 0.43 } }, refblocks: { left1: { x: -0.55, y: -0.01 }, right1: { x: 0.55, y: -0.01 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.52, maxY: 0.43, width: 1.16, height: 1, centerX: 0, centerY: -0.04 }, circles: {} };
-var { paths: Kc, texts: _3, bounds: ue, refblocks: za, circles: th } = $;
-var Oa = e({ primitives: [...Object.values(Kc), ...Object.values(th), { type: "text", text: "{REF}", x: -0.3, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0.3, y: 0.3094553499999995 }], ports: [{ ...za.left1, labels: ["1"] }, { ...za.right1, labels: ["2"] }], size: { width: ue.width, height: ue.height }, center: { x: ue.centerX, y: ue.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
-var Ja = e($).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var $a = e($).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: eh, texts: T3, bounds: ve, refblocks: Ma, circles: rh } = $;
-var Ca = e({ primitives: [...Object.values(eh), ...Object.values(rh), { type: "text", text: "{REF}", x: 0.3, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: -0.3094553499999995 }], ports: [{ ...Ma.left1, labels: ["1"] }, { ...Ma.right1, labels: ["2"] }], size: { width: ve.width, height: ve.height }, center: { x: ve.centerX, y: ve.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
-var Pt = 0.6;
-var ur = 0.3;
-var oh = [{ type: "path", points: [{ x: -Pt, y: 0 }, { x: -ur, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: ur, y: 0 }, { x: Pt, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: ur, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
-var Na = e({ primitives: [...oh, { type: "text", text: "{REF}", x: -0.2, y: 0.35 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.35 }], ports: [{ x: -Pt, y: 0, labels: ["1"] }, { x: Pt, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Pt * 2, height: 0.9 } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: ih, texts: e3, bounds: fe, refblocks: za, circles: lh } = P;
+var Oa = e({ primitives: [...Object.values(ih), ...Object.values(lh), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...za.left1, labels: ["1"] }, { ...za.right1, labels: ["2"] }], size: { width: fe.width, height: fe.height }, center: { x: fe.centerX, y: fe.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Ja = e(P).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: ph, texts: y3, bounds: ce, refblocks: $a, circles: ah } = P;
+var Ma = e({ primitives: [...Object.values(ph), ...Object.values(ah), { type: "text", text: "{REF}", x: -0, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.3894553499999995 }], ports: [{ ...$a.left1, labels: ["1"] }, { ...$a.right1, labels: ["2"] }], size: { width: ce.width, height: ce.height }, center: { x: ce.centerX, y: ce.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Ca = e(P).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1", "neg"]).labelPort("right1", ["2", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: yh, texts: h3, bounds: he, refblocks: Na, circles: xh } = P;
+var Ia = e({ primitives: [...Object.values(yh), ...Object.values(xh), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Na.left1, labels: ["1"] }, { ...Na.right1, labels: ["2"] }], size: { width: he.width, height: he.height }, center: { x: he.centerX, y: he.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: sh, texts: g3, bounds: de, refblocks: Ba, circles: mh } = P;
+var qa = e({ primitives: [...Object.values(sh), ...Object.values(mh), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Ba.left1, labels: ["1"] }, { ...Ba.right1, labels: ["2"] }], size: { width: de.width, height: de.height }, center: { x: de.centerX, y: de.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var $ = { paths: { path27: { type: "path", points: [{ x: 0.54, y: -0.01 }, { x: 0.13, y: -0.01 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.13, y: 0.25 }, { x: 0.13, y: -0.27 }], color: "primary", fill: false }, "path29-2": { type: "path", points: [{ x: 0.07, y: 0.25 }, { x: 0.07, y: -0.28 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.14, y: 0.25 }, { x: -0.14, y: -0.27 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.08, y: 0.26 }, { x: -0.08, y: -0.27 }], color: "primary", fill: false }, "path29-2-7": { type: "path", points: [{ x: 0.07, y: 0.26 }, { x: -0.08, y: 0.26 }], color: "primary", fill: false }, "path29-2-7-6": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: -0.08, y: -0.28 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.21, y: 0.32 }, { x: 0.2, y: 0.32 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: 0.71 }, { x: 0, y: 0.33 }, { x: 0, y: 0.32 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: -0.21, y: 0.32 }, { x: -0.21, y: 0.25 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.2, y: 0.25 }], color: "primary", fill: false }, "path43-9": { type: "path", points: [{ x: 0.19, y: -0.35 }, { x: -0.22, y: -0.35 }], color: "primary", fill: false }, "path44-0-5": { type: "path", points: [{ x: -0.02, y: -0.71 }, { x: -0.02, y: -0.36 }, { x: -0.02, y: -0.35 }], color: "primary", fill: false }, "path43-8-1": { type: "path", points: [{ x: 0.19, y: -0.35 }, { x: 0.19, y: -0.28 }], color: "primary", fill: false }, "path43-8-8-9": { type: "path", points: [{ x: -0.22, y: -0.35 }, { x: -0.22, y: -0.28 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.14, y: -0.01 }, { x: -0.54, y: -0.01 }], color: "primary", fill: false } }, texts: { left1: { type: "text", text: "{REF}", x: 0.53, y: 0.28 }, right1: { type: "text", text: "{VAL}", x: 0.54, y: -0.28 } }, refblocks: { top1: { x: 0, y: 0.71 }, bottom1: { x: -0.02, y: -0.71 }, left1: { x: -0.54, y: -0.01 }, right1: { x: 0.54, y: -0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.74, maxY: 0.74, width: 1.14, height: 1.48, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: fh, texts: P3, bounds: be, refblocks: _e, circles: ch } = $;
+var Da = e({ primitives: [...Object.values(fh), ...Object.values(ch), { type: "text", text: "{REF}", x: -0.4, y: 0.4094554499999995 }, { type: "text", text: "{VAL}", x: 0.4, y: 0.4094553499999995 }], ports: [{ ..._e.left1, labels: ["1"] }, { ..._e.right1, labels: ["3"] }, { ..._e.bottom1, labels: ["2"] }, { ..._e.top1, labels: ["4"] }], size: { width: be.width, height: be.height }, center: { x: be.centerX, y: be.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
+var Ga = e($).labelPort("top1", ["2", "gnd1"]).labelPort("bottom1", ["4", "gnd2"]).labelPort("left1", ["3"]).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
+var Ua = e($).labelPort("top1", ["4", "gnd1"]).labelPort("bottom1", ["2", "gnd2"]).labelPort("left1", ["1"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
+var { paths: hh, texts: j3, bounds: ge, refblocks: ue, circles: dh } = $;
+var Wa = e({ primitives: [...Object.values(hh), ...Object.values(dh), { type: "text", text: "{VAL}", x: -0.4, y: -0.4094554499999995 }, { type: "text", text: "{REF}", x: 0.4, y: -0.4094553499999995 }], ports: [{ ...ue.left1, labels: ["1"] }, { ...ue.right1, labels: ["3"] }, { ...ue.bottom1, labels: ["2"] }, { ...ue.top1, labels: ["4"] }], size: { width: ge.width, height: ge.height }, center: { x: ge.centerX, y: ge.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "bottom_left").changeTextAnchor("{VAL}", "top_left").build();
+var M = { paths: { path27: { type: "path", points: [{ x: 0.55, y: -0.01 }, { x: 0.13, y: -0.01 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.14, y: -0.01 }, { x: -0.55, y: -0.01 }], color: "primary", fill: false }, path29: { type: "path", points: [{ x: 0.13, y: -0.28 }, { x: 0.13, y: 0.25 }], color: "primary", fill: false }, "path29-2": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: 0.07, y: 0.25 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.14, y: -0.28 }, { x: -0.14, y: 0.25 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.08, y: -0.28 }, { x: -0.08, y: 0.25 }], color: "primary", fill: false }, "path29-2-7": { type: "path", points: [{ x: 0.07, y: -0.28 }, { x: -0.08, y: -0.28 }], color: "primary", fill: false }, "path29-2-7-6": { type: "path", points: [{ x: 0.07, y: 0.26 }, { x: -0.08, y: 0.26 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{VAL}", x: -0.01, y: -0.42 }, bottom1: { type: "text", text: "{REF}", x: 0, y: 0.43 } }, refblocks: { left1: { x: -0.55, y: -0.01 }, right1: { x: 0.55, y: -0.01 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.52, maxY: 0.43, width: 1.16, height: 1, centerX: 0, centerY: -0.04 }, circles: {} };
+var { paths: _h, texts: $3, bounds: ve, refblocks: Ha, circles: gh } = M;
+var Za = e({ primitives: [...Object.values(_h), ...Object.values(gh), { type: "text", text: "{REF}", x: -0.3, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0.3, y: 0.3094553499999995 }], ports: [{ ...Ha.left1, labels: ["1"] }, { ...Ha.right1, labels: ["2"] }], size: { width: ve.width, height: ve.height }, center: { x: ve.centerX, y: ve.centerY } }).changeTextAnchor("{VAL}", "top_left").rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
+var Qa = e(M).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["2", "neg"]).labelPort("right1", ["1", "pos"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Ka = e(M).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: uh, texts: W3, bounds: we, refblocks: ty, circles: vh } = M;
+var ey = e({ primitives: [...Object.values(uh), ...Object.values(vh), { type: "text", text: "{REF}", x: 0.3, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: -0.3094553499999995 }], ports: [{ ...ty.left1, labels: ["1"] }, { ...ty.right1, labels: ["2"] }], size: { width: we.width, height: we.height }, center: { x: we.centerX, y: we.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "bottom_left").build();
 var St = 0.6;
-var vr = 0.3;
-var ih = [{ type: "path", points: [{ x: -St, y: 0 }, { x: -vr, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: vr, y: 0 }, { x: St, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: vr, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
-var Ia = e({ primitives: [...ih, { type: "text", text: "{REF}", x: 0, y: -0.4 }, { type: "text", text: "{VAL}", x: 0, y: 0.4 }], ports: [{ x: -St, y: 0, labels: ["1"] }, { x: St, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: St * 2, height: 0.9 } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Rt = 0.6;
 var wr = 0.3;
-var lh = [{ type: "path", points: [{ x: -Rt, y: 0 }, { x: -wr, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: wr, y: 0 }, { x: Rt, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: wr, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
-var Ba = e({ primitives: [...lh, { type: "text", text: "{REF}", x: 0, y: 0.4 }, { type: "text", text: "{VAL}", x: 0, y: -0.4 }], ports: [{ x: -Rt, y: 0, labels: ["1"] }, { x: Rt, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Rt * 2, height: 0.9 } }).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Ft = 0.6;
+var wh = [{ type: "path", points: [{ x: -St, y: 0 }, { x: -wr, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: wr, y: 0 }, { x: St, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: wr, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
+var ry = e({ primitives: [...wh, { type: "text", text: "{REF}", x: -0.2, y: 0.35 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.35 }], ports: [{ x: -St, y: 0, labels: ["1"] }, { x: St, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: St * 2, height: 0.9 } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Rt = 0.6;
 var Ar = 0.3;
-var ph = [{ type: "path", points: [{ x: -Ft, y: 0 }, { x: -Ar, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: Ar, y: 0 }, { x: Ft, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: Ar, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
-var qa = e({ primitives: [...ph, { type: "text", text: "{REF}", x: 0.2, y: -0.35 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.35 }], ports: [{ x: -Ft, y: 0, labels: ["1"] }, { x: Ft, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Ft * 2, height: 0.9 } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Ah = [{ type: "path", points: [{ x: -Rt, y: 0 }, { x: -Ar, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: Ar, y: 0 }, { x: Rt, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: Ar, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
+var oy = e({ primitives: [...Ah, { type: "text", text: "{REF}", x: 0, y: -0.4 }, { type: "text", text: "{VAL}", x: 0, y: 0.4 }], ports: [{ x: -Rt, y: 0, labels: ["1"] }, { x: Rt, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Rt * 2, height: 0.9 } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Ft = 0.6;
+var Pr = 0.3;
+var Ph = [{ type: "path", points: [{ x: -Ft, y: 0 }, { x: -Pr, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: Pr, y: 0 }, { x: Ft, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: Pr, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
+var iy = e({ primitives: [...Ph, { type: "text", text: "{REF}", x: 0, y: 0.4 }, { type: "text", text: "{VAL}", x: 0, y: -0.4 }], ports: [{ x: -Ft, y: 0, labels: ["1"] }, { x: Ft, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Ft * 2, height: 0.9 } }).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Tt = 0.6;
+var Sr = 0.3;
+var Sh = [{ type: "path", points: [{ x: -Tt, y: 0 }, { x: -Sr, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: Sr, y: 0 }, { x: Tt, y: 0 }], color: "primary", fill: false }, { type: "circle", x: 0, y: 0, radius: Sr, color: "primary", fill: false }, { type: "path", points: [{ x: -0.1, y: 0 }, { x: 0.15, y: 0 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: 0.08 }], color: "primary", fill: false }, { type: "path", points: [{ x: 0.15, y: 0 }, { x: 0.05, y: -0.08 }], color: "primary", fill: false }];
+var ly = e({ primitives: [...Sh, { type: "text", text: "{REF}", x: 0.2, y: -0.35 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.35 }], ports: [{ x: -Tt, y: 0, labels: ["1"] }, { x: Tt, y: 0, labels: ["2"] }], center: { x: 0, y: 0 }, size: { width: Tt * 2, height: 0.9 } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var S = { paths: { path11: { type: "path", points: [{ x: 1.99, y: -1.64 }, { x: 2.1, y: -1.64 }], color: "primary", fill: false }, "path40-0": { type: "path", points: [{ x: 2.1, y: -1.48 }, { x: 2.1, y: -1.8 }], color: "primary", fill: false }, "path40-0-5": { type: "path", points: [{ x: 2.22, y: -1.5 }, { x: 2.11, y: -1.58 }], color: "primary", fill: false }, "path40-0-5-0": { type: "path", points: [{ x: 2.23, y: -1.78 }, { x: 2.11, y: -1.7 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 2.23, y: -1.49 }, { x: 2.23, y: -1.14 }], color: "primary", fill: false }, "path12-1-5-3": { type: "path", points: [{ x: 2.23, y: -1.97 }, { x: 2.23, y: -1.79 }], color: "primary", fill: false }, "arrow-2": { type: "path", points: [{ x: 2.17, y: -1.7 }, { x: 2.13, y: -1.76 }, { x: 2.19, y: -1.76 }, { x: 2.17, y: -1.7 }], color: "primary", fill: true }, path1: { type: "path", points: [{ x: 1.6, y: -1.5 }, { x: 1.86, y: -1.5 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 1.87, y: -1.34 }, { x: 1.87, y: -1.66 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 1.99, y: -1.36 }, { x: 1.87, y: -1.44 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: 1.99, y: -1.64 }, { x: 1.88, y: -1.56 }], color: "primary", fill: false }, "arrow-1": { type: "path", points: [{ x: 1.94, y: -1.56 }, { x: 1.89, y: -1.62 }, { x: 1.96, y: -1.62 }, { x: 1.94, y: -1.56 }], color: "primary", fill: true }, path9: { type: "path", points: [{ x: 1.99, y: -1.35 }, { x: 2.23, y: -1.36 }], color: "primary", fill: false } }, texts: { bottom1: { type: "text", text: "{VAL}", x: 1.88, y: -1.94 }, right1: { type: "text", text: "{REF}", x: 1.88, y: -1.14 } }, refblocks: { right1: { x: 2.23, y: -1.97 }, right2: { x: 1.6, y: -1.5 }, right3: { x: 2.23, y: -1.14 } }, bounds: { minX: 1.58, maxX: 2.35, minY: -1.98, maxY: -1.12, width: 0.77, height: 0.86, centerX: 1.96, centerY: -1.55 }, circles: { "path1-0": { type: "circle", x: 2.05, y: -1.54, radius: 0.3, color: "primary", fill: false } } };
-var Da = e(S).rotateRightFacingSymbol("down").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0.8, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0, y: 0.15 }).build();
-var Ga = e(S).rotateRightFacingSymbol("right").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_right").changeTextAnchor("{REF}", "middle_right").build();
-var Ua = e(S).rotateRightFacingSymbol("left").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.8 }).changeTextAnchor("{REF}", "middle_left", { x: 0, y: 0.8 }).build();
-var Wa = e(S).rotateRightFacingSymbol("right").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_right").changeTextAnchor("{REF}", "middle_right").build();
-var Ha = e(S).rotateRightFacingSymbol("up").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0.8, y: 0.15 }).build();
-var Za = e(S).rotateRightFacingSymbol("up").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0.8, y: 0.15 }).build();
-var Qa = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: -0.12, y: 0.09 }, { x: 0.12, y: 0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.45 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.35 }, left1: { type: "text", text: "A", x: 0, y: -0.1 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: -0.09, maxY: 0.09, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: xh, texts: sh, bounds: we, refblocks: Ka, circles: mh } = Qa;
-var Tt = s({ primitives: [...Object.values(xh), ...Object.values(mh), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...sh.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.3 }], ports: [{ ...Ka.left1, labels: ["1"] }, { ...Ka.right1, labels: ["2"] }], size: { width: we.width, height: we.height }, center: { x: we.centerX, y: we.centerY } });
-function nh(t) {
+var py = e(S).rotateRightFacingSymbol("down").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0.8, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0, y: 0.15 }).build();
+var ay = e(S).rotateRightFacingSymbol("right").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_right").changeTextAnchor("{REF}", "middle_right").build();
+var yy = e(S).rotateRightFacingSymbol("left").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.8 }).changeTextAnchor("{REF}", "middle_left", { x: 0, y: 0.8 }).build();
+var xy = e(S).rotateRightFacingSymbol("right").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_right").changeTextAnchor("{REF}", "middle_right").build();
+var sy = e(S).rotateRightFacingSymbol("up").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0.8, y: 0.15 }).build();
+var my = e(S).rotateRightFacingSymbol("up").labelPort("right2", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["3"]).changeTextAnchor("{VAL}", "middle_left", { x: 0, y: -0.15 }).changeTextAnchor("{REF}", "middle_left", { x: 0.8, y: 0.15 }).build();
+var ny = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: -0.12, y: 0.09 }, { x: 0.12, y: 0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.45 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.35 }, left1: { type: "text", text: "A", x: 0, y: -0.1 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: -0.09, maxY: 0.09, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Th, texts: Eh, bounds: Ae, refblocks: fy, circles: Yh } = ny;
+var Et = x({ primitives: [...Object.values(Th), ...Object.values(Yh), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...Eh.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.3 }], ports: [{ ...fy.left1, labels: ["1"] }, { ...fy.right1, labels: ["2"] }], size: { width: Ae.width, height: Ae.height }, center: { x: Ae.centerX, y: Ae.centerY } });
+function Xh(t) {
   return typeof t == "object" && t !== null && t.type === "path" && Array.isArray(t.points) && typeof t.color == "string";
 }
-function fh(t) {
+function Lh(t) {
   return typeof t == "object" && t !== null && t.type === "text" && typeof t.text == "string" && typeof t.x == "number" && typeof t.y == "number" && typeof t.anchor == "string";
 }
-var { 6: Pr, 2: Sr, ...ch } = Tt.primitives;
-nh(Sr) && Sr.points.map((t) => {
+var { 6: Rr, 2: Fr, ...Vh } = Et.primitives;
+Xh(Fr) && Fr.points.map((t) => {
   t.y += 0.05;
 });
-fh(Pr) && (Pr.y += 0.025);
-function hh(t) {
+Lh(Rr) && (Rr.y += 0.025);
+function jh(t) {
   return typeof t == "object";
 }
-var ty = r({ ...Tt, primitives: Object.values(ch).filter(hh) });
-var ey = { ...ty, primitives: [...ty.primitives, Pr, Sr] };
+var cy = r({ ...Et, primitives: Object.values(Vh).filter(jh) });
+var hy = { ...cy, primitives: [...cy.primitives, Rr, Fr] };
 var R = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.04 }, { x: 0.54, y: 0.04 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0, y: -0.06 }, { x: -0.11, y: 0.13 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: -0.12, y: -0.14 }, { x: 0.12, y: -0.14 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.17, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: -0.4 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.04 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.79, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
-var { paths: bh, texts: f7, bounds: Ae, refblocks: ry, circles: _h } = R;
-var oy = e({ primitives: [...Object.values(bh), ...Object.values(_h), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...ry.left1, labels: ["1"] }, { ...ry.right1, labels: ["2"] }], size: { width: Ae.width, height: Ae.height }, center: { x: Ae.centerX, y: Ae.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: gh, texts: b7, bounds: Pe, refblocks: iy, circles: uh } = R;
-var ly = e({ primitives: [...Object.values(gh), ...Object.values(uh), { type: "text", text: "{REF}", x: -0, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.3294553499999995 }], ports: [{ ...iy.left1, labels: ["1"] }, { ...iy.right1, labels: ["2"] }], size: { width: Pe.width, height: Pe.height }, center: { x: Pe.centerX, y: Pe.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: vh, texts: v7, bounds: Se, refblocks: py, circles: wh } = R;
-var ay = e({ primitives: [...Object.values(vh), ...Object.values(wh), { type: "text", text: "{REF}", x: -0, y: -0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4294553499999995 }], ports: [{ ...py.left1, labels: ["1"] }, { ...py.right1, labels: ["2"] }], size: { width: Se.width, height: Se.height }, center: { x: Se.centerX, y: Se.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Ah, texts: S7, bounds: Re, refblocks: yy, circles: Ph } = R;
-var xy = e({ primitives: [...Object.values(Ah), ...Object.values(Ph), { type: "text", text: "{REF}", x: -0, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.3294553499999995 }], ports: [{ ...yy.left1, labels: ["1"] }, { ...yy.right1, labels: ["2"] }], size: { width: Re.width, height: Re.height }, center: { x: Re.centerX, y: Re.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Sh, texts: E7, bounds: Fe, refblocks: sy, circles: Rh } = R;
-var my = e({ primitives: [...Object.values(Sh), ...Object.values(Rh), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...sy.left1, labels: ["1"] }, { ...sy.right1, labels: ["2"] }], size: { width: Fe.width, height: Fe.height }, center: { x: Fe.centerX, y: Fe.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: Fh, texts: V7, bounds: Te, refblocks: ny, circles: Th } = R;
-var fy = e({ primitives: [...Object.values(Fh), ...Object.values(Th), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...ny.left1, labels: ["1"] }, { ...ny.right1, labels: ["2"] }], size: { width: Te.width, height: Te.height }, center: { x: Te.centerX, y: Te.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: zh, texts: j7, bounds: Pe, refblocks: dy, circles: Oh } = R;
+var by = e({ primitives: [...Object.values(zh), ...Object.values(Oh), { type: "text", text: "{REF}", x: -0.15, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3894553499999995 }], ports: [{ ...dy.left1, labels: ["1"] }, { ...dy.right1, labels: ["2"] }], size: { width: Pe.width, height: Pe.height }, center: { x: Pe.centerX, y: Pe.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: Jh, texts: J7, bounds: Se, refblocks: _y, circles: $h } = R;
+var gy = e({ primitives: [...Object.values(Jh), ...Object.values($h), { type: "text", text: "{REF}", x: -0, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.3294553499999995 }], ports: [{ ..._y.left1, labels: ["1"] }, { ..._y.right1, labels: ["2"] }], size: { width: Se.width, height: Se.height }, center: { x: Se.centerX, y: Se.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Mh, texts: N7, bounds: Re, refblocks: uy, circles: Ch } = R;
+var vy = e({ primitives: [...Object.values(Mh), ...Object.values(Ch), { type: "text", text: "{REF}", x: -0, y: -0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4294553499999995 }], ports: [{ ...uy.left1, labels: ["1"] }, { ...uy.right1, labels: ["2"] }], size: { width: Re.width, height: Re.height }, center: { x: Re.centerX, y: Re.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Nh, texts: D7, bounds: Fe, refblocks: wy, circles: Ih } = R;
+var Ay = e({ primitives: [...Object.values(Nh), ...Object.values(Ih), { type: "text", text: "{REF}", x: -0, y: 0.3894553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.3294553499999995 }], ports: [{ ...wy.left1, labels: ["1"] }, { ...wy.right1, labels: ["2"] }], size: { width: Fe.width, height: Fe.height }, center: { x: Fe.centerX, y: Fe.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: Bh, texts: H7, bounds: Te, refblocks: Py, circles: qh } = R;
+var Sy = e({ primitives: [...Object.values(Bh), ...Object.values(qh), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Py.left1, labels: ["1"] }, { ...Py.right1, labels: ["2"] }], size: { width: Te.width, height: Te.height }, center: { x: Te.centerX, y: Te.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: Dh, texts: t8, bounds: Ee, refblocks: Ry, circles: Gh } = R;
+var Fy = e({ primitives: [...Object.values(Dh), ...Object.values(Gh), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...Ry.left1, labels: ["1"] }, { ...Ry.right1, labels: ["2"] }], size: { width: Ee.width, height: Ee.height }, center: { x: Ee.centerX, y: Ee.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
 var F = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.04 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.1, y: 0.04 }, { x: 0.54, y: 0.04 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: -0.15 }, { x: -0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: 0.09, y: -0.15 }, { x: 0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.08, y: 0.06 }, { x: -0.08, y: -0.15 }, { x: 0.09, y: -0.05 }, { x: -0.08, y: 0.06 }], color: "primary", fill: true }, "path11-0-9-0": { type: "path", points: [{ x: 0.08, y: 0.26 }, { x: 0.08, y: 0.05 }, { x: -0.09, y: 0.15 }, { x: 0.07, y: 0.26 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.03, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.42 } }, refblocks: { left1: { x: -0.54, y: 0.04 }, right1: { x: 0.54, y: 0.04 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.42, maxY: 0.42, width: 1.14, height: 0.83, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.05, radius: 0.29, color: "primary", fill: false } } };
-var cy = e(F).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: -0.03, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: 0.8, y: -0.2 }).build();
-var hy = e(F).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.1 }).changeTextAnchor("{VAL}", "middle_top").build();
-var dy = e(F).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.8 }).changeTextAnchor("{VAL}", "middle_top", { x: 0, y: -0.9 }).build();
-var by = e(F).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.1 }).changeTextAnchor("{VAL}", "middle_top").build();
-var _y = e(F).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: 0.7, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: -0.13, y: -0.2 }).build();
-var gy = e(F).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: 0.7, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: -0.13, y: -0.2 }).build();
-var M = { paths: { triangle: { type: "path", points: [{ x: -0.06, y: -0.09 }, { x: -0.06, y: 0.09 }, { x: 0.06, y: 0 }, { x: -0.06, y: -0.09 }], color: "primary", fill: false }, stem: { type: "path", points: [{ x: -0.11, y: 0 }, { x: -0.06, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.03 } }, refblocks: { left1: { x: -0.11, y: 0 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.37, maxY: 0.37, width: 1.14, height: 0.74, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Xh, bounds: uy, refblocks: Lh } = M;
-var vy = e({ primitives: [...Object.values(Xh), { type: "text", text: "{REF}", x: -0.13, y: -0 }], ports: [{ ...Lh.left1, labels: ["1"] }], center: { x: uy.centerX, y: uy.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
-var { paths: Vh, bounds: wy, refblocks: jh } = M;
-var Ay = e({ primitives: [...Object.values(Vh), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...jh.left1, labels: ["1"] }], center: { x: wy.centerX, y: wy.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: kh, bounds: Py, refblocks: zh } = M;
-var Sy = e({ primitives: [...Object.values(kh), { type: "text", text: "{REF}", x: -0.13, y: -0 }], ports: [{ ...zh.left1, labels: ["1"] }], center: { x: Py.centerX, y: Py.centerY } }).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: Oh, bounds: Ry, refblocks: Jh } = M;
-var Fy = e({ primitives: [...Object.values(Oh), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...Jh.left1, labels: ["1"] }], center: { x: Ry.centerX, y: Ry.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Ty = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var C = e(Ty).labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Ey = r(C, "down");
-var Yy = r(C, "left");
-var Xy = r(C, "up");
-var Ly = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.22 }, { x: -0.13, y: 0.22 }], color: "primary", fill: false }, "path-1-2": { type: "path", points: [{ x: -0.07, y: 0.22 }, { x: 0.11, y: 0.16 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0.37, y: 0.13 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.36 }, { x: 0.37, y: 0.36 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.37, y: -0.18 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, "path4-5": { type: "path", points: [{ x: -0.07, y: -0.19 }, { x: 0.1, y: -0.24 }], color: "primary", fill: false }, path5: { type: "path", points: [{ x: 0.1, y: -0.27 }, { x: 0.37, y: -0.27 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.12, y: -0.04 }, { x: 0.37, y: -0.04 }], color: "primary", fill: false }, "path1-4-join": { type: "path", points: [{ x: 0, y: -0.2 }, { x: 0, y: 0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.56 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.37, y: 0.22 }, left2: { x: -0.37, y: -0.18 }, right1: { x: 0.37, y: 0.36 }, right2: { x: 0.37, y: 0.13 }, right3: { x: 0.37, y: -0.04 }, right5: { x: 0.37, y: -0.27 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.47, maxY: 0.56, width: 1, height: 1.04, centerX: 0, centerY: 0.05 }, circles: { "circle-2": { type: "circle", x: 0.08, y: 0.13, radius: 0.02, color: "primary", fill: false }, "circle-5": { type: "circle", x: 0.08, y: -0.27, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: 0.08, y: 0.37, radius: 0.02, color: "primary", fill: false }, "circle-6": { type: "circle", x: 0.08, y: -0.04, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.22, radius: 0.02, color: "primary", fill: false }, "circle-4": { type: "circle", x: -0.1, y: -0.18, radius: 0.02, color: "primary", fill: false } } };
-var N = e(Ly).labelPort("left1", ["1"]).labelPort("right1", ["3"]).labelPort("right2", ["2"]).labelPort("right3", ["6"]).labelPort("left2", ["4"]).labelPort("right5", ["5"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Rr = r(N, "down");
-var Fr = Rr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Tr = Rr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Fr.anchor = "middle_bottom";
-Tr.anchor = "middle_top";
-Fr.x = 0;
-Fr.y += 0.537;
-Tr.y -= 0.5375;
-Tr.x = 0;
-var Vy = Rr;
-var Er = r(N, "left");
-var Yr = Er.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Xr = Er.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Yr.anchor = "middle_bottom";
-Xr.anchor = "middle_top";
+var Ty = e(F).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: -0.03, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: 0.8, y: -0.2 }).build();
+var Ey = e(F).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.1 }).changeTextAnchor("{VAL}", "middle_top").build();
+var Yy = e(F).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.8 }).changeTextAnchor("{VAL}", "middle_top", { x: 0, y: -0.9 }).build();
+var Xy = e(F).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.1 }).changeTextAnchor("{VAL}", "middle_top").build();
+var Ly = e(F).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: 0.7, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: -0.13, y: -0.2 }).build();
+var Vy = e(F).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left", { x: 0.7, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: -0.13, y: -0.2 }).build();
+var C = { paths: { triangle: { type: "path", points: [{ x: -0.06, y: -0.09 }, { x: -0.06, y: 0.09 }, { x: 0.06, y: 0 }, { x: -0.06, y: -0.09 }], color: "primary", fill: false }, stem: { type: "path", points: [{ x: -0.11, y: 0 }, { x: -0.06, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.03 } }, refblocks: { left1: { x: -0.11, y: 0 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.37, maxY: 0.37, width: 1.14, height: 0.74, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Hh, bounds: jy, refblocks: Zh } = C;
+var ky = e({ primitives: [...Object.values(Hh), { type: "text", text: "{REF}", x: -0.13, y: -0 }], ports: [{ ...Zh.left1, labels: ["1"] }], center: { x: jy.centerX, y: jy.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
+var { paths: Qh, bounds: zy, refblocks: Kh } = C;
+var Oy = e({ primitives: [...Object.values(Qh), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...Kh.left1, labels: ["1"] }], center: { x: zy.centerX, y: zy.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
+var { paths: td, bounds: Jy, refblocks: ed } = C;
+var $y = e({ primitives: [...Object.values(td), { type: "text", text: "{REF}", x: -0.13, y: -0 }], ports: [{ ...ed.left1, labels: ["1"] }], center: { x: Jy.centerX, y: Jy.centerY } }).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
+var { paths: rd, bounds: My, refblocks: od } = C;
+var Cy = e({ primitives: [...Object.values(rd), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...od.left1, labels: ["1"] }], center: { x: My.centerX, y: My.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Ny = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var N = e(Ny).labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Iy = r(N, "down");
+var By = r(N, "left");
+var qy = r(N, "up");
+var Dy = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.22 }, { x: -0.13, y: 0.22 }], color: "primary", fill: false }, "path-1-2": { type: "path", points: [{ x: -0.07, y: 0.22 }, { x: 0.11, y: 0.16 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0.37, y: 0.13 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.36 }, { x: 0.37, y: 0.36 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.37, y: -0.18 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, "path4-5": { type: "path", points: [{ x: -0.07, y: -0.19 }, { x: 0.1, y: -0.24 }], color: "primary", fill: false }, path5: { type: "path", points: [{ x: 0.1, y: -0.27 }, { x: 0.37, y: -0.27 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.12, y: -0.04 }, { x: 0.37, y: -0.04 }], color: "primary", fill: false }, "path1-4-join": { type: "path", points: [{ x: 0, y: -0.2 }, { x: 0, y: 0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.56 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.37, y: 0.22 }, left2: { x: -0.37, y: -0.18 }, right1: { x: 0.37, y: 0.36 }, right2: { x: 0.37, y: 0.13 }, right3: { x: 0.37, y: -0.04 }, right5: { x: 0.37, y: -0.27 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.47, maxY: 0.56, width: 1, height: 1.04, centerX: 0, centerY: 0.05 }, circles: { "circle-2": { type: "circle", x: 0.08, y: 0.13, radius: 0.02, color: "primary", fill: false }, "circle-5": { type: "circle", x: 0.08, y: -0.27, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: 0.08, y: 0.37, radius: 0.02, color: "primary", fill: false }, "circle-6": { type: "circle", x: 0.08, y: -0.04, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.22, radius: 0.02, color: "primary", fill: false }, "circle-4": { type: "circle", x: -0.1, y: -0.18, radius: 0.02, color: "primary", fill: false } } };
+var I = e(Dy).labelPort("left1", ["1"]).labelPort("right1", ["3"]).labelPort("right2", ["2"]).labelPort("right3", ["6"]).labelPort("left2", ["4"]).labelPort("right5", ["5"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Tr = r(I, "down");
+var Er = Tr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Yr = Tr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Er.anchor = "middle_bottom";
+Yr.anchor = "middle_top";
+Er.x = 0;
+Er.y += 0.537;
+Yr.y -= 0.5375;
 Yr.x = 0;
-Yr.y += 1;
-Xr.y -= 1;
-Xr.x = 0;
-var jy = Er;
-var Lr = r(N, "up");
-var Vr = Lr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var jr = Lr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Vr.anchor = "middle_bottom";
-jr.anchor = "middle_top";
+var Gy = Tr;
+var Xr = r(I, "left");
+var Lr = Xr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Vr = Xr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Lr.anchor = "middle_bottom";
+Vr.anchor = "middle_top";
+Lr.x = 0;
+Lr.y += 1;
+Vr.y -= 1;
 Vr.x = 0;
-Vr.y += 0.537;
-jr.y -= 0.5375;
-jr.x = 0;
-var ky = Lr;
-var zy = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.22 }, { x: -0.13, y: 0.22 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.23 }, { x: 0.11, y: 0.33 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0.37, y: 0.13 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.36 }, { x: 0.37, y: 0.36 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.37, y: -0.18 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, "path4-6": { type: "path", points: [{ x: -0.07, y: -0.18 }, { x: 0.11, y: -0.07 }], color: "primary", fill: false }, path5: { type: "path", points: [{ x: 0.1, y: -0.27 }, { x: 0.37, y: -0.27 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.12, y: -0.04 }, { x: 0.37, y: -0.04 }], color: "primary", fill: false }, "path1-4-join": { type: "path", points: [{ x: 0, y: -0.12 }, { x: 0, y: 0.27 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.61 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.52 } }, refblocks: { left1: { x: -0.37, y: 0.22 }, left2: { x: -0.37, y: -0.18 }, right1: { x: 0.37, y: 0.36 }, right2: { x: 0.37, y: 0.13 }, right3: { x: 0.37, y: -0.04 }, right5: { x: 0.37, y: -0.27 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.47, maxY: 0.56, width: 1, height: 1.04, centerX: 0, centerY: 0.05 }, circles: { "circle-2": { type: "circle", x: 0.08, y: 0.13, radius: 0.02, color: "primary", fill: false }, "circle-5": { type: "circle", x: 0.08, y: -0.27, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: 0.08, y: 0.37, radius: 0.02, color: "primary", fill: false }, "circle-6": { type: "circle", x: 0.08, y: -0.04, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.22, radius: 0.02, color: "primary", fill: false }, "circle-4": { type: "circle", x: -0.1, y: -0.18, radius: 0.02, color: "primary", fill: false } } };
-var I = e(zy).labelPort("left1", ["1"]).labelPort("right1", ["3"]).labelPort("right2", ["2"]).labelPort("right3", ["6"]).labelPort("left2", ["4"]).labelPort("right5", ["5"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var kr = r(I, "down");
-var zr = kr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Or = kr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-zr.anchor = "middle_bottom";
-Or.anchor = "middle_top";
+var Uy = Xr;
+var jr = r(I, "up");
+var kr = jr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var zr = jr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+kr.anchor = "middle_bottom";
+zr.anchor = "middle_top";
+kr.x = 0;
+kr.y += 0.537;
+zr.y -= 0.5375;
 zr.x = 0;
-zr.y += 0.565;
-Or.y -= 0.555;
-Or.x = 0;
-var Oy = kr;
-var Jr = r(I, "left");
-var $r = Jr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Mr = Jr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-$r.anchor = "middle_bottom";
-Mr.anchor = "middle_top";
+var Wy = jr;
+var Hy = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.22 }, { x: -0.13, y: 0.22 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.23 }, { x: 0.11, y: 0.33 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0.37, y: 0.13 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.36 }, { x: 0.37, y: 0.36 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.37, y: -0.18 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, "path4-6": { type: "path", points: [{ x: -0.07, y: -0.18 }, { x: 0.11, y: -0.07 }], color: "primary", fill: false }, path5: { type: "path", points: [{ x: 0.1, y: -0.27 }, { x: 0.37, y: -0.27 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.12, y: -0.04 }, { x: 0.37, y: -0.04 }], color: "primary", fill: false }, "path1-4-join": { type: "path", points: [{ x: 0, y: -0.12 }, { x: 0, y: 0.27 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.61 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.52 } }, refblocks: { left1: { x: -0.37, y: 0.22 }, left2: { x: -0.37, y: -0.18 }, right1: { x: 0.37, y: 0.36 }, right2: { x: 0.37, y: 0.13 }, right3: { x: 0.37, y: -0.04 }, right5: { x: 0.37, y: -0.27 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.47, maxY: 0.56, width: 1, height: 1.04, centerX: 0, centerY: 0.05 }, circles: { "circle-2": { type: "circle", x: 0.08, y: 0.13, radius: 0.02, color: "primary", fill: false }, "circle-5": { type: "circle", x: 0.08, y: -0.27, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: 0.08, y: 0.37, radius: 0.02, color: "primary", fill: false }, "circle-6": { type: "circle", x: 0.08, y: -0.04, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.22, radius: 0.02, color: "primary", fill: false }, "circle-4": { type: "circle", x: -0.1, y: -0.18, radius: 0.02, color: "primary", fill: false } } };
+var B = e(Hy).labelPort("left1", ["1"]).labelPort("right1", ["3"]).labelPort("right2", ["2"]).labelPort("right3", ["6"]).labelPort("left2", ["4"]).labelPort("right5", ["5"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Or = r(B, "down");
+var Jr = Or.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var $r = Or.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Jr.anchor = "middle_bottom";
+$r.anchor = "middle_top";
+Jr.x = 0;
+Jr.y += 0.565;
+$r.y -= 0.555;
 $r.x = 0;
-$r.y += 1.09;
-Mr.y -= 1.09;
-Mr.x = 0;
-var Jy = Jr;
-var Cr = r(I, "up");
-var Nr = Cr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Ir = Cr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Nr.anchor = "middle_bottom";
-Ir.anchor = "middle_top";
+var Zy = Or;
+var Mr = r(B, "left");
+var Cr = Mr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Nr = Mr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Cr.anchor = "middle_bottom";
+Nr.anchor = "middle_top";
+Cr.x = 0;
+Cr.y += 1.09;
+Nr.y -= 1.09;
 Nr.x = 0;
-Nr.y += 0.565;
-Ir.y -= 0.555;
-Ir.x = 0;
-var $y = Cr;
-var My = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0.06 }, { x: -0.14, y: 0.06 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: 0.07 }, { x: 0.11, y: 0.11 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.13, y: 0.06 }, { x: 0.38, y: 0.06 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.38, y: -0.17 }, { x: -0.14, y: -0.17 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: -0.09, y: -0.17 }, { x: 0.11, y: -0.12 }], color: "primary", fill: false }, "path12-0": { type: "path", points: [{ x: 0.13, y: -0.17 }, { x: 0.38, y: -0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.31 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.31 } }, refblocks: { left1: { x: -0.38, y: -0.17 }, left3: { x: -0.38, y: 0.06 }, right1: { x: 0.38, y: -0.17 }, right3: { x: 0.38, y: 0.06 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.81, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-4": { type: "circle", x: 0.1, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.1, y: -0.17, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: -0.11, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.11, y: -0.17, radius: 0.02, color: "primary", fill: false } } };
-var B = e(My).labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["4"]).labelPort("left3", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Br = r(B, "down");
-var qr = Br.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Dr = Br.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-qr.anchor = "middle_bottom";
-Dr.anchor = "middle_top";
-qr.x = 0.4;
-qr.y += 0.265;
-Dr.y -= 0.265;
-Dr.x = 0.4;
-var Cy = Br;
-var Gr = r(B, "left");
-var Ur = Gr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Wr = Gr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Ur.anchor = "middle_bottom";
-Wr.anchor = "middle_top";
-Ur.x = 0;
-Ur.y += 0.67;
-Wr.y -= 0.67;
-Wr.x = 0;
-var Ny = Gr;
-var Hr = r(B, "up");
-var Zr = Hr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Qr = Hr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Zr.anchor = "middle_bottom";
-Qr.anchor = "middle_top";
-Zr.x = 0.46;
-Zr.y += 0.265;
-Qr.y -= 0.265;
-Qr.x = 0.46;
-var Iy = Hr;
-var By = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0.06 }, { x: -0.14, y: 0.06 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: 0.07 }, { x: 0.1, y: 0.2 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.13, y: 0.06 }, { x: 0.38, y: 0.06 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.38, y: -0.17 }, { x: -0.14, y: -0.17 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: -0.09, y: -0.16 }, { x: 0.1, y: -0.03 }], color: "primary", fill: false }, "path12-0": { type: "path", points: [{ x: 0.13, y: -0.17 }, { x: 0.38, y: -0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.38, y: -0.17 }, left3: { x: -0.38, y: 0.06 }, right1: { x: 0.38, y: -0.17 }, right3: { x: 0.38, y: 0.06 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.81, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-4": { type: "circle", x: 0.1, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.1, y: -0.17, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: -0.11, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.11, y: -0.17, radius: 0.02, color: "primary", fill: false } } };
-var q = e(By).labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["4"]).labelPort("left3", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Kr = r(q, "down");
-var to = Kr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var eo = Kr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-to.anchor = "middle_bottom";
-eo.anchor = "middle_top";
-to.x = 0.4;
-to.y += 0.295;
-eo.y -= 0.295;
-eo.x = 0.42;
-var qy = Kr;
-var ro = r(q, "left");
-var oo = ro.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var io = ro.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-oo.anchor = "middle_bottom";
-io.anchor = "middle_top";
-oo.x = 0;
-oo.y += 0.795;
-io.y -= 0.795;
-io.x = 0;
-var Dy = ro;
-var lo = r(q, "up");
-var po = lo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var ao = lo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-po.anchor = "middle_bottom";
-ao.anchor = "middle_top";
-po.x = 0.46;
-po.y += 0.315;
-ao.y -= 0.315;
-ao.x = 0.46;
-var Gy = lo;
-var Ee = { paths: { path5: { type: "path", points: [{ x: -0.44, y: 0 }, { x: -0.16, y: 0 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.17, y: 0 }, { x: 0.44, y: 0.01 }], color: "primary", fill: false }, path9: { type: "path", points: [{ x: -0.25, y: -0.16 }, { x: 0.02, y: 0.3 }, { x: 0.25, y: 0.17 }, { x: -0.02, y: -0.29 }, { x: -0.25, y: -0.16 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.37 } }, refblocks: { left1: { x: -0.44, y: 0 }, right1: { x: 0.44, y: 0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.25, maxY: 0.25, width: 1.13, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: qh, texts: Fv, bounds: Ye, refblocks: Uy, circles: Dh } = Ee;
-var Xe = e({ primitives: [...Object.values(qh), ...Object.values(Dh), { type: "text", text: "{REF}", x: 0.18, y: -0.3204553499999995 }, { type: "text", text: "{VAL}", x: -0.25, y: -0.3294553499999995 }], ports: [{ ...Uy.left1, labels: ["1"] }, { ...Uy.right1, labels: ["2"] }], size: { width: Ye.width, height: Ye.height }, center: { x: Ye.centerX, y: Ye.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var yo = v(Xe);
-var xo = yo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var so = yo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-xo.anchor = "middle_left";
-so.anchor = "middle_left";
-xo.y += 0.4;
-xo.x = 0.32;
-so.y -= 0.45;
-so.x = 0.32;
-var Wy = yo;
-var Le = e(Ee).labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Hy = Y(Le);
+var Qy = Mr;
+var Ir = r(B, "up");
+var Br = Ir.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var qr = Ir.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Br.anchor = "middle_bottom";
+qr.anchor = "middle_top";
+Br.x = 0;
+Br.y += 0.565;
+qr.y -= 0.555;
+qr.x = 0;
+var Ky = Ir;
+var tx = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0.06 }, { x: -0.14, y: 0.06 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: 0.07 }, { x: 0.11, y: 0.11 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.13, y: 0.06 }, { x: 0.38, y: 0.06 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.38, y: -0.17 }, { x: -0.14, y: -0.17 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: -0.09, y: -0.17 }, { x: 0.11, y: -0.12 }], color: "primary", fill: false }, "path12-0": { type: "path", points: [{ x: 0.13, y: -0.17 }, { x: 0.38, y: -0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.31 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.31 } }, refblocks: { left1: { x: -0.38, y: -0.17 }, left3: { x: -0.38, y: 0.06 }, right1: { x: 0.38, y: -0.17 }, right3: { x: 0.38, y: 0.06 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.81, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-4": { type: "circle", x: 0.1, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.1, y: -0.17, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: -0.11, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.11, y: -0.17, radius: 0.02, color: "primary", fill: false } } };
+var q = e(tx).labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["4"]).labelPort("left3", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Dr = r(q, "down");
+var Gr = Dr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ur = Dr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Gr.anchor = "middle_bottom";
+Ur.anchor = "middle_top";
+Gr.x = 0.4;
+Gr.y += 0.265;
+Ur.y -= 0.265;
+Ur.x = 0.4;
+var ex = Dr;
+var Wr = r(q, "left");
+var Hr = Wr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Zr = Wr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Hr.anchor = "middle_bottom";
+Zr.anchor = "middle_top";
+Hr.x = 0;
+Hr.y += 0.67;
+Zr.y -= 0.67;
+Zr.x = 0;
+var rx = Wr;
+var Qr = r(q, "up");
+var Kr = Qr.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var to = Qr.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Kr.anchor = "middle_bottom";
+to.anchor = "middle_top";
+Kr.x = 0.46;
+Kr.y += 0.265;
+to.y -= 0.265;
+to.x = 0.46;
+var ox = Qr;
+var ix = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0.06 }, { x: -0.14, y: 0.06 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: 0.07 }, { x: 0.1, y: 0.2 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.13, y: 0.06 }, { x: 0.38, y: 0.06 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.38, y: -0.17 }, { x: -0.14, y: -0.17 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: -0.09, y: -0.16 }, { x: 0.1, y: -0.03 }], color: "primary", fill: false }, "path12-0": { type: "path", points: [{ x: 0.13, y: -0.17 }, { x: 0.38, y: -0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.42 } }, refblocks: { left1: { x: -0.38, y: -0.17 }, left3: { x: -0.38, y: 0.06 }, right1: { x: 0.38, y: -0.17 }, right3: { x: 0.38, y: 0.06 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.81, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-4": { type: "circle", x: 0.1, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.1, y: -0.17, radius: 0.02, color: "primary", fill: false }, "circle-3": { type: "circle", x: -0.11, y: 0.06, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.11, y: -0.17, radius: 0.02, color: "primary", fill: false } } };
+var D = e(ix).labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("right3", ["4"]).labelPort("left3", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var eo = r(D, "down");
+var ro = eo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var oo = eo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ro.anchor = "middle_bottom";
+oo.anchor = "middle_top";
+ro.x = 0.4;
+ro.y += 0.295;
+oo.y -= 0.295;
+oo.x = 0.42;
+var lx = eo;
+var io = r(D, "left");
+var lo = io.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var po = io.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+lo.anchor = "middle_bottom";
+po.anchor = "middle_top";
+lo.x = 0;
+lo.y += 0.795;
+po.y -= 0.795;
+po.x = 0;
+var px = io;
+var ao = r(D, "up");
+var yo = ao.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var xo = ao.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+yo.anchor = "middle_bottom";
+xo.anchor = "middle_top";
+yo.x = 0.46;
+yo.y += 0.315;
+xo.y -= 0.315;
+xo.x = 0.46;
+var ax = ao;
+var Ye = { paths: { path5: { type: "path", points: [{ x: -0.44, y: 0 }, { x: -0.16, y: 0 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.17, y: 0 }, { x: 0.44, y: 0.01 }], color: "primary", fill: false }, path9: { type: "path", points: [{ x: -0.25, y: -0.16 }, { x: 0.02, y: 0.3 }, { x: 0.25, y: 0.17 }, { x: -0.02, y: -0.29 }, { x: -0.25, y: -0.16 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.37 } }, refblocks: { left1: { x: -0.44, y: 0 }, right1: { x: 0.44, y: 0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.25, maxY: 0.25, width: 1.13, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: sd, texts: Uv, bounds: Xe, refblocks: yx, circles: md } = Ye;
+var Le = e({ primitives: [...Object.values(sd), ...Object.values(md), { type: "text", text: "{REF}", x: 0.18, y: -0.3204553499999995 }, { type: "text", text: "{VAL}", x: -0.25, y: -0.3294553499999995 }], ports: [{ ...yx.left1, labels: ["1"] }, { ...yx.right1, labels: ["2"] }], size: { width: Xe.width, height: Xe.height }, center: { x: Xe.centerX, y: Xe.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var so = v(Le);
+var mo = so.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var no = so.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+mo.anchor = "middle_left";
+no.anchor = "middle_left";
+mo.y += 0.4;
+mo.x = 0.32;
+no.y -= 0.45;
+no.x = 0.32;
+var xx = so;
+var Ve = e(Ye).labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var sx = Y(Ve);
 var T = { paths: { path11: { type: "path", points: [{ x: -0.56, y: 0.04 }, { x: -0.22, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.14, y: 0.05 }, { x: 0.48, y: 0.05 }], color: "primary", fill: false }, "path12-6": { type: "path", points: [{ x: 0.14, y: -0.15 }, { x: 0.14, y: 0.25 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.22, y: 0.25 }, { x: -0.21, y: -0.15 }, { x: 0.14, y: 0.05 }, { x: -0.22, y: 0.25 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.09, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: -0.07, y: -0.38 }, right1: { type: "text", text: "", x: 0.59, y: -0.33 } }, refblocks: { left1: { x: -0.56, y: 0.04 }, right1: { x: 0.48, y: 0.05 } }, bounds: { minX: -0.59, maxX: 0.59, minY: -0.38, maxY: 0.38, width: 1.18, height: 0.76, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Uh, texts: Nv, bounds: Ve, refblocks: Zy, circles: Wh } = T;
-var Qy = e({ primitives: [...Object.values(Uh), ...Object.values(Wh), { type: "text", text: "{REF}", x: -0.15, y: 0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3294553499999995 }], ports: [{ ...Zy.left1, labels: ["1"] }, { ...Zy.right1, labels: ["2"] }], size: { width: Ve.width, height: Ve.height }, center: { x: Ve.centerX, y: Ve.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: Hh, texts: Dv, bounds: je, refblocks: Ky, circles: Zh } = T;
-var tx = e({ primitives: [...Object.values(Hh), ...Object.values(Zh), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...Ky.left1, labels: ["1"] }, { ...Ky.right1, labels: ["2"] }], size: { width: je.width, height: je.height }, center: { x: je.centerX, y: je.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: Qh, texts: Hv, bounds: ke, refblocks: ex, circles: Kh } = T;
-var rx = e({ primitives: [...Object.values(Qh), ...Object.values(Kh), { type: "text", text: "{REF}", x: -0, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4094553499999995 }], ports: [{ ...ex.left1, labels: ["1"] }, { ...ex.right1, labels: ["2"] }], size: { width: ke.width, height: ke.height }, center: { x: ke.centerX, y: ke.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: td, texts: t6, bounds: ze, refblocks: ox, circles: ed } = T;
-var ix = e({ primitives: [...Object.values(td), ...Object.values(ed), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...ox.left1, labels: ["1"] }, { ...ox.right1, labels: ["2"] }], size: { width: ze.width, height: ze.height }, center: { x: ze.centerX, y: ze.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var { paths: rd, texts: i6, bounds: Oe, refblocks: lx, circles: od } = T;
-var px = e({ primitives: [...Object.values(rd), ...Object.values(od), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...lx.left1, labels: ["1"] }, { ...lx.right1, labels: ["2"] }], size: { width: Oe.width, height: Oe.height }, center: { x: Oe.centerX, y: Oe.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: id, texts: y6, bounds: Je, refblocks: ax, circles: ld } = T;
-var yx = e({ primitives: [...Object.values(id), ...Object.values(ld), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...ax.left1, labels: ["1"] }, { ...ax.right1, labels: ["2"] }], size: { width: Je.width, height: Je.height }, center: { x: Je.centerX, y: Je.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var xx = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Hz", x: 0, y: -0.04 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: ad, texts: yd, bounds: $e, refblocks: sx, circles: xd } = xx;
-var Et = s({ primitives: [...Object.values(ad), ...Object.values(xd), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...yd.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.2 }], ports: [{ ...sx.left1, labels: ["1"] }, { ...sx.right1, labels: ["2"] }], size: { width: $e.width, height: $e.height }, center: { x: $e.centerX, y: $e.centerY } });
-var { 5: sd, ...md } = Et.primitives;
-function nd(t) {
+var { paths: fd, texts: x6, bounds: je, refblocks: mx, circles: cd } = T;
+var nx = e({ primitives: [...Object.values(fd), ...Object.values(cd), { type: "text", text: "{REF}", x: -0.15, y: 0.3294553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.3294553499999995 }], ports: [{ ...mx.left1, labels: ["1"] }, { ...mx.right1, labels: ["2"] }], size: { width: je.width, height: je.height }, center: { x: je.centerX, y: je.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: hd, texts: f6, bounds: ke, refblocks: fx, circles: dd } = T;
+var cx = e({ primitives: [...Object.values(hd), ...Object.values(dd), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...fx.left1, labels: ["1"] }, { ...fx.right1, labels: ["2"] }], size: { width: ke.width, height: ke.height }, center: { x: ke.centerX, y: ke.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: bd, texts: b6, bounds: ze, refblocks: hx, circles: _d } = T;
+var dx = e({ primitives: [...Object.values(bd), ...Object.values(_d), { type: "text", text: "{REF}", x: -0, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.4094553499999995 }], ports: [{ ...hx.left1, labels: ["1"] }, { ...hx.right1, labels: ["2"] }], size: { width: ze.width, height: ze.height }, center: { x: ze.centerX, y: ze.centerY } }).changeTextAnchor("{VAL}", "middle_bottom").rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: gd, texts: v6, bounds: Oe, refblocks: bx, circles: ud } = T;
+var _x = e({ primitives: [...Object.values(gd), ...Object.values(ud), { type: "text", text: "{REF}", x: -0, y: 0.4094553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.4094553499999995 }], ports: [{ ...bx.left1, labels: ["1"] }, { ...bx.right1, labels: ["2"] }], size: { width: Oe.width, height: Oe.height }, center: { x: Oe.centerX, y: Oe.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var { paths: vd, texts: S6, bounds: Je, refblocks: gx, circles: wd } = T;
+var ux = e({ primitives: [...Object.values(vd), ...Object.values(wd), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...gx.left1, labels: ["1"] }, { ...gx.right1, labels: ["2"] }], size: { width: Je.width, height: Je.height }, center: { x: Je.centerX, y: Je.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: Ad, texts: E6, bounds: $e, refblocks: vx, circles: Pd } = T;
+var wx = e({ primitives: [...Object.values(Ad), ...Object.values(Pd), { type: "text", text: "{REF}", x: 0.15, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.15, y: -0.2894553499999995 }], ports: [{ ...vx.left1, labels: ["1"] }, { ...vx.right1, labels: ["2"] }], size: { width: $e.width, height: $e.height }, center: { x: $e.centerX, y: $e.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Ax = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Hz", x: 0, y: -0.04 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Rd, texts: Fd, bounds: Me, refblocks: Px, circles: Td } = Ax;
+var Yt = x({ primitives: [...Object.values(Rd), ...Object.values(Td), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...Fd.left1, x: 0, y: 0.01, anchor: "center", fontSize: 0.2 }], ports: [{ ...Px.left1, labels: ["1"] }, { ...Px.right1, labels: ["2"] }], size: { width: Me.width, height: Me.height }, center: { x: Me.centerX, y: Me.centerY } });
+var { 5: Ed, ...Yd } = Yt.primitives;
+function Xd(t) {
   return typeof t == "object";
 }
-var mx = r({ ...Et, primitives: Object.values(md).filter(nd) });
-var nx = { ...mx, primitives: [...mx.primitives, sd] };
-var fx = { paths: { path10: { type: "path", points: [{ x: -0.53, y: 0.04 }, { x: 0.53, y: 0.04 }], color: "primary", fill: false }, path14: { type: "path", points: [{ x: 0, y: 0.17 }, { x: 0.27, y: 0.17 }, { x: 0.27, y: -0.1 }, { x: -0.26, y: -0.1 }, { x: -0.26, y: 0.17 }, { x: 0, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.24 }, bottom1: { type: "text", text: "{VAL}", x: -0.17, y: -0.24 } }, refblocks: { left1: { x: -0.53, y: 0.04 }, right1: { x: 0.53, y: 0.04 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.24, maxY: 0.24, width: 1.13, height: 0.47, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: cd, texts: hd, bounds: Me, refblocks: cx } = fx;
-var Ce = s({ primitives: [...Object.values(cd), { ...hd.top1, anchor: "middle_bottom" }, { type: "text", text: "{VAL}", x: 0, y: -0.2, anchor: "middle_top" }], ports: [{ ...cx.left1, labels: ["1"] }, { ...cx.right1, labels: ["2"] }], size: { width: Me.width, height: Me.height }, center: { x: Me.centerX, y: Me.centerY } });
-var hx = r(Ce);
+var Sx = r({ ...Yt, primitives: Object.values(Yd).filter(Xd) });
+var Rx = { ...Sx, primitives: [...Sx.primitives, Ed] };
+var Fx = { paths: { path10: { type: "path", points: [{ x: -0.53, y: 0.04 }, { x: 0.53, y: 0.04 }], color: "primary", fill: false }, path14: { type: "path", points: [{ x: 0, y: 0.17 }, { x: 0.27, y: 0.17 }, { x: 0.27, y: -0.1 }, { x: -0.26, y: -0.1 }, { x: -0.26, y: 0.17 }, { x: 0, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.24 }, bottom1: { type: "text", text: "{VAL}", x: -0.17, y: -0.24 } }, refblocks: { left1: { x: -0.53, y: 0.04 }, right1: { x: 0.53, y: 0.04 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.24, maxY: 0.24, width: 1.13, height: 0.47, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Vd, texts: jd, bounds: Ce, refblocks: Tx } = Fx;
+var Ne = x({ primitives: [...Object.values(Vd), { ...jd.top1, anchor: "middle_bottom" }, { type: "text", text: "{VAL}", x: 0, y: -0.2, anchor: "middle_top" }], ports: [{ ...Tx.left1, labels: ["1"] }, { ...Tx.right1, labels: ["2"] }], size: { width: Ce.width, height: Ce.height }, center: { x: Ce.centerX, y: Ce.centerY } });
+var Ex = r(Ne);
 var E = { paths: { path1: { type: "path", points: [{ x: -0.29, y: 0.01 }, { x: 0.04, y: 0 }], color: "primary", fill: true }, path2: { type: "path", points: [{ x: 0.04, y: -0.22 }, { x: 0.04, y: 0.22 }], color: "primary", fill: true }, path3: { type: "path", points: [{ x: 0.12, y: -0.17 }, { x: 0.12, y: 0.17 }], color: "primary", fill: true }, path4: { type: "path", points: [{ x: 0.19, y: -0.06 }, { x: 0.19, y: 0.06 }], color: "primary", fill: true } }, texts: { right1: { type: "text", text: "{REF}", x: 0.31, y: -0.02 } }, refblocks: { left1: { x: -0.29, y: 0.01 } }, bounds: { minX: -0.31, maxX: 0.31, minY: -0.22, maxY: 0.22, width: 0.62, height: 0.45, centerX: 0, centerY: 0 }, circles: {} };
-var dx = e(E).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
-var bx = e(E).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var _x = e(E).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var gx = e(E).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var ux = e(E).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var vx = e(E).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Yt = { paths: { path11: { type: "path", points: [{ x: -0.52, y: 0.03 }, { x: -0.18, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.19, y: 0.04 }, { x: 0.52, y: 0.04 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.31, y: 0.2 }, { x: -0.31, y: -0.11 }, { x: -0.01, y: 0.04 }, { x: -0.3, y: 0.2 }], color: "primary", fill: true }, "path11-0-9-5": { type: "path", points: [{ x: 0.33, y: 0.2 }, { x: 0.33, y: -0.1 }, { x: 0.04, y: 0.04 }, { x: 0.33, y: 0.2 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.04, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.32 } }, refblocks: { left1: { x: -0.52, y: 0.03 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.32, maxY: 0.32, width: 1.09, height: 0.63, centerX: 0, centerY: 0 }, circles: {} };
-var wx = e(Yt).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Ax = e(Yt).rotateRightFacingSymbol("down").changeTextAnchor("{VAL}", "middle_right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var Px = { paths: { path45: { type: "path", points: [{ x: 0.14, y: 0 }, { x: -0.13, y: -0.14 }], color: "primary", fill: false }, "path1-8": { type: "path", points: [{ x: 0.13, y: 0 }, { x: 0.3, y: 0 }], color: "primary", fill: false }, path46: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.14, y: 0 }], color: "primary", fill: false }, path47: { type: "path", points: [{ x: -0.13, y: -0.14 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path48: { type: "path", points: [{ x: 0.14, y: 0.13 }, { x: 0.14, y: -0.14 }], color: "primary", fill: false }, path49: { type: "path", points: [{ x: -0.13, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path25: { type: "path", points: [{ x: 0.16, y: 0.29 }, { x: 0.25, y: 0.3 }, { x: 0.22, y: 0.21 }], color: "primary", fill: true }, path78: { type: "path", points: [{ x: 0.08, y: 0.17 }, { x: 0.09, y: 0.17 }, { x: 0.21, y: 0.27 }, { x: 0.21, y: 0.27 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: -0.02, y: 0.31 }, { x: 0.08, y: 0.32 }, { x: 0.04, y: 0.23 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: -0.1, y: 0.19 }, { x: -0.09, y: 0.2 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.29 }], color: "primary", fill: false }, box: { type: "path", points: [{ x: -0.3, y: -0.4 }, { x: 0.3, y: -0.4 }, { x: 0.3, y: 0.4 }, { x: -0.3, y: 0.4 }, { x: -0.3, y: -0.4 }, { x: -0.3, y: 0.4 }], color: "primary", fill: false }, "path48-1": { type: "path", points: [{ x: -0.3, y: 0.13 }, { x: -0.54, y: 0.13 }], color: "primary", fill: false }, "path48-2": { type: "path", points: [{ x: -0.3, y: -0.13 }, { x: -0.54, y: -0.13 }], color: "primary", fill: false }, "path48-3": { type: "path", points: [{ x: 0.3, y: -0.13 }, { x: 0.54, y: -0.13 }], color: "primary", fill: false }, "path48-4": { type: "path", points: [{ x: 0.3, y: 0.13 }, { x: 0.54, y: 0.13 }], color: "primary", fill: false } }, texts: { bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.43 }, right1: { type: "text", text: "{REF}", x: 0, y: 0.43 } }, refblocks: { left1: { x: -0.54, y: 0.13 }, left2: { x: -0.54, y: -0.13 }, right1: { x: 0.54, y: -0.13 }, right2: { x: 0.54, y: 0.13 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.32, maxY: 0.32, width: 1.13, height: 0.65, centerX: 0, centerY: 0 }, circles: {} };
-var D = e(Px).labelPort("left1", ["1", "DIN"]).labelPort("left2", ["2", "POWER"]).labelPort("right1", ["3", "GND"]).labelPort("right2", ["4", "DOUT"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Sx = r(D, "down");
-var Rx = Y(D);
-var mo = r(D, "up");
-var no = mo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var fo = mo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-no.anchor = "middle_left";
-fo.anchor = "middle_left";
-no.y += 0.21;
-no.x = 0.44;
-fo.y -= 0.21;
-fo.x = 0.44;
-var Fx = mo;
-var Tx = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: -0.01, y: 0 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: 0.01, y: -0.12 }, { x: 0.01, y: 0.14 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.28, y: -0.25 }, { x: 0.28, y: -0.56 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.56 }, { x: 0.28, y: 0.27 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.17, y: -0.22 }, { x: 0.28, y: -0.23 }, { x: 0.23, y: -0.14 }], color: "primary", fill: true }, path17: { type: "path", points: [{ x: 0.08, y: -0.09 }, { x: 0.23, y: -0.2 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.28, y: 0.26 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.02, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.56 }, bottom1: { x: 0.28, y: -0.56 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.17, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0.01, radius: 0.29, color: "primary", fill: false } } };
-var Ne = e(Tx).changeTextAnchor("{VAL}", "middle_right").labelPort("left1", ["3"]).labelPort("top1", ["2"]).labelPort("bottom1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var co = r(Ne);
-var ho = co.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Ex = co.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+var Yx = e(E).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
+var Xx = e(E).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
+var Lx = e(E).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
+var Vx = e(E).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
+var jx = e(E).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var kx = e(E).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Xt = { paths: { path11: { type: "path", points: [{ x: -0.52, y: 0.03 }, { x: -0.18, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.19, y: 0.04 }, { x: 0.52, y: 0.04 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.31, y: 0.2 }, { x: -0.31, y: -0.11 }, { x: -0.01, y: 0.04 }, { x: -0.3, y: 0.2 }], color: "primary", fill: true }, "path11-0-9-5": { type: "path", points: [{ x: 0.33, y: 0.2 }, { x: 0.33, y: -0.1 }, { x: 0.04, y: 0.04 }, { x: 0.33, y: 0.2 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.04, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.32 } }, refblocks: { left1: { x: -0.52, y: 0.03 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.32, maxY: 0.32, width: 1.09, height: 0.63, centerX: 0, centerY: 0 }, circles: {} };
+var zx = e(Xt).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Ox = e(Xt).rotateRightFacingSymbol("down").changeTextAnchor("{VAL}", "middle_right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var Jx = { paths: { path45: { type: "path", points: [{ x: 0.14, y: 0 }, { x: -0.13, y: -0.14 }], color: "primary", fill: false }, "path1-8": { type: "path", points: [{ x: 0.13, y: 0 }, { x: 0.3, y: 0 }], color: "primary", fill: false }, path46: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.14, y: 0 }], color: "primary", fill: false }, path47: { type: "path", points: [{ x: -0.13, y: -0.14 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path48: { type: "path", points: [{ x: 0.14, y: 0.13 }, { x: 0.14, y: -0.14 }], color: "primary", fill: false }, path49: { type: "path", points: [{ x: -0.13, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path25: { type: "path", points: [{ x: 0.16, y: 0.29 }, { x: 0.25, y: 0.3 }, { x: 0.22, y: 0.21 }], color: "primary", fill: true }, path78: { type: "path", points: [{ x: 0.08, y: 0.17 }, { x: 0.09, y: 0.17 }, { x: 0.21, y: 0.27 }, { x: 0.21, y: 0.27 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: -0.02, y: 0.31 }, { x: 0.08, y: 0.32 }, { x: 0.04, y: 0.23 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: -0.1, y: 0.19 }, { x: -0.09, y: 0.2 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.29 }], color: "primary", fill: false }, box: { type: "path", points: [{ x: -0.3, y: -0.4 }, { x: 0.3, y: -0.4 }, { x: 0.3, y: 0.4 }, { x: -0.3, y: 0.4 }, { x: -0.3, y: -0.4 }, { x: -0.3, y: 0.4 }], color: "primary", fill: false }, "path48-1": { type: "path", points: [{ x: -0.3, y: 0.13 }, { x: -0.54, y: 0.13 }], color: "primary", fill: false }, "path48-2": { type: "path", points: [{ x: -0.3, y: -0.13 }, { x: -0.54, y: -0.13 }], color: "primary", fill: false }, "path48-3": { type: "path", points: [{ x: 0.3, y: -0.13 }, { x: 0.54, y: -0.13 }], color: "primary", fill: false }, "path48-4": { type: "path", points: [{ x: 0.3, y: 0.13 }, { x: 0.54, y: 0.13 }], color: "primary", fill: false } }, texts: { bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.43 }, right1: { type: "text", text: "{REF}", x: 0, y: 0.43 } }, refblocks: { left1: { x: -0.54, y: 0.13 }, left2: { x: -0.54, y: -0.13 }, right1: { x: 0.54, y: -0.13 }, right2: { x: 0.54, y: 0.13 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.32, maxY: 0.32, width: 1.13, height: 0.65, centerX: 0, centerY: 0 }, circles: {} };
+var G = e(Jx).labelPort("left1", ["1", "DIN"]).labelPort("left2", ["2", "POWER"]).labelPort("right1", ["3", "GND"]).labelPort("right2", ["4", "DOUT"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var $x = r(G, "down");
+var Mx = Y(G);
+var fo = r(G, "up");
+var co = fo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ho = fo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+co.anchor = "middle_left";
 ho.anchor = "middle_left";
-Ex.anchor = "middle_right";
-ho.x = 0.45;
-ho.y += 0.065;
-Ex.y += 0.065;
-var Yx = co;
-var Xx = { paths: { "path12-1-8-6-9": { type: "path", points: [{ x: 0.02, y: -0.02 }, { x: 0.02, y: -0.1 }], color: "primary", fill: false }, "path12-1-5-6": { type: "path", points: [{ x: -0.47, y: -0.19 }, { x: -0.17, y: -0.19 }], color: "primary", fill: false }, "path12-1-5-6-8": { type: "path", points: [{ x: 0.02, y: 0.17 }, { x: 0.02, y: 0.11 }], color: "primary", fill: false }, "path12-1-8-0": { type: "path", points: [{ x: -0.15, y: -0.03 }, { x: 0.2, y: -0.19 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.2, y: -0.19 }, { x: 0.47, y: -0.19 }], color: "primary", fill: false }, "path12-1-8-6-9-4": { type: "path", points: [{ x: 0.02, y: 0.12 }, { x: 0.02, y: 0.02 }], color: "primary", fill: false }, "path12-1-8-6-9-4-3": { type: "path", points: [{ x: 0.08, y: 0.11 }, { x: 0.08, y: 0.05 }], color: "primary", fill: false }, "path12-1-8-6-9-4-3-1": { type: "path", points: [{ x: -0.04, y: 0.11 }, { x: -0.04, y: 0.05 }], color: "primary", fill: false }, "path12-1-8-6-9-4-4": { type: "path", points: [{ x: 0.08, y: 0.11 }, { x: -0.04, y: 0.11 }], color: "primary", fill: false }, "path14-5": { type: "path", points: [{ x: -0.01, y: 0.28 }, { x: 0.01, y: 0.25 }, { x: 0.04, y: 0.23 }, { x: 0.06, y: 0.2 }], color: "primary", fill: true }, "path14-5-3": { type: "path", points: [{ x: -0.01, y: 0.2 }, { x: 0.01, y: 0.23 }, { x: 0.04, y: 0.25 }, { x: 0.06, y: 0.28 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.38 } }, refblocks: { left1: { x: -0.47, y: -0.19 }, right1: { x: 0.47, y: -0.19 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.38, maxY: 0.38, width: 1, height: 0.76, centerX: 0, centerY: 0 }, circles: { path9: { type: "circle", x: 0.02, y: 0.24, radius: 0.06, color: "primary", fill: false } } };
-var Ie = e(Xx).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Lx = r(Ie);
-var Vx = Lx.primitives.filter((t) => t.type === "text");
-var bo = Vx.find((t) => t.text === "{VAL}");
-bo.x = -0.35;
-bo.y = 0;
-bo.anchor = "middle_right";
-var _o = Vx.find((t) => t.text === "{REF}");
-_o.y = 0;
-_o.x = 0.35;
+co.y += 0.21;
+co.x = 0.44;
+ho.y -= 0.21;
+ho.x = 0.44;
+var Cx = fo;
+var Nx = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: -0.01, y: 0 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: 0.01, y: -0.12 }, { x: 0.01, y: 0.14 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.28, y: -0.25 }, { x: 0.28, y: -0.56 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.56 }, { x: 0.28, y: 0.27 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.17, y: -0.22 }, { x: 0.28, y: -0.23 }, { x: 0.23, y: -0.14 }], color: "primary", fill: true }, path17: { type: "path", points: [{ x: 0.08, y: -0.09 }, { x: 0.23, y: -0.2 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.28, y: 0.26 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.02, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.56 }, bottom1: { x: 0.28, y: -0.56 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.17, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0.01, radius: 0.29, color: "primary", fill: false } } };
+var Ie = e(Nx).changeTextAnchor("{VAL}", "middle_right").labelPort("left1", ["3"]).labelPort("top1", ["2"]).labelPort("bottom1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
+var bo = r(Ie);
+var _o = bo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ix = bo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
 _o.anchor = "middle_left";
-var jx = Lx;
-var kx = { paths: { path8698: { type: "path", points: [{ x: -0.2, y: -0.02 }, { x: -0.2, y: -0.02 }, { x: -0.21, y: -0.01 }, { x: -0.21, y: -0.01 }, { x: -0.21, y: 0 }, { x: -0.21, y: 0 }, { x: -0.21, y: 0 }, { x: -0.22, y: 0.01 }, { x: -0.22, y: 0.01 }, { x: -0.22, y: 0.02 }, { x: -0.22, y: 0.02 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.04 }, { x: -0.24, y: 0.04 }, { x: -0.24, y: 0.04 }, { x: -0.24, y: 0.05 }, { x: -0.24, y: 0.05 }, { x: -0.25, y: 0.05 }, { x: -0.25, y: 0.06 }, { x: -0.25, y: 0.06 }, { x: -0.25, y: 0.06 }, { x: -0.26, y: 0.06 }, { x: -0.26, y: 0.06 }, { x: -0.26, y: 0.07 }, { x: -0.26, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.29, y: 0.07 }, { x: -0.29, y: 0.08 }, { x: -0.29, y: 0.08 }, { x: -0.29, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.31, y: 0.08 }, { x: -0.31, y: 0.08 }, { x: -0.31, y: 0.07 }, { x: -0.31, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.34, y: 0.07 }, { x: -0.34, y: 0.06 }, { x: -0.34, y: 0.06 }, { x: -0.34, y: 0.06 }, { x: -0.35, y: 0.06 }, { x: -0.35, y: 0.06 }, { x: -0.35, y: 0.05 }, { x: -0.35, y: 0.05 }, { x: -0.36, y: 0.05 }, { x: -0.36, y: 0.04 }, { x: -0.36, y: 0.04 }, { x: -0.36, y: 0.04 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.02 }, { x: -0.38, y: 0.02 }, { x: -0.38, y: 0.01 }, { x: -0.38, y: 0.01 }, { x: -0.38, y: 0 }, { x: -0.39, y: 0 }, { x: -0.39, y: 0 }, { x: -0.39, y: -0.01 }, { x: -0.39, y: -0.01 }, { x: -0.4, y: -0.02 }, { x: -0.4, y: -0.02 }], color: "primary", fill: false }, path8700: { type: "path", points: [{ x: 0, y: -0.02 }, { x: 0, y: -0.02 }, { x: -0.01, y: -0.01 }, { x: -0.01, y: -0.01 }, { x: -0.01, y: 0 }, { x: -0.01, y: 0 }, { x: -0.02, y: 0 }, { x: -0.02, y: 0.01 }, { x: -0.02, y: 0.01 }, { x: -0.02, y: 0.02 }, { x: -0.03, y: 0.02 }, { x: -0.03, y: 0.03 }, { x: -0.03, y: 0.03 }, { x: -0.03, y: 0.03 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.05 }, { x: -0.05, y: 0.05 }, { x: -0.05, y: 0.05 }, { x: -0.05, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.09, y: 0.07 }, { x: -0.09, y: 0.07 }, { x: -0.09, y: 0.08 }, { x: -0.09, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.14, y: 0.07 }, { x: -0.14, y: 0.07 }, { x: -0.14, y: 0.06 }, { x: -0.14, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.05 }, { x: -0.16, y: 0.05 }, { x: -0.16, y: 0.05 }, { x: -0.16, y: 0.04 }, { x: -0.16, y: 0.04 }, { x: -0.17, y: 0.04 }, { x: -0.17, y: 0.03 }, { x: -0.17, y: 0.03 }, { x: -0.17, y: 0.03 }, { x: -0.18, y: 0.02 }, { x: -0.18, y: 0.02 }, { x: -0.18, y: 0.01 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0 }, { x: -0.19, y: 0 }, { x: -0.19, y: 0 }, { x: -0.19, y: -0.01 }, { x: -0.2, y: -0.01 }, { x: -0.2, y: -0.02 }, { x: -0.2, y: -0.02 }], color: "primary", fill: false }, path8702: { type: "path", points: [{ x: 0.2, y: -0.02 }, { x: 0.2, y: -0.02 }, { x: 0.19, y: -0.01 }, { x: 0.19, y: -0.01 }, { x: 0.19, y: 0 }, { x: 0.19, y: 0 }, { x: 0.18, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.18, y: 0.01 }, { x: 0.18, y: 0.02 }, { x: 0.17, y: 0.02 }, { x: 0.17, y: 0.03 }, { x: 0.17, y: 0.03 }, { x: 0.17, y: 0.03 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.05 }, { x: 0.15, y: 0.05 }, { x: 0.15, y: 0.05 }, { x: 0.15, y: 0.06 }, { x: 0.15, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.06, y: 0.07 }, { x: 0.06, y: 0.07 }, { x: 0.06, y: 0.06 }, { x: 0.06, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.05 }, { x: 0.04, y: 0.05 }, { x: 0.04, y: 0.05 }, { x: 0.04, y: 0.04 }, { x: 0.04, y: 0.04 }, { x: 0.03, y: 0.04 }, { x: 0.03, y: 0.03 }, { x: 0.03, y: 0.03 }, { x: 0.03, y: 0.03 }, { x: 0.02, y: 0.02 }, { x: 0.02, y: 0.02 }, { x: 0.02, y: 0.01 }, { x: 0.02, y: 0.01 }, { x: 0.01, y: 0 }, { x: 0.01, y: 0 }, { x: 0.01, y: 0 }, { x: 0.01, y: -0.01 }, { x: 0, y: -0.01 }, { x: 0, y: -0.02 }, { x: 0, y: -0.02 }], color: "primary", fill: false }, path8704: { type: "path", points: [{ x: 0.4, y: -0.02 }, { x: 0.39, y: -0.02 }, { x: 0.39, y: -0.01 }, { x: 0.39, y: -0.01 }, { x: 0.39, y: 0 }, { x: 0.39, y: 0 }, { x: 0.38, y: 0 }, { x: 0.38, y: 0.01 }, { x: 0.38, y: 0.01 }, { x: 0.38, y: 0.02 }, { x: 0.37, y: 0.02 }, { x: 0.37, y: 0.03 }, { x: 0.37, y: 0.03 }, { x: 0.37, y: 0.03 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.05 }, { x: 0.35, y: 0.05 }, { x: 0.35, y: 0.05 }, { x: 0.35, y: 0.06 }, { x: 0.35, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.31, y: 0.07 }, { x: 0.31, y: 0.07 }, { x: 0.31, y: 0.08 }, { x: 0.31, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.26, y: 0.07 }, { x: 0.26, y: 0.07 }, { x: 0.26, y: 0.06 }, { x: 0.26, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.05 }, { x: 0.24, y: 0.05 }, { x: 0.24, y: 0.05 }, { x: 0.24, y: 0.04 }, { x: 0.24, y: 0.04 }, { x: 0.23, y: 0.04 }, { x: 0.23, y: 0.03 }, { x: 0.23, y: 0.03 }, { x: 0.23, y: 0.03 }, { x: 0.22, y: 0.02 }, { x: 0.22, y: 0.02 }, { x: 0.22, y: 0.01 }, { x: 0.22, y: 0.01 }, { x: 0.21, y: 0 }, { x: 0.21, y: 0 }, { x: 0.21, y: 0 }, { x: 0.21, y: -0.01 }, { x: 0.2, y: -0.01 }, { x: 0.2, y: -0.02 }, { x: 0.2, y: -0.02 }], color: "primary", fill: false }, path8706: { type: "path", points: [{ x: -0.4, y: -0.02 }, { x: -0.55, y: -0.02 }], color: "primary", fill: false }, "path8706-5": { type: "path", points: [{ x: 0.55, y: -0.03 }, { x: 0.4, y: -0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.23 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.23 } }, refblocks: { left1: { x: -0.55, y: -0.02 }, right1: { x: 0.55, y: -0.03 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.23, maxY: 0.23, width: 1.16, height: 0.46, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: wd, texts: zx, bounds: Be, refblocks: Ox, circles: Ad } = kx;
-var ut = s({ primitives: [...Object.values(wd), ...Object.values(Ad), { ...zx.top1, anchor: "middle_bottom" }, { ...zx.bottom1, anchor: "middle_top" }], ports: [{ ...Ox.left1, labels: ["1"] }, { ...Ox.right1, labels: ["2"] }], size: { width: Be.width, height: Be.height }, center: { x: Be.centerX, y: Be.centerY } });
-var qe = r(ut, "up");
-var Jx = v(qe);
-var $x = Y(ut);
-var go = { paths: { path11: { type: "path", points: [{ x: -0.54, y: -0.06 }, { x: -0.15, y: -0.06 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.13, y: -0.05 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.13, y: 0.08 }, { x: 0.13, y: -0.05 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.13, y: -0.18 }, { x: -0.13, y: 0.08 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.13, y: 0.08 }, { x: 0.13, y: -0.18 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.14, y: -0.05 }, { x: 0.54, y: -0.06 }], color: "primary", fill: false }, "path25-0-9-8": { type: "path", points: [{ x: -0.03, y: 0.39 }, { x: -0.05, y: 0.47 }, { x: -0.08, y: 0.39 }], color: "primary", fill: true }, "path78-6-5-5": { type: "path", points: [{ x: -0.05, y: 0.27 }, { x: -0.05, y: 0.29 }, { x: -0.05, y: 0.41 }, { x: -0.05, y: 0.42 }], color: "primary", fill: false }, "path25-0-9-8-2": { type: "path", points: [{ x: 0.07, y: 0.39 }, { x: 0.04, y: 0.47 }, { x: 0.02, y: 0.39 }], color: "primary", fill: true }, "path78-6-5-5-7": { type: "path", points: [{ x: 0.04, y: 0.27 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.41 }, { x: 0.04, y: 0.42 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: 0.03, y: 0.06 }, { x: 0.03, y: -0.16 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.38, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.38, y: -0.47 } }, refblocks: { left1: { x: -0.54, y: -0.06 }, right1: { x: 0.54, y: -0.06 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.47, maxY: 0.47, width: 1.14, height: 0.93, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: -0.05, radius: 0.29, color: "primary", fill: false } } };
-go.bounds.width += 0.2;
-var G = e(go).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var uo = r(G, "down");
-var vo = uo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var wo = uo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-vo.anchor = "middle_left";
-wo.anchor = "middle_left";
-vo.y += 0.9;
-vo.x = 0.3;
-wo.y -= 0.1;
-wo.x = 0.3;
-var Mx = uo;
-var Ao = r(G, "left");
-var Po = Ao.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var So = Ao.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ix.anchor = "middle_right";
+_o.x = 0.45;
+_o.y += 0.065;
+Ix.y += 0.065;
+var Bx = bo;
+var qx = { paths: { "path12-1-8-6-9": { type: "path", points: [{ x: 0.02, y: -0.02 }, { x: 0.02, y: -0.1 }], color: "primary", fill: false }, "path12-1-5-6": { type: "path", points: [{ x: -0.47, y: -0.19 }, { x: -0.17, y: -0.19 }], color: "primary", fill: false }, "path12-1-5-6-8": { type: "path", points: [{ x: 0.02, y: 0.17 }, { x: 0.02, y: 0.11 }], color: "primary", fill: false }, "path12-1-8-0": { type: "path", points: [{ x: -0.15, y: -0.03 }, { x: 0.2, y: -0.19 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.2, y: -0.19 }, { x: 0.47, y: -0.19 }], color: "primary", fill: false }, "path12-1-8-6-9-4": { type: "path", points: [{ x: 0.02, y: 0.12 }, { x: 0.02, y: 0.02 }], color: "primary", fill: false }, "path12-1-8-6-9-4-3": { type: "path", points: [{ x: 0.08, y: 0.11 }, { x: 0.08, y: 0.05 }], color: "primary", fill: false }, "path12-1-8-6-9-4-3-1": { type: "path", points: [{ x: -0.04, y: 0.11 }, { x: -0.04, y: 0.05 }], color: "primary", fill: false }, "path12-1-8-6-9-4-4": { type: "path", points: [{ x: 0.08, y: 0.11 }, { x: -0.04, y: 0.11 }], color: "primary", fill: false }, "path14-5": { type: "path", points: [{ x: -0.01, y: 0.28 }, { x: 0.01, y: 0.25 }, { x: 0.04, y: 0.23 }, { x: 0.06, y: 0.2 }], color: "primary", fill: true }, "path14-5-3": { type: "path", points: [{ x: -0.01, y: 0.2 }, { x: 0.01, y: 0.23 }, { x: 0.04, y: 0.25 }, { x: 0.06, y: 0.28 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.38 } }, refblocks: { left1: { x: -0.47, y: -0.19 }, right1: { x: 0.47, y: -0.19 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.38, maxY: 0.38, width: 1, height: 0.76, centerX: 0, centerY: 0 }, circles: { path9: { type: "circle", x: 0.02, y: 0.24, radius: 0.06, color: "primary", fill: false } } };
+var Be = e(qx).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Dx = r(Be);
+var Gx = Dx.primitives.filter((t) => t.type === "text");
+var go = Gx.find((t) => t.text === "{VAL}");
+go.x = -0.35;
+go.y = 0;
+go.anchor = "middle_right";
+var uo = Gx.find((t) => t.text === "{REF}");
+uo.y = 0;
+uo.x = 0.35;
+uo.anchor = "middle_left";
+var Ux = Dx;
+var Wx = { paths: { path8698: { type: "path", points: [{ x: -0.2, y: -0.02 }, { x: -0.2, y: -0.02 }, { x: -0.21, y: -0.01 }, { x: -0.21, y: -0.01 }, { x: -0.21, y: 0 }, { x: -0.21, y: 0 }, { x: -0.21, y: 0 }, { x: -0.22, y: 0.01 }, { x: -0.22, y: 0.01 }, { x: -0.22, y: 0.02 }, { x: -0.22, y: 0.02 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.03 }, { x: -0.23, y: 0.04 }, { x: -0.24, y: 0.04 }, { x: -0.24, y: 0.04 }, { x: -0.24, y: 0.05 }, { x: -0.24, y: 0.05 }, { x: -0.25, y: 0.05 }, { x: -0.25, y: 0.06 }, { x: -0.25, y: 0.06 }, { x: -0.25, y: 0.06 }, { x: -0.26, y: 0.06 }, { x: -0.26, y: 0.06 }, { x: -0.26, y: 0.07 }, { x: -0.26, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.27, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.28, y: 0.07 }, { x: -0.29, y: 0.07 }, { x: -0.29, y: 0.08 }, { x: -0.29, y: 0.08 }, { x: -0.29, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.3, y: 0.08 }, { x: -0.31, y: 0.08 }, { x: -0.31, y: 0.08 }, { x: -0.31, y: 0.07 }, { x: -0.31, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.32, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.33, y: 0.07 }, { x: -0.34, y: 0.07 }, { x: -0.34, y: 0.06 }, { x: -0.34, y: 0.06 }, { x: -0.34, y: 0.06 }, { x: -0.35, y: 0.06 }, { x: -0.35, y: 0.06 }, { x: -0.35, y: 0.05 }, { x: -0.35, y: 0.05 }, { x: -0.36, y: 0.05 }, { x: -0.36, y: 0.04 }, { x: -0.36, y: 0.04 }, { x: -0.36, y: 0.04 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.03 }, { x: -0.37, y: 0.02 }, { x: -0.38, y: 0.02 }, { x: -0.38, y: 0.01 }, { x: -0.38, y: 0.01 }, { x: -0.38, y: 0 }, { x: -0.39, y: 0 }, { x: -0.39, y: 0 }, { x: -0.39, y: -0.01 }, { x: -0.39, y: -0.01 }, { x: -0.4, y: -0.02 }, { x: -0.4, y: -0.02 }], color: "primary", fill: false }, path8700: { type: "path", points: [{ x: 0, y: -0.02 }, { x: 0, y: -0.02 }, { x: -0.01, y: -0.01 }, { x: -0.01, y: -0.01 }, { x: -0.01, y: 0 }, { x: -0.01, y: 0 }, { x: -0.02, y: 0 }, { x: -0.02, y: 0.01 }, { x: -0.02, y: 0.01 }, { x: -0.02, y: 0.02 }, { x: -0.03, y: 0.02 }, { x: -0.03, y: 0.03 }, { x: -0.03, y: 0.03 }, { x: -0.03, y: 0.03 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.04 }, { x: -0.04, y: 0.05 }, { x: -0.05, y: 0.05 }, { x: -0.05, y: 0.05 }, { x: -0.05, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.06, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.07, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.08, y: 0.07 }, { x: -0.09, y: 0.07 }, { x: -0.09, y: 0.07 }, { x: -0.09, y: 0.08 }, { x: -0.09, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.12, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.13, y: 0.07 }, { x: -0.14, y: 0.07 }, { x: -0.14, y: 0.07 }, { x: -0.14, y: 0.06 }, { x: -0.14, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.06 }, { x: -0.15, y: 0.05 }, { x: -0.16, y: 0.05 }, { x: -0.16, y: 0.05 }, { x: -0.16, y: 0.04 }, { x: -0.16, y: 0.04 }, { x: -0.17, y: 0.04 }, { x: -0.17, y: 0.03 }, { x: -0.17, y: 0.03 }, { x: -0.17, y: 0.03 }, { x: -0.18, y: 0.02 }, { x: -0.18, y: 0.02 }, { x: -0.18, y: 0.01 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0 }, { x: -0.19, y: 0 }, { x: -0.19, y: 0 }, { x: -0.19, y: -0.01 }, { x: -0.2, y: -0.01 }, { x: -0.2, y: -0.02 }, { x: -0.2, y: -0.02 }], color: "primary", fill: false }, path8702: { type: "path", points: [{ x: 0.2, y: -0.02 }, { x: 0.2, y: -0.02 }, { x: 0.19, y: -0.01 }, { x: 0.19, y: -0.01 }, { x: 0.19, y: 0 }, { x: 0.19, y: 0 }, { x: 0.18, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.18, y: 0.01 }, { x: 0.18, y: 0.02 }, { x: 0.17, y: 0.02 }, { x: 0.17, y: 0.03 }, { x: 0.17, y: 0.03 }, { x: 0.17, y: 0.03 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.04 }, { x: 0.16, y: 0.05 }, { x: 0.15, y: 0.05 }, { x: 0.15, y: 0.05 }, { x: 0.15, y: 0.06 }, { x: 0.15, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.06 }, { x: 0.14, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.13, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.1, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.08 }, { x: 0.09, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.08, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.07, y: 0.07 }, { x: 0.06, y: 0.07 }, { x: 0.06, y: 0.07 }, { x: 0.06, y: 0.06 }, { x: 0.06, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.05 }, { x: 0.04, y: 0.05 }, { x: 0.04, y: 0.05 }, { x: 0.04, y: 0.04 }, { x: 0.04, y: 0.04 }, { x: 0.03, y: 0.04 }, { x: 0.03, y: 0.03 }, { x: 0.03, y: 0.03 }, { x: 0.03, y: 0.03 }, { x: 0.02, y: 0.02 }, { x: 0.02, y: 0.02 }, { x: 0.02, y: 0.01 }, { x: 0.02, y: 0.01 }, { x: 0.01, y: 0 }, { x: 0.01, y: 0 }, { x: 0.01, y: 0 }, { x: 0.01, y: -0.01 }, { x: 0, y: -0.01 }, { x: 0, y: -0.02 }, { x: 0, y: -0.02 }], color: "primary", fill: false }, path8704: { type: "path", points: [{ x: 0.4, y: -0.02 }, { x: 0.39, y: -0.02 }, { x: 0.39, y: -0.01 }, { x: 0.39, y: -0.01 }, { x: 0.39, y: 0 }, { x: 0.39, y: 0 }, { x: 0.38, y: 0 }, { x: 0.38, y: 0.01 }, { x: 0.38, y: 0.01 }, { x: 0.38, y: 0.02 }, { x: 0.37, y: 0.02 }, { x: 0.37, y: 0.03 }, { x: 0.37, y: 0.03 }, { x: 0.37, y: 0.03 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.04 }, { x: 0.36, y: 0.05 }, { x: 0.35, y: 0.05 }, { x: 0.35, y: 0.05 }, { x: 0.35, y: 0.06 }, { x: 0.35, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.06 }, { x: 0.34, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.33, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.32, y: 0.07 }, { x: 0.31, y: 0.07 }, { x: 0.31, y: 0.07 }, { x: 0.31, y: 0.08 }, { x: 0.31, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.3, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.08 }, { x: 0.29, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.28, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.27, y: 0.07 }, { x: 0.26, y: 0.07 }, { x: 0.26, y: 0.07 }, { x: 0.26, y: 0.06 }, { x: 0.26, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.06 }, { x: 0.25, y: 0.05 }, { x: 0.24, y: 0.05 }, { x: 0.24, y: 0.05 }, { x: 0.24, y: 0.04 }, { x: 0.24, y: 0.04 }, { x: 0.23, y: 0.04 }, { x: 0.23, y: 0.03 }, { x: 0.23, y: 0.03 }, { x: 0.23, y: 0.03 }, { x: 0.22, y: 0.02 }, { x: 0.22, y: 0.02 }, { x: 0.22, y: 0.01 }, { x: 0.22, y: 0.01 }, { x: 0.21, y: 0 }, { x: 0.21, y: 0 }, { x: 0.21, y: 0 }, { x: 0.21, y: -0.01 }, { x: 0.2, y: -0.01 }, { x: 0.2, y: -0.02 }, { x: 0.2, y: -0.02 }], color: "primary", fill: false }, path8706: { type: "path", points: [{ x: -0.4, y: -0.02 }, { x: -0.55, y: -0.02 }], color: "primary", fill: false }, "path8706-5": { type: "path", points: [{ x: 0.55, y: -0.03 }, { x: 0.4, y: -0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.23 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.23 } }, refblocks: { left1: { x: -0.55, y: -0.02 }, right1: { x: 0.55, y: -0.03 } }, bounds: { minX: -0.58, maxX: 0.58, minY: -0.23, maxY: 0.23, width: 1.16, height: 0.46, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Cd, texts: Hx, bounds: qe, refblocks: Zx, circles: Nd } = Wx;
+var vt = x({ primitives: [...Object.values(Cd), ...Object.values(Nd), { ...Hx.top1, anchor: "middle_bottom" }, { ...Hx.bottom1, anchor: "middle_top" }], ports: [{ ...Zx.left1, labels: ["1"] }, { ...Zx.right1, labels: ["2"] }], size: { width: qe.width, height: qe.height }, center: { x: qe.centerX, y: qe.centerY } });
+var De = r(vt, "up");
+var Qx = v(De);
+var Kx = Y(vt);
+var vo = { paths: { path11: { type: "path", points: [{ x: -0.54, y: -0.06 }, { x: -0.15, y: -0.06 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.13, y: -0.05 }, { x: -0.13, y: -0.18 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.13, y: 0.08 }, { x: 0.13, y: -0.05 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.13, y: -0.18 }, { x: -0.13, y: 0.08 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.13, y: 0.08 }, { x: 0.13, y: -0.18 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.14, y: -0.05 }, { x: 0.54, y: -0.06 }], color: "primary", fill: false }, "path25-0-9-8": { type: "path", points: [{ x: -0.03, y: 0.39 }, { x: -0.05, y: 0.47 }, { x: -0.08, y: 0.39 }], color: "primary", fill: true }, "path78-6-5-5": { type: "path", points: [{ x: -0.05, y: 0.27 }, { x: -0.05, y: 0.29 }, { x: -0.05, y: 0.41 }, { x: -0.05, y: 0.42 }], color: "primary", fill: false }, "path25-0-9-8-2": { type: "path", points: [{ x: 0.07, y: 0.39 }, { x: 0.04, y: 0.47 }, { x: 0.02, y: 0.39 }], color: "primary", fill: true }, "path78-6-5-5-7": { type: "path", points: [{ x: 0.04, y: 0.27 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.41 }, { x: 0.04, y: 0.42 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: 0.03, y: 0.06 }, { x: 0.03, y: -0.16 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.38, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.38, y: -0.47 } }, refblocks: { left1: { x: -0.54, y: -0.06 }, right1: { x: 0.54, y: -0.06 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.47, maxY: 0.47, width: 1.14, height: 0.93, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: -0.05, radius: 0.29, color: "primary", fill: false } } };
+vo.bounds.width += 0.2;
+var U = e(vo).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var wo = r(U, "down");
+var Ao = wo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Po = wo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ao.anchor = "middle_left";
 Po.anchor = "middle_left";
-So.anchor = "middle_left";
-Po.y += 0.71;
-Po.x = 0.44;
-So.y -= 0.71;
-So.x = 0.44;
-var Cx = Ao;
-var Ro = r(G, "up");
-var Fo = Ro.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var To = Ro.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ao.y += 0.9;
+Ao.x = 0.3;
+Po.y -= 0.1;
+Po.x = 0.3;
+var ts = wo;
+var So = r(U, "left");
+var Ro = So.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Fo = So.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ro.anchor = "middle_left";
 Fo.anchor = "middle_left";
-To.anchor = "middle_left";
-Fo.y += 0.1;
-Fo.x = 0.3;
-To.y -= 0.71;
-To.x = 0.3;
-var Nx = Ro;
-var Ix = { paths: { path45: { type: "path", points: [{ x: 0.14, y: 0 }, { x: -0.13, y: -0.14 }], color: "primary", fill: false }, "path1-8": { type: "path", points: [{ x: 0.13, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false }, path46: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.14, y: 0 }], color: "primary", fill: false }, path47: { type: "path", points: [{ x: -0.13, y: -0.14 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path48: { type: "path", points: [{ x: 0.14, y: 0.13 }, { x: 0.14, y: -0.14 }], color: "primary", fill: false }, path49: { type: "path", points: [{ x: -0.13, y: 0 }, { x: -0.54, y: 0 }], color: "primary", fill: false }, path25: { type: "path", points: [{ x: 0.16, y: 0.29 }, { x: 0.25, y: 0.3 }, { x: 0.22, y: 0.21 }], color: "primary", fill: true }, path78: { type: "path", points: [{ x: 0.08, y: 0.17 }, { x: 0.09, y: 0.17 }, { x: 0.21, y: 0.27 }, { x: 0.21, y: 0.27 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: -0.02, y: 0.31 }, { x: 0.08, y: 0.32 }, { x: 0.04, y: 0.23 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: -0.1, y: 0.19 }, { x: -0.09, y: 0.2 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.29 }], color: "primary", fill: false } }, texts: { bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.21 }, right1: { type: "text", text: "{REF}", x: 0, y: 0.41 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.32, maxY: 0.32, width: 1.13, height: 0.65, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Rd, texts: Bx, bounds: De, refblocks: qx, circles: Fd } = Ix;
-var vt = s({ primitives: [...Object.values(Rd), ...Object.values(Fd), { ...Bx.bottom1, anchor: "middle_top" }, { ...Bx.right1, anchor: "middle_bottom" }], ports: [{ ...qx.left1, labels: ["1"] }, { ...qx.right1, labels: ["2"] }], size: { width: De.width, height: De.height }, center: { x: De.centerX, y: De.centerY } });
-var Eo = r(vt, "up");
-var Yo = Eo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Xo = Eo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ro.y += 0.71;
+Ro.x = 0.44;
+Fo.y -= 0.71;
+Fo.x = 0.44;
+var es = So;
+var To = r(U, "up");
+var Eo = To.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Yo = To.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Eo.anchor = "middle_left";
 Yo.anchor = "middle_left";
-Xo.anchor = "middle_left";
-Yo.y += 0.21;
-Yo.x = 0.21;
-Xo.y -= 0.21;
-Xo.x = 0.21;
-var Ge = Eo;
-var Lo = v(Ge);
-var Vo = Lo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var jo = Lo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Eo.y += 0.1;
+Eo.x = 0.3;
+Yo.y -= 0.71;
+Yo.x = 0.3;
+var rs = To;
+var os = { paths: { path45: { type: "path", points: [{ x: 0.14, y: 0 }, { x: -0.13, y: -0.14 }], color: "primary", fill: false }, "path1-8": { type: "path", points: [{ x: 0.13, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false }, path46: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.14, y: 0 }], color: "primary", fill: false }, path47: { type: "path", points: [{ x: -0.13, y: -0.14 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path48: { type: "path", points: [{ x: 0.14, y: 0.13 }, { x: 0.14, y: -0.14 }], color: "primary", fill: false }, path49: { type: "path", points: [{ x: -0.13, y: 0 }, { x: -0.54, y: 0 }], color: "primary", fill: false }, path25: { type: "path", points: [{ x: 0.16, y: 0.29 }, { x: 0.25, y: 0.3 }, { x: 0.22, y: 0.21 }], color: "primary", fill: true }, path78: { type: "path", points: [{ x: 0.08, y: 0.17 }, { x: 0.09, y: 0.17 }, { x: 0.21, y: 0.27 }, { x: 0.21, y: 0.27 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: -0.02, y: 0.31 }, { x: 0.08, y: 0.32 }, { x: 0.04, y: 0.23 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: -0.1, y: 0.19 }, { x: -0.09, y: 0.2 }, { x: 0.04, y: 0.29 }, { x: 0.04, y: 0.29 }], color: "primary", fill: false } }, texts: { bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.21 }, right1: { type: "text", text: "{REF}", x: 0, y: 0.41 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.32, maxY: 0.32, width: 1.13, height: 0.65, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: qd, texts: is, bounds: Ge, refblocks: ls, circles: Dd } = os;
+var wt = x({ primitives: [...Object.values(qd), ...Object.values(Dd), { ...is.bottom1, anchor: "middle_top" }, { ...is.right1, anchor: "middle_bottom" }], ports: [{ ...ls.left1, labels: ["1"] }, { ...ls.right1, labels: ["2"] }], size: { width: Ge.width, height: Ge.height }, center: { x: Ge.centerX, y: Ge.centerY } });
+var Xo = r(wt, "up");
+var Lo = Xo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Vo = Xo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Lo.anchor = "middle_left";
 Vo.anchor = "middle_left";
-jo.anchor = "middle_left";
-Vo.y += 0.4;
-Vo.x = 0.2;
-jo.y -= 0.41;
-jo.x = 0.2;
-var Dx = Lo;
-var Gx = Y(vt);
-var Ux = { paths: { path11: { type: "path", points: [{ x: -0.52, y: -0.01 }, { x: -0.18, y: -0.01 }], color: "primary", fill: false }, "path11-2": { type: "path", points: [{ x: -0.17, y: -0.11 }, { x: -0.17, y: 0.08 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.17, y: -0.12 }, { x: 0.16, y: -0.12 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: -0.17, y: 0.08 }, { x: 0.16, y: 0.08 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.17, y: -0.01 }, { x: 0.52, y: -0.01 }], color: "primary", fill: false }, "path11-2-1": { type: "path", points: [{ x: 0.16, y: -0.12 }, { x: 0.16, y: 0.08 }], color: "primary", fill: false }, "path25-0-9": { type: "path", points: [{ x: -0.4, y: -0.21 }, { x: -0.33, y: -0.18 }, { x: -0.34, y: -0.27 }], color: "primary", fill: true }, "path78-6-5": { type: "path", points: [{ x: -0.45, y: -0.34 }, { x: -0.44, y: -0.32 }, { x: -0.35, y: -0.22 }, { x: -0.35, y: -0.22 }], color: "primary", fill: false }, "path25-0-9-0": { type: "path", points: [{ x: -0.3, y: -0.34 }, { x: -0.22, y: -0.31 }, { x: -0.24, y: -0.4 }], color: "primary", fill: true }, "path78-6-5-9": { type: "path", points: [{ x: -0.35, y: -0.46 }, { x: -0.34, y: -0.45 }, { x: -0.25, y: -0.35 }, { x: -0.25, y: -0.35 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.17, y: -0.41 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.46 } }, refblocks: { left1: { x: -0.52, y: -0.01 }, right1: { x: 0.52, y: -0.01 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.51, maxY: 0.46, width: 1.1, height: 0.62, centerX: 0, centerY: -0.02 }, circles: { path1: { type: "circle", x: 0, y: -0.02, radius: 0.28, color: "primary", fill: false } } };
-var { paths: Ed, texts: Wx, bounds: Ue, refblocks: Hx, circles: Yd } = Ux;
-var We = s({ primitives: [...Object.values(Ed), ...Object.values(Yd), { ...Wx.top1, anchor: "middle_left", x: 0 }, { ...Wx.bottom1, anchor: "middle_left", x: 0 }], ports: [{ ...Hx.left1, labels: ["1"] }, { ...Hx.right1, labels: ["2"] }], size: { width: Ue.width, height: Ue.height }, center: { x: Ue.centerX, y: Ue.centerY } });
-var Zx = r(We);
-var Qx = Zx.primitives.filter((t) => t.type === "text");
-var ko = Qx.find((t) => t.text === "{VAL}");
-ko.x = -0.35;
-ko.y = 0;
-ko.anchor = "middle_right";
-var zo = Qx.find((t) => t.text === "{REF}");
-zo.y = 0;
-zo.x = 0.35;
+Lo.y += 0.21;
+Lo.x = 0.21;
+Vo.y -= 0.21;
+Vo.x = 0.21;
+var Ue = Xo;
+var jo = v(Ue);
+var ko = jo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var zo = jo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ko.anchor = "middle_left";
 zo.anchor = "middle_left";
-var Kx = Zx;
-var ts = { paths: { path208: { type: "path", points: [{ x: 0.38, y: 0.13 }, { x: 0.52, y: -0.13 }], color: "primary", fill: false }, path209: { type: "path", points: [{ x: 0.25, y: -0.13 }, { x: 0.38, y: 0.13 }], color: "primary", fill: false }, path210: { type: "path", points: [{ x: 0.52, y: -0.13 }, { x: 0.25, y: -0.13 }], color: "primary", fill: false }, path211: { type: "path", points: [{ x: 0.25, y: 0.13 }, { x: 0.52, y: 0.13 }], color: "primary", fill: false }, path212: { type: "path", points: [{ x: 0.12, y: -0.4 }, { x: 0.38, y: -0.4 }], color: "primary", fill: false }, path213: { type: "path", points: [{ x: 0.38, y: 0.4 }, { x: 0.12, y: 0.4 }], color: "primary", fill: false }, path214: { type: "path", points: [{ x: 0.12, y: 0.54 }, { x: 0.12, y: 0.18 }], color: "primary", fill: false }, path215: { type: "path", points: [{ x: 0.12, y: -0.54 }, { x: 0.12, y: 0 }], color: "primary", fill: false }, path216: { type: "path", points: [{ x: 0.38, y: -0.4 }, { x: 0.38, y: 0.4 }], color: "primary", fill: false }, path217: { type: "path", points: [{ x: -0.14, y: 0.26 }, { x: -0.14, y: -0.27 }], color: "primary", fill: false }, path218: { type: "path", points: [{ x: -0.22, y: -0.27 }, { x: -0.22, y: 0.26 }], color: "primary", fill: false }, path219: { type: "path", points: [{ x: -0.54, y: -0.27 }, { x: -0.22, y: -0.27 }], color: "primary", fill: false }, path220: { type: "path", points: [{ x: -0.14, y: -0.19 }, { x: 0.12, y: -0.19 }], color: "primary", fill: false }, path221: { type: "path", points: [{ x: -0.14, y: 0.18 }, { x: 0.12, y: 0.18 }], color: "primary", fill: false }, path222: { type: "path", points: [{ x: -0.07, y: 0 }, { x: 0.12, y: 0 }], color: "primary", fill: false } }, texts: { right1: { type: "text", text: "{VAL}", x: 0.57, y: 0.02 }, right2: { type: "text", text: "{REF}", x: 0.57, y: 0.21 } }, refblocks: { top1: { x: 0.12, y: 0.54 }, bottom1: { x: 0.12, y: -0.54 }, left1: { x: -0.54, y: -0.27 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.57, maxY: 0.57, width: 1.14, height: 1.14, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Ld, texts: es, bounds: He, refblocks: Oo } = ts;
-var Ze = s({ primitives: [...Object.values(Ld), { ...es.right1, anchor: "middle_left" }, { ...es.right2, anchor: "middle_left" }], ports: [{ ...Oo.top1, labels: ["1"] }, { ...Oo.bottom1, labels: ["2"] }, { ...Oo.left1, labels: ["3"] }], size: { width: He.width + 0.4, height: He.height }, center: { x: He.centerX + 0.2, y: He.centerY } });
-var Jo = r(Ze);
-var rs = Jo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var $o = Jo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-rs.anchor = "middle_top";
-$o.anchor = "middle_top";
-rs.x = $o.x;
-$o.y += 0.15;
-var os = Jo;
-var is = { paths: { "path12-1-8-6-9": { type: "path", points: [{ x: 0.01, y: 0.07 }, { x: 0.01, y: -0.01 }], color: "primary", fill: false }, "path12-1-5-6": { type: "path", points: [{ x: -0.47, y: -0.09 }, { x: -0.17, y: -0.09 }], color: "primary", fill: false }, "path12-1-8-0": { type: "path", points: [{ x: -0.16, y: -0.01 }, { x: 0.17, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.2, y: -0.09 }, { x: 0.47, y: -0.09 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: -0.1, y: 0.06 }, { x: -0.1, y: 0.06 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.11 }, { x: -0.09, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.05, y: 0.14 }, { x: -0.05, y: 0.15 }, { x: -0.05, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.03, y: 0.16 }, { x: -0.03, y: 0.16 }, { x: -0.03, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.01, y: 0.16 }, { x: -0.01, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.05, y: 0.15 }, { x: 0.05, y: 0.15 }, { x: 0.05, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.08, y: 0.14 }, { x: 0.08, y: 0.13 }, { x: 0.08, y: 0.13 }, { x: 0.08, y: 0.13 }, { x: 0.09, y: 0.13 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.1, y: 0.11 }, { x: 0.1, y: 0.11 }, { x: 0.1, y: 0.1 }, { x: 0.1, y: 0.1 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.06 }, { x: 0.11, y: 0.06 }, { x: 0.1, y: 0.06 }, { x: 0.1, y: 0.06 }, { x: 0.09, y: 0.06 }, { x: 0.09, y: 0.06 }, { x: 0.08, y: 0.06 }, { x: 0.07, y: 0.06 }, { x: 0.07, y: 0.06 }, { x: 0.06, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.04, y: 0.06 }, { x: 0.03, y: 0.06 }, { x: 0.03, y: 0.06 }, { x: 0.02, y: 0.06 }, { x: 0.01, y: 0.06 }, { x: 0.01, y: 0.06 }, { x: 0, y: 0.06 }, { x: -0.01, y: 0.06 }, { x: -0.01, y: 0.06 }, { x: -0.02, y: 0.06 }, { x: -0.03, y: 0.06 }, { x: -0.03, y: 0.06 }, { x: -0.04, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.07, y: 0.06 }, { x: -0.07, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.09, y: 0.06 }, { x: -0.09, y: 0.06 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.27 } }, refblocks: { left1: { x: -0.47, y: -0.09 }, right1: { x: 0.47, y: -0.09 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.27, maxY: 0.27, width: 1, height: 0.53, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: jd, texts: ls, bounds: Qe, refblocks: ps, circles: kd } = is;
-var Ke = s({ primitives: [...Object.values(jd), ...Object.values(kd), { ...ls.top1, anchor: "middle_bottom", x: 0 }, { ...ls.bottom1, anchor: "middle_top", x: 0 }], ports: [{ ...ps.left1, labels: ["1"] }, { ...ps.right1, labels: ["2"] }], size: { width: Qe.width, height: Qe.height }, center: { x: Qe.centerX + 0.006, y: Qe.centerY + 0.06 } });
-var Mo = r(Ke);
-var Xt = Mo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var t0 = Mo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Xt.anchor = "middle_left";
-t0.anchor = "middle_right";
-Xt.x = Xt.x - 0.03;
-Xt.y = Xt.y;
-t0.x = t0.x;
-t0.y = 0;
-var as = Mo;
-var ys = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.09, y: 0.19 }, { x: 0.09, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.27, y: -0.04 }, { x: 0.27, y: 0.03 }, { x: 0.2, y: 0 }, { x: 0.27, y: -0.04 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.17 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Od, texts: xs, bounds: e0, refblocks: Co, circles: Jd } = ys;
-var r0 = s({ primitives: [...Object.values(Od), ...Object.values(Jd), { ...xs.top1, anchor: "middle_right", x: 0 }, { ...xs.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Co.top1, labels: ["1", "drain"] }, { ...Co.bottom1, labels: ["2", "source"] }, { ...Co.left1, labels: ["3", "gate"] }], size: { width: e0.width, height: e0.height }, center: { x: e0.centerX, y: e0.centerY } });
-var ss = r(r0);
-var ms2 = ss.primitives.filter((t) => t.type === "text");
-var No = ms2.find((t) => t.text === "{VAL}");
-No.x = -0.35;
-No.y = 0;
-No.anchor = "middle_right";
-var Io = ms2.find((t) => t.text === "{REF}");
-Io.y = 0;
-Io.x = 0.35;
-Io.anchor = "middle_left";
-var ns = ss;
-var fs = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-8-3-7": { type: "path", points: [{ x: 0.09, y: 0.15 }, { x: 0.09, y: 0.07 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, "path2-8-3": { type: "path", points: [{ x: 0.09, y: -0.08 }, { x: 0.09, y: -0.15 }], color: "primary", fill: false }, "path2-8-3-2": { type: "path", points: [{ x: 0.09, y: 0.03 }, { x: 0.09, y: -0.04 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.27, y: -0.04 }, { x: 0.27, y: 0.03 }, { x: 0.2, y: 0 }, { x: 0.27, y: -0.04 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.11 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Md, texts: cs, bounds: o0, refblocks: Bo, circles: Cd } = fs;
-var i0 = s({ primitives: [...Object.values(Md), ...Object.values(Cd), { ...cs.top1, anchor: "middle_right", x: 0 }, { ...cs.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Bo.top1, labels: ["1", "drain"] }, { ...Bo.bottom1, labels: ["2", "source"] }, { ...Bo.left1, labels: ["3", "gate"] }], size: { width: o0.width, height: o0.height }, center: { x: o0.centerX, y: o0.centerY } });
-var hs = r(i0);
-var ds = hs.primitives.filter((t) => t.type === "text");
-var qo = ds.find((t) => t.text === "{VAL}");
-qo.x = -0.35;
+ko.y += 0.4;
+ko.x = 0.2;
+zo.y -= 0.41;
+zo.x = 0.2;
+var ps = jo;
+var as = Y(wt);
+var ys = { paths: { path11: { type: "path", points: [{ x: -0.52, y: -0.01 }, { x: -0.18, y: -0.01 }], color: "primary", fill: false }, "path11-2": { type: "path", points: [{ x: -0.17, y: -0.11 }, { x: -0.17, y: 0.08 }], color: "primary", fill: false }, "path11-5": { type: "path", points: [{ x: -0.17, y: -0.12 }, { x: 0.16, y: -0.12 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: -0.17, y: 0.08 }, { x: 0.16, y: 0.08 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.17, y: -0.01 }, { x: 0.52, y: -0.01 }], color: "primary", fill: false }, "path11-2-1": { type: "path", points: [{ x: 0.16, y: -0.12 }, { x: 0.16, y: 0.08 }], color: "primary", fill: false }, "path25-0-9": { type: "path", points: [{ x: -0.4, y: -0.21 }, { x: -0.33, y: -0.18 }, { x: -0.34, y: -0.27 }], color: "primary", fill: true }, "path78-6-5": { type: "path", points: [{ x: -0.45, y: -0.34 }, { x: -0.44, y: -0.32 }, { x: -0.35, y: -0.22 }, { x: -0.35, y: -0.22 }], color: "primary", fill: false }, "path25-0-9-0": { type: "path", points: [{ x: -0.3, y: -0.34 }, { x: -0.22, y: -0.31 }, { x: -0.24, y: -0.4 }], color: "primary", fill: true }, "path78-6-5-9": { type: "path", points: [{ x: -0.35, y: -0.46 }, { x: -0.34, y: -0.45 }, { x: -0.25, y: -0.35 }, { x: -0.25, y: -0.35 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.17, y: -0.41 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.46 } }, refblocks: { left1: { x: -0.52, y: -0.01 }, right1: { x: 0.52, y: -0.01 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.51, maxY: 0.46, width: 1.1, height: 0.62, centerX: 0, centerY: -0.02 }, circles: { path1: { type: "circle", x: 0, y: -0.02, radius: 0.28, color: "primary", fill: false } } };
+var { paths: Ud, texts: xs, bounds: We, refblocks: ss, circles: Wd } = ys;
+var He = x({ primitives: [...Object.values(Ud), ...Object.values(Wd), { ...xs.top1, anchor: "middle_left", x: 0 }, { ...xs.bottom1, anchor: "middle_left", x: 0 }], ports: [{ ...ss.left1, labels: ["1"] }, { ...ss.right1, labels: ["2"] }], size: { width: We.width, height: We.height }, center: { x: We.centerX, y: We.centerY } });
+var ms2 = r(He);
+var ns = ms2.primitives.filter((t) => t.type === "text");
+var Oo = ns.find((t) => t.text === "{VAL}");
+Oo.x = -0.35;
+Oo.y = 0;
+Oo.anchor = "middle_right";
+var Jo = ns.find((t) => t.text === "{REF}");
+Jo.y = 0;
+Jo.x = 0.35;
+Jo.anchor = "middle_left";
+var fs = ms2;
+var cs = { paths: { path208: { type: "path", points: [{ x: 0.38, y: 0.13 }, { x: 0.52, y: -0.13 }], color: "primary", fill: false }, path209: { type: "path", points: [{ x: 0.25, y: -0.13 }, { x: 0.38, y: 0.13 }], color: "primary", fill: false }, path210: { type: "path", points: [{ x: 0.52, y: -0.13 }, { x: 0.25, y: -0.13 }], color: "primary", fill: false }, path211: { type: "path", points: [{ x: 0.25, y: 0.13 }, { x: 0.52, y: 0.13 }], color: "primary", fill: false }, path212: { type: "path", points: [{ x: 0.12, y: -0.4 }, { x: 0.38, y: -0.4 }], color: "primary", fill: false }, path213: { type: "path", points: [{ x: 0.38, y: 0.4 }, { x: 0.12, y: 0.4 }], color: "primary", fill: false }, path214: { type: "path", points: [{ x: 0.12, y: 0.54 }, { x: 0.12, y: 0.18 }], color: "primary", fill: false }, path215: { type: "path", points: [{ x: 0.12, y: -0.54 }, { x: 0.12, y: 0 }], color: "primary", fill: false }, path216: { type: "path", points: [{ x: 0.38, y: -0.4 }, { x: 0.38, y: 0.4 }], color: "primary", fill: false }, path217: { type: "path", points: [{ x: -0.14, y: 0.26 }, { x: -0.14, y: -0.27 }], color: "primary", fill: false }, path218: { type: "path", points: [{ x: -0.22, y: -0.27 }, { x: -0.22, y: 0.26 }], color: "primary", fill: false }, path219: { type: "path", points: [{ x: -0.54, y: -0.27 }, { x: -0.22, y: -0.27 }], color: "primary", fill: false }, path220: { type: "path", points: [{ x: -0.14, y: -0.19 }, { x: 0.12, y: -0.19 }], color: "primary", fill: false }, path221: { type: "path", points: [{ x: -0.14, y: 0.18 }, { x: 0.12, y: 0.18 }], color: "primary", fill: false }, path222: { type: "path", points: [{ x: -0.07, y: 0 }, { x: 0.12, y: 0 }], color: "primary", fill: false } }, texts: { right1: { type: "text", text: "{VAL}", x: 0.57, y: 0.02 }, right2: { type: "text", text: "{REF}", x: 0.57, y: 0.21 } }, refblocks: { top1: { x: 0.12, y: 0.54 }, bottom1: { x: 0.12, y: -0.54 }, left1: { x: -0.54, y: -0.27 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.57, maxY: 0.57, width: 1.14, height: 1.14, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Zd, texts: hs, bounds: Ze, refblocks: $o } = cs;
+var Qe = x({ primitives: [...Object.values(Zd), { ...hs.right1, anchor: "middle_left" }, { ...hs.right2, anchor: "middle_left" }], ports: [{ ...$o.top1, labels: ["1"] }, { ...$o.bottom1, labels: ["2"] }, { ...$o.left1, labels: ["3"] }], size: { width: Ze.width + 0.4, height: Ze.height }, center: { x: Ze.centerX + 0.2, y: Ze.centerY } });
+var Mo = r(Qe);
+var ds = Mo.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Co = Mo.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ds.anchor = "middle_top";
+Co.anchor = "middle_top";
+ds.x = Co.x;
+Co.y += 0.15;
+var bs = Mo;
+var _s = { paths: { "path12-1-8-6-9": { type: "path", points: [{ x: 0.01, y: 0.07 }, { x: 0.01, y: -0.01 }], color: "primary", fill: false }, "path12-1-5-6": { type: "path", points: [{ x: -0.47, y: -0.09 }, { x: -0.17, y: -0.09 }], color: "primary", fill: false }, "path12-1-8-0": { type: "path", points: [{ x: -0.16, y: -0.01 }, { x: 0.17, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.2, y: -0.09 }, { x: 0.47, y: -0.09 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: -0.1, y: 0.06 }, { x: -0.1, y: 0.06 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.07 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.1 }, { x: -0.09, y: 0.11 }, { x: -0.09, y: 0.11 }, { x: -0.08, y: 0.11 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.08, y: 0.12 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.07, y: 0.13 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.06, y: 0.14 }, { x: -0.05, y: 0.14 }, { x: -0.05, y: 0.15 }, { x: -0.05, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.04, y: 0.15 }, { x: -0.03, y: 0.16 }, { x: -0.03, y: 0.16 }, { x: -0.03, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.02, y: 0.16 }, { x: -0.01, y: 0.16 }, { x: -0.01, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.01, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.02, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.03, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.04, y: 0.16 }, { x: 0.05, y: 0.15 }, { x: 0.05, y: 0.15 }, { x: 0.05, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.15 }, { x: 0.06, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.07, y: 0.14 }, { x: 0.08, y: 0.14 }, { x: 0.08, y: 0.13 }, { x: 0.08, y: 0.13 }, { x: 0.08, y: 0.13 }, { x: 0.09, y: 0.13 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.09, y: 0.12 }, { x: 0.1, y: 0.11 }, { x: 0.1, y: 0.11 }, { x: 0.1, y: 0.1 }, { x: 0.1, y: 0.1 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.09 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.07 }, { x: 0.11, y: 0.06 }, { x: 0.11, y: 0.06 }, { x: 0.1, y: 0.06 }, { x: 0.1, y: 0.06 }, { x: 0.09, y: 0.06 }, { x: 0.09, y: 0.06 }, { x: 0.08, y: 0.06 }, { x: 0.07, y: 0.06 }, { x: 0.07, y: 0.06 }, { x: 0.06, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.05, y: 0.06 }, { x: 0.04, y: 0.06 }, { x: 0.03, y: 0.06 }, { x: 0.03, y: 0.06 }, { x: 0.02, y: 0.06 }, { x: 0.01, y: 0.06 }, { x: 0.01, y: 0.06 }, { x: 0, y: 0.06 }, { x: -0.01, y: 0.06 }, { x: -0.01, y: 0.06 }, { x: -0.02, y: 0.06 }, { x: -0.03, y: 0.06 }, { x: -0.03, y: 0.06 }, { x: -0.04, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.05, y: 0.06 }, { x: -0.06, y: 0.06 }, { x: -0.07, y: 0.06 }, { x: -0.07, y: 0.06 }, { x: -0.08, y: 0.06 }, { x: -0.09, y: 0.06 }, { x: -0.09, y: 0.06 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.27 } }, refblocks: { left1: { x: -0.47, y: -0.09 }, right1: { x: 0.47, y: -0.09 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.27, maxY: 0.27, width: 1, height: 0.53, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Kd, texts: gs, bounds: Ke, refblocks: us, circles: t2 } = _s;
+var t0 = x({ primitives: [...Object.values(Kd), ...Object.values(t2), { ...gs.top1, anchor: "middle_bottom", x: 0 }, { ...gs.bottom1, anchor: "middle_top", x: 0 }], ports: [{ ...us.left1, labels: ["1"] }, { ...us.right1, labels: ["2"] }], size: { width: Ke.width, height: Ke.height }, center: { x: Ke.centerX + 0.006, y: Ke.centerY + 0.06 } });
+var No = r(t0);
+var Lt = No.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var e0 = No.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Lt.anchor = "middle_left";
+e0.anchor = "middle_right";
+Lt.x = Lt.x - 0.03;
+Lt.y = Lt.y;
+e0.x = e0.x;
+e0.y = 0;
+var vs = No;
+var ws = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.09, y: 0.19 }, { x: 0.09, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.27, y: -0.04 }, { x: 0.27, y: 0.03 }, { x: 0.2, y: 0 }, { x: 0.27, y: -0.04 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.17 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: r2, texts: As, bounds: r0, refblocks: Io, circles: o2 } = ws;
+var o0 = x({ primitives: [...Object.values(r2), ...Object.values(o2), { ...As.top1, anchor: "middle_right", x: 0 }, { ...As.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Io.top1, labels: ["1", "drain"] }, { ...Io.bottom1, labels: ["2", "source"] }, { ...Io.left1, labels: ["3", "gate"] }], size: { width: r0.width, height: r0.height }, center: { x: r0.centerX, y: r0.centerY } });
+var Ps = r(o0);
+var Ss = Ps.primitives.filter((t) => t.type === "text");
+var Bo = Ss.find((t) => t.text === "{VAL}");
+Bo.x = -0.35;
+Bo.y = 0;
+Bo.anchor = "middle_right";
+var qo = Ss.find((t) => t.text === "{REF}");
 qo.y = 0;
-qo.anchor = "middle_right";
-var Do = ds.find((t) => t.text === "{REF}");
-Do.y = 0;
-Do.x = 0.35;
-Do.anchor = "middle_left";
-var bs = hs;
-var _s = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.55 }, { x: 0.28, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.29, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.07, y: -0.1 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: -0.08, y: 0.06 }, { x: -0.08, y: -0.07 }, { x: 0.01, y: 0 }, { x: -0.08, y: 0.06 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.15, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Id, texts: gs, bounds: l0, refblocks: Go, circles: Bd } = _s;
-var p0 = s({ primitives: [...Object.values(Id), ...Object.values(Bd), { ...gs.top1, anchor: "middle_right", x: 0 }, { ...gs.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Go.top1, labels: ["1", "drain"] }, { ...Go.bottom1, labels: ["2", "source"] }, { ...Go.left1, labels: ["3", "gate"] }], size: { width: l0.width, height: l0.height }, center: { x: l0.centerX, y: l0.centerY } });
-var us = r(p0);
-var vs = us.primitives.filter((t) => t.type === "text");
-var Uo = vs.find((t) => t.text === "{VAL}");
-Uo.x = -0.35;
+qo.x = 0.35;
+qo.anchor = "middle_left";
+var Rs = Ps;
+var Fs = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-8-3-7": { type: "path", points: [{ x: 0.09, y: 0.15 }, { x: 0.09, y: 0.07 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, "path2-8-3": { type: "path", points: [{ x: 0.09, y: -0.08 }, { x: 0.09, y: -0.15 }], color: "primary", fill: false }, "path2-8-3-2": { type: "path", points: [{ x: 0.09, y: 0.03 }, { x: 0.09, y: -0.04 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.27, y: -0.04 }, { x: 0.27, y: 0.03 }, { x: 0.2, y: 0 }, { x: 0.27, y: -0.04 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.11 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: l2, texts: Ts, bounds: i0, refblocks: Do, circles: p2 } = Fs;
+var l0 = x({ primitives: [...Object.values(l2), ...Object.values(p2), { ...Ts.top1, anchor: "middle_right", x: 0 }, { ...Ts.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Do.top1, labels: ["1", "drain"] }, { ...Do.bottom1, labels: ["2", "source"] }, { ...Do.left1, labels: ["3", "gate"] }], size: { width: i0.width, height: i0.height }, center: { x: i0.centerX, y: i0.centerY } });
+var Es = r(l0);
+var Ys = Es.primitives.filter((t) => t.type === "text");
+var Go = Ys.find((t) => t.text === "{VAL}");
+Go.x = -0.35;
+Go.y = 0;
+Go.anchor = "middle_right";
+var Uo = Ys.find((t) => t.text === "{REF}");
 Uo.y = 0;
-Uo.anchor = "middle_right";
-var Wo = vs.find((t) => t.text === "{REF}");
-Wo.y = 0;
-Wo.x = 0.35;
-Wo.anchor = "middle_left";
-var ws = us;
-var As = { paths: { diag1: { type: "path", points: [{ x: -0.1, y: -0.1 }, { x: 0.1, y: 0.1 }], color: "primary", fill: false }, diag2: { type: "path", points: [{ x: -0.1, y: 0.1 }, { x: 0.1, y: -0.1 }], color: "primary", fill: false }, stem: { type: "path", points: [{ x: -0.2, y: 0 }, { x: 0, y: 0 }], color: "primary", fill: false } }, texts: {}, refblocks: { left1: { x: -0.2, y: 0 } }, bounds: { minX: -0.19, maxX: 0.2, minY: -0.12, maxY: 0.12, width: 0.39, height: 0.24, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Dd, bounds: Ps, refblocks: Gd } = As;
-var U = e({ primitives: [...Object.values(Dd)], ports: [{ ...Gd.left1, labels: ["1"] }], center: { x: Ps.centerX, y: Ps.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).build();
-var Ss = r(U, "down");
-var Rs = r(U, "left");
-var Fs = r(U, "up");
+Uo.x = 0.35;
+Uo.anchor = "middle_left";
+var Xs = Es;
+var Ls = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.55 }, { x: 0.28, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.29, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.07, y: -0.1 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: -0.08, y: 0.06 }, { x: -0.08, y: -0.07 }, { x: 0.01, y: 0 }, { x: -0.08, y: 0.06 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.15, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: y2, texts: Vs, bounds: p0, refblocks: Wo, circles: x2 } = Ls;
+var a0 = x({ primitives: [...Object.values(y2), ...Object.values(x2), { ...Vs.top1, anchor: "middle_right", x: 0 }, { ...Vs.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...Wo.top1, labels: ["1", "drain"] }, { ...Wo.bottom1, labels: ["2", "source"] }, { ...Wo.left1, labels: ["3", "gate"] }], size: { width: p0.width, height: p0.height }, center: { x: p0.centerX, y: p0.centerY } });
+var js = r(a0);
+var ks = js.primitives.filter((t) => t.type === "text");
+var Ho = ks.find((t) => t.text === "{VAL}");
+Ho.x = -0.35;
+Ho.y = 0;
+Ho.anchor = "middle_right";
+var Zo = ks.find((t) => t.text === "{REF}");
+Zo.y = 0;
+Zo.x = 0.35;
+Zo.anchor = "middle_left";
+var zs = js;
+var Os = { paths: { diag1: { type: "path", points: [{ x: -0.1, y: -0.1 }, { x: 0.1, y: 0.1 }], color: "primary", fill: false }, diag2: { type: "path", points: [{ x: -0.1, y: 0.1 }, { x: 0.1, y: -0.1 }], color: "primary", fill: false }, stem: { type: "path", points: [{ x: -0.2, y: 0 }, { x: 0, y: 0 }], color: "primary", fill: false } }, texts: {}, refblocks: { left1: { x: -0.2, y: 0 } }, bounds: { minX: -0.19, maxX: 0.2, minY: -0.12, maxY: 0.12, width: 0.39, height: 0.24, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: m2, bounds: Js, refblocks: n2 } = Os;
+var W = e({ primitives: [...Object.values(m2)], ports: [{ ...n2.left1, labels: ["1"] }], center: { x: Js.centerX, y: Js.centerY } }).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).build();
+var $s = r(W, "down");
+var Ms = r(W, "left");
+var Cs = r(W, "up");
 var g = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, "path40-0": { type: "path", points: [{ x: 0.07, y: 0.27 }, { x: 0.07, y: -0.28 }], color: "primary", fill: false }, "path40-0-5": { type: "path", points: [{ x: 0.28, y: 0.24 }, { x: 0.08, y: 0.11 }], color: "primary", fill: false }, "path40-0-5-0": { type: "path", points: [{ x: 0.29, y: -0.24 }, { x: 0.09, y: -0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: 0.25 }, { x: 0.29, y: 0.55 }], color: "primary", fill: false }, "path12-1-5-3": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.25 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.19, y: -0.1 }, { x: 0.12, y: -0.2 }, { x: 0.22, y: -0.2 }, { x: 0.19, y: -0.1 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.08, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.07, y: -0.41 } }, refblocks: { top1: { x: 0.29, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { "path1-0": { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Wd, texts: gP, bounds: a0, refblocks: Ho, circles: Hd } = g;
-var Ts = e({ primitives: [...Object.values(Wd), ...Object.values(Hd), { type: "text", text: "{REF}", x: -0.1, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: -0.3094553499999995 }], ports: [{ ...Ho.top1, labels: ["1", "collector"] }, { ...Ho.bottom1, labels: ["2", "emitter"] }, { ...Ho.left1, labels: ["3", "base"] }], size: { width: a0.width, height: a0.height }, center: { x: a0.centerX, y: a0.centerY } }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
-var Es = e(g).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["3", "base"]).labelPort("top1", ["1", "collector"]).labelPort("bottom1", ["2", "emitter"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: Zd, texts: XP, bounds: y0, refblocks: Zo, circles: Qd } = g;
-var Ys = e({ primitives: [...Object.values(Zd), ...Object.values(Qd), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...Zo.top1, labels: ["1", "collector"] }, { ...Zo.bottom1, labels: ["2", "emitter"] }, { ...Zo.left1, labels: ["3", "base"] }], size: { width: y0.width, height: y0.height }, center: { x: y0.centerX, y: y0.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
-var { paths: Kd, texts: kP, bounds: x0, refblocks: Qo, circles: t2 } = g;
-var Xs = e({ primitives: [...Object.values(Kd), ...Object.values(t2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...Qo.top1, labels: ["1", "collector"] }, { ...Qo.bottom1, labels: ["2", "emitter"] }, { ...Qo.left1, labels: ["3", "base"] }], size: { width: x0.width, height: x0.height }, center: { x: x0.centerX, y: x0.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: e2, texts: $P, bounds: s0, refblocks: Ko, circles: r2 } = g;
-var Ls = e({ primitives: [...Object.values(e2), ...Object.values(r2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...Ko.top1, labels: ["1", "collector"] }, { ...Ko.bottom1, labels: ["2", "emitter"] }, { ...Ko.left1, labels: ["3", "base"] }], size: { width: s0.width, height: s0.height }, center: { x: s0.centerX, y: s0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: o2, texts: IP, bounds: m0, refblocks: ti, circles: i2 } = g;
-var Vs = e({ primitives: [...Object.values(o2), ...Object.values(i2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ti.top1, labels: ["1", "collector"] }, { ...ti.bottom1, labels: ["2", "emitter"] }, { ...ti.left1, labels: ["3", "base"] }], size: { width: m0.width, height: m0.height }, center: { x: m0.centerX, y: m0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.3 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
-var W = e(js).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["3", "out"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var ks = r(W, "down");
-var zs = v(r(W, "left"));
-var Os = r(W, "up");
-var Js = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path44-1": { type: "path", points: [{ x: -0.1, y: 0.44 }, { x: -0.1, y: 0.18 }], color: "primary", fill: false }, "path44-2": { type: "path", points: [{ x: -0.09, y: -0.34 }, { x: -0.09, y: -0.09 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.25, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.25, y: -0.24 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 }, top2: { x: -0.1, y: 0.44 }, bottom1: { x: -0.09, y: -0.34 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
-var H = e(Js).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["4", "out"]).labelPort("top2", ["5", "V+"]).labelPort("bottom1", ["3", "V-"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var $s = r(H, "down");
-var Ms = v(r(H, "left"));
-var Cs = r(H, "up");
-var Ns = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.09, y: 0.19 }, { x: 0.09, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.2, y: 0.03 }, { x: 0.2, y: -0.04 }, { x: 0.27, y: -0.01 }, { x: 0.2, y: 0.03 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.17 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: y2, texts: Is, bounds: n0, refblocks: ei, circles: x2 } = Ns;
-var f0 = s({ primitives: [...Object.values(y2), ...Object.values(x2), { ...Is.top1, anchor: "middle_right", x: 0 }, { ...Is.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...ei.top1, labels: ["1", "drain"] }, { ...ei.bottom1, labels: ["2", "source"] }, { ...ei.left1, labels: ["3", "gate"] }], size: { width: n0.width, height: n0.height }, center: { x: n0.centerX, y: n0.centerY } });
-var Bs = r(f0);
-var qs = Bs.primitives.filter((t) => t.type === "text");
-var ri = qs.find((t) => t.text === "{VAL}");
-ri.x = -0.35;
-ri.y = 0;
-ri.anchor = "middle_right";
-var oi = qs.find((t) => t.text === "{REF}");
-oi.y = 0;
-oi.x = 0.35;
-oi.anchor = "middle_left";
-var Ds = Bs;
-var Gs = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-8-3-7": { type: "path", points: [{ x: 0.09, y: 0.15 }, { x: 0.09, y: 0.07 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, "path2-8-3": { type: "path", points: [{ x: 0.09, y: -0.08 }, { x: 0.09, y: -0.15 }], color: "primary", fill: false }, "path2-8-3-2": { type: "path", points: [{ x: 0.09, y: 0.03 }, { x: 0.09, y: -0.04 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.2, y: 0.03 }, { x: 0.2, y: -0.04 }, { x: 0.27, y: -0.01 }, { x: 0.2, y: 0.03 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.11 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: m2, texts: Us, bounds: c0, refblocks: ii, circles: n2 } = Gs;
-var h0 = s({ primitives: [...Object.values(m2), ...Object.values(n2), { ...Us.top1, anchor: "middle_right", x: 0 }, { ...Us.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...ii.top1, labels: ["1", "drain"] }, { ...ii.bottom1, labels: ["2", "source"] }, { ...ii.left1, labels: ["3", "gate"] }], size: { width: c0.width, height: c0.height }, center: { x: c0.centerX, y: c0.centerY } });
-var Ws = r(h0);
-var Hs = Ws.primitives.filter((t) => t.type === "text");
-var li = Hs.find((t) => t.text === "{VAL}");
-li.x = -0.35;
-li.y = 0;
-li.anchor = "middle_right";
-var pi = Hs.find((t) => t.text === "{REF}");
-pi.y = 0;
-pi.x = 0.35;
-pi.anchor = "middle_left";
-var Zs = Ws;
-var Qs = { paths: { path11: { type: "path", points: [{ x: -0.54, y: -0.01 }, { x: -0.15, y: -0.02 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.13, y: 0 }, { x: -0.13, y: -0.13 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.13, y: 0 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.13, y: -0.13 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.13, y: 0.13 }, { x: 0.13, y: -0.13 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.14, y: 0 }, { x: 0.54, y: -0.01 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: 0.2, y: 0.38 }, { x: 0.16, y: 0.28 }, { x: 0.26, y: 0.3 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: 0.33, y: 0.43 }, { x: 0.32, y: 0.42 }, { x: 0.21, y: 0.31 }, { x: 0.21, y: 0.31 }], color: "primary", fill: false }, "path25-0-9": { type: "path", points: [{ x: 0.35, y: 0.35 }, { x: 0.31, y: 0.26 }, { x: 0.41, y: 0.27 }], color: "primary", fill: true }, "path78-6-5": { type: "path", points: [{ x: 0.48, y: 0.4 }, { x: 0.47, y: 0.39 }, { x: 0.35, y: 0.29 }, { x: 0.35, y: 0.29 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.1, y: 0.35 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.43 } }, refblocks: { left1: { x: -0.54, y: -0.01 }, right1: { x: 0.54, y: -0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.43, maxY: 0.43, width: 1.14, height: 0.85, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var d0 = e(Qs).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Ks = r(d0);
-var c2 = Ks.primitives.filter((t) => t.type === "text");
-var tm = c2.find((t) => t.text === "{REF}");
-tm.y = 0;
-tm.anchor = "middle_left";
-var em = Ks;
-var rm = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.55 }, { x: 0.28, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.29, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.07, y: -0.1 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.01, y: -0.07 }, { x: 0.01, y: 0.06 }, { x: -0.08, y: 0 }, { x: 0.01, y: -0.07 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.15, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: d2, texts: om, bounds: b0, refblocks: ai, circles: b2 } = rm;
-var _0 = s({ primitives: [...Object.values(d2), ...Object.values(b2), { ...om.top1, anchor: "middle_right", x: 0 }, { ...om.bottom1, anchor: "middle_right" }], ports: [{ ...ai.top1, labels: ["1", "drain"] }, { ...ai.bottom1, labels: ["2", "source"] }, { ...ai.left1, labels: ["3", "gate"] }], size: { width: b0.width, height: b0.height }, center: { x: b0.centerX, y: b0.centerY } });
-var im = r(_0);
+var { paths: c2, texts: MP, bounds: y0, refblocks: Qo, circles: h2 } = g;
+var Ns = e({ primitives: [...Object.values(c2), ...Object.values(h2), { type: "text", text: "{REF}", x: -0.1, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: -0.3094553499999995 }], ports: [{ ...Qo.top1, labels: ["1", "collector"] }, { ...Qo.bottom1, labels: ["2", "emitter"] }, { ...Qo.left1, labels: ["3", "base"] }], size: { width: y0.width, height: y0.height }, center: { x: y0.centerX, y: y0.centerY } }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
+var Is = e(g).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["3", "base"]).labelPort("top1", ["1", "collector"]).labelPort("bottom1", ["2", "emitter"]).changeTextAnchor("{REF}", "middle_right").build();
+var { paths: d2, texts: QP, bounds: x0, refblocks: Ko, circles: b2 } = g;
+var Bs = e({ primitives: [...Object.values(d2), ...Object.values(b2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...Ko.top1, labels: ["1", "collector"] }, { ...Ko.bottom1, labels: ["2", "emitter"] }, { ...Ko.left1, labels: ["3", "base"] }], size: { width: x0.width, height: x0.height }, center: { x: x0.centerX, y: x0.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
+var { paths: _2, texts: rS, bounds: s0, refblocks: ti, circles: g2 } = g;
+var qs = e({ primitives: [...Object.values(_2), ...Object.values(g2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ti.top1, labels: ["1", "collector"] }, { ...ti.bottom1, labels: ["2", "emitter"] }, { ...ti.left1, labels: ["3", "base"] }], size: { width: s0.width, height: s0.height }, center: { x: s0.centerX, y: s0.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: u2, texts: pS, bounds: m0, refblocks: ei, circles: v2 } = g;
+var Ds = e({ primitives: [...Object.values(u2), ...Object.values(v2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ei.top1, labels: ["1", "collector"] }, { ...ei.bottom1, labels: ["2", "emitter"] }, { ...ei.left1, labels: ["3", "base"] }], size: { width: m0.width, height: m0.height }, center: { x: m0.centerX, y: m0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: w2, texts: sS, bounds: n0, refblocks: ri, circles: A2 } = g;
+var Gs = e({ primitives: [...Object.values(w2), ...Object.values(A2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ri.top1, labels: ["1", "collector"] }, { ...ri.bottom1, labels: ["2", "emitter"] }, { ...ri.left1, labels: ["3", "base"] }], size: { width: n0.width, height: n0.height }, center: { x: n0.centerX, y: n0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Us = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.3 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
+var H = e(Us).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["3", "out"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Ws = r(H, "down");
+var Hs = v(r(H, "left"));
+var Zs = r(H, "up");
+var Qs = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.32, y: -0.21 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.32, y: 0.31 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.32, y: -0.21 }, { x: -0.32, y: 0.31 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.18 }, { x: -0.57, y: 0.18 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.32, y: -0.09 }, { x: -0.57, y: -0.09 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.43, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path44-1": { type: "path", points: [{ x: -0.1, y: 0.44 }, { x: -0.1, y: 0.18 }], color: "primary", fill: false }, "path44-2": { type: "path", points: [{ x: -0.09, y: -0.34 }, { x: -0.09, y: -0.09 }], color: "primary", fill: false }, "rect1577-3": { type: "path", points: [{ x: -0.19, y: 0.18 }, { x: -0.27, y: 0.18 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.19, y: -0.09 }, { x: -0.27, y: -0.09 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.23, y: 0.14 }, { x: -0.23, y: 0.22 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.25, y: 0.32 }, bottom1: { type: "text", text: "{VAL}", x: 0.25, y: -0.24 } }, refblocks: { left1: { x: -0.57, y: 0.18 }, left2: { x: -0.57, y: -0.09 }, right1: { x: 0.43, y: 0.04 }, top2: { x: -0.1, y: 0.44 }, bottom1: { x: -0.09, y: -0.34 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.27, width: 1.09, height: 0.3, centerX: 0, centerY: 0.05 }, circles: {} };
+var Z = e(Qs).labelPort("left1", ["1", "inp1"]).labelPort("left2", ["2", "inp2"]).labelPort("right1", ["4", "out"]).labelPort("top2", ["5", "V+"]).labelPort("bottom1", ["3", "V-"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Ks = r(Z, "down");
+var tm = v(r(Z, "left"));
+var em = r(Z, "up");
+var rm = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.09, y: 0.19 }, { x: 0.09, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.2, y: 0.03 }, { x: 0.2, y: -0.04 }, { x: 0.27, y: -0.01 }, { x: 0.2, y: 0.03 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.17 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: F2, texts: om, bounds: f0, refblocks: oi, circles: T2 } = rm;
+var c0 = x({ primitives: [...Object.values(F2), ...Object.values(T2), { ...om.top1, anchor: "middle_right", x: 0 }, { ...om.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...oi.top1, labels: ["1", "drain"] }, { ...oi.bottom1, labels: ["2", "source"] }, { ...oi.left1, labels: ["3", "gate"] }], size: { width: f0.width, height: f0.height }, center: { x: f0.centerX, y: f0.centerY } });
+var im = r(c0);
 var lm = im.primitives.filter((t) => t.type === "text");
-var yi = lm.find((t) => t.text === "{VAL}");
-yi.x = -0.35;
-yi.y = 0;
-yi.anchor = "middle_right";
-var xi = lm.find((t) => t.text === "{REF}");
-xi.y = 0;
-xi.x = 0.35;
-xi.anchor = "middle_left";
+var ii = lm.find((t) => t.text === "{VAL}");
+ii.x = -0.35;
+ii.y = 0;
+ii.anchor = "middle_right";
+var li = lm.find((t) => t.text === "{REF}");
+li.y = 0;
+li.x = 0.35;
+li.anchor = "middle_left";
 var pm = im;
+var am = { paths: { path11: { type: "path", points: [{ x: -0.42, y: -0.1 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.3, y: 0.55 }, { x: 0.3, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.31, y: -0.55 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.09, y: 0.11 }, { x: 0.31, y: 0.11 }], color: "primary", fill: false }, "path2-8-3-7": { type: "path", points: [{ x: 0.09, y: 0.15 }, { x: 0.09, y: 0.07 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.09, y: -0.1 }, { x: 0.31, y: -0.1 }], color: "primary", fill: false }, "path2-8-3": { type: "path", points: [{ x: 0.09, y: -0.08 }, { x: 0.09, y: -0.15 }], color: "primary", fill: false }, "path2-8-3-2": { type: "path", points: [{ x: 0.09, y: 0.03 }, { x: 0.09, y: -0.04 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.2, y: 0.03 }, { x: 0.2, y: -0.04 }, { x: 0.27, y: -0.01 }, { x: 0.2, y: 0.03 }], color: "primary", fill: true }, "path2-0": { type: "path", points: [{ x: 0.09, y: 0 }, { x: 0.31, y: -0.01 }], color: "primary", fill: false }, "path12-1-0": { type: "path", points: [{ x: 0.05, y: 0.11 }, { x: 0.05, y: -0.11 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.13, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.06, y: -0.42 } }, refblocks: { top1: { x: 0.3, y: 0.55 }, bottom1: { x: 0.31, y: -0.55 }, left1: { x: -0.42, y: -0.1 } }, bounds: { minX: -0.45, maxX: 0.45, minY: -0.58, maxY: 0.58, width: 0.89, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.16, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Y2, texts: ym, bounds: h0, refblocks: pi, circles: X2 } = am;
+var d0 = x({ primitives: [...Object.values(Y2), ...Object.values(X2), { ...ym.top1, anchor: "middle_right", x: 0 }, { ...ym.bottom1, anchor: "middle_right", x: 0 }], ports: [{ ...pi.top1, labels: ["1", "drain"] }, { ...pi.bottom1, labels: ["2", "source"] }, { ...pi.left1, labels: ["3", "gate"] }], size: { width: h0.width, height: h0.height }, center: { x: h0.centerX, y: h0.centerY } });
+var xm = r(d0);
+var sm = xm.primitives.filter((t) => t.type === "text");
+var ai = sm.find((t) => t.text === "{VAL}");
+ai.x = -0.35;
+ai.y = 0;
+ai.anchor = "middle_right";
+var yi = sm.find((t) => t.text === "{REF}");
+yi.y = 0;
+yi.x = 0.35;
+yi.anchor = "middle_left";
+var mm = xm;
+var nm = { paths: { path11: { type: "path", points: [{ x: -0.54, y: -0.01 }, { x: -0.15, y: -0.02 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.13, y: 0 }, { x: -0.13, y: -0.13 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.13, y: 0.13 }, { x: 0.13, y: 0 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.13, y: -0.13 }, { x: -0.13, y: 0.13 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.13, y: 0.13 }, { x: 0.13, y: -0.13 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.14, y: 0 }, { x: 0.54, y: -0.01 }], color: "primary", fill: false }, "path25-0": { type: "path", points: [{ x: 0.2, y: 0.38 }, { x: 0.16, y: 0.28 }, { x: 0.26, y: 0.3 }], color: "primary", fill: true }, "path78-6": { type: "path", points: [{ x: 0.33, y: 0.43 }, { x: 0.32, y: 0.42 }, { x: 0.21, y: 0.31 }, { x: 0.21, y: 0.31 }], color: "primary", fill: false }, "path25-0-9": { type: "path", points: [{ x: 0.35, y: 0.35 }, { x: 0.31, y: 0.26 }, { x: 0.41, y: 0.27 }], color: "primary", fill: true }, "path78-6-5": { type: "path", points: [{ x: 0.48, y: 0.4 }, { x: 0.47, y: 0.39 }, { x: 0.35, y: 0.29 }, { x: 0.35, y: 0.29 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.1, y: 0.35 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.43 } }, refblocks: { left1: { x: -0.54, y: -0.01 }, right1: { x: 0.54, y: -0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.43, maxY: 0.43, width: 1.14, height: 0.85, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var b0 = e(nm).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var fm = r(b0);
+var V2 = fm.primitives.filter((t) => t.type === "text");
+var cm = V2.find((t) => t.text === "{REF}");
+cm.y = 0;
+cm.anchor = "middle_left";
+var hm = fm;
+var dm = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, path40: { type: "path", points: [{ x: 0.07, y: 0.19 }, { x: 0.07, y: -0.18 }], color: "primary", fill: false }, "path12-1": { type: "path", points: [{ x: 0.28, y: 0.55 }, { x: 0.28, y: 0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.11 }, { x: 0.29, y: 0.11 }], color: "primary", fill: false }, "path2-5": { type: "path", points: [{ x: 0.07, y: -0.1 }, { x: 0.29, y: -0.1 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.01, y: -0.07 }, { x: 0.01, y: 0.06 }, { x: -0.08, y: 0 }, { x: 0.01, y: -0.07 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.15, y: 0.36 }, bottom1: { type: "text", text: "{VAL}", x: 0.04, y: -0.42 } }, refblocks: { top1: { x: 0.28, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
+var { paths: k2, texts: bm, bounds: _0, refblocks: xi, circles: z2 } = dm;
+var g0 = x({ primitives: [...Object.values(k2), ...Object.values(z2), { ...bm.top1, anchor: "middle_right", x: 0 }, { ...bm.bottom1, anchor: "middle_right" }], ports: [{ ...xi.top1, labels: ["1", "drain"] }, { ...xi.bottom1, labels: ["2", "source"] }, { ...xi.left1, labels: ["3", "gate"] }], size: { width: _0.width, height: _0.height }, center: { x: _0.centerX, y: _0.centerY } });
+var _m = r(g0);
+var gm = _m.primitives.filter((t) => t.type === "text");
+var si = gm.find((t) => t.text === "{VAL}");
+si.x = -0.35;
+si.y = 0;
+si.anchor = "middle_right";
+var mi = gm.find((t) => t.text === "{REF}");
+mi.y = 0;
+mi.x = 0.35;
+mi.anchor = "middle_left";
+var um = _m;
 var u = { paths: { path11: { type: "path", points: [{ x: -0.4, y: 0 }, { x: 0.06, y: -0.01 }], color: "primary", fill: false }, "path40-0": { type: "path", points: [{ x: 0.07, y: 0.27 }, { x: 0.07, y: -0.28 }], color: "primary", fill: false }, "path40-0-5": { type: "path", points: [{ x: 0.28, y: 0.24 }, { x: 0.08, y: 0.11 }], color: "primary", fill: false }, "path40-0-5-0": { type: "path", points: [{ x: 0.29, y: -0.24 }, { x: 0.09, y: -0.11 }], color: "primary", fill: false }, "path12-1-5": { type: "path", points: [{ x: 0.29, y: 0.25 }, { x: 0.29, y: 0.55 }], color: "primary", fill: false }, "path12-1-5-3": { type: "path", points: [{ x: 0.29, y: -0.55 }, { x: 0.29, y: -0.25 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0.15, y: -0.23 }, { x: 0.22, y: -0.12 }, { x: 0.12, y: -0.12 }, { x: 0.15, y: -0.23 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.08, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: -0.07, y: -0.41 } }, refblocks: { top1: { x: 0.29, y: 0.55 }, bottom1: { x: 0.29, y: -0.55 }, left1: { x: -0.4, y: 0 } }, bounds: { minX: -0.43, maxX: 0.43, minY: -0.58, maxY: 0.58, width: 0.85, height: 1.16, centerX: 0, centerY: 0 }, circles: { "path1-0": { type: "circle", x: 0.14, y: 0, radius: 0.29, color: "primary", fill: false } } };
-var { paths: g2, texts: US, bounds: g0, refblocks: si, circles: u2 } = u;
-var am = e({ primitives: [...Object.values(g2), ...Object.values(u2), { type: "text", text: "{REF}", x: -0.1, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: -0.3094553499999995 }], ports: [{ ...si.top1, labels: ["1", "collector"] }, { ...si.bottom1, labels: ["2", "emitter"] }, { ...si.left1, labels: ["3", "base"] }], size: { width: g0.width, height: g0.height }, center: { x: g0.centerX, y: g0.centerY } }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
-var ym = e(u).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["3", "base"]).labelPort("top1", ["1", "collector"]).labelPort("bottom1", ["2", "emitter"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: v2, texts: pR, bounds: u0, refblocks: mi, circles: w2 } = u;
-var xm = e({ primitives: [...Object.values(v2), ...Object.values(w2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...mi.top1, labels: ["1", "collector"] }, { ...mi.bottom1, labels: ["2", "emitter"] }, { ...mi.left1, labels: ["3", "base"] }], size: { width: u0.width, height: u0.height }, center: { x: u0.centerX, y: u0.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
-var { paths: A2, texts: sR, bounds: v0, refblocks: ni, circles: P2 } = u;
-var sm = e({ primitives: [...Object.values(A2), ...Object.values(P2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ni.top1, labels: ["1", "collector"] }, { ...ni.bottom1, labels: ["2", "emitter"] }, { ...ni.left1, labels: ["3", "base"] }], size: { width: v0.width, height: v0.height }, center: { x: v0.centerX, y: v0.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: S2, texts: cR, bounds: w0, refblocks: fi, circles: R2 } = u;
-var mm = e({ primitives: [...Object.values(S2), ...Object.values(R2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...fi.top1, labels: ["1", "collector"] }, { ...fi.bottom1, labels: ["2", "emitter"] }, { ...fi.left1, labels: ["3", "base"] }], size: { width: w0.width, height: w0.height }, center: { x: w0.centerX, y: w0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: F2, texts: _R, bounds: A0, refblocks: ci, circles: T2 } = u;
-var nm = e({ primitives: [...Object.values(F2), ...Object.values(T2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ci.top1, labels: ["1", "collector"] }, { ...ci.bottom1, labels: ["2", "emitter"] }, { ...ci.left1, labels: ["3", "base"] }], size: { width: A0.width, height: A0.height }, center: { x: A0.centerX, y: A0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var fm = { paths: { path40: { type: "path", points: [{ x: -0.19, y: 0.33 }, { x: -0.26, y: 0.14 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.38, y: 0.26 }, { x: -0.19, y: 0.33 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.26, y: 0.14 }, { x: -0.38, y: 0.26 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.26, y: 0.39 }, { x: -0.13, y: 0.26 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.2 }, { x: -0.52, y: 0 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: 0.52 }, { x: -0.19, y: 0.33 }], color: "primary", fill: false }, "path40-4": { type: "path", points: [{ x: -0.19, y: -0.32 }, { x: -0.38, y: -0.26 }], color: "primary", fill: false }, "path41-1": { type: "path", points: [{ x: -0.26, y: -0.13 }, { x: -0.19, y: -0.32 }], color: "primary", fill: false }, "path42-7": { type: "path", points: [{ x: -0.38, y: -0.26 }, { x: -0.26, y: -0.13 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: -0.13, y: -0.26 }, { x: -0.26, y: -0.39 }], color: "primary", fill: false }, "path44-8": { type: "path", points: [{ x: -0.32, y: -0.19 }, { x: -0.51, y: -0.01 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: -0.01, y: -0.5 }, { x: -0.19, y: -0.32 }], color: "primary", fill: false }, "path40-4-0": { type: "path", points: [{ x: 0.32, y: 0.19 }, { x: 0.13, y: 0.26 }], color: "primary", fill: false }, "path41-1-2": { type: "path", points: [{ x: 0.26, y: 0.38 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path42-7-1": { type: "path", points: [{ x: 0.13, y: 0.26 }, { x: 0.26, y: 0.38 }], color: "primary", fill: false }, "path43-1-8": { type: "path", points: [{ x: 0.39, y: 0.26 }, { x: 0.26, y: 0.13 }], color: "primary", fill: false }, "path44-8-7": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.01, y: 0.51 }], color: "primary", fill: false }, "path44-0-7-1": { type: "path", points: [{ x: 0.52, y: 0 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path40-4-8": { type: "path", points: [{ x: 0.32, y: -0.19 }, { x: 0.26, y: -0.38 }], color: "primary", fill: false }, "path41-1-4": { type: "path", points: [{ x: 0.13, y: -0.26 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path42-7-0": { type: "path", points: [{ x: 0.26, y: -0.38 }, { x: 0.13, y: -0.26 }], color: "primary", fill: false }, "path43-1-0": { type: "path", points: [{ x: 0.26, y: -0.13 }, { x: 0.39, y: -0.26 }], color: "primary", fill: false }, "path44-8-9": { type: "path", points: [{ x: 0.19, y: -0.32 }, { x: 0, y: -0.52 }], color: "primary", fill: false }, "path44-0-7-3": { type: "path", points: [{ x: 0.5, y: -0.01 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.29, y: 0.46 }, bottom1: { type: "text", text: "{VAL}", x: -0.29, y: -0.5 } }, refblocks: { top1: { x: 0, y: 0.52 }, bottom1: { x: 0, y: -0.52 }, left1: { x: -0.52, y: 0 }, right1: { x: 0.52, y: 0 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.55, maxY: 0.55, width: 1.09, height: 1.09, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Y2, texts: cm, bounds: P0, refblocks: hm } = fm;
-var S0 = s({ primitives: [...Object.values(Y2), { ...cm.bottom1, y: 0.35, anchor: "middle_top" }, { ...cm.top1, anchor: "middle_left" }], ports: [{ ...hm.left1, labels: ["1"] }, { ...hm.right1, labels: ["2"] }], size: { width: P0.width + 0.05, height: P0.height }, center: { x: P0.centerX, y: P0.centerY } });
-var X2 = r(S0);
-var dm = X2;
-var bm = { paths: { path18: { type: "path", points: [{ x: -0.53, y: 0 }, { x: -0.27, y: 0 }], color: "primary", fill: false }, path19: { type: "path", points: [{ x: 0.26, y: 0 }, { x: 0.53, y: 0 }], color: "primary", fill: false }, path20: { type: "path", points: [{ x: 0, y: 0.13 }, { x: 0.26, y: 0.13 }, { x: 0.26, y: -0.13 }, { x: -0.27, y: -0.13 }, { x: -0.27, y: 0.13 }, { x: 0, y: 0.13 }], color: "primary", fill: false }, path23: { type: "path", points: [{ x: 0.28, y: -0.28 }, { x: 0.18, y: -0.25 }, { x: 0.25, y: -0.18 }], color: "primary", fill: true }, path24: { type: "path", points: [{ x: 0.29, y: -0.29 }, { x: 0.25, y: -0.17 }, { x: 0.16, y: -0.26 }], color: "primary", fill: true }, path26: { type: "path", points: [{ x: -0.3, y: 0.29 }, { x: 0.23, y: -0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.06, y: 0.2 }, bottom1: { type: "text", text: "{VAL}", x: -0.1, y: -0.28 } }, refblocks: { left1: { x: -0.53, y: 0 }, right1: { x: 0.53, y: 0 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.29, maxY: 0.29, width: 1.13, height: 0.58, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: V2, texts: _m, bounds: R0, refblocks: gm } = bm;
-var Z = s({ primitives: [...Object.values(V2), { ..._m.bottom1, x: 0, y: -0.35, anchor: "middle_top" }, { ..._m.top1, x: 0, y: 0.35, anchor: "middle_bottom" }], ports: [{ ...gm.left1, labels: ["1"] }, { ...gm.right1, labels: ["2"] }], size: { width: R0.width + 0.05, height: R0.height }, center: { x: R0.centerX, y: R0.centerY } });
-var hi = r(Z, "down");
-var di = hi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var bi = hi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-di.anchor = "middle_left";
-bi.anchor = "middle_left";
-di.y += 0.31;
-di.x = 0.34;
-bi.y -= 0.31;
-bi.x = 0.34;
-var um = hi;
-var _i = r(Z, "left");
-var gi = _i.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var ui = _i.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-gi.anchor = "middle_bottom";
-ui.anchor = "middle_top";
-gi.y += 0.73;
-gi.x = 0;
-ui.y -= 0.7;
-ui.x = 0;
-var vm = _i;
-var vi = r(Z, "up");
-var wi = vi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Ai = vi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-wi.anchor = "middle_left";
-Ai.anchor = "middle_left";
-wi.y += 0.21;
-wi.x = 0.34;
-Ai.y -= 0.21;
-Ai.x = 0.34;
-var wm = vi;
-var Q = { paths: { path1: { type: "path", points: [{ x: -0.42, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, "path1-2-1": { type: "path", points: [{ x: -0.3, y: 0 }, { x: -0.25, y: 0.1 }, { x: -0.15, y: -0.1 }, { x: -0.05, y: 0.1 }, { x: 0.05, y: -0.1 }, { x: 0.15, y: 0.1 }, { x: 0.25, y: -0.1 }, { x: 0.3, y: 0 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.3, y: 0 }, { x: 0.42, y: 0 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0, y: -0.17 }, { x: 0, y: -0.4 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0, y: -0.12 }, { x: 0.05, y: -0.2 }, { x: -0.05, y: -0.2 }, { x: 0, y: -0.12 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.3, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0.3, y: -0.25 } }, refblocks: { left: { x: -0.42, y: 0 }, right: { x: 0.42, y: 0 }, bottom: { x: 0, y: -0.4 } }, bounds: { minX: -0.42, maxX: 0.42, minY: -0.2, maxY: 0.2, width: 0.84, height: 0.4, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: k2, texts: IR, bounds: F0, refblocks: Pi, circles: z2 } = Q;
-var Am = e({ primitives: [...Object.values(k2), ...Object.values(z2), { type: "text", text: "{REF}", x: -0.15, y: 0.2394553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.2394553499999995 }], ports: [{ ...Pi.left, labels: ["1"] }, { ...Pi.right, labels: ["3"] }, { ...Pi.bottom, labels: ["2"] }], size: { width: F0.width, height: F0.height }, center: { x: F0.centerX, y: F0.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: O2, texts: GR, bounds: T0, refblocks: Si, circles: J2 } = Q;
-var Pm = e({ primitives: [...Object.values(O2), ...Object.values(J2), { type: "text", text: "{REF}", x: -0.3, y: -0.3894553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: 0.3194553499999995 }], ports: [{ ...Si.left, labels: ["1"] }, { ...Si.right, labels: ["3"] }, { ...Si.bottom, labels: ["2"] }], size: { width: T0.width, height: T0.height }, center: { x: T0.centerX, y: T0.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var Sm = e(Q).labelPort("left", ["1"]).labelPort("right", ["3"]).labelPort("bottom", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: $2, texts: tF, bounds: E0, refblocks: Ri, circles: M2 } = Q;
-var Rm = e({ primitives: [...Object.values($2), ...Object.values(M2), { type: "text", text: "{REF}", x: 0.3, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: -0.2894553499999995 }], ports: [{ ...Ri.left, labels: ["1"] }, { ...Ri.right, labels: ["3"] }, { ...Ri.bottom, labels: ["2"] }], size: { width: E0.width, height: E0.height }, center: { x: E0.centerX, y: E0.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var Fm = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.03 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.03 }, { x: 0.54, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.16, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.4 }, left1: { type: "text", text: "COS φ", x: -0.15, y: 0.01 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.03 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.79, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
-var { paths: N2, texts: lF, bounds: Y0, refblocks: Tm, circles: I2 } = Fm;
-var X0 = s({ primitives: [...Object.values(N2), ...Object.values(I2), { type: "text", text: "{REF}", x: -0.15, y: -0.42330070000000064, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: -0.15, y: 0.42330070000000064, anchor: "middle_bottom" }, { type: "text", text: "COS φ", x: 0, y: 0.014279000000000375, anchor: "center" }], ports: [{ ...Tm.left1, labels: ["1"] }, { ...Tm.right1, labels: ["2"] }], size: { width: Y0.width, height: Y0.height }, center: { x: Y0.centerX, y: Y0.centerY } });
-var Em = r(X0);
-var Fi = Em.primitives.filter((t) => t.type === "text");
-var Ti = Fi.find((t) => t.text === "{REF}");
-var Ei = Fi.find((t) => t.text === "{VAL}");
-var Yi = Fi.find((t) => t.text === "COS φ");
-Ti.x = 0.35;
-Ti.y = 0;
-Ti.anchor = "middle_left";
-Ei.anchor = "middle_right";
-Ei.x = -0.35;
-Ei.y = 0;
-Yi.x = 0;
+var { paths: J2, texts: hR, bounds: u0, refblocks: ni, circles: $2 } = u;
+var vm = e({ primitives: [...Object.values(J2), ...Object.values($2), { type: "text", text: "{REF}", x: -0.1, y: 0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: -0.3094553499999995 }], ports: [{ ...ni.top1, labels: ["1", "collector"] }, { ...ni.bottom1, labels: ["2", "emitter"] }, { ...ni.left1, labels: ["3", "base"] }], size: { width: u0.width, height: u0.height }, center: { x: u0.centerX, y: u0.centerY } }).rotateRightFacingSymbol("right").changeTextAnchor("{REF}", "middle_right").changeTextAnchor("{VAL}", "middle_right").build();
+var wm = e(u).rotateRightFacingSymbol("up").changeTextAnchor("{VAL}", "middle_left").labelPort("left1", ["3", "base"]).labelPort("top1", ["1", "collector"]).labelPort("bottom1", ["2", "emitter"]).changeTextAnchor("{REF}", "middle_right").build();
+var { paths: M2, texts: FR, bounds: v0, refblocks: fi, circles: C2 } = u;
+var Am = e({ primitives: [...Object.values(M2), ...Object.values(C2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...fi.top1, labels: ["1", "collector"] }, { ...fi.bottom1, labels: ["2", "emitter"] }, { ...fi.left1, labels: ["3", "base"] }], size: { width: v0.width, height: v0.height }, center: { x: v0.centerX, y: v0.centerY } }).rotateRightFacingSymbol("down").changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_bottom").build();
+var { paths: N2, texts: XR, bounds: w0, refblocks: ci, circles: I2 } = u;
+var Pm = e({ primitives: [...Object.values(N2), ...Object.values(I2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...ci.top1, labels: ["1", "collector"] }, { ...ci.bottom1, labels: ["2", "emitter"] }, { ...ci.left1, labels: ["3", "base"] }], size: { width: w0.width, height: w0.height }, center: { x: w0.centerX, y: w0.centerY } }).rotateRightFacingSymbol("up").changeTextAnchor("{REF}", "middle_top").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: B2, texts: kR, bounds: A0, refblocks: hi, circles: q2 } = u;
+var Sm = e({ primitives: [...Object.values(B2), ...Object.values(q2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...hi.top1, labels: ["1", "collector"] }, { ...hi.bottom1, labels: ["2", "emitter"] }, { ...hi.left1, labels: ["3", "base"] }], size: { width: A0.width, height: A0.height }, center: { x: A0.centerX, y: A0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: D2, texts: $R, bounds: P0, refblocks: di, circles: G2 } = u;
+var Rm = e({ primitives: [...Object.values(D2), ...Object.values(G2), { type: "text", text: "{REF}", x: -0.1, y: -0.3094553499999995 }, { type: "text", text: "{VAL}", x: -0.1, y: 0.3094553499999995 }], ports: [{ ...di.top1, labels: ["1", "collector"] }, { ...di.bottom1, labels: ["2", "emitter"] }, { ...di.left1, labels: ["3", "base"] }], size: { width: P0.width, height: P0.height }, center: { x: P0.centerX, y: P0.centerY } }).rotateRightFacingSymbol("left").changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Fm = { paths: { path40: { type: "path", points: [{ x: -0.19, y: 0.33 }, { x: -0.26, y: 0.14 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.38, y: 0.26 }, { x: -0.19, y: 0.33 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.26, y: 0.14 }, { x: -0.38, y: 0.26 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.26, y: 0.39 }, { x: -0.13, y: 0.26 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: 0.2 }, { x: -0.52, y: 0 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: 0.52 }, { x: -0.19, y: 0.33 }], color: "primary", fill: false }, "path40-4": { type: "path", points: [{ x: -0.19, y: -0.32 }, { x: -0.38, y: -0.26 }], color: "primary", fill: false }, "path41-1": { type: "path", points: [{ x: -0.26, y: -0.13 }, { x: -0.19, y: -0.32 }], color: "primary", fill: false }, "path42-7": { type: "path", points: [{ x: -0.38, y: -0.26 }, { x: -0.26, y: -0.13 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: -0.13, y: -0.26 }, { x: -0.26, y: -0.39 }], color: "primary", fill: false }, "path44-8": { type: "path", points: [{ x: -0.32, y: -0.19 }, { x: -0.51, y: -0.01 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: -0.01, y: -0.5 }, { x: -0.19, y: -0.32 }], color: "primary", fill: false }, "path40-4-0": { type: "path", points: [{ x: 0.32, y: 0.19 }, { x: 0.13, y: 0.26 }], color: "primary", fill: false }, "path41-1-2": { type: "path", points: [{ x: 0.26, y: 0.38 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path42-7-1": { type: "path", points: [{ x: 0.13, y: 0.26 }, { x: 0.26, y: 0.38 }], color: "primary", fill: false }, "path43-1-8": { type: "path", points: [{ x: 0.39, y: 0.26 }, { x: 0.26, y: 0.13 }], color: "primary", fill: false }, "path44-8-7": { type: "path", points: [{ x: 0.2, y: 0.32 }, { x: 0.01, y: 0.51 }], color: "primary", fill: false }, "path44-0-7-1": { type: "path", points: [{ x: 0.52, y: 0 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path40-4-8": { type: "path", points: [{ x: 0.32, y: -0.19 }, { x: 0.26, y: -0.38 }], color: "primary", fill: false }, "path41-1-4": { type: "path", points: [{ x: 0.13, y: -0.26 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path42-7-0": { type: "path", points: [{ x: 0.26, y: -0.38 }, { x: 0.13, y: -0.26 }], color: "primary", fill: false }, "path43-1-0": { type: "path", points: [{ x: 0.26, y: -0.13 }, { x: 0.39, y: -0.26 }], color: "primary", fill: false }, "path44-8-9": { type: "path", points: [{ x: 0.19, y: -0.32 }, { x: 0, y: -0.52 }], color: "primary", fill: false }, "path44-0-7-3": { type: "path", points: [{ x: 0.5, y: -0.01 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.29, y: 0.46 }, bottom1: { type: "text", text: "{VAL}", x: -0.29, y: -0.5 } }, refblocks: { top1: { x: 0, y: 0.52 }, bottom1: { x: 0, y: -0.52 }, left1: { x: -0.52, y: 0 }, right1: { x: 0.52, y: 0 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.55, maxY: 0.55, width: 1.09, height: 1.09, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: W2, texts: Tm, bounds: S0, refblocks: Em } = Fm;
+var R0 = x({ primitives: [...Object.values(W2), { ...Tm.bottom1, y: 0.35, anchor: "middle_top" }, { ...Tm.top1, anchor: "middle_left" }], ports: [{ ...Em.left1, labels: ["1"] }, { ...Em.right1, labels: ["2"] }], size: { width: S0.width + 0.05, height: S0.height }, center: { x: S0.centerX, y: S0.centerY } });
+var H2 = r(R0);
+var Ym = H2;
+var Xm = { paths: { path18: { type: "path", points: [{ x: -0.53, y: 0 }, { x: -0.27, y: 0 }], color: "primary", fill: false }, path19: { type: "path", points: [{ x: 0.26, y: 0 }, { x: 0.53, y: 0 }], color: "primary", fill: false }, path20: { type: "path", points: [{ x: 0, y: 0.13 }, { x: 0.26, y: 0.13 }, { x: 0.26, y: -0.13 }, { x: -0.27, y: -0.13 }, { x: -0.27, y: 0.13 }, { x: 0, y: 0.13 }], color: "primary", fill: false }, path24: { type: "path", points: [{ x: 0.29, y: -0.29 }, { x: 0.26, y: -0.16 }, { x: 0.16, y: -0.26 }, { x: 0.29, y: -0.29 }], color: "primary", fill: true }, path26: { type: "path", points: [{ x: -0.3, y: 0.29 }, { x: 0.2, y: -0.2 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.06, y: 0.2 }, bottom1: { type: "text", text: "{VAL}", x: -0.1, y: -0.28 } }, refblocks: { left1: { x: -0.53, y: 0 }, right1: { x: 0.53, y: 0 } }, bounds: { minX: -0.56, maxX: 0.56, minY: -0.29, maxY: 0.29, width: 1.13, height: 0.58, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Q2, texts: Lm, bounds: F0, refblocks: Vm } = Xm;
+var Q = x({ primitives: [...Object.values(Q2), { ...Lm.bottom1, x: 0, y: -0.35, anchor: "middle_top" }, { ...Lm.top1, x: 0, y: 0.35, anchor: "middle_bottom" }], ports: [{ ...Vm.left1, labels: ["1"] }, { ...Vm.right1, labels: ["2"] }], size: { width: F0.width + 0.05, height: F0.height }, center: { x: F0.centerX, y: F0.centerY } });
+var bi = r(Q, "down");
+var _i = bi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var gi = bi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+_i.anchor = "middle_left";
+gi.anchor = "middle_left";
+_i.y += 0.31;
+_i.x = 0.34;
+gi.y -= 0.31;
+gi.x = 0.34;
+var jm = bi;
+var ui = r(Q, "left");
+var vi = ui.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var wi = ui.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+vi.anchor = "middle_bottom";
+wi.anchor = "middle_top";
+vi.y += 0.73;
+vi.x = 0;
+wi.y -= 0.7;
+wi.x = 0;
+var km = ui;
+var Ai = r(Q, "up");
+var Pi = Ai.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Si = Ai.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Pi.anchor = "middle_left";
+Si.anchor = "middle_left";
+Pi.y += 0.21;
+Pi.x = 0.34;
+Si.y -= 0.21;
+Si.x = 0.34;
+var zm = Ai;
+var K = { paths: { path1: { type: "path", points: [{ x: -0.42, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, "path1-2-1": { type: "path", points: [{ x: -0.3, y: 0 }, { x: -0.25, y: 0.1 }, { x: -0.15, y: -0.1 }, { x: -0.05, y: 0.1 }, { x: 0.05, y: -0.1 }, { x: 0.15, y: 0.1 }, { x: 0.25, y: -0.1 }, { x: 0.3, y: 0 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.3, y: 0 }, { x: 0.42, y: 0 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0, y: -0.17 }, { x: 0, y: -0.4 }], color: "primary", fill: false }, path15: { type: "path", points: [{ x: 0, y: -0.12 }, { x: 0.05, y: -0.2 }, { x: -0.05, y: -0.2 }, { x: 0, y: -0.12 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: 0.3, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0.3, y: -0.25 } }, refblocks: { left: { x: -0.42, y: 0 }, right: { x: 0.42, y: 0 }, bottom: { x: 0, y: -0.4 } }, bounds: { minX: -0.42, maxX: 0.42, minY: -0.2, maxY: 0.2, width: 0.84, height: 0.4, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: t9, texts: sF, bounds: T0, refblocks: Ri, circles: e9 } = K;
+var Om = e({ primitives: [...Object.values(t9), ...Object.values(e9), { type: "text", text: "{REF}", x: -0.15, y: 0.2394553499999995 }, { type: "text", text: "{VAL}", x: 0.15, y: 0.2394553499999995 }], ports: [{ ...Ri.left, labels: ["1"] }, { ...Ri.right, labels: ["3"] }, { ...Ri.bottom, labels: ["2"] }], size: { width: T0.width, height: T0.height }, center: { x: T0.centerX, y: T0.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: r9, texts: cF, bounds: E0, refblocks: Fi, circles: o9 } = K;
+var Jm = e({ primitives: [...Object.values(r9), ...Object.values(o9), { type: "text", text: "{REF}", x: -0.3, y: -0.3894553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: 0.3194553499999995 }], ports: [{ ...Fi.left, labels: ["1"] }, { ...Fi.right, labels: ["3"] }, { ...Fi.bottom, labels: ["2"] }], size: { width: E0.width, height: E0.height }, center: { x: E0.centerX, y: E0.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var $m = e(K).labelPort("left", ["1"]).labelPort("right", ["3"]).labelPort("bottom", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: i9, texts: vF, bounds: Y0, refblocks: Ti, circles: l9 } = K;
+var Mm = e({ primitives: [...Object.values(i9), ...Object.values(l9), { type: "text", text: "{REF}", x: 0.3, y: -0.2894553499999995 }, { type: "text", text: "{VAL}", x: -0.3, y: -0.2894553499999995 }], ports: [{ ...Ti.left, labels: ["1"] }, { ...Ti.right, labels: ["3"] }, { ...Ti.bottom, labels: ["2"] }], size: { width: Y0.width, height: Y0.height }, center: { x: Y0.centerX, y: Y0.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).labelPort("bottom", ["3"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var Cm = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.03 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.03 }, { x: 0.54, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.16, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.4 }, left1: { type: "text", text: "COS φ", x: -0.15, y: 0.01 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.03 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.79, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
+var { paths: a9, texts: RF, bounds: X0, refblocks: Nm, circles: y9 } = Cm;
+var L0 = x({ primitives: [...Object.values(a9), ...Object.values(y9), { type: "text", text: "{REF}", x: -0.15, y: -0.42330070000000064, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: -0.15, y: 0.42330070000000064, anchor: "middle_bottom" }, { type: "text", text: "COS φ", x: 0, y: 0.014279000000000375, anchor: "center" }], ports: [{ ...Nm.left1, labels: ["1"] }, { ...Nm.right1, labels: ["2"] }], size: { width: X0.width, height: X0.height }, center: { x: X0.centerX, y: X0.centerY } });
+var Im = r(L0);
+var Ei = Im.primitives.filter((t) => t.type === "text");
+var Yi = Ei.find((t) => t.text === "{REF}");
+var Xi = Ei.find((t) => t.text === "{VAL}");
+var Li = Ei.find((t) => t.text === "COS φ");
+Yi.x = 0.35;
 Yi.y = 0;
-Yi.anchor = "center";
-var Ym = Em;
-var Xm = { paths: { "path12-1-8-6-9-9": { type: "path", points: [{ x: 0.01, y: 0.03 }, { x: 0.01, y: -0.09 }], color: "primary", fill: false }, "path12-1-5-6-4": { type: "path", points: [{ x: -0.47, y: -0.05 }, { x: -0.17, y: -0.05 }], color: "primary", fill: false }, "path12-1-8-0-0": { type: "path", points: [{ x: -0.16, y: -0.09 }, { x: 0.18, y: -0.09 }], color: "primary", fill: false }, "path12-1-0-1": { type: "path", points: [{ x: 0.2, y: -0.05 }, { x: 0.47, y: -0.05 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.22 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.22 } }, refblocks: { left1: { x: -0.47, y: -0.05 }, right1: { x: 0.47, y: -0.05 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.22, maxY: 0.22, width: 1, height: 0.45, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: -0.14, y: -0.05, radius: 0.02, color: "primary", fill: false }, circle: { type: "circle", x: 0.17, y: -0.05, radius: 0.02, color: "primary", fill: false } } };
-var { paths: q2, texts: Lm, bounds: L0, refblocks: Vm, circles: D2 } = Xm;
-var V0 = s({ primitives: [...Object.values(q2), ...Object.values(D2), { ...Lm.top1, anchor: "middle_left" }, { ...Lm.bottom1, anchor: "middle_left" }], ports: [{ ...Vm.left1, labels: ["1"] }, { ...Vm.right1, labels: ["2"] }], size: { width: L0.width, height: L0.height }, center: { x: L0.centerX, y: L0.centerY } });
-var jm = r(V0, "up");
-var km = { paths: { "path12-1-8-6-9-9": { type: "path", points: [{ x: -0.05, y: 0.09 }, { x: -0.05, y: 0.04 }], color: "primary", fill: false }, "path12-1-8-7-9-9": { type: "path", points: [{ x: -0.05, y: 0.09 }, { x: 0.07, y: 0.09 }], color: "primary", fill: false }, "path12-1-8-6-9-10": { type: "path", points: [{ x: 0.07, y: 0.09 }, { x: 0.07, y: 0.04 }], color: "primary", fill: false }, "path12-1-5-6-4": { type: "path", points: [{ x: -0.47, y: -0.05 }, { x: -0.17, y: -0.05 }], color: "primary", fill: false }, "path12-1-8-0-0": { type: "path", points: [{ x: -0.16, y: 0.04 }, { x: 0.18, y: 0.04 }], color: "primary", fill: false }, "path12-1-0-1": { type: "path", points: [{ x: 0.2, y: -0.05 }, { x: 0.47, y: -0.05 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.29 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.22 } }, refblocks: { left1: { x: -0.47, y: -0.05 }, right1: { x: 0.47, y: -0.05 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.22, maxY: 0.22, width: 1, height: 0.45, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: -0.14, y: -0.05, radius: 0.02, color: "primary", fill: false }, circle: { type: "circle", x: 0.17, y: -0.05, radius: 0.02, color: "primary", fill: false } } };
-var { paths: U2, texts: zm, bounds: j0, refblocks: Om, circles: W2 } = km;
-var k0 = s({ primitives: [...Object.values(U2), ...Object.values(W2), { ...zm.top1, anchor: "middle_left" }, { ...zm.bottom1, anchor: "middle_left" }], ports: [{ ...Om.left1, labels: ["1"] }, { ...Om.right1, labels: ["2"] }], size: { width: j0.width, height: j0.height }, center: { x: j0.centerX, y: j0.centerY } });
-var Jm = r(k0, "up");
-var K = { paths: { path12_rotated: { type: "path", points: [{ x: -0.09, y: 0.12 }, { x: -0.09, y: -0.12 }], color: "primary", fill: false }, path2_rotated: { type: "path", points: [{ x: -0.09, y: 0 }, { x: 0.09, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.03 } }, refblocks: { left1: { x: 0.09, y: 0 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.37, maxY: 0.37, width: 1.14, height: 0.74, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Z2, texts: FF, bounds: $m, refblocks: Q2, circles: K2 } = K;
-var Mm = e({ primitives: [...Object.values(Z2), ...Object.values(K2), { type: "text", text: "{REF}", x: -0.14, y: -0 }], ports: [{ ...Q2.left1, labels: ["1"] }], center: { x: $m.centerX, y: $m.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
-var { paths: t9, texts: XF, bounds: Cm, refblocks: e9, circles: r9 } = K;
-var Nm = e({ primitives: [...Object.values(t9), ...Object.values(r9), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...e9.left1, labels: ["1"] }], center: { x: Cm.centerX, y: Cm.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var { paths: o9, texts: kF, bounds: Im, refblocks: i9, circles: l9 } = K;
-var Bm = e({ primitives: [...Object.values(o9), ...Object.values(l9), { type: "text", text: "{REF}", x: -0.14, y: -0 }], ports: [{ ...i9.left1, labels: ["1"] }], center: { x: Im.centerX, y: Im.centerY } }).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var { paths: p9, texts: $F, bounds: qm, refblocks: a9 } = K;
-var Dm = e({ primitives: [...Object.values(p9), { type: "text", text: "{REF}", x: -0.14, y: 0 }], ports: [{ ...a9.left1, labels: ["1"] }], center: { x: qm.centerX, y: qm.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Gm = { paths: { path40: { type: "path", points: [{ x: -0.19, y: -0.33 }, { x: -0.26, y: -0.14 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.38, y: -0.26 }, { x: -0.19, y: -0.33 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.26, y: -0.14 }, { x: -0.38, y: -0.26 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.26, y: -0.39 }, { x: -0.13, y: -0.26 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: -0.2 }, { x: -0.52, y: 0 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: -0.52 }, { x: -0.19, y: -0.33 }], color: "primary", fill: false }, "path40-4": { type: "path", points: [{ x: -0.19, y: 0.32 }, { x: -0.38, y: 0.26 }], color: "primary", fill: false }, "path41-1": { type: "path", points: [{ x: -0.26, y: 0.13 }, { x: -0.19, y: 0.32 }], color: "primary", fill: false }, "path42-7": { type: "path", points: [{ x: -0.38, y: 0.26 }, { x: -0.26, y: 0.13 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: -0.13, y: 0.26 }, { x: -0.26, y: 0.39 }], color: "primary", fill: false }, "path44-8": { type: "path", points: [{ x: -0.32, y: 0.19 }, { x: -0.51, y: 0.01 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: -0.01, y: 0.5 }, { x: -0.19, y: 0.32 }], color: "primary", fill: false }, "path40-4-0": { type: "path", points: [{ x: 0.32, y: -0.19 }, { x: 0.13, y: -0.26 }], color: "primary", fill: false }, "path41-1-2": { type: "path", points: [{ x: 0.26, y: -0.38 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path42-7-1": { type: "path", points: [{ x: 0.13, y: -0.26 }, { x: 0.26, y: -0.38 }], color: "primary", fill: false }, "path43-1-8": { type: "path", points: [{ x: 0.39, y: -0.26 }, { x: 0.26, y: -0.13 }], color: "primary", fill: false }, "path44-8-7": { type: "path", points: [{ x: 0.2, y: -0.32 }, { x: 0.01, y: -0.51 }], color: "primary", fill: false }, "path44-0-7-1": { type: "path", points: [{ x: 0.52, y: 0 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path40-4-8": { type: "path", points: [{ x: 0.32, y: 0.19 }, { x: 0.26, y: 0.38 }], color: "primary", fill: false }, "path41-1-4": { type: "path", points: [{ x: 0.13, y: 0.26 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path42-7-0": { type: "path", points: [{ x: 0.26, y: 0.38 }, { x: 0.13, y: 0.26 }], color: "primary", fill: false }, "path43-1-0": { type: "path", points: [{ x: 0.26, y: 0.13 }, { x: 0.39, y: 0.26 }], color: "primary", fill: false }, "path44-8-9": { type: "path", points: [{ x: 0.19, y: 0.32 }, { x: 0, y: 0.52 }], color: "primary", fill: false }, "path44-0-7-3": { type: "path", points: [{ x: 0.5, y: 0.01 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.29, y: -0.46 }, bottom1: { type: "text", text: "{VAL}", x: -0.29, y: 0.5 } }, refblocks: { top1: { x: 0, y: -0.52 }, bottom1: { x: 0, y: 0.52 }, left1: { x: -0.52, y: 0 }, right1: { x: 0.52, y: 0 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.56, maxY: 0.55, width: 1.09, height: 1.1, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: x9, texts: Um, bounds: z0, refblocks: O0, circles: s9 } = Gm;
-var J0 = s({ primitives: [...Object.values(x9), ...Object.values(s9), { ...Um.top1, anchor: "middle_right" }, { ...Um.bottom1, anchor: "middle_right" }], ports: [{ ...O0.top1, labels: ["1"] }, { ...O0.bottom1, labels: ["2"] }, { ...O0.left1, labels: ["3"] }, { ...O0.right1, labels: ["4"] }], size: { width: z0.width, height: z0.height }, center: { x: z0.centerX, y: z0.centerY } });
-var Xi = r(J0);
-var m9 = Xi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var n9 = Xi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-m9.anchor = "middle_left";
-n9.anchor = "middle_right";
-var Wm = Xi;
-var tt = { paths: { path27: { type: "path", points: [{ x: 0.47, y: 0.04 }, { x: 0.21, y: 0.04 }], color: "primary", fill: false }, "path27-0": { type: "path", points: [{ x: -0.21, y: 0.04 }, { x: -0.47, y: 0.04 }], color: "primary", fill: false }, "path27-8-2-4": { type: "path", points: [{ x: 0.21, y: 0.04 }, { x: 0.19, y: -0.05 }], color: "primary", fill: false }, "path27-8-2-4-29": { type: "path", points: [{ x: -0.19, y: 0.14 }, { x: -0.21, y: 0.04 }], color: "primary", fill: false }, "path27-8-2-4-5": { type: "path", points: [{ x: 0.19, y: -0.05 }, { x: 0.13, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1": { type: "path", points: [{ x: 0.08, y: -0.05 }, { x: 0.13, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9": { type: "path", points: [{ x: 0.08, y: -0.05 }, { x: 0.03, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2": { type: "path", points: [{ x: -0.03, y: -0.05 }, { x: 0.03, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1": { type: "path", points: [{ x: -0.03, y: -0.05 }, { x: -0.08, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1-2": { type: "path", points: [{ x: -0.13, y: -0.05 }, { x: -0.08, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1-2-2": { type: "path", points: [{ x: -0.13, y: -0.05 }, { x: -0.19, y: 0.14 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.05, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: -0.04, y: -0.42 } }, refblocks: { left1: { x: -0.47, y: 0.04 }, right1: { x: 0.47, y: 0.04 } }, bounds: { minX: -0.49, maxX: 0.49, minY: -0.42, maxY: 0.42, width: 0.99, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: c9, texts: ZF, bounds: $0, refblocks: Hm, circles: h9 } = tt;
-var Zm = e({ primitives: [...Object.values(c9), ...Object.values(h9), { type: "text", text: "{REF}", x: -0.2, y: 0.2194553499999995 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.2194553499999995 }], ports: [{ ...Hm.left1, labels: ["1"] }, { ...Hm.right1, labels: ["2"] }], size: { width: $0.width, height: $0.height }, center: { x: $0.centerX, y: $0.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var { paths: d9, texts: eT, bounds: M0, refblocks: Qm, circles: b9 } = tt;
-var Km = e({ primitives: [...Object.values(d9), ...Object.values(b9), { type: "text", text: "{REF}", x: 0, y: -0.1704553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.2294553499999995 }], ports: [{ ...Qm.left1, labels: ["1"] }, { ...Qm.right1, labels: ["2"] }], size: { width: M0.width, height: M0.height }, center: { x: M0.centerX, y: M0.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: _9, texts: lT, bounds: C0, refblocks: tn, circles: g9 } = tt;
-var en = e({ primitives: [...Object.values(_9), ...Object.values(g9), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1704553499999995 }], ports: [{ ...tn.left1, labels: ["1"] }, { ...tn.right1, labels: ["2"] }], size: { width: C0.width, height: C0.height }, center: { x: C0.centerX, y: C0.centerY } }).rotateRightFacingSymbol("right").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var { paths: u9, texts: xT, bounds: N0, refblocks: rn, circles: v9 } = tt;
-var on = e({ primitives: [...Object.values(u9), ...Object.values(v9), { type: "text", text: "{REF}", x: 0.2, y: -0.1404553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.1494553499999995 }], ports: [{ ...rn.left1, labels: ["1"] }, { ...rn.right1, labels: ["2"] }], size: { width: N0.width, height: N0.height }, center: { x: N0.centerX, y: N0.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
-var I0 = { paths: { path27: { type: "path", points: [{ x: 0.76, y: -0.28 }, { x: 0.31, y: -0.28 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.3, y: -0.02 }, { x: -0.77, y: -0.02 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.3, y: 0.35 }, { x: -0.3, y: -0.28 }], color: "primary", fill: false }, "path27-3": { type: "path", points: [{ x: 0.77, y: 0.35 }, { x: 0.32, y: 0.35 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.07, y: -0.28 }, { x: -0.3, y: -0.28 }], color: "primary", fill: false }, "path29-5-7": { type: "path", points: [{ x: 0.33, y: -0.28 }, { x: 0.11, y: -0.28 }], color: "primary", fill: false }, "path29-5-7-6": { type: "path", points: [{ x: -0.06, y: -0.17 }, { x: -0.06, y: -0.39 }], color: "primary", fill: false }, "path29-5-7-6-6": { type: "path", points: [{ x: 0.09, y: -0.17 }, { x: 0.09, y: -0.39 }], color: "primary", fill: false }, "path29-5-9": { type: "path", points: [{ x: -0.07, y: 0.35 }, { x: -0.3, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-2": { type: "path", points: [{ x: 0.33, y: 0.35 }, { x: 0.11, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-6-0": { type: "path", points: [{ x: -0.06, y: 0.46 }, { x: -0.06, y: 0.24 }], color: "primary", fill: false }, "path29-5-7-6-6-2": { type: "path", points: [{ x: 0.09, y: 0.46 }, { x: 0.09, y: 0.24 }], color: "primary", fill: false }, "path29-5-92": { type: "path", points: [{ x: 0.33, y: 0.13 }, { x: 0.33, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-28": { type: "path", points: [{ x: 0.33, y: -0.28 }, { x: 0.33, y: -0.05 }], color: "primary", fill: false }, "path29-5-7-6-9": { type: "path", points: [{ x: 0.44, y: 0.11 }, { x: 0.22, y: 0.11 }], color: "primary", fill: false }, "path29-5-7-6-6-7": { type: "path", points: [{ x: 0.44, y: -0.04 }, { x: 0.22, y: -0.04 }], color: "primary", fill: false }, "path29-5-7-6-9-2": { type: "path", points: [{ x: 0.44, y: 0.07 }, { x: 0.22, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-4": { type: "path", points: [{ x: 0.44, y: 0 }, { x: 0.44, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-4-6": { type: "path", points: [{ x: 0.22, y: 0 }, { x: 0.22, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-9": { type: "path", points: [{ x: 0.44, y: 0 }, { x: 0.22, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.02, y: 0.53 }, bottom1: { type: "text", text: "{VAL}", x: 0.01, y: -0.54 } }, refblocks: { left1: { x: -0.77, y: -0.02 }, right1: { x: 0.76, y: -0.28 }, right2: { x: 0.77, y: 0.35 } }, bounds: { minX: -0.79, maxX: 0.79, minY: -0.54, maxY: 0.54, width: 1.59, height: 1.07, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: A9, texts: ln, bounds: B0, refblocks: Li, circles: P9 } = I0;
-var et = s({ primitives: [...Object.values(A9), ...Object.values(P9), { ...ln.top1, anchor: "middle_bottom" }, { ...ln.bottom1, anchor: "middle_top" }], ports: [{ ...Li.left1, labels: ["1"] }, { ...Li.right1, labels: ["2"] }, { ...Li.right2, labels: ["3"] }], size: { width: B0.width, height: B0.height }, center: { x: B0.centerX, y: B0.centerY } });
-var Vi = r(et, "down");
+Yi.anchor = "middle_left";
+Xi.anchor = "middle_right";
+Xi.x = -0.35;
+Xi.y = 0;
+Li.x = 0;
+Li.y = 0;
+Li.anchor = "center";
+var Bm = Im;
+var qm = { paths: { "path12-1-8-6-9-9": { type: "path", points: [{ x: 0.01, y: 0.03 }, { x: 0.01, y: -0.09 }], color: "primary", fill: false }, "path12-1-5-6-4": { type: "path", points: [{ x: -0.47, y: -0.05 }, { x: -0.17, y: -0.05 }], color: "primary", fill: false }, "path12-1-8-0-0": { type: "path", points: [{ x: -0.16, y: -0.09 }, { x: 0.18, y: -0.09 }], color: "primary", fill: false }, "path12-1-0-1": { type: "path", points: [{ x: 0.2, y: -0.05 }, { x: 0.47, y: -0.05 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.22 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.22 } }, refblocks: { left1: { x: -0.47, y: -0.05 }, right1: { x: 0.47, y: -0.05 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.22, maxY: 0.22, width: 1, height: 0.45, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: -0.14, y: -0.05, radius: 0.02, color: "primary", fill: false }, circle: { type: "circle", x: 0.17, y: -0.05, radius: 0.02, color: "primary", fill: false } } };
+var { paths: s9, texts: Dm, bounds: V0, refblocks: Gm, circles: m9 } = qm;
+var j0 = x({ primitives: [...Object.values(s9), ...Object.values(m9), { ...Dm.top1, anchor: "middle_left" }, { ...Dm.bottom1, anchor: "middle_left" }], ports: [{ ...Gm.left1, labels: ["1"] }, { ...Gm.right1, labels: ["2"] }], size: { width: V0.width, height: V0.height }, center: { x: V0.centerX, y: V0.centerY } });
+var Um = r(j0, "up");
+var k0 = { paths: { "path12-1-8-6-9-9": { type: "path", points: [{ x: -0.05, y: 0.09 }, { x: -0.05, y: 0.04 }], color: "primary", fill: false }, "path12-1-8-7-9-9": { type: "path", points: [{ x: -0.05, y: 0.09 }, { x: 0.07, y: 0.09 }], color: "primary", fill: false }, "path12-1-8-6-9-10": { type: "path", points: [{ x: 0.07, y: 0.09 }, { x: 0.07, y: 0.04 }], color: "primary", fill: false }, "path12-1-5-6-4": { type: "path", points: [{ x: -0.47, y: -0.05 }, { x: -0.17, y: -0.05 }], color: "primary", fill: false }, "path12-1-8-0-0": { type: "path", points: [{ x: -0.16, y: 0.04 }, { x: 0.18, y: 0.04 }], color: "primary", fill: false }, "path12-1-0-1": { type: "path", points: [{ x: 0.2, y: -0.05 }, { x: 0.47, y: -0.05 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.29 }, bottom1: { type: "text", text: "{VAL}", x: -0.16, y: -0.22 } }, refblocks: { left1: { x: -0.47, y: -0.05 }, right1: { x: 0.47, y: -0.05 } }, bounds: { minX: -0.5, maxX: 0.5, minY: -0.22, maxY: 0.22, width: 1, height: 0.45, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: -0.14, y: -0.05, radius: 0.02, color: "primary", fill: false }, circle: { type: "circle", x: 0.17, y: -0.05, radius: 0.02, color: "primary", fill: false } } };
+var { paths: f9, texts: Wm, bounds: z0, refblocks: Hm, circles: c9 } = k0;
+var X = x({ primitives: [...Object.values(f9), ...Object.values(c9), { ...Wm.top1, x: 0, y: 0.3594553499999995, anchor: "middle_bottom" }, { ...Wm.bottom1, x: 0, y: -0.3594553499999995, anchor: "middle_top" }], ports: [{ ...Hm.left1, labels: ["1"] }, { ...Hm.right1, labels: ["2"] }], size: { width: z0.width, height: z0.height }, center: { x: z0.centerX, y: z0.centerY } });
+var Vi = r(X, "down");
 var ji = Vi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
 var ki = Vi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
 ji.anchor = "middle_bottom";
 ki.anchor = "middle_top";
-ji.y += 0.3;
-ji.x += 0.101;
-ki.y -= 0.49999;
-ki.x += 1.19999;
-var pn = Vi;
-var { paths: S9, texts: uT, bounds: q0, refblocks: zi, circles: R9 } = I0;
-var D0 = s({ primitives: [...Object.values(S9), ...Object.values(R9), { type: "text", text: "{REF}", x: 0.01596175000000022, y: -0.5308501500000009, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0.013116750000000454, y: 0.5408501499999989, anchor: "middle_bottom" }], ports: [{ ...zi.left1, labels: ["1"] }, { ...zi.right1, labels: ["2"] }, { ...zi.right2, labels: ["3"] }], size: { width: q0.width, height: q0.height }, center: { x: q0.centerX, y: q0.centerY } });
-var Oi = r(et, "left");
-var Ji = Oi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var $i = Oi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Ji.anchor = "middle_bottom";
-$i.anchor = "middle_top";
-Ji.y += 0.99;
-Ji.x -= 0;
-$i.y -= 1.10999;
-$i.x = 0;
-var an = Oi;
-var Mi = r(et, "up");
-var Ci = Mi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Ni = Mi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Ci.anchor = "middle_bottom";
-Ni.anchor = "middle_top";
-Ci.y += 0.499;
-Ci.x = 0.62;
-Ni.y -= 0.29999;
-Ni.x += 0.1;
-var yn = Mi;
-var xn = r(D0);
-var sn = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-7": { type: "path", points: [{ x: 0.21, y: 0.18 }, { x: 0.14, y: 0.18 }], color: "primary", fill: false }, "path43-7-9": { type: "path", points: [{ x: 0.21, y: 0.13 }, { x: 0.21, y: 0.18 }], color: "primary", fill: false }, "path43-7-2": { type: "path", points: [{ x: 0.08, y: -0.09 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, "path43-7-9-3": { type: "path", points: [{ x: 0.08, y: -0.04 }, { x: 0.08, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var rt = e(sn).labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{VAL}", "middle_top").changeTextAnchor("{REF}", "middle_bottom").build();
-var Ii = r(rt, "down");
-var Bi = Ii.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var qi = Ii.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ji.y = 0.4;
+ji.x = 0.35;
+ki.y = -0.4;
+ki.x = 0.35;
+var Zm = Vi;
+var { paths: h9, texts: Qm, bounds: O0, refblocks: Km, circles: d9 } = k0;
+var tn = x({ primitives: [...Object.values(h9), ...Object.values(d9), { ...Qm.top1, x: 0, y: 0.3594553499999995, anchor: "middle_bottom" }, { ...Qm.bottom1, x: 0, y: -0.3594553499999995, anchor: "middle_top" }], ports: [{ ...Km.left1, labels: ["1"] }, { ...Km.right1, labels: ["2"] }], size: { width: O0.width, height: O0.height }, center: { x: O0.centerX, y: O0.centerY } });
+var zi = r(X, "left");
+var Oi = zi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ji = zi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Oi.anchor = "middle_bottom";
+Ji.anchor = "middle_top";
+Oi.y = 0.4;
+Oi.x = 0;
+Ji.y = -0.4;
+Ji.x = 0;
+var en = zi;
+var $i = r(X, "up");
+var Mi = $i.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ci = $i.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Mi.anchor = "middle_left";
+Ci.anchor = "middle_left";
+Mi.y += 0.4;
+Mi.x = 0.34;
+Ci.y -= 0.41;
+Ci.x = 0.34;
+var rn = $i;
+var Ni = r(X, "up");
+var Ii = Ni.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Bi = Ni.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ii.anchor = "middle_left";
 Bi.anchor = "middle_left";
-qi.anchor = "middle_left";
-Bi.y += 0.3;
-Bi.x = 0.3;
-qi.y -= 0.3;
-qi.x = 0.3;
-var mn = Ii;
-var Di = r(rt, "left");
-var Gi = Di.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Ui = Di.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Gi.anchor = "middle_bottom";
-Ui.anchor = "middle_top";
-Gi.y += 0.5;
-Gi.x = 0;
-Ui.y -= 0.55;
-Ui.x = 0;
-var nn = Di;
-var Wi = r(rt, "up");
-var Hi = Wi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Zi = Wi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Hi.anchor = "middle_left";
-Zi.anchor = "middle_left";
-Hi.y += 0.3;
-Hi.x = 0.3;
-Zi.y -= 0.3;
-Zi.x = 0.3;
-var fn = Wi;
-var Qi = { paths: { path11: { type: "path", points: [{ x: -0.52, y: 0.04 }, { x: -0.18, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.19, y: 0.05 }, { x: 0.52, y: 0.05 }], color: "primary", fill: false }, "path12-6": { type: "path", points: [{ x: 0.18, y: -0.15 }, { x: 0.18, y: 0.25 }], color: "primary", fill: false }, "path12-2": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0.35, y: -0.14 }], color: "primary", fill: false }, "path12-2-9": { type: "path", points: [{ x: 0.35, y: -0.14 }, { x: 0.34, y: -0.35 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.17, y: 0.27 }, { x: -0.17, y: -0.15 }, { x: 0.18, y: 0.05 }, { x: -0.17, y: 0.27 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.22, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.11, y: -0.38 } }, refblocks: { bottom1: { x: 0.34, y: -0.35 }, left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.05 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.38, width: 1.09, height: 0.77, centerX: 0, centerY: 0 }, circles: {} };
-var G0 = e(Qi).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var cn = r(G0);
-var E9 = cn.primitives.filter((t) => t.type === "text");
-var hn = E9.find((t) => t.text === "{REF}");
-hn.y = 0;
-hn.anchor = "middle_left";
-var dn = cn;
-var ot = { paths: { path44: { type: "path", points: [{ x: -0.18, y: -0.03 }, { x: -0.45, y: -0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: -0.03 }, { x: 0.18, y: -0.02 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.07, y: -0.02 }, { x: -0.07, y: -0.02 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.1 }, { x: 0.07, y: -0.15 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.07, y: 0.1 }, { x: -0.07, y: -0.15 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.07, y: -0.15 }, { x: -0.07, y: -0.15 }, { x: -0.09, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.11, y: -0.13 }, { x: -0.13, y: -0.12 }, { x: -0.14, y: -0.11 }, { x: -0.14, y: -0.1 }, { x: -0.15, y: -0.09 }, { x: -0.16, y: -0.08 }, { x: -0.16, y: -0.07 }, { x: -0.16, y: -0.06 }, { x: -0.17, y: -0.05 }, { x: -0.17, y: -0.04 }, { x: -0.17, y: -0.03 }, { x: -0.17, y: -0.02 }, { x: -0.17, y: -0.01 }, { x: -0.16, y: 0 }, { x: -0.16, y: 0.01 }, { x: -0.16, y: 0.02 }, { x: -0.15, y: 0.03 }, { x: -0.15, y: 0.04 }, { x: -0.14, y: 0.05 }, { x: -0.14, y: 0.05 }, { x: -0.13, y: 0.06 }, { x: -0.12, y: 0.07 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.07, y: 0.1 }, { x: -0.07, y: 0.1 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.07, y: -0.15 }, { x: 0.07, y: -0.15 }, { x: 0.09, y: -0.15 }, { x: 0.1, y: -0.14 }, { x: 0.12, y: -0.13 }, { x: 0.13, y: -0.12 }, { x: 0.14, y: -0.11 }, { x: 0.14, y: -0.1 }, { x: 0.15, y: -0.09 }, { x: 0.16, y: -0.08 }, { x: 0.16, y: -0.07 }, { x: 0.17, y: -0.06 }, { x: 0.17, y: -0.05 }, { x: 0.17, y: -0.04 }, { x: 0.17, y: -0.03 }, { x: 0.17, y: -0.02 }, { x: 0.17, y: -0.01 }, { x: 0.16, y: 0 }, { x: 0.16, y: 0.01 }, { x: 0.16, y: 0.02 }, { x: 0.15, y: 0.03 }, { x: 0.15, y: 0.04 }, { x: 0.14, y: 0.05 }, { x: 0.14, y: 0.05 }, { x: 0.13, y: 0.06 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.09 }, { x: 0.09, y: 0.09 }, { x: 0.08, y: 0.1 }, { x: 0.07, y: 0.1 }, { x: 0.07, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.15 } }, refblocks: { left1: { x: -0.45, y: -0.03 }, right1: { x: 0.45, y: -0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.15, maxY: 0.15, width: 0.95, height: 0.31, centerX: 0, centerY: 0 }, circles: {} };
-var bn = e(ot).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var _n = e(ot).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_top").build();
-var gn = e(ot).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var un = e(ot).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
-var it = { paths: { path44: { type: "path", points: [{ x: -0.18, y: -0.03 }, { x: -0.45, y: -0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: -0.03 }, { x: 0.18, y: -0.02 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.1 }, { x: 0.07, y: -0.15 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.07, y: 0.1 }, { x: -0.07, y: -0.15 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.07, y: -0.15 }, { x: -0.07, y: -0.15 }, { x: -0.09, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.11, y: -0.13 }, { x: -0.13, y: -0.12 }, { x: -0.14, y: -0.11 }, { x: -0.14, y: -0.1 }, { x: -0.15, y: -0.09 }, { x: -0.16, y: -0.08 }, { x: -0.16, y: -0.07 }, { x: -0.16, y: -0.06 }, { x: -0.17, y: -0.05 }, { x: -0.17, y: -0.04 }, { x: -0.17, y: -0.03 }, { x: -0.17, y: -0.02 }, { x: -0.17, y: -0.01 }, { x: -0.16, y: 0 }, { x: -0.16, y: 0.01 }, { x: -0.16, y: 0.02 }, { x: -0.15, y: 0.03 }, { x: -0.15, y: 0.04 }, { x: -0.14, y: 0.05 }, { x: -0.14, y: 0.05 }, { x: -0.13, y: 0.06 }, { x: -0.12, y: 0.07 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.07, y: 0.1 }, { x: -0.07, y: 0.1 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.07, y: -0.15 }, { x: 0.07, y: -0.15 }, { x: 0.09, y: -0.15 }, { x: 0.1, y: -0.14 }, { x: 0.12, y: -0.13 }, { x: 0.13, y: -0.12 }, { x: 0.14, y: -0.11 }, { x: 0.14, y: -0.1 }, { x: 0.15, y: -0.09 }, { x: 0.16, y: -0.08 }, { x: 0.16, y: -0.07 }, { x: 0.17, y: -0.06 }, { x: 0.17, y: -0.05 }, { x: 0.17, y: -0.04 }, { x: 0.17, y: -0.03 }, { x: 0.17, y: -0.02 }, { x: 0.17, y: -0.01 }, { x: 0.16, y: 0 }, { x: 0.16, y: 0.01 }, { x: 0.16, y: 0.02 }, { x: 0.15, y: 0.03 }, { x: 0.15, y: 0.04 }, { x: 0.14, y: 0.05 }, { x: 0.14, y: 0.05 }, { x: 0.13, y: 0.06 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.09 }, { x: 0.09, y: 0.09 }, { x: 0.08, y: 0.1 }, { x: 0.07, y: 0.1 }, { x: 0.07, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.15 } }, refblocks: { left1: { x: -0.45, y: -0.03 }, right1: { x: 0.45, y: -0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.15, maxY: 0.15, width: 0.95, height: 0.31, centerX: 0, centerY: 0 }, circles: {} };
-var vn = e(it).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
-var wn = e(it).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_top").build();
-var An = e(it).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Pn = e(it).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
-var lt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false }, path1: { type: "path", points: [{ x: -0.05, y: 0.1 }, { x: -0.12, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
-var Sn = e(lt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
-var Rn = e(lt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
-var Fn = e(lt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Tn = e(lt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var pt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.12, y: 0.1 }, { x: 0.04, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false }, path1: { type: "path", points: [{ x: -0.05, y: 0.1 }, { x: -0.12, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
-var En = e(pt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
-var Yn = e(pt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
-var Xn = e(pt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Ln = e(pt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var at = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.12, y: 0.1 }, { x: 0.04, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
-var Vn = e(at).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
-var jn = e(at).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
-var kn = e(at).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var zn = e(at).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var yt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
-var On = e(yt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
-var Jn = e(yt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
-var $n = e(yt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Mn = e(yt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
-var Cn = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.03 }, { x: -0.13, y: 0.03 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.03 }, { x: 0.11, y: -0.03 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: -0.06 }, { x: 0.37, y: -0.06 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.17 }, { x: 0.37, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.37 } }, refblocks: { left1: { x: -0.37, y: 0.03 }, right1: { x: 0.37, y: -0.06 }, right2: { x: 0.37, y: 0.17 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.79, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-3": { type: "circle", x: 0.08, y: -0.07, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.03, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.08, y: 0.17, radius: 0.02, color: "primary", fill: false } } };
-var xt = e(Cn).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right2", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Ki = r(xt, "down");
-var tl = Ki.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var el = Ki.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-tl.anchor = "middle_bottom";
-el.anchor = "middle_top";
-tl.x = 0.44;
-tl.y += 0.28;
-el.y -= 0.28;
-el.x = 0.44;
-var Nn = Ki;
-var rl = r(xt, "left");
-var ol = rl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var il = rl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-ol.anchor = "middle_bottom";
-il.anchor = "middle_top";
-ol.x = 0;
-ol.y += 0.625;
-il.y -= 0.695;
-il.x = 0;
-var In = rl;
-var ll = r(xt, "up");
-var pl = ll.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var al = ll.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-pl.anchor = "middle_bottom";
-al.anchor = "middle_top";
-pl.x = 0.4;
-pl.y += 0.28;
-al.y -= 0.28;
-al.x = 0.4;
-var Bn = ll;
-var qn = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.03 }, { x: -0.13, y: 0.03 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.03 }, { x: 0.11, y: 0.14 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: -0.06 }, { x: 0.37, y: -0.06 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.17 }, { x: 0.37, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.4 } }, refblocks: { left1: { x: -0.37, y: 0.03 }, right1: { x: 0.37, y: -0.06 }, right3: { x: 0.37, y: 0.17 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.79, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-3": { type: "circle", x: 0.08, y: -0.07, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.03, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.08, y: 0.17, radius: 0.02, color: "primary", fill: false } } };
-var st = e(qn).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right3", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var yl = r(st, "down");
-var xl = yl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var sl = yl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-xl.anchor = "middle_bottom";
-sl.anchor = "middle_top";
-xl.x = 0.44;
-xl.y += 0.28;
-sl.y -= 0.28;
-sl.x = 0.44;
-var Dn = yl;
-var ml = r(st, "left");
-var nl = ml.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var fl = ml.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-nl.anchor = "middle_bottom";
-fl.anchor = "middle_top";
-nl.x = 0;
-nl.y += 0.625;
-fl.y -= 0.695;
-fl.x = 0;
-var Gn = ml;
-var cl = r(st, "up");
-var hl = cl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var dl = cl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-hl.anchor = "middle_bottom";
-dl.anchor = "middle_top";
-hl.x = 0.4;
-hl.y += 0.28;
-dl.y -= 0.28;
-dl.x = 0.4;
-var Un = cl;
-var Lt = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0 }, { x: -0.12, y: -0.01 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.07, y: 0 }, { x: 0.11, y: 0.05 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.12, y: -0.01 }, { x: 0.38, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.31 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.28 } }, refblocks: { left1: { x: -0.12, y: -0.01 }, left2: { x: -0.38, y: 0 }, right1: { x: 0.12, y: -0.01 }, right2: { x: 0.38, y: 0 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.25, maxY: 0.25, width: 0.81, height: 0.5, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: 0.1, y: 0, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0, radius: 0.02, color: "primary", fill: false } } };
-delete Lt.refblocks.left1;
-delete Lt.refblocks.right1;
-Lt.bounds.width += 0.2;
-var mt = e(Lt).changeTextAnchor("{VAL}", "middle_top").labelPort("left2", ["1"]).labelPort("right2", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var bl = r(mt, "down");
-var _l = bl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var gl = bl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-_l.anchor = "middle_bottom";
-gl.anchor = "middle_top";
-_l.x = 0.3;
-_l.y += 0.265;
-gl.y -= 0.265;
-gl.x = 0.3;
-var Wn = bl;
-var ul = r(mt, "left");
-var vl = ul.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var wl = ul.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-vl.anchor = "middle_bottom";
-wl.anchor = "middle_top";
-vl.x = 0;
-vl.y += 0.57;
-wl.y -= 0.57;
-wl.x = 0;
-var Hn = ul;
-var Al = r(mt, "up");
-var Pl = Al.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Sl = Al.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Pl.anchor = "middle_bottom";
-Sl.anchor = "middle_top";
-Pl.x = 0.3;
-Pl.y += 0.265;
-Sl.y -= 0.265;
-Sl.x = 0.3;
-var Zn = Al;
-var Vt = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0 }, { x: -0.12, y: -0.01 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.07, y: 0.01 }, { x: 0.1, y: 0.14 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.12, y: -0.01 }, { x: 0.38, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.25 } }, refblocks: { left1: { x: -0.12, y: -0.01 }, left2: { x: -0.38, y: 0 }, right1: { x: 0.12, y: -0.01 }, right2: { x: 0.38, y: 0 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.25, maxY: 0.25, width: 0.81, height: 0.5, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: 0.1, y: 0, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0, radius: 0.02, color: "primary", fill: false } } };
+Ii.y += 0.4;
+Ii.x = 0.34;
+Bi.y -= 0.41;
+Bi.x = 0.34;
+var on = Ni;
+var tt = { paths: { path12_rotated: { type: "path", points: [{ x: -0.09, y: 0.12 }, { x: -0.09, y: -0.12 }], color: "primary", fill: false }, path2_rotated: { type: "path", points: [{ x: -0.09, y: 0 }, { x: 0.09, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.03 } }, refblocks: { left1: { x: 0.09, y: 0 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.37, maxY: 0.37, width: 1.14, height: 0.74, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: _9, texts: pT, bounds: ln, refblocks: g9, circles: u9 } = tt;
+var pn = e({ primitives: [...Object.values(_9), ...Object.values(u9), { type: "text", text: "{REF}", x: -0.14, y: -0 }], ports: [{ ...g9.left1, labels: ["1"] }], center: { x: ln.centerX, y: ln.centerY } }).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
+var { paths: v9, texts: sT, bounds: an, refblocks: w9, circles: A9 } = tt;
+var yn = e({ primitives: [...Object.values(v9), ...Object.values(A9), { type: "text", text: "{REF}", x: -0.13, y: 0 }], ports: [{ ...w9.left1, labels: ["1"] }], center: { x: an.centerX, y: an.centerY } }).changeTextAnchor("{VAL}", "middle_top").rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
+var { paths: P9, texts: cT, bounds: xn, refblocks: S9, circles: R9 } = tt;
+var sn = e({ primitives: [...Object.values(P9), ...Object.values(R9), { type: "text", text: "{REF}", x: -0.14, y: -0 }], ports: [{ ...S9.left1, labels: ["1"] }], center: { x: xn.centerX, y: xn.centerY } }).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
+var { paths: F9, texts: _T, bounds: mn, refblocks: T9 } = tt;
+var nn = e({ primitives: [...Object.values(F9), { type: "text", text: "{REF}", x: -0.14, y: 0 }], ports: [{ ...T9.left1, labels: ["1"] }], center: { x: mn.centerX, y: mn.centerY } }).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var fn = { paths: { path40: { type: "path", points: [{ x: -0.19, y: -0.33 }, { x: -0.26, y: -0.14 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.38, y: -0.26 }, { x: -0.19, y: -0.33 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.26, y: -0.14 }, { x: -0.38, y: -0.26 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: -0.26, y: -0.39 }, { x: -0.13, y: -0.26 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.32, y: -0.2 }, { x: -0.52, y: 0 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0, y: -0.52 }, { x: -0.19, y: -0.33 }], color: "primary", fill: false }, "path40-4": { type: "path", points: [{ x: -0.19, y: 0.32 }, { x: -0.38, y: 0.26 }], color: "primary", fill: false }, "path41-1": { type: "path", points: [{ x: -0.26, y: 0.13 }, { x: -0.19, y: 0.32 }], color: "primary", fill: false }, "path42-7": { type: "path", points: [{ x: -0.38, y: 0.26 }, { x: -0.26, y: 0.13 }], color: "primary", fill: false }, "path43-1": { type: "path", points: [{ x: -0.13, y: 0.26 }, { x: -0.26, y: 0.39 }], color: "primary", fill: false }, "path44-8": { type: "path", points: [{ x: -0.32, y: 0.19 }, { x: -0.51, y: 0.01 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: -0.01, y: 0.5 }, { x: -0.19, y: 0.32 }], color: "primary", fill: false }, "path40-4-0": { type: "path", points: [{ x: 0.32, y: -0.19 }, { x: 0.13, y: -0.26 }], color: "primary", fill: false }, "path41-1-2": { type: "path", points: [{ x: 0.26, y: -0.38 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path42-7-1": { type: "path", points: [{ x: 0.13, y: -0.26 }, { x: 0.26, y: -0.38 }], color: "primary", fill: false }, "path43-1-8": { type: "path", points: [{ x: 0.39, y: -0.26 }, { x: 0.26, y: -0.13 }], color: "primary", fill: false }, "path44-8-7": { type: "path", points: [{ x: 0.2, y: -0.32 }, { x: 0.01, y: -0.51 }], color: "primary", fill: false }, "path44-0-7-1": { type: "path", points: [{ x: 0.52, y: 0 }, { x: 0.32, y: -0.19 }], color: "primary", fill: false }, "path40-4-8": { type: "path", points: [{ x: 0.32, y: 0.19 }, { x: 0.26, y: 0.38 }], color: "primary", fill: false }, "path41-1-4": { type: "path", points: [{ x: 0.13, y: 0.26 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false }, "path42-7-0": { type: "path", points: [{ x: 0.26, y: 0.38 }, { x: 0.13, y: 0.26 }], color: "primary", fill: false }, "path43-1-0": { type: "path", points: [{ x: 0.26, y: 0.13 }, { x: 0.39, y: 0.26 }], color: "primary", fill: false }, "path44-8-9": { type: "path", points: [{ x: 0.19, y: 0.32 }, { x: 0, y: 0.52 }], color: "primary", fill: false }, "path44-0-7-3": { type: "path", points: [{ x: 0.5, y: 0.01 }, { x: 0.32, y: 0.19 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.29, y: -0.46 }, bottom1: { type: "text", text: "{VAL}", x: -0.29, y: 0.5 } }, refblocks: { top1: { x: 0, y: -0.52 }, bottom1: { x: 0, y: 0.52 }, left1: { x: -0.52, y: 0 }, right1: { x: 0.52, y: 0 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.56, maxY: 0.55, width: 1.09, height: 1.1, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: Y9, texts: cn, bounds: J0, refblocks: $0, circles: X9 } = fn;
+var M0 = x({ primitives: [...Object.values(Y9), ...Object.values(X9), { ...cn.top1, anchor: "middle_right" }, { ...cn.bottom1, anchor: "middle_right" }], ports: [{ ...$0.top1, labels: ["1"] }, { ...$0.bottom1, labels: ["2"] }, { ...$0.left1, labels: ["3"] }, { ...$0.right1, labels: ["4"] }], size: { width: J0.width, height: J0.height }, center: { x: J0.centerX, y: J0.centerY } });
+var qi = r(M0);
+var L9 = qi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var V9 = qi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+L9.anchor = "middle_left";
+V9.anchor = "middle_right";
+var hn = qi;
+var et = { paths: { path27: { type: "path", points: [{ x: 0.47, y: 0.04 }, { x: 0.21, y: 0.04 }], color: "primary", fill: false }, "path27-0": { type: "path", points: [{ x: -0.21, y: 0.04 }, { x: -0.47, y: 0.04 }], color: "primary", fill: false }, "path27-8-2-4": { type: "path", points: [{ x: 0.21, y: 0.04 }, { x: 0.19, y: -0.05 }], color: "primary", fill: false }, "path27-8-2-4-29": { type: "path", points: [{ x: -0.19, y: 0.14 }, { x: -0.21, y: 0.04 }], color: "primary", fill: false }, "path27-8-2-4-5": { type: "path", points: [{ x: 0.19, y: -0.05 }, { x: 0.13, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1": { type: "path", points: [{ x: 0.08, y: -0.05 }, { x: 0.13, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9": { type: "path", points: [{ x: 0.08, y: -0.05 }, { x: 0.03, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2": { type: "path", points: [{ x: -0.03, y: -0.05 }, { x: 0.03, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1": { type: "path", points: [{ x: -0.03, y: -0.05 }, { x: -0.08, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1-2": { type: "path", points: [{ x: -0.13, y: -0.05 }, { x: -0.08, y: 0.14 }], color: "primary", fill: false }, "path27-8-2-4-5-1-9-2-1-2-2": { type: "path", points: [{ x: -0.13, y: -0.05 }, { x: -0.19, y: 0.14 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.05, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: -0.04, y: -0.42 } }, refblocks: { left1: { x: -0.47, y: 0.04 }, right1: { x: 0.47, y: 0.04 } }, bounds: { minX: -0.49, maxX: 0.49, minY: -0.42, maxY: 0.42, width: 0.99, height: 0.84, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: k9, texts: YT, bounds: C0, refblocks: dn, circles: z9 } = et;
+var bn = e({ primitives: [...Object.values(k9), ...Object.values(z9), { type: "text", text: "{REF}", x: -0.2, y: 0.2194553499999995 }, { type: "text", text: "{VAL}", x: 0.2, y: 0.2194553499999995 }], ports: [{ ...dn.left1, labels: ["1"] }, { ...dn.right1, labels: ["2"] }], size: { width: C0.width, height: C0.height }, center: { x: C0.centerX, y: C0.centerY } }).rotateRightFacingSymbol("down").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var { paths: O9, texts: jT, bounds: N0, refblocks: _n, circles: J9 } = et;
+var gn = e({ primitives: [...Object.values(O9), ...Object.values(J9), { type: "text", text: "{REF}", x: 0, y: -0.1704553499999995 }, { type: "text", text: "{VAL}", x: 0, y: 0.2294553499999995 }], ports: [{ ..._n.left1, labels: ["1"] }, { ..._n.right1, labels: ["2"] }], size: { width: N0.width, height: N0.height }, center: { x: N0.centerX, y: N0.centerY } }).rotateRightFacingSymbol("left").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: $9, texts: JT, bounds: I0, refblocks: un, circles: M9 } = et;
+var vn = e({ primitives: [...Object.values($9), ...Object.values(M9), { type: "text", text: "{REF}", x: 0, y: 0.2294553499999995 }, { type: "text", text: "{VAL}", x: 0, y: -0.1704553499999995 }], ports: [{ ...un.left1, labels: ["1"] }, { ...un.right1, labels: ["2"] }], size: { width: I0.width, height: I0.height }, center: { x: I0.centerX, y: I0.centerY } }).rotateRightFacingSymbol("right").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var { paths: C9, texts: NT, bounds: B0, refblocks: wn, circles: N9 } = et;
+var An = e({ primitives: [...Object.values(C9), ...Object.values(N9), { type: "text", text: "{REF}", x: 0.2, y: -0.1404553499999995 }, { type: "text", text: "{VAL}", x: -0.2, y: -0.1494553499999995 }], ports: [{ ...wn.left1, labels: ["1"] }, { ...wn.right1, labels: ["2"] }], size: { width: B0.width, height: B0.height }, center: { x: B0.centerX, y: B0.centerY } }).rotateRightFacingSymbol("up").labelPort("left", ["1"]).labelPort("right", ["2"]).changeTextAnchor("{REF}", "middle_left").changeTextAnchor("{VAL}", "middle_left").build();
+var q0 = { paths: { path27: { type: "path", points: [{ x: 0.76, y: -0.28 }, { x: 0.31, y: -0.28 }], color: "primary", fill: false }, path28: { type: "path", points: [{ x: -0.3, y: -0.02 }, { x: -0.77, y: -0.02 }], color: "primary", fill: false }, path30: { type: "path", points: [{ x: -0.3, y: 0.35 }, { x: -0.3, y: -0.28 }], color: "primary", fill: false }, "path27-3": { type: "path", points: [{ x: 0.77, y: 0.35 }, { x: 0.32, y: 0.35 }], color: "primary", fill: false }, "path29-5": { type: "path", points: [{ x: -0.07, y: -0.28 }, { x: -0.3, y: -0.28 }], color: "primary", fill: false }, "path29-5-7": { type: "path", points: [{ x: 0.33, y: -0.28 }, { x: 0.11, y: -0.28 }], color: "primary", fill: false }, "path29-5-7-6": { type: "path", points: [{ x: -0.06, y: -0.17 }, { x: -0.06, y: -0.39 }], color: "primary", fill: false }, "path29-5-7-6-6": { type: "path", points: [{ x: 0.09, y: -0.17 }, { x: 0.09, y: -0.39 }], color: "primary", fill: false }, "path29-5-9": { type: "path", points: [{ x: -0.07, y: 0.35 }, { x: -0.3, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-2": { type: "path", points: [{ x: 0.33, y: 0.35 }, { x: 0.11, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-6-0": { type: "path", points: [{ x: -0.06, y: 0.46 }, { x: -0.06, y: 0.24 }], color: "primary", fill: false }, "path29-5-7-6-6-2": { type: "path", points: [{ x: 0.09, y: 0.46 }, { x: 0.09, y: 0.24 }], color: "primary", fill: false }, "path29-5-92": { type: "path", points: [{ x: 0.33, y: 0.13 }, { x: 0.33, y: 0.35 }], color: "primary", fill: false }, "path29-5-7-28": { type: "path", points: [{ x: 0.33, y: -0.28 }, { x: 0.33, y: -0.05 }], color: "primary", fill: false }, "path29-5-7-6-9": { type: "path", points: [{ x: 0.44, y: 0.11 }, { x: 0.22, y: 0.11 }], color: "primary", fill: false }, "path29-5-7-6-6-7": { type: "path", points: [{ x: 0.44, y: -0.04 }, { x: 0.22, y: -0.04 }], color: "primary", fill: false }, "path29-5-7-6-9-2": { type: "path", points: [{ x: 0.44, y: 0.07 }, { x: 0.22, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-4": { type: "path", points: [{ x: 0.44, y: 0 }, { x: 0.44, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-4-6": { type: "path", points: [{ x: 0.22, y: 0 }, { x: 0.22, y: 0.07 }], color: "primary", fill: false }, "path29-5-7-6-9-2-9": { type: "path", points: [{ x: 0.44, y: 0 }, { x: 0.22, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.02, y: 0.53 }, bottom1: { type: "text", text: "{VAL}", x: 0.01, y: -0.54 } }, refblocks: { left1: { x: -0.77, y: -0.02 }, right1: { x: 0.76, y: -0.28 }, right2: { x: 0.77, y: 0.35 } }, bounds: { minX: -0.79, maxX: 0.79, minY: -0.54, maxY: 0.54, width: 1.59, height: 1.07, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: B9, texts: Pn, bounds: D0, refblocks: Di, circles: q9 } = q0;
+var rt = x({ primitives: [...Object.values(B9), ...Object.values(q9), { ...Pn.top1, anchor: "middle_bottom" }, { ...Pn.bottom1, anchor: "middle_top" }], ports: [{ ...Di.left1, labels: ["1"] }, { ...Di.right1, labels: ["2"] }, { ...Di.right2, labels: ["3"] }], size: { width: D0.width, height: D0.height }, center: { x: D0.centerX, y: D0.centerY } });
+var Gi = r(rt, "down");
+var Ui = Gi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Wi = Gi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ui.anchor = "middle_bottom";
+Wi.anchor = "middle_top";
+Ui.y += 0.3;
+Ui.x += 0.101;
+Wi.y -= 0.49999;
+Wi.x += 1.19999;
+var Sn = Gi;
+var { paths: D9, texts: KT, bounds: G0, refblocks: Hi, circles: G9 } = q0;
+var U0 = x({ primitives: [...Object.values(D9), ...Object.values(G9), { type: "text", text: "{REF}", x: 0.01596175000000022, y: -0.5308501500000009, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0.013116750000000454, y: 0.5408501499999989, anchor: "middle_bottom" }], ports: [{ ...Hi.left1, labels: ["1"] }, { ...Hi.right1, labels: ["2"] }, { ...Hi.right2, labels: ["3"] }], size: { width: G0.width, height: G0.height }, center: { x: G0.centerX, y: G0.centerY } });
+var Zi = r(rt, "left");
+var Qi = Zi.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ki = Zi.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Qi.anchor = "middle_bottom";
+Ki.anchor = "middle_top";
+Qi.y += 0.99;
+Qi.x -= 0;
+Ki.y -= 1.10999;
+Ki.x = 0;
+var Rn = Zi;
+var tl = r(rt, "up");
+var el = tl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var rl = tl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+el.anchor = "middle_bottom";
+rl.anchor = "middle_top";
+el.y += 0.499;
+el.x = 0.62;
+rl.y -= 0.29999;
+rl.x += 0.1;
+var Fn = tl;
+var Tn = r(U0);
+var En = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-7": { type: "path", points: [{ x: 0.21, y: 0.18 }, { x: 0.14, y: 0.18 }], color: "primary", fill: false }, "path43-7-9": { type: "path", points: [{ x: 0.21, y: 0.13 }, { x: 0.21, y: 0.18 }], color: "primary", fill: false }, "path43-7-2": { type: "path", points: [{ x: 0.08, y: -0.09 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, "path43-7-9-3": { type: "path", points: [{ x: 0.08, y: -0.04 }, { x: 0.08, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var ot = e(En).labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{VAL}", "middle_top").changeTextAnchor("{REF}", "middle_bottom").build();
+var ol = r(ot, "down");
+var il = ol.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ll = ol.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+il.anchor = "middle_left";
+ll.anchor = "middle_left";
+il.y += 0.3;
+il.x = 0.3;
+ll.y -= 0.3;
+ll.x = 0.3;
+var Yn = ol;
+var pl = r(ot, "left");
+var al = pl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var yl = pl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+al.anchor = "middle_bottom";
+yl.anchor = "middle_top";
+al.y += 0.5;
+al.x = 0;
+yl.y -= 0.55;
+yl.x = 0;
+var Xn = pl;
+var xl = r(ot, "up");
+var sl = xl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ml = xl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+sl.anchor = "middle_left";
+ml.anchor = "middle_left";
+sl.y += 0.3;
+sl.x = 0.3;
+ml.y -= 0.3;
+ml.x = 0.3;
+var Ln = xl;
+var nl = { paths: { path11: { type: "path", points: [{ x: -0.52, y: 0.04 }, { x: -0.18, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.19, y: 0.05 }, { x: 0.52, y: 0.05 }], color: "primary", fill: false }, "path12-6": { type: "path", points: [{ x: 0.18, y: -0.15 }, { x: 0.18, y: 0.25 }], color: "primary", fill: false }, "path12-2": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0.35, y: -0.14 }], color: "primary", fill: false }, "path12-2-9": { type: "path", points: [{ x: 0.35, y: -0.14 }, { x: 0.34, y: -0.35 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.17, y: 0.27 }, { x: -0.17, y: -0.15 }, { x: 0.18, y: 0.05 }, { x: -0.17, y: 0.27 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.22, y: 0.38 }, bottom1: { type: "text", text: "{VAL}", x: 0.11, y: -0.38 } }, refblocks: { bottom1: { x: 0.34, y: -0.35 }, left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.05 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.38, maxY: 0.38, width: 1.09, height: 0.77, centerX: 0, centerY: 0 }, circles: {} };
+var W0 = e(nl).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Vn = r(W0);
+var H9 = Vn.primitives.filter((t) => t.type === "text");
+var jn = H9.find((t) => t.text === "{REF}");
+jn.y = 0;
+jn.anchor = "middle_left";
+var kn = Vn;
+var it = { paths: { path44: { type: "path", points: [{ x: -0.18, y: -0.03 }, { x: -0.45, y: -0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: -0.03 }, { x: 0.18, y: -0.02 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.07, y: -0.02 }, { x: -0.07, y: -0.02 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.1 }, { x: 0.07, y: -0.15 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.07, y: 0.1 }, { x: -0.07, y: -0.15 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.07, y: -0.15 }, { x: -0.07, y: -0.15 }, { x: -0.09, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.11, y: -0.13 }, { x: -0.13, y: -0.12 }, { x: -0.14, y: -0.11 }, { x: -0.14, y: -0.1 }, { x: -0.15, y: -0.09 }, { x: -0.16, y: -0.08 }, { x: -0.16, y: -0.07 }, { x: -0.16, y: -0.06 }, { x: -0.17, y: -0.05 }, { x: -0.17, y: -0.04 }, { x: -0.17, y: -0.03 }, { x: -0.17, y: -0.02 }, { x: -0.17, y: -0.01 }, { x: -0.16, y: 0 }, { x: -0.16, y: 0.01 }, { x: -0.16, y: 0.02 }, { x: -0.15, y: 0.03 }, { x: -0.15, y: 0.04 }, { x: -0.14, y: 0.05 }, { x: -0.14, y: 0.05 }, { x: -0.13, y: 0.06 }, { x: -0.12, y: 0.07 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.07, y: 0.1 }, { x: -0.07, y: 0.1 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.07, y: -0.15 }, { x: 0.07, y: -0.15 }, { x: 0.09, y: -0.15 }, { x: 0.1, y: -0.14 }, { x: 0.12, y: -0.13 }, { x: 0.13, y: -0.12 }, { x: 0.14, y: -0.11 }, { x: 0.14, y: -0.1 }, { x: 0.15, y: -0.09 }, { x: 0.16, y: -0.08 }, { x: 0.16, y: -0.07 }, { x: 0.17, y: -0.06 }, { x: 0.17, y: -0.05 }, { x: 0.17, y: -0.04 }, { x: 0.17, y: -0.03 }, { x: 0.17, y: -0.02 }, { x: 0.17, y: -0.01 }, { x: 0.16, y: 0 }, { x: 0.16, y: 0.01 }, { x: 0.16, y: 0.02 }, { x: 0.15, y: 0.03 }, { x: 0.15, y: 0.04 }, { x: 0.14, y: 0.05 }, { x: 0.14, y: 0.05 }, { x: 0.13, y: 0.06 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.09 }, { x: 0.09, y: 0.09 }, { x: 0.08, y: 0.1 }, { x: 0.07, y: 0.1 }, { x: 0.07, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.15 } }, refblocks: { left1: { x: -0.45, y: -0.03 }, right1: { x: 0.45, y: -0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.15, maxY: 0.15, width: 0.95, height: 0.31, centerX: 0, centerY: 0 }, circles: {} };
+var zn = e(it).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var On = e(it).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_top").build();
+var Jn = e(it).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var $n = e(it).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
+var lt = { paths: { path44: { type: "path", points: [{ x: -0.18, y: -0.03 }, { x: -0.45, y: -0.03 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: -0.03 }, { x: 0.18, y: -0.02 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.07, y: 0.1 }, { x: 0.07, y: -0.15 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.07, y: 0.1 }, { x: -0.07, y: -0.15 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.07, y: -0.15 }, { x: -0.07, y: -0.15 }, { x: -0.09, y: -0.15 }, { x: -0.1, y: -0.14 }, { x: -0.11, y: -0.13 }, { x: -0.13, y: -0.12 }, { x: -0.14, y: -0.11 }, { x: -0.14, y: -0.1 }, { x: -0.15, y: -0.09 }, { x: -0.16, y: -0.08 }, { x: -0.16, y: -0.07 }, { x: -0.16, y: -0.06 }, { x: -0.17, y: -0.05 }, { x: -0.17, y: -0.04 }, { x: -0.17, y: -0.03 }, { x: -0.17, y: -0.02 }, { x: -0.17, y: -0.01 }, { x: -0.16, y: 0 }, { x: -0.16, y: 0.01 }, { x: -0.16, y: 0.02 }, { x: -0.15, y: 0.03 }, { x: -0.15, y: 0.04 }, { x: -0.14, y: 0.05 }, { x: -0.14, y: 0.05 }, { x: -0.13, y: 0.06 }, { x: -0.12, y: 0.07 }, { x: -0.11, y: 0.08 }, { x: -0.11, y: 0.08 }, { x: -0.1, y: 0.09 }, { x: -0.09, y: 0.09 }, { x: -0.08, y: 0.1 }, { x: -0.07, y: 0.1 }, { x: -0.07, y: 0.1 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.07, y: -0.15 }, { x: 0.07, y: -0.15 }, { x: 0.09, y: -0.15 }, { x: 0.1, y: -0.14 }, { x: 0.12, y: -0.13 }, { x: 0.13, y: -0.12 }, { x: 0.14, y: -0.11 }, { x: 0.14, y: -0.1 }, { x: 0.15, y: -0.09 }, { x: 0.16, y: -0.08 }, { x: 0.16, y: -0.07 }, { x: 0.17, y: -0.06 }, { x: 0.17, y: -0.05 }, { x: 0.17, y: -0.04 }, { x: 0.17, y: -0.03 }, { x: 0.17, y: -0.02 }, { x: 0.17, y: -0.01 }, { x: 0.16, y: 0 }, { x: 0.16, y: 0.01 }, { x: 0.16, y: 0.02 }, { x: 0.15, y: 0.03 }, { x: 0.15, y: 0.04 }, { x: 0.14, y: 0.05 }, { x: 0.14, y: 0.05 }, { x: 0.13, y: 0.06 }, { x: 0.12, y: 0.07 }, { x: 0.11, y: 0.08 }, { x: 0.11, y: 0.08 }, { x: 0.1, y: 0.09 }, { x: 0.09, y: 0.09 }, { x: 0.08, y: 0.1 }, { x: 0.07, y: 0.1 }, { x: 0.07, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.15 } }, refblocks: { left1: { x: -0.45, y: -0.03 }, right1: { x: 0.45, y: -0.03 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.15, maxY: 0.15, width: 0.95, height: 0.31, centerX: 0, centerY: 0 }, circles: {} };
+var Mn = e(lt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_left").build();
+var Cn = e(lt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_top").build();
+var Nn = e(lt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var In = e(lt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_right").build();
+var pt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false }, path1: { type: "path", points: [{ x: -0.05, y: 0.1 }, { x: -0.12, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
+var Bn = e(pt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
+var qn = e(pt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
+var Dn = e(pt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Gn = e(pt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
+var at = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.12, y: 0.1 }, { x: 0.04, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false }, path1: { type: "path", points: [{ x: -0.05, y: 0.1 }, { x: -0.12, y: 0.1 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
+var Un = e(at).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
+var Wn = e(at).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
+var Hn = e(at).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Zn = e(at).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
+var yt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-0-7": { type: "path", points: [{ x: 0.12, y: 0.1 }, { x: 0.04, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
+var Qn = e(yt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
+var Kn = e(yt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
+var t1 = e(yt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var e1 = e(yt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
+var xt = { paths: { path44: { type: "path", points: [{ x: -0.22, y: 0.1 }, { x: -0.45, y: 0.1 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.45, y: 0.1 }, { x: 0.22, y: 0.1 }], color: "primary", fill: false }, "path44-5": { type: "path", points: [{ x: 0, y: -0.03 }, { x: 0, y: -0.25 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.12, y: 0.23 }, { x: 0.12, y: -0.02 }], color: "primary", fill: true }, "path2-88": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: 0.04, y: -0.02 }], color: "primary", fill: true }, "path2-88-5": { type: "path", points: [{ x: -0.05, y: 0.22 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-88-5-1": { type: "path", points: [{ x: 0.04, y: 0.22 }, { x: -0.05, y: 0.22 }], color: "primary", fill: true }, "path2-88-5-1-6": { type: "path", points: [{ x: 0.04, y: -0.02 }, { x: -0.05, y: -0.02 }], color: "primary", fill: true }, "path2-8": { type: "path", points: [{ x: -0.12, y: 0.23 }, { x: -0.12, y: -0.02 }], color: "primary", fill: true }, "path8704-1": { type: "path", points: [{ x: -0.13, y: -0.03 }, { x: -0.13, y: -0.03 }, { x: -0.14, y: -0.02 }, { x: -0.16, y: -0.01 }, { x: -0.17, y: 0 }, { x: -0.18, y: 0.01 }, { x: -0.19, y: 0.02 }, { x: -0.2, y: 0.03 }, { x: -0.2, y: 0.04 }, { x: -0.21, y: 0.05 }, { x: -0.21, y: 0.06 }, { x: -0.22, y: 0.07 }, { x: -0.22, y: 0.08 }, { x: -0.22, y: 0.09 }, { x: -0.22, y: 0.1 }, { x: -0.22, y: 0.11 }, { x: -0.22, y: 0.12 }, { x: -0.22, y: 0.13 }, { x: -0.21, y: 0.14 }, { x: -0.21, y: 0.15 }, { x: -0.21, y: 0.15 }, { x: -0.2, y: 0.16 }, { x: -0.19, y: 0.17 }, { x: -0.19, y: 0.18 }, { x: -0.18, y: 0.19 }, { x: -0.17, y: 0.2 }, { x: -0.17, y: 0.2 }, { x: -0.16, y: 0.21 }, { x: -0.15, y: 0.22 }, { x: -0.14, y: 0.22 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }, { x: -0.13, y: 0.23 }], color: "primary", fill: false }, "path8704-1-7": { type: "path", points: [{ x: 0.12, y: -0.03 }, { x: 0.12, y: -0.03 }, { x: 0.14, y: -0.02 }, { x: 0.15, y: -0.01 }, { x: 0.17, y: 0 }, { x: 0.18, y: 0.01 }, { x: 0.19, y: 0.02 }, { x: 0.2, y: 0.03 }, { x: 0.2, y: 0.04 }, { x: 0.21, y: 0.05 }, { x: 0.21, y: 0.06 }, { x: 0.22, y: 0.07 }, { x: 0.22, y: 0.08 }, { x: 0.22, y: 0.09 }, { x: 0.22, y: 0.1 }, { x: 0.22, y: 0.11 }, { x: 0.22, y: 0.12 }, { x: 0.22, y: 0.13 }, { x: 0.21, y: 0.14 }, { x: 0.21, y: 0.15 }, { x: 0.2, y: 0.15 }, { x: 0.2, y: 0.16 }, { x: 0.19, y: 0.17 }, { x: 0.19, y: 0.18 }, { x: 0.18, y: 0.19 }, { x: 0.17, y: 0.2 }, { x: 0.17, y: 0.2 }, { x: 0.16, y: 0.21 }, { x: 0.15, y: 0.21 }, { x: 0.14, y: 0.22 }, { x: 0.13, y: 0.23 }, { x: 0.12, y: 0.23 }, { x: 0.12, y: 0.23 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.28 } }, refblocks: { bottom1: { x: 0, y: -0.25 }, left1: { x: -0.45, y: 0.1 }, right1: { x: 0.45, y: 0.1 } }, bounds: { minX: -0.47, maxX: 0.47, minY: -0.28, maxY: 0.28, width: 0.95, height: 0.56, centerX: 0, centerY: 0 }, circles: {} };
+var r1 = e(xt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_left").build();
+var o1 = e(xt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_top").build();
+var i1 = e(xt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var l1 = e(xt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).labelPort("bottom1", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_right").build();
+var p1 = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.03 }, { x: -0.13, y: 0.03 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.03 }, { x: 0.11, y: -0.03 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: -0.06 }, { x: 0.37, y: -0.06 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.17 }, { x: 0.37, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.37 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.37 } }, refblocks: { left1: { x: -0.37, y: 0.03 }, right1: { x: 0.37, y: -0.06 }, right2: { x: 0.37, y: 0.17 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.79, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-3": { type: "circle", x: 0.08, y: -0.07, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.03, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.08, y: 0.17, radius: 0.02, color: "primary", fill: false } } };
+var st = e(p1).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right2", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var fl = r(st, "down");
+var cl = fl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var hl = fl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+cl.anchor = "middle_bottom";
+hl.anchor = "middle_top";
+cl.x = 0.44;
+cl.y += 0.28;
+hl.y -= 0.28;
+hl.x = 0.44;
+var a1 = fl;
+var dl = r(st, "left");
+var bl = dl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var _l = dl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+bl.anchor = "middle_bottom";
+_l.anchor = "middle_top";
+bl.x = 0;
+bl.y += 0.625;
+_l.y -= 0.695;
+_l.x = 0;
+var y1 = dl;
+var gl = r(st, "up");
+var ul = gl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var vl = gl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+ul.anchor = "middle_bottom";
+vl.anchor = "middle_top";
+ul.x = 0.4;
+ul.y += 0.28;
+vl.y -= 0.28;
+vl.x = 0.4;
+var x1 = gl;
+var s1 = { paths: { path1: { type: "path", points: [{ x: -0.37, y: 0.03 }, { x: -0.13, y: 0.03 }], color: "primary", fill: false }, "path-1-3": { type: "path", points: [{ x: -0.07, y: 0.03 }, { x: 0.11, y: 0.14 }], color: "primary", fill: false }, path2: { type: "path", points: [{ x: 0.1, y: -0.06 }, { x: 0.37, y: -0.06 }], color: "primary", fill: false }, path3: { type: "path", points: [{ x: 0.12, y: 0.17 }, { x: 0.37, y: 0.17 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.4 } }, refblocks: { left1: { x: -0.37, y: 0.03 }, right1: { x: 0.37, y: -0.06 }, right3: { x: 0.37, y: 0.17 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.4, maxY: 0.4, width: 0.79, height: 0.79, centerX: 0, centerY: 0 }, circles: { "circle-3": { type: "circle", x: 0.08, y: -0.07, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0.03, radius: 0.02, color: "primary", fill: false }, "circle-2": { type: "circle", x: 0.08, y: 0.17, radius: 0.02, color: "primary", fill: false } } };
+var mt = e(s1).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right3", ["2"]).labelPort("right1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var wl = r(mt, "down");
+var Al = wl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Pl = wl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Al.anchor = "middle_bottom";
+Pl.anchor = "middle_top";
+Al.x = 0.44;
+Al.y += 0.28;
+Pl.y -= 0.28;
+Pl.x = 0.44;
+var m1 = wl;
+var Sl = r(mt, "left");
+var Rl = Sl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Fl = Sl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Rl.anchor = "middle_bottom";
+Fl.anchor = "middle_top";
+Rl.x = 0;
+Rl.y += 0.625;
+Fl.y -= 0.695;
+Fl.x = 0;
+var n1 = Sl;
+var Tl = r(mt, "up");
+var El = Tl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Yl = Tl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+El.anchor = "middle_bottom";
+Yl.anchor = "middle_top";
+El.x = 0.4;
+El.y += 0.28;
+Yl.y -= 0.28;
+Yl.x = 0.4;
+var f1 = Tl;
+var Vt = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0 }, { x: -0.12, y: -0.01 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.07, y: 0 }, { x: 0.11, y: 0.05 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.12, y: -0.01 }, { x: 0.38, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.31 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.28 } }, refblocks: { left1: { x: -0.12, y: -0.01 }, left2: { x: -0.38, y: 0 }, right1: { x: 0.12, y: -0.01 }, right2: { x: 0.38, y: 0 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.25, maxY: 0.25, width: 0.81, height: 0.5, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: 0.1, y: 0, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0, radius: 0.02, color: "primary", fill: false } } };
 delete Vt.refblocks.left1;
 delete Vt.refblocks.right1;
 Vt.bounds.width += 0.2;
 var nt = e(Vt).changeTextAnchor("{VAL}", "middle_top").labelPort("left2", ["1"]).labelPort("right2", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var Rl = r(nt, "down");
-var Fl = Rl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Tl = Rl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Fl.anchor = "middle_bottom";
-Tl.anchor = "middle_top";
-Fl.x = 0.3;
-Fl.y += 0.265;
-Tl.y -= 0.265;
-Tl.x = 0.3;
-var Qn = Rl;
-var El = r(nt, "left");
-var Yl = El.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Xl = El.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Yl.anchor = "middle_bottom";
-Xl.anchor = "middle_top";
-Yl.x = 0;
-Yl.y += 0.57;
-Xl.y -= 0.57;
-Xl.x = 0;
-var Kn = El;
-var Ll = r(nt, "up");
-var Vl = Ll.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var jl = Ll.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Vl.anchor = "middle_bottom";
-jl.anchor = "middle_top";
+var Xl = r(nt, "down");
+var Ll = Xl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Vl = Xl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ll.anchor = "middle_bottom";
+Vl.anchor = "middle_top";
+Ll.x = 0.3;
+Ll.y += 0.265;
+Vl.y -= 0.265;
 Vl.x = 0.3;
-Vl.y += 0.265;
-jl.y -= 0.265;
-jl.x = 0.3;
-var t1 = Ll;
-var ft = { paths: { path44: { type: "path", points: [{ x: -0.16845120000000047, y: 0.02621170000000017 }, { x: -0.4458008, y: 0.02709619999999968 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.4458008, y: 0.026971799999999657 }, { x: 0.1677968999999997, y: 0.027926399999999685 }], color: "primary", fill: false }, "path8704-1": { type: "path", points: [{ x: -0.0040837000000002455, y: -0.13467459999999964 }, { x: -0.0040837000000002455, y: -0.13467459999999964 }, { x: -0.017668143940740948, y: -0.1311205263185182 }, { x: -0.03043520885925943, y: -0.12727072121481456 }, { x: -0.04240966440000013, y: -0.1231399985999998 }, { x: -0.05361628020740751, y: -0.11874317238518502 }, { x: -0.064079825925926, y: -0.11409505648148131 }, { x: -0.07382507120000005, y: -0.10921046479999987 }, { x: -0.0828767856740741, y: -0.10410421125185171 }, { x: -0.0912597389925926, y: -0.09879110974814802 }, { x: -0.09899870079999995, y: -0.0932859741999998 }, { x: -0.10611844074074069, y: -0.08760361851851838 }, { x: -0.11264372845925916, y: -0.0817588566148146 }, { x: -0.11859933359999993, y: -0.07576650239999982 }, { x: -0.12401002580740728, y: -0.06964136978518495 }, { x: -0.12890057472592584, y: -0.06339827268148127 }, { x: -0.13329574999999985, y: -0.05705202499999972 }, { x: -0.13722032127407394, y: -0.05061744065185156 }, { x: -0.14069905819259243, y: -0.04410933354814783 }, { x: -0.14375673039999987, y: -0.03754251759999966 }, { x: -0.14641810754074058, y: -0.030931806718518143 }, { x: -0.1487079592592591, y: -0.0242920148148144 }, { x: -0.15065105519999983, y: -0.017637955799999563 }, { x: -0.15227216500740723, y: -0.01098444358518472 }, { x: -0.15359605832592574, y: -0.004346292081480994 }, { x: -0.1546475047999998, y: 0.00226168480000051 }, { x: -0.15545127407407386, y: 0.008824673148148676 }, { x: -0.1560321357925924, y: 0.015327859051852397 }, { x: -0.1564148595999998, y: 0.02175642860000056 }, { x: -0.1566242151407405, y: 0.028095567881482052 }, { x: -0.15668497205925902, y: 0.03433046298518576 }, { x: -0.15662189999999976, y: 0.04044630000000058 }, { x: -0.15662189999999976, y: 0.0404463000000006 }, { x: -0.15662189999999976, y: 0.0404463000000006 }, { x: -0.15622857394444417, y: 0.04717166472222282 }, { x: -0.1553217675555553, y: 0.05388046444444503 }, { x: -0.15392183849999977, y: 0.060558907500000585 }, { x: -0.1520491444444442, y: 0.0671932022222228 }, { x: -0.1497240430555553, y: 0.07376955694444502 }, { x: -0.14696689199999974, y: 0.08027418000000058 }, { x: -0.14379804894444415, y: 0.0866932797222228 }, { x: -0.1402378715555553, y: 0.09301306444444506 }, { x: -0.13630671749999965, y: 0.09921974250000057 }, { x: -0.13202494444444415, y: 0.10529952222222282 }, { x: -0.12741291005555522, y: 0.11123861194444501 }, { x: -0.1224909719999997, y: 0.1170232200000006 }, { x: -0.11727948794444407, y: 0.12263955472222278 }, { x: -0.11179881555555524, y: 0.12807382444444504 }, { x: -0.10606931249999965, y: 0.13331223750000057 }, { x: -0.1001113364444441, y: 0.13834100222222284 }, { x: -0.09394524505555521, y: 0.14314632694444504 }, { x: -0.08759139599999967, y: 0.14771442000000062 }, { x: -0.08107014694444413, y: 0.15203148972222283 }, { x: -0.07440185555555523, y: 0.15608374444444503 }, { x: -0.0676068794999997, y: 0.15985739250000058 }, { x: -0.06070557644444415, y: 0.16333864222222283 }, { x: -0.05371830405555529, y: 0.16651370194444504 }, { x: -0.04666541999999976, y: 0.1693687800000006 }, { x: -0.03956728194444424, y: 0.1718900847222228 }, { x: -0.03244424755555539, y: 0.17406382444444501 }, { x: -0.025316674499999876, y: 0.17587620750000055 }, { x: -0.01820492044444437, y: 0.17731344222222278 }, { x: -0.01112934305555553, y: 0.178361736944445 }, { x: -0.004110300000000034, y: 0.17900730000000054 }, { x: -0.004110300000000011, y: 0.17900730000000054 }], color: "primary", fill: false }, "path8704-1-9": { type: "path", points: [{ x: 0.004158700000000071, y: -0.1355885000000001 }, { x: 0.004158700000000071, y: -0.1355885000000001 }, { x: 0.017743143940740766, y: -0.1320344263185187 }, { x: 0.03051020885925925, y: -0.12818462121481505 }, { x: 0.042484664399999955, y: -0.12405389860000024 }, { x: 0.053691280207407335, y: -0.11965707238518546 }, { x: 0.0641548259259258, y: -0.11500895648148178 }, { x: 0.07390007119999986, y: -0.1101243648000003 }, { x: 0.0829517856740739, y: -0.10501811125185218 }, { x: 0.0913347389925924, y: -0.09970500974814848 }, { x: 0.09907370079999973, y: -0.09419987420000027 }, { x: 0.10619344074074046, y: -0.08851751851851883 }, { x: 0.11271872845925893, y: -0.08267275661481507 }, { x: 0.11867433359999968, y: -0.07668040240000029 }, { x: 0.12408502580740703, y: -0.0705552697851854 }, { x: 0.12897557472592555, y: -0.06431217268148172 }, { x: 0.13337074999999957, y: -0.05796592500000018 }, { x: 0.13729532127407365, y: -0.05153134065185202 }, { x: 0.14077405819259214, y: -0.045023233548148286 }, { x: 0.14383173039999952, y: -0.038456417600000126 }, { x: 0.14649310754074024, y: -0.03184570671851861 }, { x: 0.14878295925925875, y: -0.02520591481481487 }, { x: 0.1507260551999995, y: -0.01855185580000003 }, { x: 0.15234716500740686, y: -0.011898343585185192 }, { x: 0.15367105832592537, y: -0.005260192081481464 }, { x: 0.15472250479999944, y: 0.001347784800000043 }, { x: 0.1555262740740735, y: 0.007910773148148207 }, { x: 0.156107135792592, y: 0.01441395905185193 }, { x: 0.1564898595999994, y: 0.020842528600000094 }, { x: 0.15669921514074014, y: 0.02718166788148159 }, { x: 0.15675997205925862, y: 0.03341656298518529 }, { x: 0.15669689999999936, y: 0.03953240000000011 }, { x: 0.15669689999999936, y: 0.039532400000000134 }, { x: 0.15669689999999936, y: 0.039532400000000134 }, { x: 0.1563035739444438, y: 0.04625776472222235 }, { x: 0.15539676755555493, y: 0.05296656444444457 }, { x: 0.15399683849999934, y: 0.05964500750000013 }, { x: 0.1521241444444438, y: 0.06627930222222234 }, { x: 0.14979904305555491, y: 0.07285565694444456 }, { x: 0.14704189199999937, y: 0.07936028000000013 }, { x: 0.1438730489444438, y: 0.08577937972222234 }, { x: 0.1403128715555549, y: 0.09209916444444458 }, { x: 0.13638171749999925, y: 0.0983058425000001 }, { x: 0.13209994444444376, y: 0.10438562222222235 }, { x: 0.12748791005555482, y: 0.11032471194444453 }, { x: 0.12256597199999929, y: 0.11610932000000013 }, { x: 0.1173544879444437, y: 0.1217256547222223 }, { x: 0.11187381555555485, y: 0.12715992444444457 }, { x: 0.10614431249999925, y: 0.1323983375000001 }, { x: 0.10018633644444369, y: 0.13742710222222235 }, { x: 0.09402024505555481, y: 0.14223242694444457 }, { x: 0.08766639599999927, y: 0.14680052000000016 }, { x: 0.08114514694444372, y: 0.15111758972222236 }, { x: 0.07447685555555483, y: 0.15516984444444457 }, { x: 0.06768187949999929, y: 0.15894349250000012 }, { x: 0.06078057644444377, y: 0.16242474222222236 }, { x: 0.053793304055554894, y: 0.16559980194444457 }, { x: 0.046740419999999366, y: 0.16845488000000014 }, { x: 0.039642281944443844, y: 0.17097618472222234 }, { x: 0.03251924755555499, y: 0.17314992444444455 }, { x: 0.02539167449999948, y: 0.17496230750000008 }, { x: 0.018279920444443973, y: 0.17639954222222232 }, { x: 0.011204343055555134, y: 0.17744783694444452 }, { x: 0.004185299999999637, y: 0.17809340000000007 }, { x: 0.004185299999999614, y: 0.17809340000000007 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.08039130000000005, y: 0.0179576999999993 }, { x: -0.08039130000000005, y: 0.09650599999999931 }], color: "primary", fill: true }, "path4-5": { type: "path", points: [{ x: 0.01494479999999987, y: -0.055216500000000224 }, { x: 0.01494479999999987, y: 0.09691909999999937 }], color: "primary", fill: true }, "path4-5-8": { type: "path", points: [{ x: 0.06871169999999927, y: -0.056870000000000864 }, { x: 0.06871169999999927, y: 0.018784499999999538 }], color: "primary", fill: true }, "path4-1": { type: "path", points: [{ x: -0.08179359999999969, y: 0.09650570000000003 }, { x: 0.015771699999999722, y: 0.09650570000000003 }], color: "primary", fill: true }, "path4-1-6": { type: "path", points: [{ x: 0.0117995999999998, y: -0.05594970000000088 }, { x: 0.06843709999999925, y: -0.05594970000000088 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.17162450000000073, y: 0.11125030000000025 }, { x: -0.2688274000000015, y: 0.11125030000000025 }, { x: -0.2688274000000015, y: 0.11469129999999961 }, { x: -0.17162450000000073, y: 0.11469129999999961 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.2184661999999995, y: 0.16159429999999997 }, { x: -0.2184661999999995, y: 0.06439139999999943 }, { x: -0.22190719999999908, y: 0.06439139999999943 }, { x: -0.22190719999999908, y: 0.16159429999999997 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.0024445000000006267, y: 0.23933980000000044 }, bottom1: { type: "text", text: "{VAL}", x: 0.00341719999999901, y: -0.23933980000000066 } }, refblocks: { left1: { x: -0.4458008, y: 0.02709619999999968 }, right1: { x: 0.4458008, y: 0.026971799999999657 } }, bounds: { minX: -0.473959241, maxX: 0.473959241, minY: -0.23933980000000066, maxY: 0.23933980000000044, width: 0.947918482, height: 0.4786796000000011, centerX: 0, centerY: -0.00000000000000011102230246251565 }, circles: {} };
-var e1 = e(ft).rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_left", { x: 0.02, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: 0.5, y: -0.2 }).build();
-var r1 = e(ft).rotateRightFacingSymbol("left").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.45 }).changeTextAnchor("{VAL}", "middle_top", { x: 0, y: -0.55 }).build();
-var o1 = e(ft).rotateRightFacingSymbol("right").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var i1 = e(ft).rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{VAL}", "middle_left", { x: 0.02, y: -0.2 }).changeTextAnchor("{REF}", "middle_left", { x: 0.5, y: 0.2 }).build();
-var kl = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-5": { type: "path", points: [{ x: 0.19, y: -0.09 }, { x: 0.15, y: -0.09 }], color: "primary", fill: false }, "path43-5-2": { type: "path", points: [{ x: 0.19, y: -0.14 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var U0 = e(kl).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var l1 = r(U0);
-var p1 = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "RPM", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: I9, texts: B9, bounds: W0, refblocks: a1, circles: q9 } = p1;
-var jt = s({ primitives: [...Object.values(I9), ...Object.values(q9), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...B9.left1, y: 0.01, anchor: "center", fontSize: 0.2 }], ports: [{ ...a1.left1, labels: ["1"] }, { ...a1.right1, labels: ["2"] }], size: { width: W0.width, height: W0.height }, center: { x: W0.centerX, y: W0.centerY } });
-var { 5: D9, ...G9 } = jt.primitives;
-function U9(t) {
+var c1 = Xl;
+var jl = r(nt, "left");
+var kl = jl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var zl = jl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+kl.anchor = "middle_bottom";
+zl.anchor = "middle_top";
+kl.x = 0;
+kl.y += 0.57;
+zl.y -= 0.57;
+zl.x = 0;
+var h1 = jl;
+var Ol = r(nt, "up");
+var Jl = Ol.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var $l = Ol.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Jl.anchor = "middle_bottom";
+$l.anchor = "middle_top";
+Jl.x = 0.3;
+Jl.y += 0.265;
+$l.y -= 0.265;
+$l.x = 0.3;
+var d1 = Ol;
+var jt = { paths: { path11: { type: "path", points: [{ x: -0.38, y: 0 }, { x: -0.12, y: -0.01 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.07, y: 0.01 }, { x: 0.1, y: 0.14 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.12, y: -0.01 }, { x: 0.38, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.25 } }, refblocks: { left1: { x: -0.12, y: -0.01 }, left2: { x: -0.38, y: 0 }, right1: { x: 0.12, y: -0.01 }, right2: { x: 0.38, y: 0 } }, bounds: { minX: -0.4, maxX: 0.4, minY: -0.25, maxY: 0.25, width: 0.81, height: 0.5, centerX: 0, centerY: 0 }, circles: { "circle-2": { type: "circle", x: 0.1, y: 0, radius: 0.02, color: "primary", fill: false }, "circle-1": { type: "circle", x: -0.1, y: 0, radius: 0.02, color: "primary", fill: false } } };
+delete jt.refblocks.left1;
+delete jt.refblocks.right1;
+jt.bounds.width += 0.2;
+var ft = e(jt).changeTextAnchor("{VAL}", "middle_top").labelPort("left2", ["1"]).labelPort("right2", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var Ml = r(ft, "down");
+var Cl = Ml.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Nl = Ml.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Cl.anchor = "middle_bottom";
+Nl.anchor = "middle_top";
+Cl.x = 0.3;
+Cl.y += 0.265;
+Nl.y -= 0.265;
+Nl.x = 0.3;
+var b1 = Ml;
+var Il = r(ft, "left");
+var Bl = Il.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ql = Il.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Bl.anchor = "middle_bottom";
+ql.anchor = "middle_top";
+Bl.x = 0;
+Bl.y += 0.57;
+ql.y -= 0.57;
+ql.x = 0;
+var _1 = Il;
+var Dl = r(ft, "up");
+var Gl = Dl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ul = Dl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Gl.anchor = "middle_bottom";
+Ul.anchor = "middle_top";
+Gl.x = 0.3;
+Gl.y += 0.265;
+Ul.y -= 0.265;
+Ul.x = 0.3;
+var g1 = Dl;
+var ct = { paths: { path44: { type: "path", points: [{ x: -0.16845120000000047, y: 0.02621170000000017 }, { x: -0.4458008, y: 0.02709619999999968 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.4458008, y: 0.026971799999999657 }, { x: 0.1677968999999997, y: 0.027926399999999685 }], color: "primary", fill: false }, "path8704-1": { type: "path", points: [{ x: -0.0040837000000002455, y: -0.13467459999999964 }, { x: -0.0040837000000002455, y: -0.13467459999999964 }, { x: -0.017668143940740948, y: -0.1311205263185182 }, { x: -0.03043520885925943, y: -0.12727072121481456 }, { x: -0.04240966440000013, y: -0.1231399985999998 }, { x: -0.05361628020740751, y: -0.11874317238518502 }, { x: -0.064079825925926, y: -0.11409505648148131 }, { x: -0.07382507120000005, y: -0.10921046479999987 }, { x: -0.0828767856740741, y: -0.10410421125185171 }, { x: -0.0912597389925926, y: -0.09879110974814802 }, { x: -0.09899870079999995, y: -0.0932859741999998 }, { x: -0.10611844074074069, y: -0.08760361851851838 }, { x: -0.11264372845925916, y: -0.0817588566148146 }, { x: -0.11859933359999993, y: -0.07576650239999982 }, { x: -0.12401002580740728, y: -0.06964136978518495 }, { x: -0.12890057472592584, y: -0.06339827268148127 }, { x: -0.13329574999999985, y: -0.05705202499999972 }, { x: -0.13722032127407394, y: -0.05061744065185156 }, { x: -0.14069905819259243, y: -0.04410933354814783 }, { x: -0.14375673039999987, y: -0.03754251759999966 }, { x: -0.14641810754074058, y: -0.030931806718518143 }, { x: -0.1487079592592591, y: -0.0242920148148144 }, { x: -0.15065105519999983, y: -0.017637955799999563 }, { x: -0.15227216500740723, y: -0.01098444358518472 }, { x: -0.15359605832592574, y: -0.004346292081480994 }, { x: -0.1546475047999998, y: 0.00226168480000051 }, { x: -0.15545127407407386, y: 0.008824673148148676 }, { x: -0.1560321357925924, y: 0.015327859051852397 }, { x: -0.1564148595999998, y: 0.02175642860000056 }, { x: -0.1566242151407405, y: 0.028095567881482052 }, { x: -0.15668497205925902, y: 0.03433046298518576 }, { x: -0.15662189999999976, y: 0.04044630000000058 }, { x: -0.15662189999999976, y: 0.0404463000000006 }, { x: -0.15662189999999976, y: 0.0404463000000006 }, { x: -0.15622857394444417, y: 0.04717166472222282 }, { x: -0.1553217675555553, y: 0.05388046444444503 }, { x: -0.15392183849999977, y: 0.060558907500000585 }, { x: -0.1520491444444442, y: 0.0671932022222228 }, { x: -0.1497240430555553, y: 0.07376955694444502 }, { x: -0.14696689199999974, y: 0.08027418000000058 }, { x: -0.14379804894444415, y: 0.0866932797222228 }, { x: -0.1402378715555553, y: 0.09301306444444506 }, { x: -0.13630671749999965, y: 0.09921974250000057 }, { x: -0.13202494444444415, y: 0.10529952222222282 }, { x: -0.12741291005555522, y: 0.11123861194444501 }, { x: -0.1224909719999997, y: 0.1170232200000006 }, { x: -0.11727948794444407, y: 0.12263955472222278 }, { x: -0.11179881555555524, y: 0.12807382444444504 }, { x: -0.10606931249999965, y: 0.13331223750000057 }, { x: -0.1001113364444441, y: 0.13834100222222284 }, { x: -0.09394524505555521, y: 0.14314632694444504 }, { x: -0.08759139599999967, y: 0.14771442000000062 }, { x: -0.08107014694444413, y: 0.15203148972222283 }, { x: -0.07440185555555523, y: 0.15608374444444503 }, { x: -0.0676068794999997, y: 0.15985739250000058 }, { x: -0.06070557644444415, y: 0.16333864222222283 }, { x: -0.05371830405555529, y: 0.16651370194444504 }, { x: -0.04666541999999976, y: 0.1693687800000006 }, { x: -0.03956728194444424, y: 0.1718900847222228 }, { x: -0.03244424755555539, y: 0.17406382444444501 }, { x: -0.025316674499999876, y: 0.17587620750000055 }, { x: -0.01820492044444437, y: 0.17731344222222278 }, { x: -0.01112934305555553, y: 0.178361736944445 }, { x: -0.004110300000000034, y: 0.17900730000000054 }, { x: -0.004110300000000011, y: 0.17900730000000054 }], color: "primary", fill: false }, "path8704-1-9": { type: "path", points: [{ x: 0.004158700000000071, y: -0.1355885000000001 }, { x: 0.004158700000000071, y: -0.1355885000000001 }, { x: 0.017743143940740766, y: -0.1320344263185187 }, { x: 0.03051020885925925, y: -0.12818462121481505 }, { x: 0.042484664399999955, y: -0.12405389860000024 }, { x: 0.053691280207407335, y: -0.11965707238518546 }, { x: 0.0641548259259258, y: -0.11500895648148178 }, { x: 0.07390007119999986, y: -0.1101243648000003 }, { x: 0.0829517856740739, y: -0.10501811125185218 }, { x: 0.0913347389925924, y: -0.09970500974814848 }, { x: 0.09907370079999973, y: -0.09419987420000027 }, { x: 0.10619344074074046, y: -0.08851751851851883 }, { x: 0.11271872845925893, y: -0.08267275661481507 }, { x: 0.11867433359999968, y: -0.07668040240000029 }, { x: 0.12408502580740703, y: -0.0705552697851854 }, { x: 0.12897557472592555, y: -0.06431217268148172 }, { x: 0.13337074999999957, y: -0.05796592500000018 }, { x: 0.13729532127407365, y: -0.05153134065185202 }, { x: 0.14077405819259214, y: -0.045023233548148286 }, { x: 0.14383173039999952, y: -0.038456417600000126 }, { x: 0.14649310754074024, y: -0.03184570671851861 }, { x: 0.14878295925925875, y: -0.02520591481481487 }, { x: 0.1507260551999995, y: -0.01855185580000003 }, { x: 0.15234716500740686, y: -0.011898343585185192 }, { x: 0.15367105832592537, y: -0.005260192081481464 }, { x: 0.15472250479999944, y: 0.001347784800000043 }, { x: 0.1555262740740735, y: 0.007910773148148207 }, { x: 0.156107135792592, y: 0.01441395905185193 }, { x: 0.1564898595999994, y: 0.020842528600000094 }, { x: 0.15669921514074014, y: 0.02718166788148159 }, { x: 0.15675997205925862, y: 0.03341656298518529 }, { x: 0.15669689999999936, y: 0.03953240000000011 }, { x: 0.15669689999999936, y: 0.039532400000000134 }, { x: 0.15669689999999936, y: 0.039532400000000134 }, { x: 0.1563035739444438, y: 0.04625776472222235 }, { x: 0.15539676755555493, y: 0.05296656444444457 }, { x: 0.15399683849999934, y: 0.05964500750000013 }, { x: 0.1521241444444438, y: 0.06627930222222234 }, { x: 0.14979904305555491, y: 0.07285565694444456 }, { x: 0.14704189199999937, y: 0.07936028000000013 }, { x: 0.1438730489444438, y: 0.08577937972222234 }, { x: 0.1403128715555549, y: 0.09209916444444458 }, { x: 0.13638171749999925, y: 0.0983058425000001 }, { x: 0.13209994444444376, y: 0.10438562222222235 }, { x: 0.12748791005555482, y: 0.11032471194444453 }, { x: 0.12256597199999929, y: 0.11610932000000013 }, { x: 0.1173544879444437, y: 0.1217256547222223 }, { x: 0.11187381555555485, y: 0.12715992444444457 }, { x: 0.10614431249999925, y: 0.1323983375000001 }, { x: 0.10018633644444369, y: 0.13742710222222235 }, { x: 0.09402024505555481, y: 0.14223242694444457 }, { x: 0.08766639599999927, y: 0.14680052000000016 }, { x: 0.08114514694444372, y: 0.15111758972222236 }, { x: 0.07447685555555483, y: 0.15516984444444457 }, { x: 0.06768187949999929, y: 0.15894349250000012 }, { x: 0.06078057644444377, y: 0.16242474222222236 }, { x: 0.053793304055554894, y: 0.16559980194444457 }, { x: 0.046740419999999366, y: 0.16845488000000014 }, { x: 0.039642281944443844, y: 0.17097618472222234 }, { x: 0.03251924755555499, y: 0.17314992444444455 }, { x: 0.02539167449999948, y: 0.17496230750000008 }, { x: 0.018279920444443973, y: 0.17639954222222232 }, { x: 0.011204343055555134, y: 0.17744783694444452 }, { x: 0.004185299999999637, y: 0.17809340000000007 }, { x: 0.004185299999999614, y: 0.17809340000000007 }], color: "primary", fill: false }, path4: { type: "path", points: [{ x: -0.08039130000000005, y: 0.0179576999999993 }, { x: -0.08039130000000005, y: 0.09650599999999931 }], color: "primary", fill: true }, "path4-5": { type: "path", points: [{ x: 0.01494479999999987, y: -0.055216500000000224 }, { x: 0.01494479999999987, y: 0.09691909999999937 }], color: "primary", fill: true }, "path4-5-8": { type: "path", points: [{ x: 0.06871169999999927, y: -0.056870000000000864 }, { x: 0.06871169999999927, y: 0.018784499999999538 }], color: "primary", fill: true }, "path4-1": { type: "path", points: [{ x: -0.08179359999999969, y: 0.09650570000000003 }, { x: 0.015771699999999722, y: 0.09650570000000003 }], color: "primary", fill: true }, "path4-1-6": { type: "path", points: [{ x: 0.0117995999999998, y: -0.05594970000000088 }, { x: 0.06843709999999925, y: -0.05594970000000088 }], color: "primary", fill: true }, "rect1577-4": { type: "path", points: [{ x: -0.17162450000000073, y: 0.11125030000000025 }, { x: -0.2688274000000015, y: 0.11125030000000025 }, { x: -0.2688274000000015, y: 0.11469129999999961 }, { x: -0.17162450000000073, y: 0.11469129999999961 }], color: "primary", fill: true }, "rect1577-4-7": { type: "path", points: [{ x: -0.2184661999999995, y: 0.16159429999999997 }, { x: -0.2184661999999995, y: 0.06439139999999943 }, { x: -0.22190719999999908, y: 0.06439139999999943 }, { x: -0.22190719999999908, y: 0.16159429999999997 }], color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.0024445000000006267, y: 0.23933980000000044 }, bottom1: { type: "text", text: "{VAL}", x: 0.00341719999999901, y: -0.23933980000000066 } }, refblocks: { left1: { x: -0.4458008, y: 0.02709619999999968 }, right1: { x: 0.4458008, y: 0.026971799999999657 } }, bounds: { minX: -0.473959241, maxX: 0.473959241, minY: -0.23933980000000066, maxY: 0.23933980000000044, width: 0.947918482, height: 0.4786796000000011, centerX: 0, centerY: -0.00000000000000011102230246251565 }, circles: {} };
+var u1 = e(ct).rotateRightFacingSymbol("down").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_left", { x: 0.02, y: 0.2 }).changeTextAnchor("{VAL}", "middle_left", { x: 0.5, y: -0.2 }).build();
+var v1 = e(ct).rotateRightFacingSymbol("left").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom", { x: 0, y: 0.45 }).changeTextAnchor("{VAL}", "middle_top", { x: 0, y: -0.55 }).build();
+var w1 = e(ct).rotateRightFacingSymbol("right").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var A1 = e(ct).rotateRightFacingSymbol("up").labelPort("left1", ["1", "pos"]).labelPort("right1", ["2", "neg"]).changeTextAnchor("{VAL}", "middle_left", { x: 0.02, y: -0.2 }).changeTextAnchor("{REF}", "middle_left", { x: 0.5, y: 0.2 }).build();
+var Wl = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-5": { type: "path", points: [{ x: 0.19, y: -0.09 }, { x: 0.15, y: -0.09 }], color: "primary", fill: false }, "path43-5-2": { type: "path", points: [{ x: 0.19, y: -0.14 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var H0 = e(Wl).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var P1 = r(H0);
+var S1 = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "RPM", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: sb, texts: mb, bounds: Z0, refblocks: R1, circles: nb } = S1;
+var kt = x({ primitives: [...Object.values(sb), ...Object.values(nb), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...mb.left1, y: 0.01, anchor: "center", fontSize: 0.2 }], ports: [{ ...R1.left1, labels: ["1"] }, { ...R1.right1, labels: ["2"] }], size: { width: Z0.width, height: Z0.height }, center: { x: Z0.centerX, y: Z0.centerY } });
+var { 5: fb, ...cb } = kt.primitives;
+function hb(t) {
   return typeof t == "object";
 }
-var y1 = r({ ...jt, primitives: Object.values(G9).filter(U9) });
-var x1 = { ...y1, primitives: [...y1.primitives, D9] };
-var ct = s({ primitives: [{ type: "path", points: [{ x: -0.2, y: 0 }, { x: 0, y: 0 }], color: "primary", fill: false }, { type: "path", points: Array.from({ length: 8 }, (t, o) => {
+var F1 = r({ ...kt, primitives: Object.values(cb).filter(hb) });
+var T1 = { ...F1, primitives: [...F1.primitives, fb] };
+var ht = x({ primitives: [{ type: "path", points: [{ x: -0.2, y: 0 }, { x: 0, y: 0 }], color: "primary", fill: false }, { type: "path", points: Array.from({ length: 8 }, (t, o) => {
   let i = Math.PI / 2 - o * Math.PI / 7, l = 0.1;
   return { x: 0.1 - l * Math.cos(i), y: l * Math.sin(i) };
 }), color: "primary", fill: false }, { type: "text", text: "{REF}", x: 0.125, y: 0, anchor: "middle_left" }], ports: [{ x: -0.2, y: 0, labels: ["1"] }], center: { x: 0, y: 0 } });
-var m1 = r(ct, "down");
-var s1 = m1.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-s1 && (s1.anchor = "middle_top");
-var n1 = m1;
-var f1 = r(ct, "left");
-var h1 = r(ct, "up");
-var c1 = h1.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-c1 && (c1.anchor = "middle_bottom");
-var d1 = h1;
-var b1 = { paths: { path40: { type: "path", points: [{ x: 0.44, y: 0.04 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: 0.19, y: 0.18 }, { x: 0.44, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: 0.19, y: -0.09 }, { x: 0.19, y: 0.18 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: 0.19, y: 0.04 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.43, y: 0.22 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { right1: { x: -0.43, y: 0.22 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var wt = e(b1).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
-var zl = r(wt, "up");
-var Ol = zl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Jl = zl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Ol.anchor = "middle_bottom";
-Jl.anchor = "middle_top";
-Ol.x = 0.4;
-Ol.y += 0.2;
-Jl.y -= 0.3;
-Jl.x = 0.4;
-var H0 = zl;
-var $l = v(H0);
-var Ml = $l.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Cl = $l.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Ml.anchor = "middle_bottom";
-Cl.anchor = "middle_top";
-Ml.x = 0.35;
-Ml.y += 0.4;
-Cl.y -= 0.4;
-Cl.x = 0.35;
-var _1 = $l;
-var Nl = r(wt, "left");
-var Il = Nl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Bl = Nl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Il.anchor = "middle_bottom";
-Bl.anchor = "middle_top";
-Il.x = 0;
-Il.y += 0.5;
-Bl.y -= 0.6;
-Bl.x = 0;
-var g1 = Nl;
-var ql = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.04 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.1, y: 0.04 }, { x: 0.54, y: 0.04 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: -0.15 }, { x: -0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: 0.09, y: -0.15 }, { x: 0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.08, y: 0.06 }, { x: -0.08, y: -0.15 }, { x: 0.09, y: -0.05 }, { x: -0.08, y: 0.06 }], color: "primary", fill: true }, "path11-0-9-0": { type: "path", points: [{ x: 0.08, y: 0.26 }, { x: 0.08, y: 0.05 }, { x: -0.09, y: 0.15 }, { x: 0.07, y: 0.26 }], color: "primary", fill: true }, "path12-2": { type: "path", points: [{ x: 0.09, y: -0.06 }, { x: 0.27, y: -0.17 }], color: "primary", fill: false }, "path12-2-9": { type: "path", points: [{ x: 0.27, y: -0.18 }, { x: 0.27, y: -0.31 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.42 } }, refblocks: { bottom1: { x: 0.27, y: -0.31 }, left1: { x: -0.54, y: 0.04 }, right1: { x: 0.54, y: 0.04 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.42, maxY: 0.42, width: 1.14, height: 0.83, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.05, radius: 0.29, color: "primary", fill: false } } };
-var Z0 = e(ql).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var u1 = r(Z0);
-var v1 = u1.primitives.filter((t) => t.type === "text");
-var Z9 = v1.find((t) => t.text === "{REF}");
-var Q9 = v1.find((t) => t.text === "{VAL}");
-Z9.y = 0;
-Q9.y = 0;
-var w1 = u1;
-var A1 = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.08, y: 0.18 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.14, y: -0.09 }, { x: 0.08, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: tb, texts: P1, bounds: Q0, refblocks: S1, circles: eb } = A1;
-var K0 = s({ primitives: [...Object.values(tb), ...Object.values(eb), { ...P1.top1, anchor: "middle_bottom" }, { ...P1.bottom1, anchor: "middle_top" }], ports: [{ ...S1.left1, labels: ["1"] }, { ...S1.right1, labels: ["2"] }], size: { width: Q0.width, height: Q0.height }, center: { x: Q0.centerX, y: Q0.centerY } });
-var Dl = r(K0);
-var rb = Dl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var ob = Dl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-rb.anchor = "middle_left";
-ob.anchor = "middle_right";
-var R1 = Dl;
-var F1 = { paths: { path11: { type: "path", points: [{ x: -0.34, y: 0.22 }, { x: -0.02, y: 0.01 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.23, y: 0.13 }, { x: 0.23, y: 0.4 }], color: "primary", fill: false }, "path12-2": { type: "path", points: [{ x: 0.23, y: -0.08 }, { x: 0.23, y: -0.35 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.01, y: -0.18 }, { x: -0.01, y: 0.23 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: 0.23, y: 0.12 }, { x: -0.01, y: 0.12 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.11, y: 0.13 }, { x: -0.17, y: 0.04 }, { x: -0.06, y: 0.03 }, { x: -0.11, y: 0.13 }], color: "primary", fill: true }, "path11-0-3-8": { type: "path", points: [{ x: 0.23, y: -0.08 }, { x: -0.01, y: -0.08 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.2, y: 0.39 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.42 } }, refblocks: { top1: { x: 0.23, y: 0.4 }, bottom1: { x: 0.23, y: -0.35 }, left1: { x: -0.34, y: 0.22 } }, bounds: { minX: -0.37, maxX: 0.37, minY: -0.42, maxY: 0.42, width: 0.74, height: 0.85, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.08, y: 0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: lb, texts: T1, bounds: tr, refblocks: Gl, circles: pb } = F1;
-var er = s({ primitives: [...Object.values(lb), ...Object.values(pb), { ...T1.top1, anchor: "middle_left" }, { ...T1.bottom1, anchor: "middle_right" }], ports: [{ ...Gl.top1, labels: ["1"] }, { ...Gl.bottom1, labels: ["2"] }, { ...Gl.left1, labels: ["3"] }], size: { width: tr.width, height: tr.height }, center: { x: tr.centerX, y: tr.centerY } });
-var E1 = r(er);
-var Y1 = E1.primitives.filter((t) => t.type === "text");
-var ab = Y1.find((t) => t.text === "{REF}");
-ab.y = 0.1;
-var X1 = Y1.find((t) => t.text === "{VAL}");
-X1.y = 0.1;
-X1.x = -0.4;
-var L1 = E1;
-var V1 = { paths: { capsule_outer: { type: "path", points: [{ x: -0.44, y: 0.34 }, { x: -0.45, y: 0.39 }, { x: -0.46, y: 0.42 }, { x: -0.49, y: 0.44 }, { x: -0.52, y: 0.46 }, { x: -0.56, y: 0.46 }, { x: -0.6, y: 0.46 }, { x: -0.63, y: 0.44 }, { x: -0.65, y: 0.42 }, { x: -0.67, y: 0.39 }, { x: -0.68, y: 0.34 }, { x: -0.68, y: -0.34 }, { x: -0.67, y: -0.39 }, { x: -0.65, y: -0.42 }, { x: -0.63, y: -0.44 }, { x: -0.6, y: -0.45 }, { x: -0.56, y: -0.46 }, { x: -0.52, y: -0.45 }, { x: -0.49, y: -0.44 }, { x: -0.46, y: -0.42 }, { x: -0.45, y: -0.39 }, { x: -0.44, y: -0.34 }, { x: -0.44, y: 0.34 }], color: "primary", fill: false }, capsule_inner: { type: "path", points: [{ x: -0.51, y: 0.28 }, { x: -0.52, y: 0.32 }, { x: -0.53, y: 0.34 }, { x: -0.56, y: 0.35 }, { x: -0.57, y: 0.35 }, { x: -0.58, y: 0.34 }, { x: -0.6, y: 0.32 }, { x: -0.61, y: 0.28 }, { x: -0.61, y: -0.28 }, { x: -0.6, y: -0.32 }, { x: -0.58, y: -0.34 }, { x: -0.57, y: -0.35 }, { x: -0.56, y: -0.35 }, { x: -0.53, y: -0.34 }, { x: -0.52, y: -0.32 }, { x: -0.51, y: -0.28 }, { x: -0.51, y: 0.28 }], color: "primary", fill: true }, usb_vertical: { type: "path", points: [{ x: 0.1, y: -0.4 }, { x: 0.1, y: 0.4 }], color: "primary", fill: false }, usb_left_branch: { type: "path", points: [{ x: 0.1, y: -0.1 }, { x: -0.03, y: 0.05 }, { x: -0.03, y: 0.15 }], color: "primary", fill: false }, usb_right_branch: { type: "path", points: [{ x: 0.1, y: 0 }, { x: 0.25, y: 0.15 }, { x: 0.25, y: 0.25 }], color: "primary", fill: false }, usb_arrow: { type: "path", points: [{ x: 0.05, y: 0.4 }, { x: 0.1, y: 0.5 }, { x: 0.15, y: 0.4 }, { x: 0.05, y: 0.4 }], color: "primary", fill: true }, usb_square: { type: "path", points: [{ x: 0.2, y: 0.25 }, { x: 0.3, y: 0.25 }, { x: 0.3, y: 0.35 }, { x: 0.2, y: 0.35 }, { x: 0.2, y: 0.25 }], color: "primary", fill: true } }, circles: { usb_base: { type: "circle", x: 0.1, y: -0.4, radius: 0.07, color: "primary", fill: true }, usb_tip_circle: { type: "circle", x: -0.03, y: 0.15, radius: 0.04, color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.25, y: 0.7 } }, refblocks: {}, bounds: { minX: -0.75, maxX: 0.35, minY: -0.6, maxY: 0.75, width: 1.1, height: 1.35, centerX: -0.2, centerY: 0.08 } };
-var j1 = e(V1).changeTextAnchor("{REF}", "middle_bottom").build();
-var k1 = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Var", x: -0.19, y: 0.07 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: sb, texts: Ul, bounds: rr, refblocks: z1, circles: mb } = k1;
-var or = s({ primitives: [...Object.values(sb), ...Object.values(mb), { ...Ul.top1, x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { ...Ul.bottom1, x: 0, y: 0.35, anchor: "middle_bottom" }, { ...Ul.left1, x: -0.02, y: 0.01, fontSize: 0.2, anchor: "center" }], ports: [{ ...z1.left1, labels: ["1"] }, { ...z1.right1, labels: ["2"] }], size: { width: rr.width, height: rr.height }, center: { x: rr.centerX, y: rr.centerY } });
-var O1 = r(or);
-var J1 = { paths: { path40: { type: "path", points: [{ x: 0.08, y: 0.04 }, { x: -0.18, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.18, y: 0.18 }, { x: 0.08, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.18, y: -0.09 }, { x: -0.18, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.09, y: 0.17 }, { x: 0.1, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.2, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.21, y: 0.04 }], color: "primary", fill: false }, "path43-6": { type: "path", points: [{ x: 0.19, y: 0.17 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: fb, texts: $1, bounds: ir, refblocks: M1, circles: cb } = J1;
-var lr = s({ primitives: [...Object.values(fb), ...Object.values(cb), { ...$1.top1, anchor: "middle_bottom" }, { ...$1.bottom1, anchor: "middle_top" }], ports: [{ ...M1.left1, labels: ["1"] }, { ...M1.right1, labels: ["2"] }], size: { width: ir.width, height: ir.height }, center: { x: ir.centerX, y: ir.centerY } });
-var Wl = r(lr);
-var hb = Wl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var db = Wl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-hb.anchor = "middle_left";
-db.anchor = "middle_right";
-var C1 = Wl;
-var N1 = { paths: { path5: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.26, y: 0 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.27, y: 0 }, { x: 0.54, y: 0.01 }], color: "primary", fill: false }, path7: { type: "path", points: [{ x: 0.27, y: -0.23 }, { x: -0.26, y: 0.24 }], color: "primary", fill: false }, path8: { type: "path", points: [{ x: 0.38, y: -0.23 }, { x: 0.27, y: -0.23 }], color: "primary", fill: false }, path9: { type: "path", points: [{ x: 0, y: 0.14 }, { x: 0.27, y: 0.14 }, { x: 0.27, y: -0.13 }, { x: -0.26, y: -0.13 }, { x: -0.26, y: 0.14 }, { x: 0, y: 0.14 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.06, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0.01, y: -0.25 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.25, maxY: 0.25, width: 1.13, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: _b, texts: I1, bounds: pr, refblocks: B1 } = N1;
-var ar = s({ primitives: [...Object.values(_b), { ...I1.top1, anchor: "middle_left" }, { ...I1.bottom1, anchor: "middle_right" }], ports: [{ ...B1.left1, labels: ["1", "-"] }, { ...B1.right1, labels: ["2", "+"] }], size: { width: pr.width, height: pr.height }, center: { x: pr.centerX, y: pr.centerY } });
-var q1 = r(ar);
-var D1 = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Var", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: ub, texts: vb, bounds: yr, refblocks: G1, circles: wb } = D1;
-var kt = s({ primitives: [...Object.values(ub), ...Object.values(wb), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...vb.left1, anchor: "center", y: 0.02, fontSize: 0.2 }], ports: [{ ...G1.left1, labels: ["1"] }, { ...G1.right1, labels: ["2"] }], size: { width: yr.width, height: yr.height }, center: { x: yr.centerX, y: yr.centerY } });
-var { 5: Ab, ...Pb } = kt.primitives;
-function Sb(t) {
+var Y1 = r(ht, "down");
+var E1 = Y1.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+E1 && (E1.anchor = "middle_top");
+var X1 = Y1;
+var L1 = r(ht, "left");
+var j1 = r(ht, "up");
+var V1 = j1.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+V1 && (V1.anchor = "middle_bottom");
+var k1 = j1;
+var z1 = { paths: { path40: { type: "path", points: [{ x: 0.44, y: 0.04 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: 0.19, y: 0.18 }, { x: 0.44, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: 0.19, y: -0.09 }, { x: 0.19, y: 0.18 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: 0.19, y: 0.04 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false }, path45: { type: "path", points: [{ x: -0.43, y: 0.22 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { right1: { x: -0.43, y: 0.22 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var At = e(z1).labelPort("right1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").changeTextAnchor("{VAL}", "middle_top").build();
+var Hl = r(At, "up");
+var Zl = Hl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ql = Hl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Zl.anchor = "middle_bottom";
+Ql.anchor = "middle_top";
+Zl.x = 0.4;
+Zl.y += 0.2;
+Ql.y -= 0.3;
+Ql.x = 0.4;
+var Q0 = Hl;
+var Kl = v(Q0);
+var tp = Kl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ep = Kl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+tp.anchor = "middle_bottom";
+ep.anchor = "middle_top";
+tp.x = 0.35;
+tp.y += 0.4;
+ep.y -= 0.4;
+ep.x = 0.35;
+var O1 = Kl;
+var rp = r(At, "left");
+var op = rp.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var ip = rp.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+op.anchor = "middle_bottom";
+ip.anchor = "middle_top";
+op.x = 0;
+op.y += 0.5;
+ip.y -= 0.6;
+ip.x = 0;
+var J1 = rp;
+var lp = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.04 }, { x: -0.11, y: 0.04 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.1, y: 0.04 }, { x: 0.54, y: 0.04 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.09, y: -0.15 }, { x: -0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: 0.09, y: -0.15 }, { x: 0.09, y: 0.26 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.08, y: 0.06 }, { x: -0.08, y: -0.15 }, { x: 0.09, y: -0.05 }, { x: -0.08, y: 0.06 }], color: "primary", fill: true }, "path11-0-9-0": { type: "path", points: [{ x: 0.08, y: 0.26 }, { x: 0.08, y: 0.05 }, { x: -0.09, y: 0.15 }, { x: 0.07, y: 0.26 }], color: "primary", fill: true }, "path12-2": { type: "path", points: [{ x: 0.09, y: -0.06 }, { x: 0.27, y: -0.17 }], color: "primary", fill: false }, "path12-2-9": { type: "path", points: [{ x: 0.27, y: -0.18 }, { x: 0.27, y: -0.31 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: 0.01, y: 0.42 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.42 } }, refblocks: { bottom1: { x: 0.27, y: -0.31 }, left1: { x: -0.54, y: 0.04 }, right1: { x: 0.54, y: 0.04 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.42, maxY: 0.42, width: 1.14, height: 0.83, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.05, radius: 0.29, color: "primary", fill: false } } };
+var K0 = e(lp).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).labelPort("bottom1", ["3"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var $1 = r(K0);
+var M1 = $1.primitives.filter((t) => t.type === "text");
+var _b = M1.find((t) => t.text === "{REF}");
+var gb = M1.find((t) => t.text === "{VAL}");
+_b.y = 0;
+gb.y = 0;
+var C1 = $1;
+var N1 = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.08, y: 0.18 }], color: "primary", fill: false }, "path43-8-8": { type: "path", points: [{ x: 0.14, y: -0.09 }, { x: 0.08, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: vb, texts: I1, bounds: tr, refblocks: B1, circles: wb } = N1;
+var er = x({ primitives: [...Object.values(vb), ...Object.values(wb), { ...I1.top1, anchor: "middle_bottom" }, { ...I1.bottom1, anchor: "middle_top" }], ports: [{ ...B1.left1, labels: ["1"] }, { ...B1.right1, labels: ["2"] }], size: { width: tr.width, height: tr.height }, center: { x: tr.centerX, y: tr.centerY } });
+var pp = r(er);
+var Ab = pp.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Pb = pp.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+Ab.anchor = "middle_left";
+Pb.anchor = "middle_right";
+var q1 = pp;
+var D1 = { paths: { path11: { type: "path", points: [{ x: -0.34, y: 0.22 }, { x: -0.02, y: 0.01 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.23, y: 0.13 }, { x: 0.23, y: 0.4 }], color: "primary", fill: false }, "path12-2": { type: "path", points: [{ x: 0.23, y: -0.08 }, { x: 0.23, y: -0.35 }], color: "primary", fill: false }, "path11-0": { type: "path", points: [{ x: -0.01, y: -0.18 }, { x: -0.01, y: 0.23 }], color: "primary", fill: false }, "path11-0-3": { type: "path", points: [{ x: 0.23, y: 0.12 }, { x: -0.01, y: 0.12 }], color: "primary", fill: false }, "path11-0-9": { type: "path", points: [{ x: -0.11, y: 0.13 }, { x: -0.17, y: 0.04 }, { x: -0.06, y: 0.03 }, { x: -0.11, y: 0.13 }], color: "primary", fill: true }, "path11-0-3-8": { type: "path", points: [{ x: 0.23, y: -0.08 }, { x: -0.01, y: -0.08 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.2, y: 0.39 }, bottom1: { type: "text", text: "{VAL}", x: -0.03, y: -0.42 } }, refblocks: { top1: { x: 0.23, y: 0.4 }, bottom1: { x: 0.23, y: -0.35 }, left1: { x: -0.34, y: 0.22 } }, bounds: { minX: -0.37, maxX: 0.37, minY: -0.42, maxY: 0.42, width: 0.74, height: 0.85, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0.08, y: 0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Rb, texts: G1, bounds: rr, refblocks: ap, circles: Fb } = D1;
+var or = x({ primitives: [...Object.values(Rb), ...Object.values(Fb), { ...G1.top1, anchor: "middle_left" }, { ...G1.bottom1, anchor: "middle_right" }], ports: [{ ...ap.top1, labels: ["1"] }, { ...ap.bottom1, labels: ["2"] }, { ...ap.left1, labels: ["3"] }], size: { width: rr.width, height: rr.height }, center: { x: rr.centerX, y: rr.centerY } });
+var U1 = r(or);
+var W1 = U1.primitives.filter((t) => t.type === "text");
+var Tb = W1.find((t) => t.text === "{REF}");
+Tb.y = 0.1;
+var H1 = W1.find((t) => t.text === "{VAL}");
+H1.y = 0.1;
+H1.x = -0.4;
+var Z1 = U1;
+var Q1 = { paths: { capsule_outer: { type: "path", points: [{ x: -0.44, y: 0.34 }, { x: -0.45, y: 0.39 }, { x: -0.46, y: 0.42 }, { x: -0.49, y: 0.44 }, { x: -0.52, y: 0.46 }, { x: -0.56, y: 0.46 }, { x: -0.6, y: 0.46 }, { x: -0.63, y: 0.44 }, { x: -0.65, y: 0.42 }, { x: -0.67, y: 0.39 }, { x: -0.68, y: 0.34 }, { x: -0.68, y: -0.34 }, { x: -0.67, y: -0.39 }, { x: -0.65, y: -0.42 }, { x: -0.63, y: -0.44 }, { x: -0.6, y: -0.45 }, { x: -0.56, y: -0.46 }, { x: -0.52, y: -0.45 }, { x: -0.49, y: -0.44 }, { x: -0.46, y: -0.42 }, { x: -0.45, y: -0.39 }, { x: -0.44, y: -0.34 }, { x: -0.44, y: 0.34 }], color: "primary", fill: false }, capsule_inner: { type: "path", points: [{ x: -0.51, y: 0.28 }, { x: -0.52, y: 0.32 }, { x: -0.53, y: 0.34 }, { x: -0.56, y: 0.35 }, { x: -0.57, y: 0.35 }, { x: -0.58, y: 0.34 }, { x: -0.6, y: 0.32 }, { x: -0.61, y: 0.28 }, { x: -0.61, y: -0.28 }, { x: -0.6, y: -0.32 }, { x: -0.58, y: -0.34 }, { x: -0.57, y: -0.35 }, { x: -0.56, y: -0.35 }, { x: -0.53, y: -0.34 }, { x: -0.52, y: -0.32 }, { x: -0.51, y: -0.28 }, { x: -0.51, y: 0.28 }], color: "primary", fill: true }, usb_vertical: { type: "path", points: [{ x: 0.1, y: -0.4 }, { x: 0.1, y: 0.4 }], color: "primary", fill: false }, usb_left_branch: { type: "path", points: [{ x: 0.1, y: -0.1 }, { x: -0.03, y: 0.05 }, { x: -0.03, y: 0.15 }], color: "primary", fill: false }, usb_right_branch: { type: "path", points: [{ x: 0.1, y: 0 }, { x: 0.25, y: 0.15 }, { x: 0.25, y: 0.25 }], color: "primary", fill: false }, usb_arrow: { type: "path", points: [{ x: 0.05, y: 0.4 }, { x: 0.1, y: 0.5 }, { x: 0.15, y: 0.4 }, { x: 0.05, y: 0.4 }], color: "primary", fill: true }, usb_square: { type: "path", points: [{ x: 0.2, y: 0.25 }, { x: 0.3, y: 0.25 }, { x: 0.3, y: 0.35 }, { x: 0.2, y: 0.35 }, { x: 0.2, y: 0.25 }], color: "primary", fill: true } }, circles: { usb_base: { type: "circle", x: 0.1, y: -0.4, radius: 0.07, color: "primary", fill: true }, usb_tip_circle: { type: "circle", x: -0.03, y: 0.15, radius: 0.04, color: "primary", fill: true } }, texts: { top1: { type: "text", text: "{REF}", x: -0.25, y: 0.7 } }, refblocks: {}, bounds: { minX: -0.75, maxX: 0.35, minY: -0.6, maxY: 0.75, width: 1.1, height: 1.35, centerX: -0.2, centerY: 0.08 } };
+var K1 = e(Q1).changeTextAnchor("{REF}", "middle_bottom").build();
+var tf = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Var", x: -0.19, y: 0.07 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Xb, texts: yp, bounds: ir, refblocks: ef, circles: Lb } = tf;
+var lr = x({ primitives: [...Object.values(Xb), ...Object.values(Lb), { ...yp.top1, x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { ...yp.bottom1, x: 0, y: 0.35, anchor: "middle_bottom" }, { ...yp.left1, x: -0.02, y: 0.01, fontSize: 0.2, anchor: "center" }], ports: [{ ...ef.left1, labels: ["1"] }, { ...ef.right1, labels: ["2"] }], size: { width: ir.width, height: ir.height }, center: { x: ir.centerX, y: ir.centerY } });
+var rf = r(lr);
+var of = { paths: { path40: { type: "path", points: [{ x: 0.08, y: 0.04 }, { x: -0.18, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.18, y: 0.18 }, { x: 0.08, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.18, y: -0.09 }, { x: -0.18, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.09, y: 0.17 }, { x: 0.1, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.2, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.21, y: 0.04 }], color: "primary", fill: false }, "path43-6": { type: "path", points: [{ x: 0.19, y: 0.17 }, { x: 0.19, y: -0.09 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: jb, texts: lf, bounds: pr, refblocks: pf, circles: kb } = of;
+var ar = x({ primitives: [...Object.values(jb), ...Object.values(kb), { ...lf.top1, anchor: "middle_bottom" }, { ...lf.bottom1, anchor: "middle_top" }], ports: [{ ...pf.left1, labels: ["1"] }, { ...pf.right1, labels: ["2"] }], size: { width: pr.width, height: pr.height }, center: { x: pr.centerX, y: pr.centerY } });
+var xp = r(ar);
+var zb = xp.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var Ob = xp.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+zb.anchor = "middle_left";
+Ob.anchor = "middle_right";
+var af = xp;
+var yf = { paths: { path5: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.26, y: 0 }], color: "primary", fill: false }, path6: { type: "path", points: [{ x: 0.27, y: 0 }, { x: 0.54, y: 0.01 }], color: "primary", fill: false }, path7: { type: "path", points: [{ x: 0.27, y: -0.23 }, { x: -0.26, y: 0.24 }], color: "primary", fill: false }, path8: { type: "path", points: [{ x: 0.38, y: -0.23 }, { x: 0.27, y: -0.23 }], color: "primary", fill: false }, path9: { type: "path", points: [{ x: 0, y: 0.14 }, { x: 0.27, y: 0.14 }, { x: 0.27, y: -0.13 }, { x: -0.26, y: -0.13 }, { x: -0.26, y: 0.14 }, { x: 0, y: 0.14 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.06, y: 0.25 }, bottom1: { type: "text", text: "{VAL}", x: 0.01, y: -0.25 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0.01 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.25, maxY: 0.25, width: 1.13, height: 0.5, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: $b, texts: xf, bounds: yr, refblocks: sf } = yf;
+var xr = x({ primitives: [...Object.values($b), { ...xf.top1, anchor: "middle_left" }, { ...xf.bottom1, anchor: "middle_right" }], ports: [{ ...sf.left1, labels: ["1", "-"] }, { ...sf.right1, labels: ["2", "+"] }], size: { width: yr.width, height: yr.height }, center: { x: yr.centerX, y: yr.centerY } });
+var mf = r(xr);
+var nf = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Var", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: Cb, texts: Nb, bounds: sr, refblocks: ff, circles: Ib } = nf;
+var zt = x({ primitives: [...Object.values(Cb), ...Object.values(Ib), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...Nb.left1, anchor: "center", y: 0.02, fontSize: 0.2 }], ports: [{ ...ff.left1, labels: ["1"] }, { ...ff.right1, labels: ["2"] }], size: { width: sr.width, height: sr.height }, center: { x: sr.centerX, y: sr.centerY } });
+var { 5: Bb, ...qb } = zt.primitives;
+function Db(t) {
   return typeof t == "object";
 }
-var U1 = r({ ...kt, primitives: Object.values(Pb).filter(Sb) });
-var W1 = { ...U1, primitives: [...U1.primitives, Ab] };
-var ht = { paths: { "path28-2": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0, y: 0.09 }], color: "primary", fill: false }, "path28-2-6": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0, y: -0.09 }], color: "primary", fill: false }, "path29-3": { type: "path", points: [{ x: 0.19, y: 0 }, { x: -0.23, y: 0 }], color: "primary", fill: false } }, texts: { right1: { type: "text", text: "{REF}", x: 0.25, y: 0 } }, refblocks: { left1: { x: -0.23, y: 0 } }, bounds: { minX: -0.25, maxX: 0.25, minY: -0.09, maxY: 0.09, width: 0.5, height: 0.19, centerX: 0, centerY: 0 }, circles: {} };
-function X(t, o) {
+var cf = r({ ...zt, primitives: Object.values(qb).filter(Db) });
+var hf = { ...cf, primitives: [...cf.primitives, Bb] };
+var dt = { paths: { "path28-2": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0, y: 0.09 }], color: "primary", fill: false }, "path28-2-6": { type: "path", points: [{ x: 0.19, y: 0 }, { x: 0, y: -0.09 }], color: "primary", fill: false }, "path29-3": { type: "path", points: [{ x: 0.19, y: 0 }, { x: -0.23, y: 0 }], color: "primary", fill: false } }, texts: { right1: { type: "text", text: "{REF}", x: 0.25, y: 0 } }, refblocks: { left1: { x: -0.23, y: 0 } }, bounds: { minX: -0.25, maxX: 0.25, minY: -0.09, maxY: 0.09, width: 0.5, height: 0.19, centerX: 0, centerY: 0 }, circles: {} };
+function L(t, o) {
   let { width: i, height: l } = t.size, a = 1, y = 1;
   o.width !== undefined && o.height !== undefined ? (a = o.width / i, y = o.height / l) : o.width !== undefined ? a = y = o.width / i : o.height !== undefined && (a = y = o.height / l);
   let n = t.primitives.map((m) => {
@@ -27138,46 +27179,46 @@ function X(t, o) {
   });
   return { ...t, primitives: n, center: { x: t.center.x * a, y: t.center.y * y }, ports: t.ports.map((m) => ({ ...m, x: m.x * a, y: m.y * y })), size: { width: i * a, height: l * y } };
 }
-var Fb = e(ht).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
-var H1 = X(Fb, { width: 0.24, height: 0.23 });
-var Tb = e(ht).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
-var Z1 = X(Tb, { width: 0.23, height: 0.24 });
-var Eb = e(ht).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
-var Q1 = X(Eb, { width: 0.23, height: 0.24 });
-var Yb = e(ht).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var K1 = X(Yb, { width: 0.24, height: 0.23 });
-var Hl = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.03 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0, y: -0.06 }, { x: -0.11, y: 0.13 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.03 }, { x: 0.54, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: -0.4 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.03 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.8, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
-var xr = e(Hl).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
-var tf = r(xr);
-var ef = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Wh", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Vb, texts: jb, bounds: sr, refblocks: rf, circles: kb } = ef;
-var zt = s({ primitives: [...Object.values(Vb), ...Object.values(kb), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...jb.left1, anchor: "center", y: 0.01, fontSize: 0.2 }], ports: [{ ...rf.left1, labels: ["1"] }, { ...rf.right1, labels: ["2"] }], size: { width: sr.width, height: sr.height }, center: { x: sr.centerX, y: sr.centerY } });
-var { 5: zb, ...Ob } = zt.primitives;
-function Jb(t) {
+var Ub = e(dt).rotateRightFacingSymbol("down").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_top").build();
+var df = L(Ub, { width: 0.24, height: 0.23 });
+var Wb = e(dt).rotateRightFacingSymbol("left").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_right").build();
+var bf = L(Wb, { width: 0.23, height: 0.24 });
+var Hb = e(dt).rotateRightFacingSymbol("right").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_left").build();
+var _f = L(Hb, { width: 0.23, height: 0.24 });
+var Zb = e(dt).rotateRightFacingSymbol("up").labelPort("left1", ["1"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var gf = L(Zb, { width: 0.24, height: 0.23 });
+var sp = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0.03 }, { x: -0.3, y: 0.03 }], color: "primary", fill: false }, "path11-5-5": { type: "path", points: [{ x: 0.1, y: 0.13 }, { x: 0, y: -0.06 }, { x: -0.11, y: 0.13 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0.03 }, { x: 0.54, y: 0.03 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.02, y: 0.4 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: -0.4 } }, refblocks: { left1: { x: -0.54, y: 0.03 }, right1: { x: 0.54, y: 0.03 } }, bounds: { minX: -0.57, maxX: 0.57, minY: -0.4, maxY: 0.4, width: 1.14, height: 0.8, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: 0, y: 0.04, radius: 0.29, color: "primary", fill: false } } };
+var mr = e(sp).changeTextAnchor("{VAL}", "middle_top").labelPort("left1", ["1"]).labelPort("right1", ["2"]).changeTextAnchor("{REF}", "middle_bottom").build();
+var uf = r(mr);
+var vf = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "Wh", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: t_, texts: e_, bounds: nr, refblocks: wf, circles: r_ } = vf;
+var Ot = x({ primitives: [...Object.values(t_), ...Object.values(r_), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...e_.left1, anchor: "center", y: 0.01, fontSize: 0.2 }], ports: [{ ...wf.left1, labels: ["1"] }, { ...wf.right1, labels: ["2"] }], size: { width: nr.width, height: nr.height }, center: { x: nr.centerX, y: nr.centerY } });
+var { 5: o_, ...i_ } = Ot.primitives;
+function l_(t) {
   return typeof t == "object";
 }
-var of = r({ ...zt, primitives: Object.values(Ob).filter(Jb) });
-var lf = { ...of, primitives: [...of.primitives, zb] };
-var pf = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "W", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
-var { paths: Mb, texts: Cb, bounds: mr, refblocks: af, circles: Nb } = pf;
-var Ot = s({ primitives: [...Object.values(Mb), ...Object.values(Nb), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...Cb.left1, anchor: "center", y: 0.01, fontSize: 0.3 }], ports: [{ ...af.left1, labels: ["1"] }, { ...af.right1, labels: ["2"] }], size: { width: mr.width, height: mr.height }, center: { x: mr.centerX, y: mr.centerY } });
-var { 5: Ib, ...Bb } = Ot.primitives;
-function qb(t) {
+var Af = r({ ...Ot, primitives: Object.values(i_).filter(l_) });
+var Pf = { ...Af, primitives: [...Af.primitives, o_] };
+var Sf = { paths: { path11: { type: "path", points: [{ x: -0.54, y: 0 }, { x: -0.3, y: 0 }], color: "primary", fill: false }, path12: { type: "path", points: [{ x: 0.29, y: 0 }, { x: 0.54, y: 0 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.18, y: -0.36 }, bottom1: { type: "text", text: "{VAL}", x: -0.01, y: 0.43 }, left1: { type: "text", text: "W", x: 0, y: -0.02 } }, refblocks: { left1: { x: -0.54, y: 0 }, right1: { x: 0.54, y: 0 } }, bounds: { minX: -0.53, maxX: 0.53, minY: 0, maxY: 0, width: 1.06, height: 1, centerX: 0, centerY: 0 }, circles: { path1: { type: "circle", x: -0.01, y: -0.01, radius: 0.29, color: "primary", fill: false } } };
+var { paths: a_, texts: y_, bounds: fr, refblocks: Rf, circles: x_ } = Sf;
+var Jt = x({ primitives: [...Object.values(a_), ...Object.values(x_), { type: "text", text: "{REF}", x: 0, y: -0.3594553499999995, anchor: "middle_top" }, { type: "text", text: "{VAL}", x: 0, y: 0.35, anchor: "middle_bottom" }, { ...y_.left1, anchor: "center", y: 0.01, fontSize: 0.3 }], ports: [{ ...Rf.left1, labels: ["1"] }, { ...Rf.right1, labels: ["2"] }], size: { width: fr.width, height: fr.height }, center: { x: fr.centerX, y: fr.centerY } });
+var { 5: s_, ...m_ } = Jt.primitives;
+function n_(t) {
   return typeof t == "object";
 }
-var yf = r({ ...Ot, primitives: Object.values(Bb).filter(qb) });
-var xf = { ...yf, primitives: [...yf.primitives, Ib] };
-var sf = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.08, y: 0.18 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
-var { paths: Gb, texts: mf, bounds: nr, refblocks: nf, circles: Ub } = sf;
-var fr = s({ primitives: [...Object.values(Gb), ...Object.values(Ub), { ...mf.top1, anchor: "middle_bottom" }, { ...mf.bottom1, anchor: "middle_top" }], ports: [{ ...nf.left1, labels: ["1"] }, { ...nf.right1, labels: ["2"] }], size: { width: nr.width, height: nr.height }, center: { x: nr.centerX, y: nr.centerY } });
-var Zl = r(fr);
-var Wb = Zl.primitives.find((t) => t.type === "text" && t.text === "{REF}");
-var Hb = Zl.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
-Wb.anchor = "middle_left";
-Hb.anchor = "middle_right";
-var ff = Zl;
-var cf = { ac_voltmeter_down: op, ac_voltmeter_horz: lp, ac_voltmeter_left: ap, ac_voltmeter_right: xp, ac_voltmeter_up: mp, ac_voltmeter_vert: fp, avalanche_diode_down: hp, avalanche_diode_horz: dp, avalanche_diode_left: _p, avalanche_diode_right: gp, avalanche_diode_up: vp, avalanche_diode_vert: Ap, backward_diode_down: Sp, backward_diode_left: Qt, backward_diode_right: Tp, backward_diode_up: Ep, battery_horz: ee, battery_vert: Vp, boxresistor_down: zp, boxresistor_left: $p, boxresistor_right: Np, boxresistor_small_down: Bp, boxresistor_small_left: Dp, boxresistor_small_right: Up, boxresistor_small_up: Hp, boxresistor_up: Kp, bridged_ground_down: ra, bridged_ground_left: la, bridged_ground_right: pe, bridged_ground_up: ya, capacitor_down: sa, capacitor_left: ma, capacitor_polarized_down: fa, capacitor_polarized_left: ca, capacitor_polarized_right: da, capacitor_polarized_up: _a, capacitor_right: ga, capacitor_up: va, constant_current_diode_down: Aa, constant_current_diode_horz: Pa, constant_current_diode_left: Ra, constant_current_diode_right: Fa, constant_current_diode_up: Ea, constant_current_diode_vert: Xa, crystal_4pin_down: La, crystal_4pin_left: Va, crystal_4pin_right: ja, crystal_4pin_up: ka, crystal_down: Oa, crystal_left: Ja, crystal_right: $a, crystal_up: Ca, current_source_down: Na, current_source_left: Ia, current_source_right: Ba, current_source_up: qa, darlington_pair_transistor_down: Da, darlington_pair_transistor_horz: Ga, darlington_pair_transistor_left: Ua, darlington_pair_transistor_right: Wa, darlington_pair_transistor_up: Ha, darlington_pair_transistor_vert: Za, dc_ammeter_horz: Tt, dc_ammeter_vert: ey, dc_voltmeter_down: oy, dc_voltmeter_horz: ly, dc_voltmeter_left: ay, dc_voltmeter_right: xy, dc_voltmeter_up: my, dc_voltmeter_vert: fy, diac_down: cy, diac_horz: hy, diac_left: dy, diac_right: by, diac_up: _y, diac_vert: gy, digital_ground_down: vy, digital_ground_left: Ay, digital_ground_right: Sy, digital_ground_up: Fy, diode_down: Ey, diode_left: Yy, diode_right: C, diode_up: Xy, dpdt_normally_closed_switch_down: Vy, dpdt_normally_closed_switch_left: jy, dpdt_normally_closed_switch_right: N, dpdt_normally_closed_switch_up: ky, dpdt_switch_down: Oy, dpdt_switch_left: Jy, dpdt_switch_right: I, dpdt_switch_up: $y, dpst_normally_closed_switch_down: Cy, dpst_normally_closed_switch_left: Ny, dpst_normally_closed_switch_right: B, dpst_normally_closed_switch_up: Iy, dpst_switch_down: qy, dpst_switch_left: Dy, dpst_switch_right: q, dpst_switch_up: Gy, ferrite_bead_down: Wy, ferrite_bead_left: Hy, ferrite_bead_right: Le, ferrite_bead_up: Xe, filled_diode_down: Qy, filled_diode_horz: tx, filled_diode_left: rx, filled_diode_right: ix, filled_diode_up: px, filled_diode_vert: yx, frequency_meter_horz: Et, frequency_meter_vert: nx, fuse_horz: Ce, fuse_vert: hx, ground_down: dx, ground_horz: bx, ground_left: _x, ground_right: gx, ground_up: ux, ground_vert: vx, gunn_diode_horz: wx, gunn_diode_vert: Ax, icled_down: Sx, icled_left: Rx, icled_right: D, icled_up: Fx, igbt_transistor_horz: Ne, igbt_transistor_vert: Yx, illuminated_push_button_normally_open_horz: Ie, illuminated_push_button_normally_open_vert: jx, inductor_down: Jx, inductor_left: $x, inductor_right: ut, inductor_up: qe, laser_diode_down: Mx, laser_diode_left: Cx, laser_diode_right: G, laser_diode_up: Nx, led_down: Dx, led_left: Gx, led_right: vt, led_up: Ge, light_dependent_resistor_horz: We, light_dependent_resistor_vert: Kx, mosfet_depletion_normally_on_horz: Ze, mosfet_depletion_normally_on_vert: os, mushroom_head_normally_open_momentary_horz: Ke, mushroom_head_normally_open_momentary_vert: as, n_channel_d_mosfet_transistor_horz: r0, n_channel_d_mosfet_transistor_vert: ns, n_channel_e_mosfet_transistor_horz: i0, n_channel_e_mosfet_transistor_vert: bs, njfet_transistor_horz: p0, njfet_transistor_vert: ws, not_connected_down: Ss, not_connected_left: Rs, not_connected_right: U, not_connected_up: Fs, npn_bipolar_transistor_down: Ts, npn_bipolar_transistor_horz: Es, npn_bipolar_transistor_left: Ys, npn_bipolar_transistor_right: Xs, npn_bipolar_transistor_up: Ls, npn_bipolar_transistor_vert: Vs, opamp_no_power_down: ks, opamp_no_power_left: zs, opamp_no_power_right: W, opamp_no_power_up: Os, opamp_with_power_down: $s, opamp_with_power_left: Ms, opamp_with_power_right: H, opamp_with_power_up: Cs, p_channel_d_mosfet_transistor_horz: f0, p_channel_d_mosfet_transistor_vert: Ds, p_channel_e_mosfet_transistor_horz: h0, p_channel_e_mosfet_transistor_vert: Zs, photodiode_horz: d0, photodiode_vert: em, pjfet_transistor_horz: _0, pjfet_transistor_vert: pm, pnp_bipolar_transistor_down: am, pnp_bipolar_transistor_horz: ym, pnp_bipolar_transistor_left: xm, pnp_bipolar_transistor_right: sm, pnp_bipolar_transistor_up: mm, pnp_bipolar_transistor_vert: nm, potentiometer_horz: S0, potentiometer_vert: dm, potentiometer2_down: um, potentiometer2_left: vm, potentiometer2_right: Z, potentiometer2_up: wm, potentiometer3_down: Am, potentiometer3_left: Pm, potentiometer3_right: Sm, potentiometer3_up: Rm, power_factor_meter_horz: X0, power_factor_meter_vert: Ym, push_button_normally_closed_momentary_horz: V0, push_button_normally_closed_momentary_vert: jm, push_button_normally_open_momentary_horz: k0, push_button_normally_open_momentary_vert: Jm, rail_down: Mm, rail_left: Nm, rail_right: Bm, rail_up: Dm, rectifier_diode_horz: J0, rectifier_diode_vert: Wm, resistor_down: Zm, resistor_left: Km, resistor_right: en, resistor_up: on, resonator_down: pn, resonator_horz: D0, resonator_left: an, resonator_right: et, resonator_up: yn, resonator_vert: xn, schottky_diode_down: mn, schottky_diode_left: nn, schottky_diode_right: rt, schottky_diode_up: fn, silicon_controlled_rectifier_horz: G0, silicon_controlled_rectifier_vert: dn, solderjumper2_bridged12_down: bn, solderjumper2_bridged12_left: _n, solderjumper2_bridged12_right: gn, solderjumper2_bridged12_up: un, solderjumper2_down: vn, solderjumper2_left: wn, solderjumper2_right: An, solderjumper2_up: Pn, solderjumper3_bridged12_down: Sn, solderjumper3_bridged12_left: Rn, solderjumper3_bridged12_right: Fn, solderjumper3_bridged12_up: Tn, solderjumper3_bridged123_down: En, solderjumper3_bridged123_left: Yn, solderjumper3_bridged123_right: Xn, solderjumper3_bridged123_up: Ln, solderjumper3_bridged23_down: Vn, solderjumper3_bridged23_left: jn, solderjumper3_bridged23_right: kn, solderjumper3_bridged23_up: zn, solderjumper3_down: On, solderjumper3_left: Jn, solderjumper3_right: $n, solderjumper3_up: Mn, spdt_normally_closed_switch_down: Nn, spdt_normally_closed_switch_left: In, spdt_normally_closed_switch_right: xt, spdt_normally_closed_switch_up: Bn, spdt_switch_down: Dn, spdt_switch_left: Gn, spdt_switch_right: st, spdt_switch_up: Un, spst_normally_closed_switch_down: Wn, spst_normally_closed_switch_left: Hn, spst_normally_closed_switch_right: mt, spst_normally_closed_switch_up: Zn, spst_switch_down: Qn, spst_switch_left: Kn, spst_switch_right: nt, spst_switch_up: t1, square_wave_down: e1, square_wave_left: r1, square_wave_right: o1, square_wave_up: i1, step_recovery_diode_horz: U0, step_recovery_diode_vert: l1, tachometer_horz: jt, tachometer_vert: x1, testpoint_down: n1, testpoint_left: f1, testpoint_right: ct, testpoint_up: d1, tilted_ground_down: _1, tilted_ground_left: g1, tilted_ground_right: wt, tilted_ground_up: H0, triac_horz: Z0, triac_vert: w1, tunnel_diode_horz: K0, tunnel_diode_vert: R1, unijunction_transistor_horz: er, unijunction_transistor_vert: L1, usbc: j1, var_meter_horz: or, var_meter_vert: O1, varactor_diode_horz: lr, varactor_diode_vert: C1, varistor_horz: ar, varistor_vert: q1, varmeter_horz: kt, varmeter_vert: W1, vcc_down: H1, vcc_left: Z1, vcc_right: Q1, vcc_up: K1, volt_meter_horz: xr, volt_meter_vert: tf, watt_hour_meter_horz: zt, watt_hour_meter_vert: lf, wattmeter_horz: Ot, wattmeter_vert: xf, zener_diode_horz: fr, zener_diode_vert: ff };
-var GM = Object.fromEntries(Object.keys(cf).map((t) => [t, t]));
+var Ff = r({ ...Jt, primitives: Object.values(m_).filter(n_) });
+var Tf = { ...Ff, primitives: [...Ff.primitives, s_] };
+var Ef = { paths: { path40: { type: "path", points: [{ x: 0.14, y: 0.04 }, { x: -0.12, y: -0.09 }], color: "primary", fill: false }, path41: { type: "path", points: [{ x: -0.12, y: 0.18 }, { x: 0.14, y: 0.04 }], color: "primary", fill: false }, path42: { type: "path", points: [{ x: -0.12, y: -0.09 }, { x: -0.12, y: 0.18 }], color: "primary", fill: false }, path43: { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.14, y: -0.09 }], color: "primary", fill: false }, path44: { type: "path", points: [{ x: -0.12, y: 0.04 }, { x: -0.52, y: 0.04 }], color: "primary", fill: false }, "path44-0": { type: "path", points: [{ x: 0.52, y: 0.04 }, { x: 0.15, y: 0.04 }], color: "primary", fill: false }, "path43-8": { type: "path", points: [{ x: 0.14, y: 0.18 }, { x: 0.08, y: 0.18 }], color: "primary", fill: false } }, texts: { top1: { type: "text", text: "{REF}", x: -0.01, y: 0.27 }, bottom1: { type: "text", text: "{VAL}", x: 0, y: -0.27 } }, refblocks: { left1: { x: -0.52, y: 0.04 }, right1: { x: 0.52, y: 0.04 } }, bounds: { minX: -0.55, maxX: 0.55, minY: -0.27, maxY: 0.27, width: 1.09, height: 0.55, centerX: 0, centerY: 0 }, circles: {} };
+var { paths: c_, texts: Yf, bounds: cr, refblocks: Xf, circles: h_ } = Ef;
+var hr = x({ primitives: [...Object.values(c_), ...Object.values(h_), { ...Yf.top1, anchor: "middle_bottom" }, { ...Yf.bottom1, anchor: "middle_top" }], ports: [{ ...Xf.left1, labels: ["1"] }, { ...Xf.right1, labels: ["2"] }], size: { width: cr.width, height: cr.height }, center: { x: cr.centerX, y: cr.centerY } });
+var mp = r(hr);
+var d_ = mp.primitives.find((t) => t.type === "text" && t.text === "{REF}");
+var b_ = mp.primitives.find((t) => t.type === "text" && t.text === "{VAL}");
+d_.anchor = "middle_left";
+b_.anchor = "middle_right";
+var Lf = mp;
+var Vf = { ac_voltmeter_down: bp, ac_voltmeter_horz: gp, ac_voltmeter_left: vp, ac_voltmeter_right: Ap, ac_voltmeter_up: Sp, ac_voltmeter_vert: Fp, avalanche_diode_down: Ep, avalanche_diode_horz: Yp, avalanche_diode_left: Lp, avalanche_diode_right: Vp, avalanche_diode_up: kp, avalanche_diode_vert: Op, backward_diode_down: $p, backward_diode_left: Kt, backward_diode_right: Np, backward_diode_up: Ip, battery_horz: re, battery_vert: Gp, boxresistor_down: Hp, boxresistor_left: Kp, boxresistor_right: ra, boxresistor_small_down: ia, boxresistor_small_left: pa, boxresistor_small_right: ya, boxresistor_small_up: sa, boxresistor_up: fa, bridged_ground_down: da, bridged_ground_left: ga, bridged_ground_right: ae, bridged_ground_up: wa, capacitor_down: Pa, capacitor_left: Sa, capacitor_polarized_down: Fa, capacitor_polarized_left: Ta, capacitor_polarized_right: Ya, capacitor_polarized_up: La, capacitor_right: Va, capacitor_up: ka, constant_current_diode_down: Oa, constant_current_diode_horz: Ja, constant_current_diode_left: Ma, constant_current_diode_right: Ca, constant_current_diode_up: Ia, constant_current_diode_vert: qa, crystal_4pin_down: Da, crystal_4pin_left: Ga, crystal_4pin_right: Ua, crystal_4pin_up: Wa, crystal_down: Za, crystal_left: Qa, crystal_right: Ka, crystal_up: ey, current_source_down: ry, current_source_left: oy, current_source_right: iy, current_source_up: ly, darlington_pair_transistor_down: py, darlington_pair_transistor_horz: ay, darlington_pair_transistor_left: yy, darlington_pair_transistor_right: xy, darlington_pair_transistor_up: sy, darlington_pair_transistor_vert: my, dc_ammeter_horz: Et, dc_ammeter_vert: hy, dc_voltmeter_down: by, dc_voltmeter_horz: gy, dc_voltmeter_left: vy, dc_voltmeter_right: Ay, dc_voltmeter_up: Sy, dc_voltmeter_vert: Fy, diac_down: Ty, diac_horz: Ey, diac_left: Yy, diac_right: Xy, diac_up: Ly, diac_vert: Vy, digital_ground_down: ky, digital_ground_left: Oy, digital_ground_right: $y, digital_ground_up: Cy, diode_down: Iy, diode_left: By, diode_right: N, diode_up: qy, dpdt_normally_closed_switch_down: Gy, dpdt_normally_closed_switch_left: Uy, dpdt_normally_closed_switch_right: I, dpdt_normally_closed_switch_up: Wy, dpdt_switch_down: Zy, dpdt_switch_left: Qy, dpdt_switch_right: B, dpdt_switch_up: Ky, dpst_normally_closed_switch_down: ex, dpst_normally_closed_switch_left: rx, dpst_normally_closed_switch_right: q, dpst_normally_closed_switch_up: ox, dpst_switch_down: lx, dpst_switch_left: px, dpst_switch_right: D, dpst_switch_up: ax, ferrite_bead_down: xx, ferrite_bead_left: sx, ferrite_bead_right: Ve, ferrite_bead_up: Le, filled_diode_down: nx, filled_diode_horz: cx, filled_diode_left: dx, filled_diode_right: _x, filled_diode_up: ux, filled_diode_vert: wx, frequency_meter_horz: Yt, frequency_meter_vert: Rx, fuse_horz: Ne, fuse_vert: Ex, ground_down: Yx, ground_horz: Xx, ground_left: Lx, ground_right: Vx, ground_up: jx, ground_vert: kx, gunn_diode_horz: zx, gunn_diode_vert: Ox, icled_down: $x, icled_left: Mx, icled_right: G, icled_up: Cx, igbt_transistor_horz: Ie, igbt_transistor_vert: Bx, illuminated_push_button_normally_open_horz: Be, illuminated_push_button_normally_open_vert: Ux, inductor_down: Qx, inductor_left: Kx, inductor_right: vt, inductor_up: De, laser_diode_down: ts, laser_diode_left: es, laser_diode_right: U, laser_diode_up: rs, led_down: ps, led_left: as, led_right: wt, led_up: Ue, light_dependent_resistor_horz: He, light_dependent_resistor_vert: fs, mosfet_depletion_normally_on_horz: Qe, mosfet_depletion_normally_on_vert: bs, mushroom_head_normally_open_momentary_horz: t0, mushroom_head_normally_open_momentary_vert: vs, n_channel_d_mosfet_transistor_horz: o0, n_channel_d_mosfet_transistor_vert: Rs, n_channel_e_mosfet_transistor_horz: l0, n_channel_e_mosfet_transistor_vert: Xs, njfet_transistor_horz: a0, njfet_transistor_vert: zs, not_connected_down: $s, not_connected_left: Ms, not_connected_right: W, not_connected_up: Cs, npn_bipolar_transistor_down: Ns, npn_bipolar_transistor_horz: Is, npn_bipolar_transistor_left: Bs, npn_bipolar_transistor_right: qs, npn_bipolar_transistor_up: Ds, npn_bipolar_transistor_vert: Gs, opamp_no_power_down: Ws, opamp_no_power_left: Hs, opamp_no_power_right: H, opamp_no_power_up: Zs, opamp_with_power_down: Ks, opamp_with_power_left: tm, opamp_with_power_right: Z, opamp_with_power_up: em, p_channel_d_mosfet_transistor_horz: c0, p_channel_d_mosfet_transistor_vert: pm, p_channel_e_mosfet_transistor_horz: d0, p_channel_e_mosfet_transistor_vert: mm, photodiode_horz: b0, photodiode_vert: hm, pjfet_transistor_horz: g0, pjfet_transistor_vert: um, pnp_bipolar_transistor_down: vm, pnp_bipolar_transistor_horz: wm, pnp_bipolar_transistor_left: Am, pnp_bipolar_transistor_right: Pm, pnp_bipolar_transistor_up: Sm, pnp_bipolar_transistor_vert: Rm, potentiometer_horz: R0, potentiometer_vert: Ym, potentiometer2_down: jm, potentiometer2_left: km, potentiometer2_right: Q, potentiometer2_up: zm, potentiometer3_down: Om, potentiometer3_left: Jm, potentiometer3_right: $m, potentiometer3_up: Mm, power_factor_meter_horz: L0, power_factor_meter_vert: Bm, push_button_normally_closed_momentary_horz: j0, push_button_normally_closed_momentary_vert: Um, push_button_normally_open_momentary_down: Zm, push_button_normally_open_momentary_horz: tn, push_button_normally_open_momentary_left: en, push_button_normally_open_momentary_right: X, push_button_normally_open_momentary_up: rn, push_button_normally_open_momentary_vert: on, rail_down: pn, rail_left: yn, rail_right: sn, rail_up: nn, rectifier_diode_horz: M0, rectifier_diode_vert: hn, resistor_down: bn, resistor_left: gn, resistor_right: vn, resistor_up: An, resonator_down: Sn, resonator_horz: U0, resonator_left: Rn, resonator_right: rt, resonator_up: Fn, resonator_vert: Tn, schottky_diode_down: Yn, schottky_diode_left: Xn, schottky_diode_right: ot, schottky_diode_up: Ln, silicon_controlled_rectifier_horz: W0, silicon_controlled_rectifier_vert: kn, solderjumper2_bridged12_down: zn, solderjumper2_bridged12_left: On, solderjumper2_bridged12_right: Jn, solderjumper2_bridged12_up: $n, solderjumper2_down: Mn, solderjumper2_left: Cn, solderjumper2_right: Nn, solderjumper2_up: In, solderjumper3_bridged12_down: Bn, solderjumper3_bridged12_left: qn, solderjumper3_bridged12_right: Dn, solderjumper3_bridged12_up: Gn, solderjumper3_bridged123_down: Un, solderjumper3_bridged123_left: Wn, solderjumper3_bridged123_right: Hn, solderjumper3_bridged123_up: Zn, solderjumper3_bridged23_down: Qn, solderjumper3_bridged23_left: Kn, solderjumper3_bridged23_right: t1, solderjumper3_bridged23_up: e1, solderjumper3_down: r1, solderjumper3_left: o1, solderjumper3_right: i1, solderjumper3_up: l1, spdt_normally_closed_switch_down: a1, spdt_normally_closed_switch_left: y1, spdt_normally_closed_switch_right: st, spdt_normally_closed_switch_up: x1, spdt_switch_down: m1, spdt_switch_left: n1, spdt_switch_right: mt, spdt_switch_up: f1, spst_normally_closed_switch_down: c1, spst_normally_closed_switch_left: h1, spst_normally_closed_switch_right: nt, spst_normally_closed_switch_up: d1, spst_switch_down: b1, spst_switch_left: _1, spst_switch_right: ft, spst_switch_up: g1, square_wave_down: u1, square_wave_left: v1, square_wave_right: w1, square_wave_up: A1, step_recovery_diode_horz: H0, step_recovery_diode_vert: P1, tachometer_horz: kt, tachometer_vert: T1, testpoint_down: X1, testpoint_left: L1, testpoint_right: ht, testpoint_up: k1, tilted_ground_down: O1, tilted_ground_left: J1, tilted_ground_right: At, tilted_ground_up: Q0, triac_horz: K0, triac_vert: C1, tunnel_diode_horz: er, tunnel_diode_vert: q1, unijunction_transistor_horz: or, unijunction_transistor_vert: Z1, usbc: K1, var_meter_horz: lr, var_meter_vert: rf, varactor_diode_horz: ar, varactor_diode_vert: af, varistor_horz: xr, varistor_vert: mf, varmeter_horz: zt, varmeter_vert: hf, vcc_down: df, vcc_left: bf, vcc_right: _f, vcc_up: gf, volt_meter_horz: mr, volt_meter_vert: uf, watt_hour_meter_horz: Ot, watt_hour_meter_vert: Pf, wattmeter_horz: Jt, wattmeter_vert: Tf, zener_diode_horz: hr, zener_diode_vert: Lf };
+var YC = Object.fromEntries(Object.keys(Vf).map((t) => [t, t]));
 
 // node_modules/circuit-to-svg/dist/index.js
 var import_svgson5 = __toESM(require_svgson_umd(), 1);
@@ -27414,8 +27455,8 @@ function createSvgObjectsFromPcbFabricationNotePath(fabNotePath, ctx) {
   const lastPoint = fabNotePath.route[fabNotePath.route.length - 1];
   const isClosed = firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y;
   const path = fabNotePath.route.slice(0, isClosed ? -1 : undefined).map((point2, index) => {
-    const [x, y] = applyToPoint(transform3, [point2.x, point2.y]);
-    return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
+    const [x3, y] = applyToPoint(transform3, [point2.x, point2.y]);
+    return index === 0 ? `M ${x3} ${y}` : `L ${x3} ${y}`;
   }).join(" ") + (isClosed ? " Z" : "");
   return [
     {
@@ -27486,7 +27527,7 @@ function createSvgObjectsFromPcbFabricationNoteText(pcbFabNoteText, ctx) {
 }
 function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
   const { transform: transform3, colorMap: colorMap2 } = ctx;
-  const [x, y] = applyToPoint(transform3, [hole.x, hole.y]);
+  const [x3, y] = applyToPoint(transform3, [hole.x, hole.y]);
   if (hole.shape === "pill") {
     const scaledOuterWidth = hole.outer_width * Math.abs(transform3.a);
     const scaledOuterHeight = hole.outer_height * Math.abs(transform3.a);
@@ -27508,7 +27549,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-outer",
               fill: colorMap2.copper.top,
-              d: `M${x - outerRadiusX},${y - straightLength / 2} v${straightLength} a${outerRadiusX},${outerRadiusX} 0 0 0 ${scaledOuterWidth},0 v-${straightLength} a${outerRadiusX},${outerRadiusX} 0 0 0 -${scaledOuterWidth},0 z`
+              d: `M${x3 - outerRadiusX},${y - straightLength / 2} v${straightLength} a${outerRadiusX},${outerRadiusX} 0 0 0 ${scaledOuterWidth},0 v-${straightLength} a${outerRadiusX},${outerRadiusX} 0 0 0 -${scaledOuterWidth},0 z`
             },
             value: "",
             children: []
@@ -27519,7 +27560,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-inner",
               fill: colorMap2.drill,
-              d: `M${x - innerRadiusX},${y - (scaledHoleHeight - scaledHoleWidth) / 2} v${scaledHoleHeight - scaledHoleWidth} a${innerRadiusX},${innerRadiusX} 0 0 0 ${scaledHoleWidth},0 v-${scaledHoleHeight - scaledHoleWidth} a${innerRadiusX},${innerRadiusX} 0 0 0 -${scaledHoleWidth},0 z`
+              d: `M${x3 - innerRadiusX},${y - (scaledHoleHeight - scaledHoleWidth) / 2} v${scaledHoleHeight - scaledHoleWidth} a${innerRadiusX},${innerRadiusX} 0 0 0 ${scaledHoleWidth},0 v-${scaledHoleHeight - scaledHoleWidth} a${innerRadiusX},${innerRadiusX} 0 0 0 -${scaledHoleWidth},0 z`
             },
             value: "",
             children: []
@@ -27548,7 +27589,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-outer",
               fill: colorMap2.copper.top,
-              cx: x.toString(),
+              cx: x3.toString(),
               cy: y.toString(),
               r: outerRadius.toString()
             },
@@ -27561,7 +27602,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-inner",
               fill: colorMap2.drill,
-              cx: x.toString(),
+              cx: x3.toString(),
               cy: y.toString(),
               r: innerRadius.toString()
             },
@@ -27590,7 +27631,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-outer-pad",
               fill: colorMap2.copper.top,
-              x: (x - scaledRectPadWidth / 2).toString(),
+              x: (x3 - scaledRectPadWidth / 2).toString(),
               y: (y - scaledRectPadHeight / 2).toString(),
               width: scaledRectPadWidth.toString(),
               height: scaledRectPadHeight.toString()
@@ -27604,7 +27645,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-inner",
               fill: colorMap2.drill,
-              cx: x.toString(),
+              cx: x3.toString(),
               cy: y.toString(),
               r: holeRadius.toString()
             },
@@ -27634,7 +27675,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-outer-pad",
               fill: colorMap2.copper.top,
-              x: (x - scaledRectPadWidth / 2).toString(),
+              x: (x3 - scaledRectPadWidth / 2).toString(),
               y: (y - scaledRectPadHeight / 2).toString(),
               width: scaledRectPadWidth.toString(),
               height: scaledRectPadHeight.toString()
@@ -27648,7 +27689,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
             attributes: {
               class: "pcb-hole-inner",
               fill: colorMap2.drill,
-              x: (x - scaledHoleWidth / 2).toString(),
+              x: (x3 - scaledHoleWidth / 2).toString(),
               y: (y - scaledHoleHeight / 2).toString(),
               width: scaledHoleWidth.toString(),
               height: scaledHoleHeight.toString(),
@@ -27685,7 +27726,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
               y: (-scaledRectPadHeight / 2).toString(),
               width: scaledRectPadWidth.toString(),
               height: scaledRectPadHeight.toString(),
-              transform: `translate(${x} ${y}) rotate(${-hole.rect_ccw_rotation})`
+              transform: `translate(${x3} ${y}) rotate(${-hole.rect_ccw_rotation})`
             },
             value: "",
             children: []
@@ -27702,7 +27743,7 @@ function createSvgObjectsFromPcbPlatedHole(hole, ctx) {
               height: scaledHoleHeight.toString(),
               rx: holeRadius.toString(),
               ry: holeRadius.toString(),
-              transform: `translate(${x} ${y}) rotate(${-hole.hole_ccw_rotation})`
+              transform: `translate(${x3} ${y}) rotate(${-hole.hole_ccw_rotation})`
             },
             value: "",
             children: []
@@ -27720,8 +27761,8 @@ function createSvgObjectsFromPcbSilkscreenPath(silkscreenPath, ctx) {
   if (!silkscreenPath.route || !Array.isArray(silkscreenPath.route))
     return [];
   let path = silkscreenPath.route.map((point2, index) => {
-    const [x, y] = applyToPoint(transform3, [point2.x, point2.y]);
-    return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
+    const [x3, y] = applyToPoint(transform3, [point2.x, point2.y]);
+    return index === 0 ? `M ${x3} ${y}` : `L ${x3} ${y}`;
   }).join(" ");
   const firstPoint = silkscreenPath.route[0];
   const lastPoint = silkscreenPath.route[silkscreenPath.route.length - 1];
@@ -28102,7 +28143,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
   if (pad.shape === "rect" || pad.shape === "rotated_rect") {
     const width = pad.width * Math.abs(transform3.a);
     const height = pad.height * Math.abs(transform3.d);
-    const [x, y] = applyToPoint(transform3, [pad.x, pad.y]);
+    const [x3, y] = applyToPoint(transform3, [pad.x, pad.y]);
     if (pad.shape === "rotated_rect" && pad.ccw_rotation) {
       return [
         {
@@ -28115,7 +28156,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
             y: (-height / 2).toString(),
             width: width.toString(),
             height: height.toString(),
-            transform: `translate(${x} ${y}) rotate(${-pad.ccw_rotation})`,
+            transform: `translate(${x3} ${y}) rotate(${-pad.ccw_rotation})`,
             "data-layer": pad.layer
           }
         }
@@ -28128,7 +28169,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
         attributes: {
           class: "pcb-pad",
           fill: layerNameToColor(pad.layer, colorMap2),
-          x: (x - width / 2).toString(),
+          x: (x3 - width / 2).toString(),
           y: (y - height / 2).toString(),
           width: width.toString(),
           height: height.toString(),
@@ -28141,7 +28182,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
     const width = pad.width * Math.abs(transform3.a);
     const height = pad.height * Math.abs(transform3.d);
     const radius = pad.radius * Math.abs(transform3.a);
-    const [x, y] = applyToPoint(transform3, [pad.x, pad.y]);
+    const [x3, y] = applyToPoint(transform3, [pad.x, pad.y]);
     return [
       {
         name: "rect",
@@ -28149,7 +28190,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
         attributes: {
           class: "pcb-pad",
           fill: layerNameToColor(pad.layer, colorMap2),
-          x: (x - width / 2).toString(),
+          x: (x3 - width / 2).toString(),
           y: (y - height / 2).toString(),
           width: width.toString(),
           height: height.toString(),
@@ -28162,7 +28203,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
   }
   if (pad.shape === "circle") {
     const radius = pad.radius * Math.abs(transform3.a);
-    const [x, y] = applyToPoint(transform3, [pad.x, pad.y]);
+    const [x3, y] = applyToPoint(transform3, [pad.x, pad.y]);
     return [
       {
         name: "circle",
@@ -28170,7 +28211,7 @@ function createSvgObjectsFromSmtPad(pad, ctx) {
         attributes: {
           class: "pcb-pad",
           fill: layerNameToColor(pad.layer, colorMap2),
-          cx: x.toString(),
+          cx: x3.toString(),
           cy: y.toString(),
           r: radius.toString(),
           "data-layer": pad.layer
@@ -28201,8 +28242,8 @@ function createSvgObjectsFromPcbBoard(pcbBoard, ctx) {
   let path;
   if (outline && Array.isArray(outline) && outline.length >= 3) {
     path = outline.map((point2, index) => {
-      const [x, y] = applyToPoint(transform3, [point2.x, point2.y]);
-      return index === 0 ? `M ${x} ${y}` : `L ${x} ${y}`;
+      const [x3, y] = applyToPoint(transform3, [point2.x, point2.y]);
+      return index === 0 ? `M ${x3} ${y}` : `L ${x3} ${y}`;
     }).join(" ");
   } else {
     const halfWidth = width / 2;
@@ -28244,7 +28285,7 @@ function createSvgObjectsFromPcbBoard(pcbBoard, ctx) {
 }
 function createSvgObjectsFromPcbVia(hole, ctx) {
   const { transform: transform3, colorMap: colorMap2 } = ctx;
-  const [x, y] = applyToPoint(transform3, [hole.x, hole.y]);
+  const [x3, y] = applyToPoint(transform3, [hole.x, hole.y]);
   const scaledOuterWidth = hole.outer_diameter * Math.abs(transform3.a);
   const scaledOuterHeight = hole.outer_diameter * Math.abs(transform3.a);
   const scaledHoleWidth = hole.hole_diameter * Math.abs(transform3.a);
@@ -28261,7 +28302,7 @@ function createSvgObjectsFromPcbVia(hole, ctx) {
         attributes: {
           class: "pcb-hole-outer",
           fill: colorMap2.copper.top,
-          cx: x.toString(),
+          cx: x3.toString(),
           cy: y.toString(),
           r: outerRadius.toString()
         }
@@ -28272,7 +28313,7 @@ function createSvgObjectsFromPcbVia(hole, ctx) {
         attributes: {
           class: "pcb-hole-inner",
           fill: colorMap2.drill,
-          cx: x.toString(),
+          cx: x3.toString(),
           cy: y.toString(),
           r: innerRadius.toString()
         }
@@ -28282,7 +28323,7 @@ function createSvgObjectsFromPcbVia(hole, ctx) {
 }
 function createSvgObjectsFromPcbHole(hole, ctx) {
   const { transform: transform3, colorMap: colorMap2 } = ctx;
-  const [x, y] = applyToPoint(transform3, [hole.x, hole.y]);
+  const [x3, y] = applyToPoint(transform3, [hole.x, hole.y]);
   if (hole.hole_shape === "circle" || hole.hole_shape === "square") {
     const scaledDiameter = hole.hole_diameter * Math.abs(transform3.a);
     const radius = scaledDiameter / 2;
@@ -28293,7 +28334,7 @@ function createSvgObjectsFromPcbHole(hole, ctx) {
           type: "element",
           attributes: {
             class: "pcb-hole",
-            cx: x.toString(),
+            cx: x3.toString(),
             cy: y.toString(),
             r: radius.toString(),
             fill: colorMap2.drill
@@ -28309,7 +28350,7 @@ function createSvgObjectsFromPcbHole(hole, ctx) {
         type: "element",
         attributes: {
           class: "pcb-hole",
-          x: (x - radius).toString(),
+          x: (x3 - radius).toString(),
           y: (y - radius).toString(),
           width: scaledDiameter.toString(),
           height: scaledDiameter.toString(),
@@ -28331,7 +28372,7 @@ function createSvgObjectsFromPcbHole(hole, ctx) {
         type: "element",
         attributes: {
           class: "pcb-hole",
-          cx: x.toString(),
+          cx: x3.toString(),
           cy: y.toString(),
           rx: rx2.toString(),
           ry: ry2.toString(),
@@ -28344,12 +28385,12 @@ function createSvgObjectsFromPcbHole(hole, ctx) {
   }
   return [];
 }
-var getElementPosition = (id2, circuitJson) => {
-  const pcbSmtpad = su(circuitJson).pcb_smtpad.get(id2);
+var getElementPosition = (id, circuitJson) => {
+  const pcbSmtpad = su(circuitJson).pcb_smtpad.get(id);
   if (pcbSmtpad && "x" in pcbSmtpad && "y" in pcbSmtpad) {
     return { x: pcbSmtpad.x, y: pcbSmtpad.y };
   }
-  const pcbPlatedHole = su(circuitJson).pcb_plated_hole.get(id2);
+  const pcbPlatedHole = su(circuitJson).pcb_plated_hole.get(id);
   if (pcbPlatedHole && "x" in pcbPlatedHole && "y" in pcbPlatedHole) {
     return { x: pcbPlatedHole.x, y: pcbPlatedHole.y };
   }
@@ -28359,8 +28400,8 @@ var findNearestPointInNet = (sourcePoint, netId, connectivity, circuitJson) => {
   const connectedIds = connectivity.getIdsConnectedToNet(netId);
   let nearestPoint = null;
   let minDistance = Infinity;
-  for (const id2 of connectedIds) {
-    const pos = getElementPosition(id2, circuitJson);
+  for (const id of connectedIds) {
+    const pos = getElementPosition(id, circuitJson);
     if (pos) {
       const dx2 = sourcePoint.x - pos.x;
       const dy2 = sourcePoint.y - pos.y;
@@ -28516,10 +28557,10 @@ function createSvgObjectsFromPcbCutout(cutout, ctx) {
 function createSvgObjectsFromPcbComponent(component, ctx) {
   const { transform: transform3 } = ctx;
   const { center, width, height, rotation: rotation2 = 0 } = component;
-  const [x, y] = applyToPoint(transform3, [center.x, center.y]);
+  const [x3, y] = applyToPoint(transform3, [center.x, center.y]);
   const scaledWidth = width * Math.abs(transform3.a);
   const scaledHeight = height * Math.abs(transform3.d);
-  const transformStr = `translate(${x}, ${y}) rotate(${-rotation2}) scale(1, -1)`;
+  const transformStr = `translate(${x3}, ${y}) rotate(${-rotation2}) scale(1, -1)`;
   if (!ctx.colorMap.debugComponent?.fill && !ctx.colorMap.debugComponent?.stroke) {
     return [];
   }
@@ -28548,7 +28589,7 @@ function createSvgObjectsFromPcbComponent(component, ctx) {
   ];
 }
 function getSoftwareUsedString(circuitJson) {
-  const metadata = circuitJson.find((e3) => e3.type === "project_software_metadata" || e3.type === "source_project_metadata");
+  const metadata = circuitJson.find((e2) => e2.type === "project_software_metadata" || e2.type === "source_project_metadata");
   return metadata?.software_used_string;
 }
 var package_default = {
@@ -28932,7 +28973,7 @@ function createSvgObjectFromPcbBoundary(transform3, minX, minY, maxX, maxY) {
   const [x22, y22] = applyToPoint(transform3, [maxX, maxY]);
   const width = Math.abs(x22 - x12);
   const height = Math.abs(y22 - y12);
-  const x = Math.min(x12, x22);
+  const x3 = Math.min(x12, x22);
   const y = Math.min(y12, y22);
   return {
     name: "rect",
@@ -28944,7 +28985,7 @@ function createSvgObjectFromPcbBoundary(transform3, minX, minY, maxX, maxY) {
       fill: "none",
       stroke: "#fff",
       "stroke-width": "0.3",
-      x: x.toString(),
+      x: x3.toString(),
       y: y.toString(),
       width: width.toString(),
       height: height.toString()
@@ -29051,7 +29092,7 @@ __export(exports_fn, {
 });
 
 // src/helpers/silkscreenRef.ts
-var silkscreenRef = (x, y, font_size) => {
+var silkscreenRef = (x3, y, font_size) => {
   return {
     type: "pcb_silkscreen_text",
     pcb_silkscreen_text_id: "silkscreen_text_1",
@@ -29060,7 +29101,7 @@ var silkscreenRef = (x, y, font_size) => {
     pcb_component_id: "pcb_component_1",
     text: "{REF}",
     layer: "top",
-    anchor_position: { x, y },
+    anchor_position: { x: x3, y },
     anchor_alignment: "center"
   };
 };
@@ -29097,14 +29138,14 @@ var mm2 = (n) => {
 var mm_default = mm2;
 
 // src/helpers/platedhole.ts
-var platedhole = (pn2, x, y, id2, od2) => {
+var platedhole = (pn2, x3, y, id, od2) => {
   return {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
     shape: "circle",
-    x,
+    x: x3,
     y,
-    hole_diameter: mm2(id2),
+    hole_diameter: mm2(id),
     outer_diameter: mm2(od2),
     pcb_port_id: "",
     layers: ["top", "bottom"],
@@ -29116,7 +29157,7 @@ var platedhole = (pn2, x, y, id2, od2) => {
 var platedHoleWithRectPad = (options) => {
   const {
     pn: pn2,
-    x,
+    x: x3,
     y,
     holeDiameter,
     rectPadWidth,
@@ -29128,7 +29169,7 @@ var platedHoleWithRectPad = (options) => {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
     shape: "circular_hole_with_rect_pad",
-    x,
+    x: x3,
     y,
     hole_diameter: mm2(holeDiameter),
     hole_shape: "circle",
@@ -29144,9 +29185,9 @@ var platedHoleWithRectPad = (options) => {
 };
 
 // src/helpers/u-curve.ts
-var u_curve = Array.from({ length: 9 }, (_2, i) => Math.cos(i / 8 * Math.PI - Math.PI)).map((x) => ({
-  x,
-  y: -Math.sqrt(1 - x ** 2)
+var u_curve = Array.from({ length: 9 }, (_3, i) => Math.cos(i / 8 * Math.PI - Math.PI)).map((x3) => ({
+  x: x3,
+  y: -Math.sqrt(1 - x3 ** 2)
 }));
 
 // src/fn/dip.ts
@@ -29211,11 +29252,11 @@ var dip = (raw_params) => {
   const parameters = dip_def.parse(raw_params);
   const platedHoles = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwDipCoords(parameters.num_pins, i + 1, parameters.w, parameters.p ?? 2.54, parameters.nosquareplating);
+    const { x: x3, y } = getCcwDipCoords(parameters.num_pins, i + 1, parameters.w, parameters.p ?? 2.54, parameters.nosquareplating);
     if (i === 0 && !parameters.nosquareplating) {
       platedHoles.push(platedHoleWithRectPad({
         pn: i + 1,
-        x,
+        x: x3,
         y,
         holeDiameter: parameters.id ?? "0.8mm",
         rectPadWidth: parameters.od ?? "1mm",
@@ -29223,7 +29264,7 @@ var dip = (raw_params) => {
       }));
       continue;
     }
-    platedHoles.push(platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"));
+    platedHoles.push(platedhole(i + 1, x3, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"));
   }
   const padEdgeHeight = (parameters.num_pins / 2 - 1) * parameters.p + parameters.od;
   const innerGap = parameters.w - parameters.od;
@@ -29236,8 +29277,8 @@ var dip = (raw_params) => {
     route: [
       { x: -sw / 2, y: -sh2 / 2 },
       { x: -sw / 2, y: sh2 / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: x * sw / 6,
+      ...u_curve.map(({ x: x3, y }) => ({
+        x: x3 * sw / 6,
         y: y * sw / 6 + sh2 / 2
       })),
       { x: sw / 2, y: sh2 / 2 },
@@ -29278,10 +29319,10 @@ var dip = (raw_params) => {
   };
 };
 // src/helpers/rectpad.ts
-var rectpad = (pn2, x, y, w3, h) => {
+var rectpad = (pn2, x3, y, w3, h) => {
   return {
     type: "pcb_smtpad",
-    x,
+    x: x3,
     y,
     width: w3,
     height: h,
@@ -29394,8 +29435,8 @@ var footprintSizes = [
     h_mm_min: 3.35
   }
 ];
-var metricMap = Object.fromEntries(footprintSizes.map((s2) => [s2.metric, s2]));
-var imperialMap = Object.fromEntries(footprintSizes.map((s2) => [s2.imperial, s2]));
+var metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]));
+var imperialMap = Object.fromEntries(footprintSizes.map((s) => [s.imperial, s]));
 var passive_def = base_def.extend({
   tht: exports_external.boolean(),
   p: length.optional(),
@@ -29782,10 +29823,10 @@ var res = (rawParameters) => {
   return { circuitJson: passive(rawParameters), parameters: rawParameters };
 };
 // src/helpers/circlepad.ts
-var circlepad = (pn2, { x, y, radius }) => {
+var circlepad = (pn2, { x: x3, y, radius }) => {
   return {
     type: "pcb_smtpad",
-    x,
+    x: x3,
     y,
     radius,
     layer: "top",
@@ -29800,9 +29841,9 @@ var ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 // src/helpers/zod/dim-2d.ts
 var dim2d = exports_external.string().transform((a) => {
-  const [x, y] = a.split(/[x ]/);
+  const [x3, y] = a.split(/[x ]/);
   return {
-    x: parseFloat(x ?? ""),
+    x: parseFloat(x3 ?? ""),
     y: parseFloat(y ?? "")
   };
 }).pipe(exports_external.object({
@@ -29852,16 +29893,16 @@ var bga_def = base_def.extend({
     a.grid = { x: largest_square, y: largest_square };
   }
   if (a.missing) {
-    a.missing = a.missing.map((s2) => {
-      if (typeof s2 === "number")
-        return s2;
-      if (s2 === "center")
+    a.missing = a.missing.map((s) => {
+      if (typeof s === "number")
+        return s;
+      if (s === "center")
         return "center";
-      if (s2 === "topleft")
+      if (s === "topleft")
         return "topleft";
-      const m = s2.match(/([A-Z]+)(\d+)/);
+      const m = s.match(/([A-Z]+)(\d+)/);
       if (!m)
-        return s2;
+        return s;
       const Y3 = ALPHABET.indexOf(m[1]);
       const X3 = Number.parseInt(m[2]) - 1;
       return Y3 * a.grid.x + X3 + 1;
@@ -29890,8 +29931,8 @@ var bga = (raw_params) => {
     const inner_square_x = Math.floor((grid2.x - square_size) / 2);
     const inner_square_y = Math.floor((grid2.y - square_size) / 2);
     for (let y = inner_square_y;y < inner_square_y + square_size; y++) {
-      for (let x = inner_square_x;x < inner_square_x + square_size; x++) {
-        missing_pin_nums.push(y * grid2.x + x + 1);
+      for (let x3 = inner_square_x;x3 < inner_square_x + square_size; x3++) {
+        missing_pin_nums.push(y * grid2.x + x3 + 1);
       }
     }
   }
@@ -29901,22 +29942,22 @@ var bga = (raw_params) => {
   const missing_pin_nums_set = new Set(missing_pin_nums);
   let missing_pins_passed = 0;
   for (let y = 0;y < grid2.y; y++) {
-    for (let x = 0;x < grid2.x; x++) {
-      const pad_x = (x - (grid2.x - 1) / 2) * p;
+    for (let x3 = 0;x3 < grid2.x; x3++) {
+      const pad_x = (x3 - (grid2.x - 1) / 2) * p;
       const pad_y = (y - (grid2.y - 1) / 2) * p;
-      let pin_x = x;
+      let pin_x = x3;
       let pin_y = y;
       switch (parameters.origin) {
         case "bl":
-          pin_x = x;
+          pin_x = x3;
           pin_y = grid2.y - 1 - y;
           break;
         case "br":
-          pin_x = grid2.x - 1 - x;
+          pin_x = grid2.x - 1 - x3;
           pin_y = grid2.y - 1 - y;
           break;
         case "tr":
-          pin_x = grid2.x - 1 - x;
+          pin_x = grid2.x - 1 - x3;
           pin_y = y;
           break;
         case "tl":
@@ -29991,10 +30032,10 @@ var bga = (raw_params) => {
   };
 };
 // src/helpers/pillpad.ts
-var pillpad = (pn2, x, y, w3, h) => {
+var pillpad = (pn2, x3, y, w3, h) => {
   return {
     type: "pcb_smtpad",
-    x,
+    x: x3,
     y,
     width: w3,
     height: h,
@@ -30055,7 +30096,7 @@ var soic = (raw_params) => {
 var soicWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSoicCoords({
+    const { x: x3, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
@@ -30064,9 +30105,9 @@ var soicWithoutParsing = (parameters) => {
       legsoutside: parameters.legsoutside
     });
     if (parameters.pillpads) {
-      pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw));
+      pads.push(pillpad(i + 1, x3, y, parameters.pl, parameters.pw));
     } else {
-      pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw));
+      pads.push(rectpad(i + 1, x3, y, parameters.pl, parameters.pw));
     }
   }
   const m = Math.min(1, parameters.p / 2);
@@ -30082,8 +30123,8 @@ var soicWithoutParsing = (parameters) => {
     route: [
       { x: -sw / 2, y: -sh2 / 2 },
       { x: -sw / 2, y: sh2 / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: x * sw / 6,
+      ...u_curve.map(({ x: x3, y }) => ({
+        x: x3 * sw / 6,
         y: y * sw / 6 + sh2 / 2
       })),
       { x: sw / 2, y: sh2 / 2 },
@@ -30241,7 +30282,7 @@ var quad = (raw_params) => {
   const spc = parameters.num_pins / 4;
   for (let i = 0;i < parameters.num_pins; i++) {
     const {
-      x,
+      x: x3,
       y,
       o: orientation2
     } = getQuadCoords({
@@ -30259,7 +30300,7 @@ var quad = (raw_params) => {
       [pw, pl2] = [pl2, pw];
     }
     const pn2 = pin_map[i + 1];
-    pads.push(rectpad(pn2, x, y, pw, pl2));
+    pads.push(rectpad(pn2, x3, y, pw, pl2));
   }
   if (parameters.thermalpad) {
     if (typeof parameters.thermalpad === "boolean") {
@@ -30567,17 +30608,17 @@ var getSsopCoords = (parameters) => {
   const gs2 = p;
   const h = gs2 * leftPinGaps;
   const padRowSpan = w3 + length.parse("0.2mm");
-  const x = (isLeft ? -1 : 1) * (padRowSpan / 2);
+  const x3 = (isLeft ? -1 : 1) * (padRowSpan / 2);
   if (isLeft) {
-    return { x, y: h / 2 - (pn2 - 1) * gs2 };
+    return { x: x3, y: h / 2 - (pn2 - 1) * gs2 };
   }
-  return { x, y: -h / 2 + (pn2 - ph2 - 1) * gs2 };
+  return { x: x3, y: -h / 2 + (pn2 - ph2 - 1) * gs2 };
 };
 var ssop = (raw_params) => {
   const parameters = ssop_def.parse(raw_params);
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getSsopCoords({
+    const { x: x3, y } = getSsopCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
@@ -30585,7 +30626,7 @@ var ssop = (raw_params) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside
     });
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw));
+    pads.push(rectpad(i + 1, x3, y, parameters.pl, parameters.pw));
   }
   const m = Math.min(1, parameters.p / 2);
   const sw = parameters.w - (parameters.legsoutside ? 0 : parameters.pl) - 0.2;
@@ -30600,8 +30641,8 @@ var ssop = (raw_params) => {
     route: [
       { x: -sw / 2, y: -sh2 / 2 },
       { x: -sw / 2, y: sh2 / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: x * sw / 6,
+      ...u_curve.map(({ x: x3, y }) => ({
+        x: x3 * sw / 6,
         y: y * sw / 6 + sh2 / 2
       })),
       { x: sw / 2, y: sh2 / 2 },
@@ -30646,7 +30687,7 @@ var tssop = (raw_params) => {
   const pads = [];
   const wForPads = isFinePitch ? parameters.w - length.parse("0.15mm") : parameters.w;
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getTssopCoords({
+    const { x: x3, y } = getTssopCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: wForPads,
@@ -30654,7 +30695,7 @@ var tssop = (raw_params) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside
     });
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw));
+    pads.push(rectpad(i + 1, x3, y, parameters.pl, parameters.pw));
   }
   const m = Math.min(1, parameters.p / 2);
   const sw = parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2;
@@ -30669,8 +30710,8 @@ var tssop = (raw_params) => {
     route: [
       { x: -sw / 2, y: -sh2 / 2 },
       { x: -sw / 2, y: sh2 / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: x * sw / 6,
+      ...u_curve.map(({ x: x3, y }) => ({
+        x: x3 * sw / 6,
         y: y * sw / 6 + sh2 / 2
       })),
       { x: sw / 2, y: sh2 / 2 },
@@ -30703,8 +30744,8 @@ var sot363 = (raw_params) => {
   const pw = length.parse(parameters.pw);
   const pads = [];
   for (let i = 0;i < 6; i++) {
-    const { x, y } = getSot363PadCoord(i + 1, w3, p, pl2);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getSot363PadCoord(i + 1, w3, p, pl2);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   const silkscreenTopLine = {
     type: "pcb_silkscreen_path",
@@ -30781,8 +30822,8 @@ var sot886 = (raw_params) => {
   const pw = length.parse(parameters.pw);
   const pads = [];
   for (let i = 0;i < 6; i++) {
-    const { x, y } = getSot886PadCoord(i + 1, w3, p, pl2);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getSot886PadCoord(i + 1, w3, p, pl2);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   const silkscreenTopLine = {
     type: "pcb_silkscreen_path",
@@ -30899,7 +30940,7 @@ var getCcwSot23Coords = (parameters) => {
 var sot23_3 = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSot23Coords({
+    const { x: x3, y } = getCcwSot23Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
@@ -30907,7 +30948,7 @@ var sot23_3 = (parameters) => {
       pl: Number.parseFloat(parameters.pl),
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i + 1, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h), 0.3);
   return [...pads, silkscreenRefText];
@@ -30934,12 +30975,12 @@ var getCcwSot235Coords = (parameters) => {
 var sot23_5 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getCcwSot235Coords({
+    const { x: x3, y } = getCcwSot235Coords({
       h: Number.parseFloat(parameters.h),
       p: Number.parseFloat(parameters.p),
       pn: i
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const width = (parameters.num_pins + 1) / 2 * Number.parseFloat(parameters.p);
   const height = Number.parseFloat(parameters.h);
@@ -31033,7 +31074,7 @@ var dfn = (raw_params) => {
   const parameters = dfn_def.parse(raw_params);
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSoicCoords({
+    const { x: x3, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
@@ -31041,7 +31082,7 @@ var dfn = (raw_params) => {
       pl: parameters.pl,
       widthincludeslegs: true
     });
-    pads.push(rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"));
+    pads.push(rectpad(i + 1, x3, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"));
   }
   const m = Math.min(1, parameters.p / 2);
   const sw = parameters.w + m;
@@ -31231,7 +31272,7 @@ var pinrow = (raw_params) => {
   const parameters = pinrow_def.parse(raw_params);
   const {
     p,
-    id: id2,
+    id,
     od: od2,
     rows,
     num_pins,
@@ -31307,12 +31348,12 @@ var pinrow = (raw_params) => {
           pn: pinNumber,
           x: xoff,
           y: yoff,
-          holeDiameter: id2,
+          holeDiameter: id,
           rectPadWidth: od2,
           rectPadHeight: od2
         }));
       } else {
-        holes.push(platedhole(pinNumber, xoff, yoff, id2, od2));
+        holes.push(platedhole(pinNumber, xoff, yoff, id, od2));
       }
     }
     const { anchor_x, anchor_y } = calculateAnchorPosition({
@@ -31475,8 +31516,8 @@ var sot563 = (raw_params) => {
   const pw = length.parse(parameters.pw);
   const pads = [];
   for (let i = 0;i < 6; i++) {
-    const { x, y } = getSot563PadCoord(i + 1, w3, p, pl2);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getSot563PadCoord(i + 1, w3, p, pl2);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   const silkscreenTopLine = {
     type: "pcb_silkscreen_path",
@@ -31591,7 +31632,7 @@ var getCcwSot723Coords = (parameters) => {
 var sot723WithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 0;i < 3; i++) {
-    const { x, y } = getCcwSot723Coords({
+    const { x: x3, y } = getCcwSot723Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
@@ -31599,7 +31640,7 @@ var sot723WithoutParsing = (parameters) => {
       pl: Number.parseFloat(parameters.pl),
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i + 1, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -31632,11 +31673,11 @@ var getSodCoords = (parameters) => {
 var sodWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords({
+    const { x: x3, y } = getSodCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -31649,18 +31690,18 @@ var axial_def = base_def.extend({
 });
 var axial = (raw_params) => {
   const parameters = axial_def.parse(raw_params);
-  const { p, id: id2, od: od2 } = parameters;
+  const { p, id, od: od2 } = parameters;
   const plated_holes = [
-    platedhole(1, -p / 2, 0, id2, od2),
-    platedhole(2, p / 2, 0, id2, od2)
+    platedhole(1, -p / 2, 0, id, od2),
+    platedhole(2, p / 2, 0, id, od2)
   ];
   const silkscreenLine = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: -p / 2 + od2 + id2 / 2, y: 0 },
-      { x: p / 2 - od2 - id2 / 2, y: 0 }
+      { x: -p / 2 + od2 + id / 2, y: 0 },
+      { x: p / 2 - od2 - id / 2, y: 0 }
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
@@ -31683,21 +31724,21 @@ var generateCircleArcs = (centerX, centerY, radius, cut, cutHeight, segmentLengt
   const thetaStep = Math.PI / segments;
   for (let i = 0;i <= segments; i++) {
     const theta = i * thetaStep;
-    const x = centerX + Math.cos(theta) * radius;
+    const x3 = centerX + Math.cos(theta) * radius;
     const y = centerY + Math.sin(theta) * radius;
-    if (x < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
+    if (x3 < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
       continue;
     }
-    topArc.push({ x, y });
+    topArc.push({ x: x3, y });
   }
   for (let i = 0;i <= segments; i++) {
     const theta = Math.PI + i * thetaStep;
-    const x = centerX + Math.cos(theta) * radius;
+    const x3 = centerX + Math.cos(theta) * radius;
     const y = centerY + Math.sin(theta) * radius;
-    if (x < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
+    if (x3 < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
       continue;
     }
-    bottomArc.push({ x, y });
+    bottomArc.push({ x: x3, y });
   }
   return { topArc, bottomArc };
 };
@@ -31714,8 +31755,8 @@ var radial_def = base_def.extend({
 });
 var radial = (raw_params) => {
   const parameters = radial_def.parse(raw_params);
-  const { p, id: id2, od: od2 } = parameters;
-  if (id2 === 0.8 && od2 === 1.6) {
+  const { p, id, od: od2 } = parameters;
+  if (id === 0.8 && od2 === 1.6) {
     parameters.id = p === 5 ? 0.8 : p * 0.25;
     parameters.od = p === 5 ? 1.6 : p * 0.5;
   }
@@ -31881,26 +31922,26 @@ var getHeight = (parameters) => {
   }
   return 51;
 };
-var getTriangleDir = (x, y, side) => {
+var getTriangleDir = (x3, y, side) => {
   let routes = [];
   const triangleHeight = 1;
   const triangleWidth = 0.6;
   if (side === "right") {
     routes = [
       {
-        x: x + triangleHeight / 2,
+        x: x3 + triangleHeight / 2,
         y
       },
       {
-        x: x - triangleHeight / 2,
+        x: x3 - triangleHeight / 2,
         y: y + triangleWidth / 2
       },
       {
-        x: x - triangleHeight / 2,
+        x: x3 - triangleHeight / 2,
         y: y - triangleWidth / 2
       },
       {
-        x: x + triangleHeight / 2,
+        x: x3 + triangleHeight / 2,
         y
       }
     ];
@@ -31908,19 +31949,19 @@ var getTriangleDir = (x, y, side) => {
   if (side === "left") {
     routes = [
       {
-        x: x - triangleHeight / 2,
+        x: x3 - triangleHeight / 2,
         y
       },
       {
-        x: x + triangleHeight / 2,
+        x: x3 + triangleHeight / 2,
         y: y + triangleWidth / 2
       },
       {
-        x: x + triangleHeight / 2,
+        x: x3 + triangleHeight / 2,
         y: y - triangleWidth / 2
       },
       {
-        x: x - triangleHeight / 2,
+        x: x3 - triangleHeight / 2,
         y
       }
     ];
@@ -31928,19 +31969,19 @@ var getTriangleDir = (x, y, side) => {
   if (side === "top") {
     routes = [
       {
-        x,
+        x: x3,
         y: y + triangleHeight / 2
       },
       {
-        x: x - triangleWidth / 2,
+        x: x3 - triangleWidth / 2,
         y: y - triangleHeight / 2
       },
       {
-        x: x + triangleWidth / 2,
+        x: x3 + triangleWidth / 2,
         y: y - triangleHeight / 2
       },
       {
-        x,
+        x: x3,
         y: y + triangleHeight / 2
       }
     ];
@@ -31948,19 +31989,19 @@ var getTriangleDir = (x, y, side) => {
   if (side === "bottom") {
     routes = [
       {
-        x,
+        x: x3,
         y: y - triangleHeight / 2
       },
       {
-        x: x - triangleWidth / 2,
+        x: x3 - triangleWidth / 2,
         y: y + triangleHeight / 2
       },
       {
-        x: x + triangleWidth / 2,
+        x: x3 + triangleWidth / 2,
         y: y + triangleHeight / 2
       },
       {
-        x,
+        x: x3,
         y: y - triangleHeight / 2
       }
     ];
@@ -32168,33 +32209,33 @@ var getHeight2 = (parameters) => {
   }
   return 51;
 };
-var getTriangleDir2 = (x, y, side, triangleHeight = 1, triangleWidth = 0.6) => {
+var getTriangleDir2 = (x3, y, side, triangleHeight = 1, triangleWidth = 0.6) => {
   const halfHeight = triangleHeight / 2;
   const halfWidth = triangleWidth / 2;
   const routes = {
     left: [
-      { x: x + halfHeight, y },
-      { x: x - halfHeight, y: y + halfWidth },
-      { x: x - halfHeight, y: y - halfWidth },
-      { x: x + halfHeight, y }
+      { x: x3 + halfHeight, y },
+      { x: x3 - halfHeight, y: y + halfWidth },
+      { x: x3 - halfHeight, y: y - halfWidth },
+      { x: x3 + halfHeight, y }
     ],
     right: [
-      { x: x - halfHeight, y },
-      { x: x + halfHeight, y: y + halfWidth },
-      { x: x + halfHeight, y: y - halfWidth },
-      { x: x - halfHeight, y }
+      { x: x3 - halfHeight, y },
+      { x: x3 + halfHeight, y: y + halfWidth },
+      { x: x3 + halfHeight, y: y - halfWidth },
+      { x: x3 - halfHeight, y }
     ],
     top: [
-      { x, y: y - halfHeight },
-      { x: x - halfWidth, y: y + halfHeight },
-      { x: x + halfWidth, y: y + halfHeight },
-      { x, y: y - halfHeight }
+      { x: x3, y: y - halfHeight },
+      { x: x3 - halfWidth, y: y + halfHeight },
+      { x: x3 + halfWidth, y: y + halfHeight },
+      { x: x3, y: y - halfHeight }
     ],
     bottom: [
-      { x, y: y + halfHeight },
-      { x: x - halfWidth, y: y - halfHeight },
-      { x: x + halfWidth, y: y - halfHeight },
-      { x, y: y + halfHeight }
+      { x: x3, y: y + halfHeight },
+      { x: x3 - halfWidth, y: y - halfHeight },
+      { x: x3 + halfWidth, y: y - halfHeight },
+      { x: x3, y: y + halfHeight }
     ]
   };
   return routes[side];
@@ -32388,33 +32429,33 @@ var getHeight3 = (parameters) => {
   }
   return 51;
 };
-var getTrianglePath = (x, y, side, triangleHeight = 1, triangleWidth = 0.6) => {
+var getTrianglePath = (x3, y, side, triangleHeight = 1, triangleWidth = 0.6) => {
   const halfHeight = triangleHeight / 2;
   const halfWidth = triangleWidth / 2;
   const silkscreenTriangleRoutes = {
     left: [
-      { x: x + halfHeight, y },
-      { x: x - halfHeight, y: y + halfWidth },
-      { x: x - halfHeight, y: y - halfWidth },
-      { x: x + halfHeight, y }
+      { x: x3 + halfHeight, y },
+      { x: x3 - halfHeight, y: y + halfWidth },
+      { x: x3 - halfHeight, y: y - halfWidth },
+      { x: x3 + halfHeight, y }
     ],
     right: [
-      { x: x - halfHeight, y },
-      { x: x + halfHeight, y: y + halfWidth },
-      { x: x + halfHeight, y: y - halfWidth },
-      { x: x - halfHeight, y }
+      { x: x3 - halfHeight, y },
+      { x: x3 + halfHeight, y: y + halfWidth },
+      { x: x3 + halfHeight, y: y - halfWidth },
+      { x: x3 - halfHeight, y }
     ],
     top: [
-      { x, y: y - halfHeight },
-      { x: x - halfWidth, y: y + halfHeight },
-      { x: x + halfWidth, y: y + halfHeight },
-      { x, y: y - halfHeight }
+      { x: x3, y: y - halfHeight },
+      { x: x3 - halfWidth, y: y + halfHeight },
+      { x: x3 + halfWidth, y: y + halfHeight },
+      { x: x3, y: y - halfHeight }
     ],
     bottom: [
-      { x, y: y + halfHeight },
-      { x: x - halfWidth, y: y - halfHeight },
-      { x: x + halfWidth, y: y - halfHeight },
-      { x, y: y + halfHeight }
+      { x: x3, y: y + halfHeight },
+      { x: x3 - halfWidth, y: y - halfHeight },
+      { x: x3 + halfWidth, y: y - halfHeight },
+      { x: x3, y: y + halfHeight }
     ]
   };
   return silkscreenTriangleRoutes[side];
@@ -32512,7 +32553,7 @@ var breakoutheaders = (raw_params) => {
 };
 // src/fn/hc49.ts
 var generate_u_curve = (centerX, centerY, radius, direction) => {
-  return Array.from({ length: 25 }, (_2, i) => {
+  return Array.from({ length: 25 }, (_3, i) => {
     const theta = i / 24 * Math.PI - Math.PI / 2;
     return {
       x: centerX + (direction === "right" ? 1 : -1) * Math.cos(theta) * radius,
@@ -32530,11 +32571,11 @@ var hc49_def = base_def.extend({
 });
 var hc49 = (raw_params) => {
   const parameters = hc49_def.parse(raw_params);
-  const { p, id: id2, od: od2, w: w3, h } = parameters;
+  const { p, id, od: od2, w: w3, h } = parameters;
   const radius = h / 2;
   const plated_holes = [
-    platedhole(1, -p / 2, 0, id2, od2),
-    platedhole(2, p / 2, 0, id2, od2)
+    platedhole(1, -p / 2, 0, id, od2),
+    platedhole(2, p / 2, 0, id, od2)
   ];
   const leftCurve = generate_u_curve(-w3 / 2, 0, radius, "left");
   const rightCurve = generate_u_curve(w3 / 2, 0, radius, "right");
@@ -32582,12 +32623,12 @@ var pad = (params) => {
   };
 };
 // src/helpers/platedHolePill.ts
-var platedHolePill = (pn2, x, y, holeDiameter, outerWidth, outerHeight) => {
+var platedHolePill = (pn2, x3, y, holeDiameter, outerWidth, outerHeight) => {
   return {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
     shape: "pill",
-    x,
+    x: x3,
     y,
     outer_width: mm2(outerWidth),
     outer_height: mm2(outerHeight),
@@ -32613,7 +32654,7 @@ var to92_def = base_def.extend({
   string: exports_external.string().optional()
 });
 var generateSemicircle = (centerX, centerY, radius) => {
-  return Array.from({ length: 25 }, (_2, i) => {
+  return Array.from({ length: 25 }, (_3, i) => {
     const theta = i / 24 * Math.PI;
     return {
       x: centerX + Math.cos(theta) * radius,
@@ -32628,10 +32669,10 @@ var to92 = (raw_params) => {
     ...raw_params,
     num_pins: numPins
   });
-  const { p, id: id2, od: od2, w: w3, h, inline } = parameters;
+  const { p, id, od: od2, w: w3, h, inline } = parameters;
   const holeY = Number.parseFloat(h) / 2;
   const padSpacing7 = Number.parseFloat(p);
-  const holeDia = Number.parseFloat(id2);
+  const holeDia = Number.parseFloat(id);
   const padDia = Number.parseFloat(od2);
   const padWidth = padDia;
   const padHeight = padDia * (1.5 / 1.05);
@@ -32758,11 +32799,11 @@ var getSodCoords2 = (parameters) => {
 var sodWithoutParsing2 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords2({
+    const { x: x3, y } = getSodCoords2({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -32772,7 +32813,7 @@ var sop8 = (raw_params) => {
   const parameters = sop8_def.parse(raw_params);
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSoicCoords({
+    const { x: x3, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
@@ -32780,7 +32821,7 @@ var sop8 = (raw_params) => {
       pl: parameters.pl,
       widthincludeslegs: true
     });
-    pads.push(rectpad(i + 1, x, y, parameters.pl ?? "1.5mm", parameters.pw ?? "0.6mm"));
+    pads.push(rectpad(i + 1, x3, y, parameters.pl ?? "1.5mm", parameters.pw ?? "0.6mm"));
   }
   const sh2 = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
   const silkscreenRefText = silkscreenRef(0, sh2 / 2 - 0.5, sh2 / 12);
@@ -32854,11 +32895,11 @@ var getsod80Coords = (parameters) => {
 var sod80WithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getsod80Coords({
+    const { x: x3, y } = getsod80Coords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -32915,11 +32956,11 @@ var getSodCoords3 = (parameters) => {
 var sodWithoutParsing3 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords3({
+    const { x: x3, y } = getSodCoords3({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -32976,11 +33017,11 @@ var getSodCoords4 = (parameters) => {
 var sodWithoutParsing4 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords4({
+    const { x: x3, y } = getSodCoords4({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33038,11 +33079,11 @@ var getSodCoords5 = (parameters) => {
 var sodWithoutParsing5 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords5({
+    const { x: x3, y } = getSodCoords5({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33100,11 +33141,11 @@ var getSodCoords6 = (parameters) => {
 var sodWithoutParsing6 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords6({
+    const { x: x3, y } = getSodCoords6({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33162,11 +33203,11 @@ var getSodCoords7 = (parameters) => {
 var sodWithoutParsing7 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords7({
+    const { x: x3, y } = getSodCoords7({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33224,11 +33265,11 @@ var getSodCoords8 = (parameters) => {
 var sodWithoutParsing8 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords8({
+    const { x: x3, y } = getSodCoords8({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33286,11 +33327,11 @@ var getSodCoords9 = (parameters) => {
 var sodWithoutParsing9 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords9({
+    const { x: x3, y } = getSodCoords9({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33348,11 +33389,11 @@ var getSodCoords10 = (parameters) => {
 var sodWithoutParsing10 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords10({
+    const { x: x3, y } = getSodCoords10({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33410,11 +33451,11 @@ var getSodCoords11 = (parameters) => {
 var sodWithoutParsing11 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords11({
+    const { x: x3, y } = getSodCoords11({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33544,7 +33585,7 @@ var to220_def = base_def.extend({
 });
 var to220 = (raw_params) => {
   const parameters = to220_def.parse(raw_params);
-  const { fn: fn2, id: id2, od: od2, w: w3, h, string } = parameters;
+  const { fn: fn2, id, od: od2, w: w3, h, string } = parameters;
   const numPins = Number.parseInt(string?.split("_")[1] ?? "3");
   const holeY = -1;
   const halfWidth = w3 / 2;
@@ -33552,9 +33593,9 @@ var to220 = (raw_params) => {
   const minPitch = 2.5;
   const maxHoleWidth = w3 * 0.4;
   const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1));
-  const plated_holes = Array.from({ length: numPins }, (_2, i) => {
-    const x = numPins % 2 === 0 ? (i - numPins / 2 + 0.5) * computedPitch : (i - Math.floor(numPins / 2)) * computedPitch;
-    return platedhole(i + 1, x, holeY, id2, od2);
+  const plated_holes = Array.from({ length: numPins }, (_3, i) => {
+    const x3 = numPins % 2 === 0 ? (i - numPins / 2 + 0.5) * computedPitch : (i - Math.floor(numPins / 2)) * computedPitch;
+    return platedhole(i + 1, x3, holeY, id, od2);
   });
   const silkscreenBody = {
     type: "pcb_silkscreen_path",
@@ -33668,11 +33709,11 @@ var getMiniMelfCoords = (parameters) => {
 var miniMelfWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getMiniMelfCoords({
+    const { x: x3, y } = getMiniMelfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33730,11 +33771,11 @@ var getSodCoords12 = (parameters) => {
 var sodWithoutParsing12 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords12({
+    const { x: x3, y } = getSodCoords12({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33792,11 +33833,11 @@ var getMelfCoords = (parameters) => {
 var melfWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getMelfCoords({
+    const { x: x3, y } = getMelfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33854,11 +33895,11 @@ var getMicroMelfCoords = (parameters) => {
 var microMelfWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getMicroMelfCoords({
+    const { x: x3, y } = getMicroMelfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33915,11 +33956,11 @@ var getSmaCoords = (parameters) => {
 var smaWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSmaCoords({
+    const { x: x3, y } = getSmaCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -33977,11 +34018,11 @@ var getSmfCoords = (parameters) => {
 var smfWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSmfCoords({
+    const { x: x3, y } = getSmfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -34039,11 +34080,11 @@ var getSmbCoords = (parameters) => {
 var smbWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSmbCoords({
+    const { x: x3, y } = getSmbCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -34100,11 +34141,11 @@ var getSmcCoords = (parameters) => {
 var smcWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSmcCoords({
+    const { x: x3, y } = getSmcCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -34172,7 +34213,7 @@ var get2CcwSot223Coords = (parameters) => {
 var sot223_4 = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = get2CcwSot223Coords({
+    const { x: x3, y } = get2CcwSot223Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
@@ -34181,7 +34222,7 @@ var sot223_4 = (parameters) => {
       p: Number.parseFloat(parameters.p)
     });
     const pinWidth = i === 3 ? 3.8 : Number.parseFloat(parameters.pw);
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), pinWidth));
+    pads.push(rectpad(i + 1, x3, y, Number.parseFloat(parameters.pl), pinWidth));
   }
   const silkscreenRefText = silkscreenRef(0, 0, 0.3);
   const width = Number.parseFloat(parameters.w) / 2 - 2.4;
@@ -34244,7 +34285,7 @@ var get2CcwSot2235Coords = (parameters) => {
 var sot223_5 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = get2CcwSot2235Coords({
+    const { x: x3, y } = get2CcwSot2235Coords({
       h: Number.parseFloat(parameters.h),
       p: 1.5,
       pn: i,
@@ -34259,7 +34300,7 @@ var sot223_5 = (parameters) => {
       pinWidth = 1;
       pinLength = 2.2;
     }
-    pads.push(rectpad(i, x, y, pinLength, pinWidth));
+    pads.push(rectpad(i, x3, y, pinLength, pinWidth));
   }
   const width = Number.parseFloat(parameters.w) / 2 - 2.4;
   const height = Number.parseFloat(parameters.h) / 2;
@@ -34315,7 +34356,7 @@ var get2CcwSot2236Coords = (parameters) => {
 var sot223_6 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = get2CcwSot2236Coords({
+    const { x: x3, y } = get2CcwSot2236Coords({
       h: Number.parseFloat(parameters.h),
       p: 1.3,
       pn: i,
@@ -34330,7 +34371,7 @@ var sot223_6 = (parameters) => {
       pinWidth = 0.6;
       pinLength = 2.2;
     }
-    pads.push(rectpad(i, x, y, pinLength, pinWidth));
+    pads.push(rectpad(i, x3, y, pinLength, pinWidth));
   }
   const width = Number.parseFloat(parameters.w) / 2 - 2.4;
   const height = Number.parseFloat(parameters.h) / 2;
@@ -34400,7 +34441,7 @@ var getCcwSot23wCoords = (parameters) => {
 var sot23w_3 = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSot23wCoords({
+    const { x: x3, y } = getCcwSot23wCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
@@ -34408,7 +34449,7 @@ var sot23w_3 = (parameters) => {
       pl: Number.parseFloat(parameters.pl),
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i + 1, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h) / 2 + 1, 0.3);
   const width = Number.parseFloat(parameters.w) / 2 - 1;
@@ -34456,22 +34497,22 @@ var to92s_def = base_def.extend({
   string: exports_external.string().optional()
 });
 var to92s_3 = (parameters) => {
-  const { p, id: id2, od: od2, w: w3, h } = parameters;
+  const { p, id, od: od2, w: w3, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
   const padSpacing7 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing7, holeY - padSpacing7, id2, od2),
-    platedhole(2, 0, holeY - padSpacing7, id2, od2),
-    platedhole(3, padSpacing7, holeY - padSpacing7, id2, od2)
+    platedhole(1, -padSpacing7, holeY - padSpacing7, id, od2),
+    platedhole(2, 0, holeY - padSpacing7, id, od2),
+    platedhole(3, padSpacing7, holeY - padSpacing7, id, od2)
   ];
 };
 var to92s_2 = (parameters) => {
-  const { p, id: id2, od: od2, h } = parameters;
+  const { p, id, od: od2, h } = parameters;
   const holeY = Number.parseFloat(h) / 2;
   const padSpacing7 = Number.parseFloat(p);
   return [
-    platedhole(1, -padSpacing7, holeY - padSpacing7, id2, od2),
-    platedhole(2, padSpacing7, holeY - padSpacing7, id2, od2)
+    platedhole(1, -padSpacing7, holeY - padSpacing7, id, od2),
+    platedhole(2, padSpacing7, holeY - padSpacing7, id, od2)
   ];
 };
 var to92s = (raw_params) => {
@@ -34560,7 +34601,7 @@ function getVariant(params) {
     return "ph";
   return "ph";
 }
-function generatePads(variant, numPins, p, id2, pw, pl2) {
+function generatePads(variant, numPins, p, id, pw, pl2) {
   const pads = [];
   if (variant === "ph") {
     const half_p = p / 2;
@@ -34568,7 +34609,7 @@ function generatePads(variant, numPins, p, id2, pw, pl2) {
       pn: 1,
       x: -half_p,
       y: 2,
-      holeDiameter: id2,
+      holeDiameter: id,
       rectPadWidth: pw,
       rectPadHeight: pl2
     }));
@@ -34576,16 +34617,16 @@ function generatePads(variant, numPins, p, id2, pw, pl2) {
       pn: 2,
       x: half_p,
       y: 2,
-      holeDiameter: id2,
+      holeDiameter: id,
       rectPadWidth: pw,
       rectPadHeight: pl2
     }));
   } else {
     const startX = -((numPins - 1) / 2) * p;
     for (let i = 0;i < numPins; i++) {
-      const x = startX + i * p;
-      console.log("x si", x);
-      pads.push(rectpad(i + 1, x, -1.325, pw, pl2));
+      const x3 = startX + i * p;
+      console.log("x si", x3);
+      pads.push(rectpad(i + 1, x3, -1.325, pw, pl2));
     }
     const sideOffset = (numPins - 1) / 2 * p + 1.3;
     console.log("offset", sideOffset);
@@ -34626,7 +34667,7 @@ var jst = (raw_params) => {
   const variant = getVariant(params);
   const defaults = variantDefaults[variant];
   const p = params.p ?? defaults.p;
-  const id2 = params.id ?? defaults.id;
+  const id = params.id ?? defaults.id;
   const pw = params.pw ?? defaults.pw;
   const pl2 = params.pl ?? defaults.pl;
   const w3 = params.w ?? defaults.w;
@@ -34644,7 +34685,7 @@ var jst = (raw_params) => {
       numPins = params.sh;
     }
   }
-  const pads = generatePads(variant, numPins, p, id2, pw, pl2);
+  const pads = generatePads(variant, numPins, p, id, pw, pl2);
   const silkscreenBody = generateSilkscreenBody(variant, w3, h);
   const silkscreenRefText = silkscreenRef(0, h / 2 + 1, 0.5);
   return {
@@ -34652,7 +34693,7 @@ var jst = (raw_params) => {
     parameters: {
       ...params,
       p,
-      id: id2,
+      id,
       pw,
       pl: pl2,
       w: w3,
@@ -34716,11 +34757,11 @@ var getSodCoords13 = (parameters) => {
 var sodWithoutParsing13 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords13({
+    const { x: x3, y } = getSodCoords13({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -34774,9 +34815,9 @@ var vssop = (raw_params) => {
   const pads = [];
   const half = parameters.num_pins / 2;
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getVssopPadCoord(parameters.num_pins, i + 1, w3, p);
+    const { x: x3, y } = getVssopPadCoord(parameters.num_pins, i + 1, w3, p);
     const logical_pn = i < half ? i + 1 : parameters.num_pins - (i - half);
-    pads.push(rectpad(logical_pn, x, y, pl2, pw));
+    pads.push(rectpad(logical_pn, x3, y, pl2, pw));
   }
   const silkscreenBoxWidth = w3;
   const silkscreenBoxHeight = h;
@@ -34909,8 +34950,8 @@ var msop = (raw_params) => {
   const pw = length.parse(parameters.pw || defaults.pw);
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w3, p);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getMsopCoords(parameters.num_pins, i + 1, w3, p);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   const silkscreenBoxWidth = w3;
   const silkscreenBoxHeight = h;
@@ -35020,11 +35061,11 @@ var getSodCoords14 = (parameters) => {
 var sodWithoutParsing14 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords14({
+    const { x: x3, y } = getSodCoords14({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -35082,11 +35123,11 @@ var getSodCoords15 = (parameters) => {
 var sodWithoutParsing15 = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSodCoords15({
+    const { x: x3, y } = getSodCoords15({
       pn: i,
       pad_spacing: Number.parseFloat(parameters.pad_spacing)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -35123,8 +35164,8 @@ var son = (raw_params) => {
   const eph = length.parse(parameters.eph);
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getSonPadCoord(parameters.num_pins, i + 1, w3, p);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getSonPadCoord(parameters.num_pins, i + 1, w3, p);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   if (parameters.ep) {
     pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph));
@@ -35364,8 +35405,8 @@ var generateSot457Elements = (params) => {
     }
   } else {
     for (let i = 1;i <= params.num_pins; i++) {
-      const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i });
-      pads.push(rectpad(i, x, y, padLength, padWidth));
+      const { x: x3, y } = getCcwSot457Coords({ pitch, width, pinNumber: i });
+      pads.push(rectpad(i, x3, y, padLength, padWidth));
     }
   }
   const silkscreenPath1 = {
@@ -35456,8 +35497,8 @@ var sot963 = (raw_params) => {
   const pw = length.parse(parameters.pw);
   const pads = [];
   for (let i = 0;i < 6; i++) {
-    const { x, y } = getSot963PadCoord(i + 1, w3, p, pl2);
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
+    const { x: x3, y } = getSot963PadCoord(i + 1, w3, p, pl2);
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
   }
   const silkscreenTopLine = {
     type: "pcb_silkscreen_path",
@@ -35527,13 +35568,13 @@ var potentiometer_def = base_def.extend({
   string: exports_external.string().optional()
 });
 var potentiometer_acp = (parameters) => {
-  const { p, id: id2, od: od2, h, ca: ca2 } = parameters;
+  const { p, id, od: od2, h, ca: ca2 } = parameters;
   const y = Number.parseFloat(h);
   const caliper = Number.parseFloat(ca2);
   return [
-    platedhole(1, 0, caliper / 4 + 0.3, id2, od2),
-    platedhole(2, y, 0, id2, od2),
-    platedhole(3, 0, -caliper / 4 - 0.3, id2, od2)
+    platedhole(1, 0, caliper / 4 + 0.3, id, od2),
+    platedhole(2, y, 0, id, od2),
+    platedhole(3, 0, -caliper / 4 - 0.3, id, od2)
   ];
 };
 var potentiometer = (raw_params) => {
@@ -35548,7 +35589,7 @@ var potentiometer = (raw_params) => {
     platedHoles = potentiometer_acp(parameters);
   }
   const y = Number.parseFloat(parameters.ca) / 2 + 0.15;
-  const x = Number.parseFloat(parameters.w);
+  const x3 = Number.parseFloat(parameters.w);
   const od2 = Number.parseFloat(parameters.od) / 2 + 0.35;
   const silkscreenBody = {
     type: "pcb_silkscreen_path",
@@ -35557,8 +35598,8 @@ var potentiometer = (raw_params) => {
     route: [
       { x: 0, y: y - 1.75 },
       { x: 0, y },
-      { x, y },
-      { x, y: od2 }
+      { x: x3, y },
+      { x: x3, y: od2 }
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
@@ -35568,16 +35609,16 @@ var potentiometer = (raw_params) => {
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x, y: -od2 },
-      { x, y: -y },
+      { x: x3, y: -od2 },
+      { x: x3, y: -y },
       { x: 0, y: -y },
       { x: 0, y: -y + 1.75 }
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const W3 = Number.parseFloat(parameters.w) / 2;
-  const silkscreenRefText = silkscreenRef(W3, y + 1, 0.5);
+  const W4 = Number.parseFloat(parameters.w) / 2;
+  const silkscreenRefText = silkscreenRef(W4, y + 1, 0.5);
   return {
     circuitJson: [
       ...platedHoles,
@@ -35601,30 +35642,30 @@ var generate_circle_arcs = (centerX, centerY, radius, cut, cutHeight) => {
   const bottomArc = [];
   for (let i = 0;i <= 50; i++) {
     const theta = i / 50 * Math.PI;
-    const x = centerX + Math.cos(theta) * radius;
+    const x3 = centerX + Math.cos(theta) * radius;
     const y = centerY + Math.sin(theta) * radius;
-    if (x < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
+    if (x3 < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
       continue;
     }
-    topArc.push({ x, y });
+    topArc.push({ x: x3, y });
   }
   for (let i = 0;i <= 50; i++) {
     const theta = Math.PI + i / 50 * Math.PI;
-    const x = centerX + Math.cos(theta) * radius;
+    const x3 = centerX + Math.cos(theta) * radius;
     const y = centerY + Math.sin(theta) * radius;
-    if (x < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
+    if (x3 < centerX - cut && y >= centerY - cutHeight / 2 && y <= centerY + cutHeight / 2) {
       continue;
     }
-    bottomArc.push({ x, y });
+    bottomArc.push({ x: x3, y });
   }
   return { topArc, bottomArc };
 };
 var electrolytic = (raw_params) => {
   const parameters = electrolytic_def.parse(raw_params);
-  const { p, id: id2, od: od2, d } = parameters;
+  const { p, id, od: od2, d } = parameters;
   const plated_holes = [
-    platedhole(1, -p / 2, 0, id2, od2),
-    platedhole(2, p / 2, 0, id2, od2)
+    platedhole(1, -p / 2, 0, id, od2),
+    platedhole(2, p / 2, 0, id, od2)
   ];
   const { topArc, bottomArc } = generate_circle_arcs(0, 0, d / 2 + 0.1, od2 / 2, od2);
   const silkscreenBody2 = {
@@ -35746,11 +35787,11 @@ var getSmbfCoords = (parameters) => {
 var smbfWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getSmbfCoords({
+    const { x: x3, y } = getSmbfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   return pads;
 };
@@ -35793,7 +35834,7 @@ var getCcwSot323Coords = (parameters) => {
 var sot323_3 = (parameters) => {
   const pads = [];
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSot323Coords({
+    const { x: x3, y } = getCcwSot323Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: Number.parseFloat(parameters.w),
@@ -35801,7 +35842,7 @@ var sot323_3 = (parameters) => {
       pl: Number.parseFloat(parameters.pl),
       p: Number.parseFloat(parameters.p)
     });
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i + 1, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h) / 2 + 1, 0.3);
   const width = Number.parseFloat(parameters.w) / 2 - Number.parseFloat(parameters.pl);
@@ -36039,12 +36080,12 @@ var getCcwSotCoords = (parameters) => {
 var sotWithoutParsing = (parameters) => {
   const pads = [];
   for (let i = 1;i <= parameters.num_pins; i++) {
-    const { x, y } = getCcwSotCoords({
+    const { x: x3, y } = getCcwSotCoords({
       h: Number.parseFloat(parameters.h),
       p: Number.parseFloat(parameters.p),
       pn: i
     });
-    pads.push(rectpad(i, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
+    pads.push(rectpad(i, x3, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const width = parameters.num_pins / 2 * Number.parseFloat(parameters.p);
   const height = Number.parseFloat(parameters.h);
@@ -36118,9 +36159,9 @@ var sot343_def = base_def.extend({
   num_pins: exports_external.number().default(4),
   w: exports_external.string().default("3.2mm"),
   h: exports_external.string().default("2.6mm"),
-  pl: exports_external.string().default("1.35mm"),
-  pw: exports_external.string().default("0.50mm"),
-  p: exports_external.string().default("0.6mm"),
+  pl: exports_external.string().default("1.05mm"),
+  pw: exports_external.string().default("0.45mm"),
+  p: exports_external.string().default("0.55mm"),
   string: exports_external.string().optional()
 });
 var sot343 = (raw_params) => {
@@ -36162,7 +36203,7 @@ var sot343_4 = (parameters) => {
   let minY = Infinity;
   let maxY = -Infinity;
   for (let i = 0;i < parameters.num_pins; i++) {
-    const { x, y } = getCcwSot343Coords({
+    const { x: x3, y } = getCcwSot343Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
       w: w3,
@@ -36170,11 +36211,11 @@ var sot343_4 = (parameters) => {
       pl: pl2,
       p
     });
-    pads.push(rectpad(i + 1, x, y, pl2, pw));
-    if (x < minX)
-      minX = x;
-    if (x > maxX)
-      maxX = x;
+    pads.push(rectpad(i + 1, x3, y, pl2, pw));
+    if (x3 < minX)
+      minX = x3;
+    if (x3 > maxX)
+      maxX = x3;
     if (y < minY)
       minY = y;
     if (y > maxY)
@@ -36240,8 +36281,8 @@ var m2host = (raw_params) => {
     const isBottomLayer = pn2 % 2 === 0;
     const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0);
     const rightEdgeOffset = 0.5;
-    const x = rightEdgeOffset - padLengthWithOffset / 2;
-    const pad2 = rectpad(pn2, x, y, padLengthWithOffset, padWidth);
+    const x3 = rightEdgeOffset - padLengthWithOffset / 2;
+    const pad2 = rectpad(pn2, x3, y, padLengthWithOffset, padWidth);
     pad2.layer = isBottomLayer ? "bottom" : "top";
     pads.push(pad2);
   }
@@ -36280,9 +36321,9 @@ var m2host = (raw_params) => {
   let maxX = -Infinity;
   let minY = Infinity;
   let maxY = -Infinity;
-  const updateBounds = (x, y, w3 = 0, h = 0) => {
-    minX = Math.min(minX, x - w3 / 2);
-    maxX = Math.max(maxX, x + w3 / 2);
+  const updateBounds = (x3, y, w3 = 0, h = 0) => {
+    minX = Math.min(minX, x3 - w3 / 2);
+    maxX = Math.max(maxX, x3 + w3 / 2);
     minY = Math.min(minY, y - h / 2);
     maxY = Math.max(maxY, y + h / 2);
   };
@@ -36362,7 +36403,7 @@ var mountedpcbmodule_def = base_def.extend({
     if (Array.isArray(val))
       return val;
     if (val.startsWith("(") && val.endsWith(")")) {
-      return val.slice(1, -1).split(",").map((s2) => s2.trim());
+      return val.slice(1, -1).split(",").map((s) => s.trim());
     }
     return [val];
   }),
@@ -36475,7 +36516,7 @@ var mountedpcbmodule = (raw_params) => {
   const parameters = mountedpcbmodule_def.parse(raw_params);
   const {
     p,
-    id: id2,
+    id,
     od: od2,
     rows,
     numPins,
@@ -36523,12 +36564,12 @@ var mountedpcbmodule = (raw_params) => {
         pn: pinNumber,
         x: xoff,
         y: yoff,
-        holeDiameter: id2,
+        holeDiameter: id,
         rectPadWidth: od2,
         rectPadHeight: od2
       }));
     } else {
-      elements.push(platedhole(pinNumber, xoff, yoff, id2, od2));
+      elements.push(platedhole(pinNumber, xoff, yoff, id, od2));
     }
     if (!nopinlabels) {
       const anchor_x = xoff + (anchorSide === "left" ? -od2 : anchorSide === "right" ? od2 : 0);
@@ -36628,12 +36669,12 @@ var mountedpcbmodule = (raw_params) => {
               pn: pinNumber,
               x: xoff,
               y: yoff,
-              holeDiameter: id2,
+              holeDiameter: id,
               rectPadWidth: od2,
               rectPadHeight: od2
             }));
           } else {
-            elements.push(platedhole(pinNumber, xoff, yoff, id2, od2));
+            elements.push(platedhole(pinNumber, xoff, yoff, id, od2));
           }
         }
         if (!nopinlabels) {
@@ -36694,7 +36735,7 @@ var mountedpcbmodule = (raw_params) => {
         hx2 += holeXDist;
       if (holeYDist !== undefined)
         hy2 += holeYDist;
-      elements.push(platedhole(numPins + holes.indexOf(pos) + 1, hx2, hy2, id2, od2));
+      elements.push(platedhole(numPins + holes.indexOf(pos) + 1, hx2, hy2, id, od2));
     }
   }
   if (!parameters.nosilkscreen) {
@@ -36804,7 +36845,7 @@ var to92l = (raw_params) => {
   const cx2 = parameters.inline ? p - 0.09 : p;
   const cy2 = 0.2;
   const y_bottom = cy2 + radius - h;
-  const semicircle = Array.from({ length: 32 }, (_2, i) => {
+  const semicircle = Array.from({ length: 32 }, (_3, i) => {
     const angle = Math.PI * i / 31;
     return {
       x: cx2 + radius * Math.cos(angle),
@@ -36846,9 +36887,9 @@ var applyOrigin = (elements, origin) => {
   let maxX = Number.NEGATIVE_INFINITY;
   let minY = Number.POSITIVE_INFINITY;
   let maxY = Number.NEGATIVE_INFINITY;
-  const updateBounds = (x, y, w3 = 0, h = 0) => {
-    const left = x - w3 / 2;
-    const right = x + w3 / 2;
+  const updateBounds = (x3, y, w3 = 0, h = 0) => {
+    const left = x3 - w3 / 2;
+    const right = x3 + w3 / 2;
     const bottom = y - h / 2;
     const top = y + h / 2;
     minX = Math.min(minX, left);
@@ -36956,10 +36997,10 @@ var applyNoSilkscreen = (elements, parameters) => {
 
 // src/footprinter.ts
 var string2 = (def) => {
-  let fp2 = footprinter();
+  let fp = footprinter();
   const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1");
-  const def_parts = modifiedDef.split(/_(?!metric)/).map((s2) => {
-    const m = s2.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/);
+  const def_parts = modifiedDef.split(/_(?!metric)/).map((s) => {
+    const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/);
     if (!m)
       return null;
     const [, rawFn, v3] = m;
@@ -36971,10 +37012,10 @@ var string2 = (def) => {
     return { fn: fn2, v: v3 };
   }).filter(isNotNull);
   for (const { fn: fn2, v: v3 } of def_parts) {
-    fp2 = fp2[fn2](v3);
+    fp = fp[fn2](v3);
   }
-  fp2.setString(def);
-  return fp2;
+  fp.setString(def);
+  return fp;
 };
 var getFootprintNames = () => {
   return Object.keys(exports_fn);
@@ -37049,7 +37090,7 @@ var footprinter = () => {
 };
 footprinter.string = string2;
 footprinter.getFootprintNames = getFootprintNames;
-var fp2 = footprinter;
+var fp = footprinter;
 
 // gallery/content.ts
 var content_default = [
@@ -38118,7 +38159,7 @@ var content_default = [
     title: "tqfp48_w7"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="301.94029850746267" y="111.94029850746264" width="196.11940298507466" height="376.11940298507466"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="226.38059701492534" y="372.7611940298507" width="151.11940298507463" height="55.97014925373134" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="226.38059701492534" y="227.23880597014923" width="151.11940298507463" height="55.97014925373134" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="422.5" y="227.23880597014923" width="151.11940298507463" height="55.97014925373134" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="422.5" y="372.7611940298507" width="151.11940298507463" height="55.97014925373134" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 328.35820895522386 167.91044776119398 L 471.64179104477614 167.91044776119398" fill="none" stroke="#f2eda1" stroke-width="11.194029850746269" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 328.35820895522386 488.05970149253733 L 471.64179104477614 488.05970149253733" fill="none" stroke="#f2eda1" stroke-width="11.194029850746269" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_bottom"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.582089552238806" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,111.94029850746264)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="310.1119402985075" y="111.94029850746264" width="179.7761194029851" height="376.11940298507466"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="251.34328358208955" y="375.5597014925373" width="117.53731343283583" height="50.37313432835821" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="251.34328358208955" y="230.0373134328358" width="117.53731343283583" height="50.37313432835821" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="431.11940298507466" y="230.0373134328358" width="117.53731343283583" height="50.37313432835821" data-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="431.11940298507466" y="375.5597014925373" width="117.53731343283583" height="50.37313432835821" data-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 328.35820895522386 167.91044776119398 L 471.64179104477614 167.91044776119398" fill="none" stroke="#f2eda1" stroke-width="11.194029850746269" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 328.35820895522386 488.05970149253733 L 471.64179104477614 488.05970149253733" fill="none" stroke="#f2eda1" stroke-width="11.194029850746269" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_bottom"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.582089552238806" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,111.94029850746264)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none">{REF}</text></svg>',
     title: "sot343"
   }
 ];
@@ -38139,7 +38180,7 @@ var FootprintCreator = () => {
     }
     setLoading(true);
     try {
-      const circuitJson = fp2.string(input).circuitJson();
+      const circuitJson = fp.string(input).circuitJson();
       const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
       setGeneratedSvg(svgContent);
     } catch (err) {
@@ -38148,8 +38189,8 @@ var FootprintCreator = () => {
       setLoading(false);
     }
   }, []);
-  const handleGenerate = (e3) => {
-    e3.preventDefault();
+  const handleGenerate = (e2) => {
+    e2.preventDefault();
     generateFootprint(definition);
   };
   const handleFootprintClick = (footprint) => {
@@ -38157,9 +38198,9 @@ var FootprintCreator = () => {
     generateFootprint(footprint.title);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const handleKeyDown = (e3) => {
-    if (e3.key === "Enter" && !e3.shiftKey) {
-      e3.preventDefault();
+  const handleKeyDown = (e2) => {
+    if (e2.key === "Enter" && !e2.shiftKey) {
+      e2.preventDefault();
       generateFootprint(definition);
     }
   };
@@ -38214,7 +38255,7 @@ var FootprintCreator = () => {
                           spellCheck: false,
                           placeholder: "Enter footprint definition (e.g., breakoutheaders_left15_right15_w8mm_p1.54mm)",
                           value: definition,
-                          onChange: (e3) => setDefinition(e3.target.value),
+                          onChange: (e2) => setDefinition(e2.target.value),
                           onKeyDown: handleKeyDown,
                           className: "w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400 resize-y min-h-[150px] text-lg font-medium"
                         }, undefined, false, undefined, this),
