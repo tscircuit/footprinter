@@ -23,6 +23,7 @@ export const mountedpcbmodule_def = base_def
     id: length.default("1.0mm").describe("inner diameter"),
     od: length.default("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("the module uses male headers"),
+    nopin: z.boolean().optional().default(false).describe("omit pins rendering"),
     female: z.boolean().optional().describe("the module uses female headers"),
     smd: z.boolean().optional().describe("surface mount device"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
