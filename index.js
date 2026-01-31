@@ -36375,6 +36375,7 @@ var mountedpcbmodule_def = base_def.extend({
   id: length.default("1.0mm").describe("inner diameter"),
   od: length.default("1.5mm").describe("outer diameter"),
   male: exports_external.boolean().optional().describe("the module uses male headers"),
+  nopin: exports_external.boolean().optional().default(false).describe("omit pins rendering"),
   female: exports_external.boolean().optional().describe("the module uses female headers"),
   smd: exports_external.boolean().optional().describe("surface mount device"),
   pinlabeltextalignleft: exports_external.boolean().optional().default(false),
