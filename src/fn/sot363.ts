@@ -11,7 +11,7 @@ export const sot363_def = base_def.extend({
   w: z.string().default("3.1mm"),
   h: z.string().default("2.0mm"),
   p: z.string().default("0.65mm"),
-  pl: z.string().default("1.02mm"),
+  pl: z.string().default("1.03mm"),
   pw: z.string().default("0.35mm"),
   string: z.string().optional(),
 })
@@ -97,9 +97,9 @@ export const getSot363PadCoord = (
   if (pn <= 3) {
     // Left side pins (1, 2, 3): x is negative, y goes from p to -p
     // Pin 1: y = p, Pin 2: y = 0, Pin 3: y = -p
-    return { x: -0.85, y: p - (pn - 1) * p }
+    return { x: -0.84, y: p - (pn - 1) * p }
   }
   // Right side pins (4, 5, 6): x is positive, y goes from -p to p
   // Pin 4: y = -p, Pin 5: y = 0, Pin 6: y = p
-  return { x: 0.85, y: -p + (pn - 4) * p }
+  return { x: 0.84, y: -p + (pn - 4) * p }
 }
