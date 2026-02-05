@@ -108,6 +108,11 @@ export const mountedpcbmodule_def = base_def
     usbtype: z.enum(["micro", "c"]).optional(),
     usbmicro: z.boolean().optional().default(false),
     usbc: z.boolean().optional().default(false),
+    screen: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("add silkscreen outline for screen/display area"),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -255,6 +260,7 @@ export const mountedpcbmodule = (
     pinrowbottompins,
     usbposition,
     usbtype,
+    screen,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -591,6 +597,19 @@ export const mountedpcbmodule = (
     }
 
     elements.push(silkscreenpath(usbRect, { stroke_width: 0.1, layer: "top" }))
+  }
+
+  if (screen) {
+    const screenOutline = [
+      { x: -width * 0.475, y: -height * 0.475 },
+      { x: width * 0.475, y: -height * 0.475 },
+      { x: width * 0.475, y: height * 0.475 },
+      { x: -width * 0.475, y: height * 0.475 },
+      { x: -width * 0.475, y: -height * 0.475 },
+    ]
+    elements.push(
+      silkscreenpath(screenOutline, { stroke_width: 0.05, layer: "top" }),
+    )
   }
 
   return {
