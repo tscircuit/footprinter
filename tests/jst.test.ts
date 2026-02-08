@@ -8,6 +8,30 @@ test("jst_ph", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph")
 })
 
+test("jst_ph_4", () => {
+  const circuitJson = fp.string("jst_ph_4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
+  expect(pads.length).toBe(4)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
+})
+
+test("jst_ph_6", () => {
+  const circuitJson = fp.string("jst_ph_6").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
+  expect(pads.length).toBe(6)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_6")
+})
+
+test("jst_ph3", () => {
+  const circuitJson = fp.string("jst_ph3").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
+  expect(pads.length).toBe(3)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph3")
+})
+
 test("jst_sh", () => {
   const circuitJson = fp.string("jst_sh").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)

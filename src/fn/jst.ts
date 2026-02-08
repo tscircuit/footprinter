@@ -33,8 +33,15 @@ export const jst_def = base_def.extend({
     ),
 
   ph: z
-    .boolean()
+    .union([z.boolean(), z.string(), z.number()])
     .optional()
+    .transform((v) => {
+      if (typeof v === "string") {
+        const n = Number(v)
+        return Number.isNaN(n) ? true : n
+      }
+      return v
+    })
     .describe(
       'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
     ),
@@ -82,27 +89,20 @@ function generatePads(
   const pads: AnySoupElement[] = []
 
   if (variant === "ph") {
-    const half_p = p / 2
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 1,
-        x: -half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 2,
-        x: half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(
+        platedHoleWithRectPad({
+          pn: i + 1,
+          x,
+          y: 2,
+          holeDiameter: id,
+          rectPadWidth: pw,
+          rectPadHeight: pl,
+        }),
+      )
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
@@ -124,18 +124,21 @@ function generateSilkscreenBody(
   variant: JstVariant,
   w: number,
   h: number,
+  numPins: number,
+  p: number,
 ): PcbSilkscreenPath {
   if (variant === "ph") {
+    const halfWidth = ((numPins - 1) / 2) * p + 1.5
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
       pcb_component_id: "",
       route: [
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: -halfWidth, y: 3 },
+        { x: halfWidth, y: 3 },
+        { x: halfWidth, y: -2 },
+        { x: -halfWidth, y: -2 },
+        { x: -halfWidth, y: 3 },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
@@ -168,8 +171,9 @@ export const jst = (
 
   let numPins = variant === "sh" ? 4 : 2
 
+  const str = typeof raw_params.string === "string" ? raw_params.string : ""
+
   if (variant === "sh") {
-    const str = typeof raw_params.string === "string" ? raw_params.string : ""
     const match = str.match(/sh(\d+)/)
     if (match && match[1]) {
       const parsed = parseInt(match[1], 10)
@@ -179,10 +183,20 @@ export const jst = (
     } else if (typeof params.sh === "number") {
       numPins = params.sh
     }
+  } else if (variant === "ph") {
+    const match = str.match(/ph_?(\d+)/)
+    if (match && match[1]) {
+      const parsed = parseInt(match[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
+    } else if (typeof params.ph === "number") {
+      numPins = params.ph
+    }
   }
 
   const pads = generatePads(variant, numPins, p, id, pw, pl)
-  const silkscreenBody = generateSilkscreenBody(variant, w, h)
+  const silkscreenBody = generateSilkscreenBody(variant, w, h, numPins, p)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
   return {
