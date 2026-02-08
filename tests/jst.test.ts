@@ -32,6 +32,22 @@ test("jst_ph3", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph3")
 })
 
+test("jst4_ph (preferred syntax)", () => {
+  const circuitJson = fp.string("jst4_ph").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
+  expect(pads.length).toBe(4)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4_ph")
+})
+
+test("jst4 (defaults to PH variant)", () => {
+  const circuitJson = fp.string("jst4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
+  expect(pads.length).toBe(4)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4")
+})
+
 test("jst_sh", () => {
   const circuitJson = fp.string("jst_sh").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)

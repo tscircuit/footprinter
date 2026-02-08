@@ -184,14 +184,22 @@ export const jst = (
       numPins = params.sh
     }
   } else if (variant === "ph") {
-    const match = str.match(/ph_?(\d+)/)
-    if (match && match[1]) {
-      const parsed = parseInt(match[1], 10)
+    const jstMatch = str.match(/jst_?(\d+)/)
+    const phMatch = str.match(/ph_?(\d+)/)
+    if (jstMatch && jstMatch[1]) {
+      const parsed = parseInt(jstMatch[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
+    } else if (phMatch && phMatch[1]) {
+      const parsed = parseInt(phMatch[1], 10)
       if (!Number.isNaN(parsed)) {
         numPins = parsed
       }
     } else if (typeof params.ph === "number") {
       numPins = params.ph
+    } else if (typeof (raw_params as any).num_pins === "number") {
+      numPins = (raw_params as any).num_pins
     }
   }
 
