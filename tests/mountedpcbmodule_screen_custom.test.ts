@@ -9,8 +9,5 @@ test("mountedpcbmodule with custom screen size and offset", () => {
     )
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(
-    import.meta.path,
-    "mountedpcbmodule_screen_custom_1",
-  )
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path)
 })
