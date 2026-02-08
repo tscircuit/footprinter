@@ -113,6 +113,10 @@ export const mountedpcbmodule_def = base_def
       .optional()
       .default(false)
       .describe("add silkscreen outline for screen/display area"),
+    screenwidth: length.optional(),
+    screenheight: length.optional(),
+    screencenteroffsetx: length.optional(),
+    screencenteroffsety: length.optional(),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -201,6 +205,13 @@ export const mountedpcbmodule_def = base_def
       calculatedHeight = 10
     }
 
+    const finalWidth = data.width ?? calculatedWidth
+    const finalHeight = data.height ?? calculatedHeight
+    const screenWidth = data.screenwidth ?? finalWidth * 0.95
+    const screenHeight = data.screenheight ?? finalHeight * 0.95
+    const screenCenterOffsetX = data.screencenteroffsetx ?? 0
+    const screenCenterOffsetY = data.screencenteroffsety ?? 0
+
     return {
       ...data,
       pinlabelAnchorSide,
@@ -209,8 +220,12 @@ export const mountedpcbmodule_def = base_def
       usbtype,
       male: data.male ?? !data.female,
       female: data.female ?? false,
-      width: data.width ?? calculatedWidth,
-      height: data.height ?? calculatedHeight,
+      width: finalWidth,
+      height: finalHeight,
+      screenwidth: screenWidth,
+      screenheight: screenHeight,
+      screencenteroffsetx: screenCenterOffsetX,
+      screencenteroffsety: screenCenterOffsetY,
       pinrowleftpins: sidePinCounts.left,
       pinrowrightpins: sidePinCounts.right,
       pinrowtoppins: sidePinCounts.top,
@@ -261,6 +276,10 @@ export const mountedpcbmodule = (
     usbposition,
     usbtype,
     screen,
+    screenwidth,
+    screenheight,
+    screencenteroffsetx,
+    screencenteroffsety,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -600,12 +619,16 @@ export const mountedpcbmodule = (
   }
 
   if (screen) {
+    const halfScreenWidth = screenwidth / 2
+    const halfScreenHeight = screenheight / 2
+    const centerX = screencenteroffsetx
+    const centerY = screencenteroffsety
     const screenOutline = [
-      { x: -width * 0.475, y: -height * 0.475 },
-      { x: width * 0.475, y: -height * 0.475 },
-      { x: width * 0.475, y: height * 0.475 },
-      { x: -width * 0.475, y: height * 0.475 },
-      { x: -width * 0.475, y: -height * 0.475 },
+      { x: -halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
+      { x: halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
+      { x: halfScreenWidth + centerX, y: halfScreenHeight + centerY },
+      { x: -halfScreenWidth + centerX, y: halfScreenHeight + centerY },
+      { x: -halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
     ]
     elements.push(
       silkscreenpath(screenOutline, { stroke_width: 0.05, layer: "top" }),
