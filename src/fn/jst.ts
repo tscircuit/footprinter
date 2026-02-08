@@ -82,27 +82,20 @@ function generatePads(
   const pads: AnySoupElement[] = []
 
   if (variant === "ph") {
-    const half_p = p / 2
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 1,
-        x: -half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 2,
-        x: half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(
+        platedHoleWithRectPad({
+          pn: i + 1,
+          x,
+          y: 2,
+          holeDiameter: id,
+          rectPadWidth: pw,
+          rectPadHeight: pl,
+        }),
+      )
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
@@ -178,6 +171,17 @@ export const jst = (
       }
     } else if (typeof params.sh === "number") {
       numPins = params.sh
+    }
+  } else if (variant === "ph") {
+    const str = typeof raw_params.string === "string" ? raw_params.string : ""
+    const match = str.match(/ph_?(\d+)/)
+    if (match && match[1]) {
+      const parsed = parseInt(match[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
+    } else if (typeof params.ph === "number") {
+      numPins = params.ph
     }
   }
 
