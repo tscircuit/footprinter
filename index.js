@@ -18289,6 +18289,7 @@ __export(exports_dist, {
   supplier_name: () => supplier_name,
   source_trace_not_connected_error: () => source_trace_not_connected_error,
   source_trace: () => source_trace,
+  source_simple_voltage_source: () => source_simple_voltage_source,
   source_simple_voltage_probe: () => source_simple_voltage_probe,
   source_simple_transistor: () => source_simple_transistor,
   source_simple_test_point: () => source_simple_test_point,
@@ -18307,6 +18308,7 @@ __export(exports_dist, {
   source_simple_ground: () => source_simple_ground,
   source_simple_fiducial: () => source_simple_fiducial,
   source_simple_diode: () => source_simple_diode,
+  source_simple_current_source: () => source_simple_current_source,
   source_simple_crystal: () => source_simple_crystal,
   source_simple_chip: () => source_simple_chip,
   source_simple_capacitor: () => source_simple_capacitor,
@@ -18344,6 +18346,7 @@ __export(exports_dist, {
   schematic_text: () => schematic_text,
   schematic_table_cell: () => schematic_table_cell,
   schematic_table: () => schematic_table,
+  schematic_symbol: () => schematic_symbol,
   schematic_sheet: () => schematic_sheet,
   schematic_rect: () => schematic_rect,
   schematic_port: () => schematic_port,
@@ -18404,6 +18407,7 @@ __export(exports_dist, {
   pcb_port: () => pcb_port,
   pcb_plated_hole: () => pcb_plated_hole,
   pcb_placement_error: () => pcb_placement_error,
+  pcb_panelization_placement_error: () => pcb_panelization_placement_error,
   pcb_panel: () => pcb_panel,
   pcb_note_text: () => pcb_note_text,
   pcb_note_rect: () => pcb_note_rect,
@@ -18437,6 +18441,7 @@ __export(exports_dist, {
   pcb_courtyard_rect: () => pcb_courtyard_rect,
   pcb_courtyard_polygon: () => pcb_courtyard_polygon,
   pcb_courtyard_outline: () => pcb_courtyard_outline,
+  pcb_courtyard_circle: () => pcb_courtyard_circle,
   pcb_copper_text: () => pcb_copper_text,
   pcb_copper_pour_rect: () => pcb_copper_pour_rect,
   pcb_copper_pour_polygon: () => pcb_copper_pour_polygon,
@@ -18467,6 +18472,7 @@ __export(exports_dist, {
   cad_component: () => cad_component,
   brep_shape: () => brep_shape,
   battery_capacity: () => battery_capacity,
+  base_circuit_json_error: () => base_circuit_json_error,
   any_source_component: () => any_source_component,
   any_soup_element: () => any_soup_element,
   any_circuit_element: () => any_circuit_element,
@@ -22718,9 +22724,9 @@ var size = exports_external.object({
   height: exports_external.number()
 });
 expectTypesMatch(true);
-var randomId = (length3) => {
+var randomId = (length4) => {
   const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  return Array.from({ length: length3 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+  return Array.from({ length: length4 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
 };
 var getZodPrefixedIdWithDefault = (prefix) => {
   return exports_external.string().optional().default(() => `${prefix}_${randomId(10)}`);
@@ -22748,6 +22754,8 @@ var pcbRenderLayer = exports_external.enum([
   "bottom_fabrication_note",
   "top_user_note",
   "bottom_user_note",
+  "top_courtyard",
+  "bottom_courtyard",
   "inner1_copper",
   "inner2_copper",
   "inner3_copper",
@@ -22757,6 +22765,12 @@ var pcbRenderLayer = exports_external.enum([
   "edge_cuts",
   "drill"
 ]);
+expectTypesMatch(true);
+var base_circuit_json_error = exports_external.object({
+  error_type: exports_external.string(),
+  message: exports_external.string(),
+  is_fatal: exports_external.boolean().optional()
+});
 expectTypesMatch(true);
 var supplier_name = exports_external.enum([
   "jlcpcb",
@@ -22775,6 +22789,7 @@ var source_component_base = exports_external.object({
   manufacturer_part_number: exports_external.string().optional(),
   supplier_part_numbers: exports_external.record(supplier_name, exports_external.array(exports_external.string())).optional(),
   display_value: exports_external.string().optional(),
+  display_name: exports_external.string().optional(),
   are_pins_interchangeable: exports_external.boolean().optional(),
   internally_connected_source_port_ids: exports_external.array(exports_external.array(exports_external.string())).optional(),
   source_group_id: exports_external.string().optional(),
@@ -22822,6 +22837,16 @@ var source_simple_power_source = source_component_base.extend({
   voltage
 });
 expectTypesMatch(true);
+var source_simple_current_source = source_component_base.extend({
+  ftype: exports_external.literal("simple_current_source"),
+  current,
+  frequency: frequency.optional(),
+  peak_to_peak_current: current.optional(),
+  wave_shape: exports_external.enum(["sine", "square", "triangle", "sawtooth", "dc"]).optional().default("dc"),
+  phase: exports_external.number().optional(),
+  duty_cycle: exports_external.number().min(0).max(1).optional()
+});
+expectTypesMatch(true);
 var source_simple_fuse = source_component_base.extend({
   ftype: exports_external.literal("simple_fuse"),
   current_rating_amps: exports_external.number().describe("Nominal current in amps the fuse is rated for"),
@@ -22845,13 +22870,15 @@ var source_simple_push_button = source_component_base.extend({
 expectTypesMatch(true);
 var source_simple_potentiometer = source_component_base.extend({
   ftype: exports_external.literal("simple_potentiometer"),
-  max_resistance: resistance
+  max_resistance: resistance,
+  display_max_resistance: exports_external.string().optional()
 });
 expectTypesMatch(true);
 var source_simple_crystal = source_component_base.extend({
   ftype: exports_external.literal("simple_crystal"),
   frequency: exports_external.number().describe("Frequency in Hz"),
-  load_capacitance: exports_external.number().optional().describe("Load capacitance in pF")
+  load_capacitance: exports_external.number().optional().describe("Load capacitance in pF"),
+  pin_variant: exports_external.enum(["two_pin", "four_pin"]).optional()
 });
 expectTypesMatch(true);
 var source_simple_pin_header = source_component_base.extend({
@@ -22908,24 +22935,22 @@ var source_project_metadata = exports_external.object({
   created_at: timestamp.optional()
 });
 expectTypesMatch(true);
-var source_missing_property_error = exports_external.object({
+var source_missing_property_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_missing_property_error"),
   source_missing_property_error_id: getZodPrefixedIdWithDefault("source_missing_property_error"),
   source_component_id: exports_external.string(),
   property_name: exports_external.string(),
   subcircuit_id: exports_external.string().optional(),
-  error_type: exports_external.literal("source_missing_property_error").default("source_missing_property_error"),
-  message: exports_external.string()
+  error_type: exports_external.literal("source_missing_property_error").default("source_missing_property_error")
 }).describe("The source code is missing a property");
 expectTypesMatch(true);
-var source_failed_to_create_component_error = exports_external.object({
+var source_failed_to_create_component_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_failed_to_create_component_error"),
   source_failed_to_create_component_error_id: getZodPrefixedIdWithDefault("source_failed_to_create_component_error"),
   error_type: exports_external.literal("source_failed_to_create_component_error").default("source_failed_to_create_component_error"),
   component_name: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   parent_source_component_id: exports_external.string().optional(),
-  message: exports_external.string(),
   pcb_center: exports_external.object({
     x: exports_external.number().optional(),
     y: exports_external.number().optional()
@@ -22936,11 +22961,10 @@ var source_failed_to_create_component_error = exports_external.object({
   }).optional()
 }).describe("Error emitted when a component fails to be constructed");
 expectTypesMatch(true);
-var source_trace_not_connected_error = exports_external.object({
+var source_trace_not_connected_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_trace_not_connected_error"),
   source_trace_not_connected_error_id: getZodPrefixedIdWithDefault("source_trace_not_connected_error"),
   error_type: exports_external.literal("source_trace_not_connected_error").default("source_trace_not_connected_error"),
-  message: exports_external.string(),
   subcircuit_id: exports_external.string().optional(),
   source_group_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional(),
@@ -22976,6 +23000,16 @@ var source_interconnect = source_component_base.extend({
   ftype: exports_external.literal("interconnect")
 });
 expectTypesMatch(true);
+var source_simple_voltage_source = source_component_base.extend({
+  ftype: exports_external.literal("simple_voltage_source"),
+  voltage,
+  frequency: frequency.optional(),
+  peak_to_peak_voltage: voltage.optional(),
+  wave_shape: exports_external.enum(["sinewave", "square", "triangle", "sawtooth"]).optional(),
+  phase: rotation.optional(),
+  duty_cycle: exports_external.number().optional().describe("Duty cycle as a fraction (0 to 1)")
+});
+expectTypesMatch(true);
 var any_source_component = exports_external.union([
   source_simple_resistor,
   source_simple_capacitor,
@@ -22985,6 +23019,7 @@ var any_source_component = exports_external.union([
   source_simple_ground,
   source_simple_chip,
   source_simple_power_source,
+  source_simple_current_source,
   source_simple_battery,
   source_simple_inductor,
   source_simple_push_button,
@@ -23001,6 +23036,7 @@ var any_source_component = exports_external.union([
   source_simple_fuse,
   source_simple_voltage_probe,
   source_interconnect,
+  source_simple_voltage_source,
   source_project_metadata,
   source_missing_property_error,
   source_failed_to_create_component_error,
@@ -23114,21 +23150,19 @@ var source_manually_placed_via = exports_external.object({
   source_trace_id: exports_external.string().optional()
 }).describe("Defines a via that is manually placed in the source domain");
 expectTypesMatch(true);
-var source_pin_must_be_connected_error = exports_external.object({
+var source_pin_must_be_connected_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_pin_must_be_connected_error"),
   source_pin_must_be_connected_error_id: getZodPrefixedIdWithDefault("source_pin_must_be_connected_error"),
   error_type: exports_external.literal("source_pin_must_be_connected_error").default("source_pin_must_be_connected_error"),
-  message: exports_external.string(),
   source_component_id: exports_external.string(),
   source_port_id: exports_external.string(),
   subcircuit_id: exports_external.string().optional()
 }).describe("Error emitted when a pin with mustBeConnected attribute is not connected to any trace");
 expectTypesMatch(true);
-var unknown_error_finding_part = exports_external.object({
+var unknown_error_finding_part = base_circuit_json_error.extend({
   type: exports_external.literal("unknown_error_finding_part"),
   unknown_error_finding_part_id: getZodPrefixedIdWithDefault("unknown_error_finding_part"),
   error_type: exports_external.literal("unknown_error_finding_part").default("unknown_error_finding_part"),
-  message: exports_external.string(),
   source_component_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional()
 }).describe("Error emitted when an unexpected error occurs while finding a part");
@@ -23136,6 +23170,7 @@ expectTypesMatch(true);
 var schematic_box = exports_external.object({
   type: exports_external.literal("schematic_box"),
   schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   width: distance2,
   height: distance2,
   is_dashed: exports_external.boolean().default(false),
@@ -23146,9 +23181,13 @@ var schematic_box = exports_external.object({
 expectTypesMatch(true);
 var schematic_path = exports_external.object({
   type: exports_external.literal("schematic_path"),
-  schematic_component_id: exports_external.string(),
-  fill_color: exports_external.enum(["red", "blue"]).optional(),
+  schematic_path_id: getZodPrefixedIdWithDefault("schematic_path"),
+  schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
+  fill_color: exports_external.string().optional(),
   is_filled: exports_external.boolean().optional(),
+  stroke_width: distance2.nullable().optional(),
+  stroke_color: exports_external.string().optional(),
   points: exports_external.array(point),
   subcircuit_id: exports_external.string().optional()
 });
@@ -23195,6 +23234,7 @@ var schematic_component = exports_external.object({
   center: point,
   source_component_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string(),
+  schematic_symbol_id: exports_external.string().optional(),
   pin_spacing: length.optional(),
   pin_styles: schematic_pin_styles.optional(),
   box_width: length.optional(),
@@ -23209,10 +23249,17 @@ var schematic_component = exports_external.object({
   is_box_with_pins: exports_external.boolean().optional().default(true)
 });
 expectTypesMatch(true);
+var schematic_symbol = exports_external.object({
+  type: exports_external.literal("schematic_symbol"),
+  schematic_symbol_id: exports_external.string(),
+  name: exports_external.string().optional()
+}).describe("Defines a named schematic symbol that can be referenced by components.");
+expectTypesMatch(true);
 var schematic_line = exports_external.object({
   type: exports_external.literal("schematic_line"),
   schematic_line_id: getZodPrefixedIdWithDefault("schematic_line"),
-  schematic_component_id: exports_external.string(),
+  schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   x1: distance2,
   y1: distance2,
   x2: distance2,
@@ -23226,7 +23273,8 @@ expectTypesMatch(true);
 var schematic_rect = exports_external.object({
   type: exports_external.literal("schematic_rect"),
   schematic_rect_id: getZodPrefixedIdWithDefault("schematic_rect"),
-  schematic_component_id: exports_external.string(),
+  schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   center: point,
   width: distance2,
   height: distance2,
@@ -23242,7 +23290,8 @@ expectTypesMatch(true);
 var schematic_circle = exports_external.object({
   type: exports_external.literal("schematic_circle"),
   schematic_circle_id: getZodPrefixedIdWithDefault("schematic_circle"),
-  schematic_component_id: exports_external.string(),
+  schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   center: point,
   radius: distance2,
   stroke_width: distance2.nullable().optional(),
@@ -23256,7 +23305,8 @@ expectTypesMatch(true);
 var schematic_arc = exports_external.object({
   type: exports_external.literal("schematic_arc"),
   schematic_arc_id: getZodPrefixedIdWithDefault("schematic_arc"),
-  schematic_component_id: exports_external.string(),
+  schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   center: point,
   radius: distance2,
   start_angle_degrees: rotation,
@@ -23304,6 +23354,7 @@ expectTypesMatch(true);
 var schematic_text = exports_external.object({
   type: exports_external.literal("schematic_text"),
   schematic_component_id: exports_external.string().optional(),
+  schematic_symbol_id: exports_external.string().optional(),
   schematic_text_id: exports_external.string(),
   text: exports_external.string(),
   font_size: exports_external.number().default(0.18),
@@ -23332,7 +23383,8 @@ var schematic_port = exports_external.object({
   subcircuit_id: exports_external.string().optional(),
   is_connected: exports_external.boolean().optional(),
   has_input_arrow: exports_external.boolean().optional(),
-  has_output_arrow: exports_external.boolean().optional()
+  has_output_arrow: exports_external.boolean().optional(),
+  is_drawn_with_inversion_circle: exports_external.boolean().optional()
 }).describe("Defines a port on a schematic component");
 expectTypesMatch(true);
 var schematic_net_label = exports_external.object({
@@ -23350,19 +23402,17 @@ var schematic_net_label = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 });
 expectTypesMatch(true);
-var schematic_error = exports_external.object({
+var schematic_error = base_circuit_json_error.extend({
   type: exports_external.literal("schematic_error"),
   schematic_error_id: exports_external.string(),
   error_type: exports_external.literal("schematic_port_not_found").default("schematic_port_not_found"),
-  message: exports_external.string(),
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a schematic error on the schematic");
 expectTypesMatch(true);
-var schematic_layout_error = exports_external.object({
+var schematic_layout_error = base_circuit_json_error.extend({
   type: exports_external.literal("schematic_layout_error"),
   schematic_layout_error_id: getZodPrefixedIdWithDefault("schematic_layout_error"),
   error_type: exports_external.literal("schematic_layout_error").default("schematic_layout_error"),
-  message: exports_external.string(),
   source_group_id: exports_external.string(),
   schematic_group_id: exports_external.string(),
   subcircuit_id: exports_external.string().optional()
@@ -23751,7 +23801,8 @@ var pcb_hole_with_polygon_pad = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_port_id: exports_external.string().optional(),
   pcb_plated_hole_id: getZodPrefixedIdWithDefault("pcb_plated_hole"),
-  soldermask_margin: exports_external.number().optional()
+  soldermask_margin: exports_external.number().optional(),
+  ccw_rotation: rotation.optional()
 });
 var pcb_plated_hole = exports_external.union([
   pcb_plated_hole_circle,
@@ -23813,7 +23864,11 @@ var pcb_smtpad_rect = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_port_id: exports_external.string().optional(),
   is_covered_with_solder_mask: exports_external.boolean().optional(),
-  soldermask_margin: exports_external.number().optional()
+  soldermask_margin: exports_external.number().optional(),
+  soldermask_margin_left: exports_external.number().optional(),
+  soldermask_margin_top: exports_external.number().optional(),
+  soldermask_margin_right: exports_external.number().optional(),
+  soldermask_margin_bottom: exports_external.number().optional()
 });
 var pcb_smtpad_rotated_rect = exports_external.object({
   type: exports_external.literal("pcb_smtpad"),
@@ -23833,7 +23888,11 @@ var pcb_smtpad_rotated_rect = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_port_id: exports_external.string().optional(),
   is_covered_with_solder_mask: exports_external.boolean().optional(),
-  soldermask_margin: exports_external.number().optional()
+  soldermask_margin: exports_external.number().optional(),
+  soldermask_margin_left: exports_external.number().optional(),
+  soldermask_margin_top: exports_external.number().optional(),
+  soldermask_margin_right: exports_external.number().optional(),
+  soldermask_margin_bottom: exports_external.number().optional()
 });
 var pcb_smtpad_pill = exports_external.object({
   type: exports_external.literal("pcb_smtpad"),
@@ -24035,11 +24094,10 @@ var pcb_trace = exports_external.object({
 }).describe("Defines a trace on the PCB");
 expectTypesMatch(true);
 expectTypesMatch(true);
-var pcb_trace_error = exports_external.object({
+var pcb_trace_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_trace_error"),
   pcb_trace_error_id: getZodPrefixedIdWithDefault("pcb_trace_error"),
   error_type: exports_external.literal("pcb_trace_error").default("pcb_trace_error"),
-  message: exports_external.string(),
   center: point.optional(),
   pcb_trace_id: exports_external.string(),
   source_trace_id: exports_external.string(),
@@ -24048,11 +24106,10 @@ var pcb_trace_error = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a trace error on the PCB");
 expectTypesMatch(true);
-var pcb_trace_missing_error = exports_external.object({
+var pcb_trace_missing_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_trace_missing_error"),
   pcb_trace_missing_error_id: getZodPrefixedIdWithDefault("pcb_trace_missing_error"),
   error_type: exports_external.literal("pcb_trace_missing_error").default("pcb_trace_missing_error"),
-  message: exports_external.string(),
   center: point.optional(),
   source_trace_id: exports_external.string(),
   pcb_component_ids: exports_external.array(exports_external.string()),
@@ -24060,20 +24117,18 @@ var pcb_trace_missing_error = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines an error when a source trace has no corresponding PCB trace");
 expectTypesMatch(true);
-var pcb_port_not_matched_error = exports_external.object({
+var pcb_port_not_matched_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_port_not_matched_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
   error_type: exports_external.literal("pcb_port_not_matched_error").default("pcb_port_not_matched_error"),
-  message: exports_external.string(),
   pcb_component_ids: exports_external.array(exports_external.string()),
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a trace error on the PCB where a port is not matched");
 expectTypesMatch(true);
-var pcb_port_not_connected_error = exports_external.object({
+var pcb_port_not_connected_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_port_not_connected_error"),
   pcb_port_not_connected_error_id: getZodPrefixedIdWithDefault("pcb_port_not_connected_error"),
   error_type: exports_external.literal("pcb_port_not_connected_error").default("pcb_port_not_connected_error"),
-  message: exports_external.string(),
   pcb_port_ids: exports_external.array(exports_external.string()),
   pcb_component_ids: exports_external.array(exports_external.string()),
   subcircuit_id: exports_external.string().optional()
@@ -24109,8 +24164,10 @@ var pcb_board = exports_external.object({
   type: exports_external.literal("pcb_board"),
   pcb_board_id: getZodPrefixedIdWithDefault("pcb_board"),
   pcb_panel_id: exports_external.string().optional(),
+  carrier_pcb_board_id: exports_external.string().optional(),
   is_subcircuit: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
+  is_mounted_to_carrier_board: exports_external.boolean().optional(),
   width: length.optional(),
   height: length.optional(),
   center: point,
@@ -24135,13 +24192,21 @@ var pcb_panel = exports_external.object({
   covered_with_solder_mask: exports_external.boolean().optional().default(true)
 }).describe("Defines a PCB panel that can contain multiple boards");
 expectTypesMatch(true);
-var pcb_placement_error = exports_external.object({
+var pcb_placement_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_placement_error"),
   pcb_placement_error_id: getZodPrefixedIdWithDefault("pcb_placement_error"),
   error_type: exports_external.literal("pcb_placement_error").default("pcb_placement_error"),
-  message: exports_external.string(),
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a placement error on the PCB");
+expectTypesMatch(true);
+var pcb_panelization_placement_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_panelization_placement_error"),
+  pcb_panelization_placement_error_id: getZodPrefixedIdWithDefault("pcb_panelization_placement_error"),
+  error_type: exports_external.literal("pcb_panelization_placement_error").default("pcb_panelization_placement_error"),
+  pcb_panel_id: exports_external.string().optional(),
+  pcb_board_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a panelization placement error on the PCB");
 expectTypesMatch(true);
 var pcb_trace_hint = exports_external.object({
   type: exports_external.literal("pcb_trace_hint"),
@@ -24442,11 +24507,10 @@ var pcb_note_dimension = exports_external.object({
   arrow_size: length.default("1mm")
 }).describe("Defines a measurement annotation within PCB documentation notes");
 expectTypesMatch(true);
-var pcb_footprint_overlap_error = exports_external.object({
+var pcb_footprint_overlap_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_footprint_overlap_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
   error_type: exports_external.literal("pcb_footprint_overlap_error").default("pcb_footprint_overlap_error"),
-  message: exports_external.string(),
   pcb_smtpad_ids: exports_external.array(exports_external.string()).optional(),
   pcb_plated_hole_ids: exports_external.array(exports_external.string()).optional(),
   pcb_hole_ids: exports_external.array(exports_external.string()).optional(),
@@ -24520,17 +24584,16 @@ var pcb_cutout = exports_external.discriminatedUnion("shape", [
   pcb_cutout_path
 ]).describe("Defines a cutout on the PCB, removing board material.");
 expectTypesMatch(true);
-var pcb_missing_footprint_error = exports_external.object({
+var pcb_missing_footprint_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_missing_footprint_error"),
   pcb_missing_footprint_error_id: getZodPrefixedIdWithDefault("pcb_missing_footprint_error"),
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   error_type: exports_external.literal("pcb_missing_footprint_error").default("pcb_missing_footprint_error"),
-  source_component_id: exports_external.string(),
-  message: exports_external.string()
+  source_component_id: exports_external.string()
 }).describe("Defines a missing footprint error on the PCB");
 expectTypesMatch(true);
-var external_footprint_load_error = exports_external.object({
+var external_footprint_load_error = base_circuit_json_error.extend({
   type: exports_external.literal("external_footprint_load_error"),
   external_footprint_load_error_id: getZodPrefixedIdWithDefault("external_footprint_load_error"),
   pcb_component_id: exports_external.string(),
@@ -24538,11 +24601,10 @@ var external_footprint_load_error = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   footprinter_string: exports_external.string().optional(),
-  error_type: exports_external.literal("external_footprint_load_error").default("external_footprint_load_error"),
-  message: exports_external.string()
+  error_type: exports_external.literal("external_footprint_load_error").default("external_footprint_load_error")
 }).describe("Defines an error when an external footprint fails to load");
 expectTypesMatch(true);
-var circuit_json_footprint_load_error = exports_external.object({
+var circuit_json_footprint_load_error = base_circuit_json_error.extend({
   type: exports_external.literal("circuit_json_footprint_load_error"),
   circuit_json_footprint_load_error_id: getZodPrefixedIdWithDefault("circuit_json_footprint_load_error"),
   pcb_component_id: exports_external.string(),
@@ -24550,7 +24612,6 @@ var circuit_json_footprint_load_error = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   error_type: exports_external.literal("circuit_json_footprint_load_error").default("circuit_json_footprint_load_error"),
-  message: exports_external.string(),
   circuit_json: exports_external.array(exports_external.any()).optional()
 }).describe("Defines an error when a circuit JSON footprint fails to load");
 expectTypesMatch(true);
@@ -24582,11 +24643,10 @@ var pcb_group = exports_external.object({
   autorouter_used_string: exports_external.string().optional()
 }).describe("Defines a group of components on the PCB");
 expectTypesMatch(true);
-var pcb_autorouting_error = exports_external.object({
+var pcb_autorouting_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_autorouting_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_autorouting_error"),
   error_type: exports_external.literal("pcb_autorouting_error").default("pcb_autorouting_error"),
-  message: exports_external.string(),
   subcircuit_id: exports_external.string().optional()
 }).describe("The autorouting has failed to route a portion of the board");
 expectTypesMatch(true);
@@ -24678,11 +24738,10 @@ var pcb_copper_pour = exports_external.discriminatedUnion("shape", [
   pcb_copper_pour_polygon
 ]).describe("Defines a copper pour on the PCB.");
 expectTypesMatch(true);
-var pcb_component_outside_board_error = exports_external.object({
+var pcb_component_outside_board_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_component_outside_board_error"),
   pcb_component_outside_board_error_id: getZodPrefixedIdWithDefault("pcb_component_outside_board_error"),
   error_type: exports_external.literal("pcb_component_outside_board_error").default("pcb_component_outside_board_error"),
-  message: exports_external.string(),
   pcb_component_id: exports_external.string(),
   pcb_board_id: exports_external.string(),
   component_center: point,
@@ -24696,22 +24755,20 @@ var pcb_component_outside_board_error = exports_external.object({
   source_component_id: exports_external.string().optional()
 }).describe("Error emitted when a PCB component is placed outside the board boundaries");
 expectTypesMatch(true);
-var pcb_component_invalid_layer_error = exports_external.object({
+var pcb_component_invalid_layer_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_component_invalid_layer_error"),
   pcb_component_invalid_layer_error_id: getZodPrefixedIdWithDefault("pcb_component_invalid_layer_error"),
   error_type: exports_external.literal("pcb_component_invalid_layer_error").default("pcb_component_invalid_layer_error"),
-  message: exports_external.string(),
   pcb_component_id: exports_external.string().optional(),
   source_component_id: exports_external.string(),
   layer: layer_ref,
   subcircuit_id: exports_external.string().optional()
 }).describe("Error emitted when a component is placed on an invalid layer (components can only be on 'top' or 'bottom' layers)");
 expectTypesMatch(true);
-var pcb_via_clearance_error = exports_external.object({
+var pcb_via_clearance_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_via_clearance_error"),
   pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
   error_type: exports_external.literal("pcb_via_clearance_error").default("pcb_via_clearance_error"),
-  message: exports_external.string(),
   pcb_via_ids: exports_external.array(exports_external.string()).min(2),
   minimum_clearance: distance2.optional(),
   actual_clearance: distance2.optional(),
@@ -24742,11 +24799,7 @@ var pcb_courtyard_outline = exports_external.object({
   pcb_group_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   layer: visible_layer,
-  outline: exports_external.array(point).min(2),
-  stroke_width: length.default("0.1mm"),
-  is_closed: exports_external.boolean().optional(),
-  is_stroke_dashed: exports_external.boolean().optional(),
-  color: exports_external.string().optional()
+  outline: exports_external.array(point).min(2)
 }).describe("Defines a courtyard outline on the PCB");
 expectTypesMatch(true);
 var pcb_courtyard_polygon = exports_external.object({
@@ -24759,6 +24812,18 @@ var pcb_courtyard_polygon = exports_external.object({
   points: exports_external.array(point).min(3),
   color: exports_external.string().optional()
 }).describe("Defines a courtyard polygon on the PCB");
+expectTypesMatch(true);
+var pcb_courtyard_circle = exports_external.object({
+  type: exports_external.literal("pcb_courtyard_circle"),
+  pcb_courtyard_circle_id: getZodPrefixedIdWithDefault("pcb_courtyard_circle"),
+  pcb_component_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  center: point,
+  radius: length,
+  layer: visible_layer,
+  color: exports_external.string().optional()
+}).describe("Defines a courtyard circle on the PCB");
 expectTypesMatch(true);
 var cad_component = exports_external.object({
   type: exports_external.literal("cad_component"),
@@ -24780,7 +24845,8 @@ var cad_component = exports_external.object({
   model_wrl_url: exports_external.string().optional(),
   model_unit_to_mm_scale_factor: exports_external.number().optional(),
   model_jscad: exports_external.any().optional(),
-  show_as_translucent_model: exports_external.boolean().optional()
+  show_as_translucent_model: exports_external.boolean().optional(),
+  anchor_alignment: exports_external.enum(["center", "xy_center_z_board"]).optional().default("center")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
 var wave_shape = exports_external.enum(["sinewave", "square", "triangle", "sawtooth"]);
@@ -24947,11 +25013,10 @@ var simulation_voltage_probe = exports_external.object({
   }
 });
 expectTypesMatch(true);
-var simulation_unknown_experiment_error = exports_external.object({
+var simulation_unknown_experiment_error = base_circuit_json_error.extend({
   type: exports_external.literal("simulation_unknown_experiment_error"),
   simulation_unknown_experiment_error_id: getZodPrefixedIdWithDefault("simulation_unknown_experiment_error"),
   error_type: exports_external.literal("simulation_unknown_experiment_error").default("simulation_unknown_experiment_error"),
-  message: exports_external.string(),
   simulation_experiment_id: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional()
 }).describe("An unknown error occurred during the simulation experiment.");
@@ -25030,6 +25095,7 @@ var any_circuit_element = exports_external.union([
   pcb_trace_error,
   pcb_trace_missing_error,
   pcb_placement_error,
+  pcb_panelization_placement_error,
   pcb_port_not_matched_error,
   pcb_port_not_connected_error,
   pcb_via_clearance_error,
@@ -25055,6 +25121,7 @@ var any_circuit_element = exports_external.union([
   pcb_courtyard_rect,
   pcb_courtyard_outline,
   pcb_courtyard_polygon,
+  pcb_courtyard_circle,
   schematic_box,
   schematic_text,
   schematic_line,
@@ -25062,6 +25129,7 @@ var any_circuit_element = exports_external.union([
   schematic_circle,
   schematic_arc,
   schematic_component,
+  schematic_symbol,
   schematic_port,
   schematic_trace,
   schematic_path,
