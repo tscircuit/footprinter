@@ -33,15 +33,8 @@ export const jst_def = base_def.extend({
     ),
 
   ph: z
-    .union([z.boolean(), z.string(), z.number()])
+    .boolean()
     .optional()
-    .transform((v) => {
-      if (typeof v === "string") {
-        const n = Number(v)
-        return Number.isNaN(n) ? true : n
-      }
-      return v
-    })
     .describe(
       'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
     ),
@@ -184,11 +177,9 @@ export const jst = (
       numPins = params.sh
     }
   } else if (variant === "ph") {
-    // Primary: num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
+    // num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
     if (typeof (raw_params as any).num_pins === "number") {
       numPins = (raw_params as any).num_pins
-    } else if (typeof params.ph === "number") {
-      numPins = params.ph
     }
   }
 
