@@ -12,6 +12,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const jst_def = base_def.extend({
   fn: z.string(),
+  num_pins: z.number().optional(),
   p: length.optional(),
   id: length.optional(),
   pw: length.optional(),
@@ -19,25 +20,17 @@ export const jst_def = base_def.extend({
   w: length.optional(),
   h: length.optional(),
   sh: z
-    .union([z.boolean(), z.string(), z.number()])
+    .preprocess((v) => (v != null ? Boolean(v) : undefined), z.boolean())
     .optional()
-    .transform((v) => {
-      if (v === undefined || v === null || v === false || v === 0) {
-        return false
-      }
-      return true
-    })
     .describe(
       'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
     ),
-
   ph: z
-    .boolean()
+    .preprocess((v) => (v != null ? Boolean(v) : undefined), z.boolean())
     .optional()
     .describe(
       'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
     ),
-
   string: z.string().optional(),
 })
 
@@ -70,14 +63,21 @@ function getVariant(params: jstDef): JstVariant {
   return "ph"
 }
 
-function generatePads(
-  variant: JstVariant,
-  numPins: number,
-  p: number,
-  id: number,
-  pw: number,
-  pl: number,
-): AnySoupElement[] {
+function generatePads({
+  variant,
+  numPins,
+  p,
+  id,
+  pw,
+  pl,
+}: {
+  variant: JstVariant
+  numPins: number
+  p: number
+  id: number
+  pw: number
+  pl: number
+}): AnySoupElement[] {
   const pads: AnySoupElement[] = []
 
   if (variant === "ph") {
@@ -110,13 +110,19 @@ function generatePads(
   return pads
 }
 
-function generateSilkscreenBody(
-  variant: JstVariant,
-  w: number,
-  h: number,
-  numPins: number,
-  p: number,
-): PcbSilkscreenPath {
+function generateSilkscreenBody({
+  variant,
+  w,
+  h,
+  numPins,
+  p,
+}: {
+  variant: JstVariant
+  w: number
+  h: number
+  numPins: number
+  p: number
+}): PcbSilkscreenPath {
   if (variant === "ph") {
     const halfWidth = ((numPins - 1) / 2) * p + 1.5
     return {
@@ -161,27 +167,24 @@ export const jst = (
 
   let numPins = variant === "sh" ? 4 : 2
 
-  const str = typeof raw_params.string === "string" ? raw_params.string : ""
+  // Use num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
+  if (params.num_pins != null) {
+    numPins = params.num_pins
+  }
 
-  if (variant === "sh") {
-    const match = str.match(/sh(\d+)/)
-    if (match && match[1]) {
-      const parsed = parseInt(match[1], 10)
+  // SH variant: also parse from "sh6" in the string
+  if (variant === "sh" && params.string) {
+    const match = params.string.match(/sh(\d+)/)
+    if (match?.[1]) {
+      const parsed = Number.parseInt(match[1], 10)
       if (!Number.isNaN(parsed)) {
         numPins = parsed
       }
-    } else if (typeof raw_params.sh === "number") {
-      numPins = raw_params.sh
-    }
-  } else if (variant === "ph") {
-    // num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
-    if (typeof (raw_params as any).num_pins === "number") {
-      numPins = (raw_params as any).num_pins
     }
   }
 
-  const pads = generatePads(variant, numPins, p, id, pw, pl)
-  const silkscreenBody = generateSilkscreenBody(variant, w, h, numPins, p)
+  const pads = generatePads({ variant, numPins, p, id, pw, pl })
+  const silkscreenBody = generateSilkscreenBody({ variant, w, h, numPins, p })
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
   return {
