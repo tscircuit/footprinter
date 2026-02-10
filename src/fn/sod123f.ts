@@ -10,9 +10,9 @@ export const sod_def = base_def.extend({
   num_pins: z.literal(2).default(2),
   w: z.string().default("4.4mm"),
   h: z.string().default("2.1mm"),
-  pl: z.string().default("1.2mm"),
-  pw: z.string().default("1.2mm"),
-  p: z.string().default("2.9mm"),
+  pl: z.string().default("1.10mm"),
+  pw: z.string().default("1.10mm"),
+  p: z.string().default("2.8mm"),
 })
 
 export const sod123f = (
