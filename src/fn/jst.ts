@@ -22,11 +22,10 @@ export const jst_def = base_def.extend({
     .union([z.boolean(), z.string(), z.number()])
     .optional()
     .transform((v) => {
-      if (typeof v === "string") {
-        const n = Number(v)
-        return Number.isNaN(n) ? true : n
+      if (v === undefined || v === null || v === false || v === 0) {
+        return false
       }
-      return v
+      return true
     })
     .describe(
       'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
@@ -173,8 +172,8 @@ export const jst = (
       if (!Number.isNaN(parsed)) {
         numPins = parsed
       }
-    } else if (typeof params.sh === "number") {
-      numPins = params.sh
+    } else if (typeof raw_params.sh === "number") {
+      numPins = raw_params.sh
     }
   } else if (variant === "ph") {
     // num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
