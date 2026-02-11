@@ -75,27 +75,20 @@ function generatePads(
   const pads: AnySoupElement[] = []
 
   if (variant === "ph") {
-    const half_p = p / 2
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 1,
-        x: -half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 2,
-        x: half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(
+        platedHoleWithRectPad({
+          pn: i + 1,
+          x,
+          y: 2,
+          holeDiameter: id,
+          rectPadWidth: pw,
+          rectPadHeight: pl,
+        }),
+      )
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
@@ -157,22 +150,28 @@ export const jst = (
   const w = params.w ?? defaults.w
   const h = params.h ?? defaults.h
 
-  let numPins = variant === "sh" ? 4 : 2
+  let numPins: number | undefined
 
-  if (variant === "sh") {
-    const explicitNumPins = (raw_params as any).num_pins
-    if (typeof explicitNumPins === "number") {
-      numPins = explicitNumPins
-    }
+  const explicitNumPins = (raw_params as any).num_pins
+  if (typeof explicitNumPins === "number") {
+    numPins = explicitNumPins
+  }
 
-    const str = typeof raw_params.string === "string" ? raw_params.string : ""
-    const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
-    if (match && match[1]) {
-      const parsed = parseInt(match[1], 10)
-      if (!Number.isNaN(parsed)) {
-        numPins = parsed
-      }
+  const str = typeof raw_params.string === "string" ? raw_params.string : ""
+  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+  if (match && match[1]) {
+    const parsed = parseInt(match[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
     }
+  }
+
+  if (typeof numPins !== "number") {
+    throw new Error(
+      `JST requires an explicit pin count (e.g. jst6_sh or .jst(6))${
+        params.string ? `, from string "${params.string}"` : ""
+      }`,
+    )
   }
 
   const pads = generatePads(variant, numPins, p, id, pw, pl)
