@@ -19,15 +19,8 @@ export const jst_def = base_def.extend({
   w: length.optional(),
   h: length.optional(),
   sh: z
-    .union([z.boolean(), z.string(), z.number()])
+    .boolean()
     .optional()
-    .transform((v) => {
-      if (typeof v === "string") {
-        const n = Number(v)
-        return Number.isNaN(n) ? true : n
-      }
-      return v
-    })
     .describe(
       'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
     ),
@@ -82,37 +75,28 @@ function generatePads(
   const pads: AnySoupElement[] = []
 
   if (variant === "ph") {
-    const half_p = p / 2
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 1,
-        x: -half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
-    pads.push(
-      platedHoleWithRectPad({
-        pn: 2,
-        x: half_p,
-        y: 2,
-        holeDiameter: id,
-        rectPadWidth: pw,
-        rectPadHeight: pl,
-      }),
-    )
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(
+        platedHoleWithRectPad({
+          pn: i + 1,
+          x,
+          y: 2,
+          holeDiameter: id,
+          rectPadWidth: pw,
+          rectPadHeight: pl,
+        }),
+      )
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
-      console.log("x si", x)
       pads.push(rectpad(i + 1, x, -1.325, pw, pl))
     }
 
     const sideOffset = ((numPins - 1) / 2) * p + 1.3
-    console.log("offset", sideOffset)
     pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8))
     pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8))
   }
@@ -166,19 +150,28 @@ export const jst = (
   const w = params.w ?? defaults.w
   const h = params.h ?? defaults.h
 
-  let numPins = variant === "sh" ? 4 : 2
+  let numPins: number | undefined
 
-  if (variant === "sh") {
-    const str = typeof raw_params.string === "string" ? raw_params.string : ""
-    const match = str.match(/sh(\d+)/)
-    if (match && match[1]) {
-      const parsed = parseInt(match[1], 10)
-      if (!Number.isNaN(parsed)) {
-        numPins = parsed
-      }
-    } else if (typeof params.sh === "number") {
-      numPins = params.sh
+  const explicitNumPins = (raw_params as any).num_pins
+  if (typeof explicitNumPins === "number") {
+    numPins = explicitNumPins
+  }
+
+  const str = typeof raw_params.string === "string" ? raw_params.string : ""
+  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+  if (match && match[1]) {
+    const parsed = parseInt(match[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
     }
+  }
+
+  if (typeof numPins !== "number") {
+    throw new Error(
+      `JST requires an explicit pin count (e.g. jst6_sh or .jst(6))${
+        params.string ? `, from string "${params.string}"` : ""
+      }`,
+    )
   }
 
   const pads = generatePads(variant, numPins, p, id, pw, pl)
