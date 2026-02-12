@@ -9,17 +9,31 @@ test("pdip8", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pdip8")
 })
 
-test("pdip8 matches dip8", () => {
+test("pdip8 uses oblong pads unlike dip8 circular pads", () => {
   const pdipJson = fp.string("pdip8").circuitJson() as AnyCircuitElement[]
   const dipJson = fp.string("dip8").circuitJson() as AnyCircuitElement[]
-  expect(pdipJson).toEqual(dipJson)
+
+  // PDIP should use pill-shaped pads for non-pin-1 holes
+  const pdipHoles = pdipJson.filter(
+    (e) => e.type === "pcb_plated_hole" && e.shape === "pill",
+  )
+  const dipHoles = dipJson.filter(
+    (e) => e.type === "pcb_plated_hole" && e.shape === "circle",
+  )
+
+  // PDIP has pill pads, DIP has circle pads (for non-pin-1)
+  expect(pdipHoles.length).toBe(7)
+  expect(dipHoles.length).toBe(7)
+
+  // PDIP and DIP should NOT produce identical output
+  expect(pdipJson).not.toEqual(dipJson)
 })
 
 test("pdip8 parameters", () => {
   const json = fp.string("pdip8").json()
   expect(json).toMatchInlineSnapshot(
     {
-      fn: "dip",
+      fn: "pdip",
       id: 0.8,
       num_pins: 8,
       od: 1.6,
@@ -28,7 +42,7 @@ test("pdip8 parameters", () => {
     },
     `
 {
-  "fn": "dip",
+  "fn": "pdip",
   "id": 0.8,
   "nosquareplating": false,
   "num_pins": 8,
@@ -44,12 +58,6 @@ test("pdip16", () => {
   const circuitJson = fp.string("pdip16").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pdip16")
-})
-
-test("pdip16 matches dip16", () => {
-  const pdipJson = fp.string("pdip16").circuitJson() as AnyCircuitElement[]
-  const dipJson = fp.string("dip16").circuitJson() as AnyCircuitElement[]
-  expect(pdipJson).toEqual(dipJson)
 })
 
 test("pdip builder API", () => {

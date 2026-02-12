@@ -6,7 +6,7 @@ test("parity/pdip8", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
       "pdip8",
-      "Package_DIP.pretty/DIP-8_W7.62mm.circuit.json",
+      "Package_DIP.pretty/DIP-8_W7.62mm_LongPads.circuit.json",
     )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
