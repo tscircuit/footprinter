@@ -172,6 +172,40 @@ test("0606_x2 with custom pw, ph, p", () => {
   )
 })
 
+// Test res0612Array4 with custom parameters
+test("0612_x4 with default parameters", () => {
+  const soup = fp.string("0612_x4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0612_x4_default")
+})
+
+test("0612_x4 with custom pw", () => {
+  const soup = fp.string("0612_x4_pw1.2").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0612_x4_pw1.2")
+})
+
+test("0612_x4 with custom ph", () => {
+  const soup = fp.string("0612_x4_ph1.4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0612_x4_ph1.4")
+})
+
+test("0612_x4 with custom p", () => {
+  const soup = fp.string("0612_x4_p2.0").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0612_x4_p2.0")
+})
+
+test("0612_x4 with custom pw, ph, p", () => {
+  const soup = fp.string("0612_x4_pw1.2_ph1.4_p2.0").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "0612_x4_pw1.2_ph1.4_p2.0",
+  )
+})
+
 // Test res1206Array4 with custom parameters
 test("1206_x4 with default parameters", () => {
   const soup = fp.string("1206_x4").circuitJson()
@@ -222,5 +256,14 @@ test("0603_x4 with custom parameters and textbottom", () => {
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "0603_x4_pw1.0_ph0.5_p0.9_textbottom",
+  )
+})
+
+test("0612_x4 with custom parameters and textbottom", () => {
+  const soup = fp.string("0612_x4_pw1.2_ph1.4_p2.0_textbottom").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "0612_x4_pw1.2_ph1.4_p2.0_textbottom",
   )
 })
