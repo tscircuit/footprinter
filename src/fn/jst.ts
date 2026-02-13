@@ -19,27 +19,19 @@ export const jst_def = base_def.extend({
   pl: length.optional(),
   w: length.optional(),
   h: length.optional(),
-  sh: z
-    .preprocess((v) => (v != null ? Boolean(v) : undefined), z.boolean())
-    .optional()
-    .describe(
-      'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
-    ),
-  ph: z
-    .preprocess((v) => (v != null ? Boolean(v) : undefined), z.boolean())
-    .optional()
-    .describe(
-      'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
-    ),
+  sh: z.coerce.boolean().optional().describe("JST SH (Surface-mount) connector family."),
+  ph: z.coerce.boolean().optional().describe("JST PH (Through-hole) connector family."),
   string: z.string().optional(),
 })
 
 export type jstDef = z.input<typeof jst_def>
 
-// Variant type
 type JstVariant = "ph" | "sh"
 
-const variantDefaults: Record<JstVariant, any> = {
+const variantDefaults: Record<
+  JstVariant,
+  { p: number; id: number; pw: number; pl: number; w: number; h: number }
+> = {
   ph: {
     p: length.parse("2.2mm"),
     id: length.parse("0.70mm"),
@@ -50,6 +42,7 @@ const variantDefaults: Record<JstVariant, any> = {
   },
   sh: {
     p: length.parse("1mm"),
+    id: length.parse("0.70mm"),
     pw: length.parse("0.6mm"),
     pl: length.parse("1.55mm"),
     w: length.parse("5.8mm"),
@@ -57,9 +50,8 @@ const variantDefaults: Record<JstVariant, any> = {
   },
 }
 
-function getVariant(params: jstDef): JstVariant {
-  if (params.sh) return "sh"
-  if (params.ph) return "ph"
+function getVariant({ sh }: { sh?: boolean }): JstVariant {
+  if (sh) return "sh"
   return "ph"
 }
 
@@ -79,15 +71,14 @@ function generatePads({
   pl: number
 }): AnySoupElement[] {
   const pads: AnySoupElement[] = []
+  const startX = -((numPins - 1) / 2) * p
 
   if (variant === "ph") {
-    const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
       pads.push(
         platedHoleWithRectPad({
           pn: i + 1,
-          x,
+          x: startX + i * p,
           y: 2,
           holeDiameter: id,
           rectPadWidth: pw,
@@ -96,12 +87,9 @@ function generatePads({
       )
     }
   } else {
-    const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
-      pads.push(rectpad(i + 1, x, -1.325, pw, pl))
+      pads.push(rectpad(i + 1, startX + i * p, -1.325, pw, pl))
     }
-
     const sideOffset = ((numPins - 1) / 2) * p + 1.3
     pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8))
     pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8))
@@ -112,14 +100,10 @@ function generatePads({
 
 function generateSilkscreenBody({
   variant,
-  w,
-  h,
   numPins,
   p,
 }: {
   variant: JstVariant
-  w: number
-  h: number
   numPins: number
   p: number
 }): PcbSilkscreenPath {
@@ -139,23 +123,39 @@ function generateSilkscreenBody({
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
     }
-  } else {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
   }
+
+  return {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  }
+}
+
+function parsePinCount({
+  string,
+  variant,
+}: {
+  string?: string
+  variant: JstVariant
+}): number {
+  if (string) {
+    const match = string.match(/(?:sh|ph)(\d+)/)
+    if (match?.[1]) return Number.parseInt(match[1], 10)
+    const numMatch = string.match(/jst(\d+)/)
+    if (numMatch?.[1]) return Number.parseInt(numMatch[1], 10)
+  }
+  return variant === "sh" ? 4 : 2
 }
 
 export const jst = (
   raw_params: jstDef,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const params = jst_def.parse(raw_params)
-  const variant = getVariant(params)
+  const variant = getVariant({ sh: params.sh })
   const defaults = variantDefaults[variant]
 
   const p = params.p ?? defaults.p
@@ -164,27 +164,10 @@ export const jst = (
   const pl = params.pl ?? defaults.pl
   const w = params.w ?? defaults.w
   const h = params.h ?? defaults.h
-
-  let numPins = variant === "sh" ? 4 : 2
-
-  // Use num_pins from footprint string parser (e.g. "jst5" → num_pins=5)
-  if (params.num_pins != null) {
-    numPins = params.num_pins
-  }
-
-  // SH variant: also parse from "sh6" in the string
-  if (variant === "sh" && params.string) {
-    const match = params.string.match(/sh(\d+)/)
-    if (match?.[1]) {
-      const parsed = Number.parseInt(match[1], 10)
-      if (!Number.isNaN(parsed)) {
-        numPins = parsed
-      }
-    }
-  }
+  const numPins = params.num_pins ?? parsePinCount({ string: params.string, variant })
 
   const pads = generatePads({ variant, numPins, p, id, pw, pl })
-  const silkscreenBody = generateSilkscreenBody({ variant, w, h, numPins, p })
+  const silkscreenBody = generateSilkscreenBody({ variant, numPins, p })
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
   return {
