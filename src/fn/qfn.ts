@@ -22,11 +22,15 @@ export const qfn = (
       raw_params.pw = 0.25
     }
   } else {
+    const pitchValue =
+      typeof raw_params.p === "string"
+        ? Number.parseFloat(raw_params.p)
+        : raw_params.p
     if (!raw_params.pl) {
       raw_params.pl = 0.875
     }
     if (!raw_params.pw) {
-      raw_params.pw = 0.25
+      raw_params.pw = pitchValue ? pitchValue * 0.5 : 0.25
     }
   }
   return quad(raw_params)
