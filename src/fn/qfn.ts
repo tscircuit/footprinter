@@ -27,9 +27,7 @@ export const qfn = (
     }
     if (raw_params.pw === undefined) {
       raw_params.pw =
-        pitchValue !== undefined && pitchValue > 0
-          ? pitchValue * 0.5
-          : 0.25
+        pitchValue !== undefined && pitchValue > 0 ? pitchValue * 0.5 : 0.25
     }
   }
   return quad(raw_params)
