@@ -8,12 +8,12 @@ export const qfn = (
   raw_params: z.input<typeof qfn_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   raw_params.legsoutside = false
-  if (!raw_params.pw && !raw_params.pl) {
-    const pitchValue =
-      typeof raw_params.p === "string"
-        ? Number.parseFloat(raw_params.p)
-        : raw_params.p
-    if (pitchValue) {
+  const pitchValue =
+    typeof raw_params.p === "string"
+      ? Number.parseFloat(raw_params.p)
+      : raw_params.p
+  if (raw_params.pw === undefined && raw_params.pl === undefined) {
+    if (pitchValue !== undefined && pitchValue > 0) {
       // IPC-compliant defaults: pw = 0.5 * pitch, pl based on standard QFN sizing
       raw_params.pw = pitchValue * 0.5
       raw_params.pl = 0.875
@@ -22,15 +22,14 @@ export const qfn = (
       raw_params.pw = 0.25
     }
   } else {
-    const pitchValue =
-      typeof raw_params.p === "string"
-        ? Number.parseFloat(raw_params.p)
-        : raw_params.p
-    if (!raw_params.pl) {
+    if (raw_params.pl === undefined) {
       raw_params.pl = 0.875
     }
-    if (!raw_params.pw) {
-      raw_params.pw = pitchValue ? pitchValue * 0.5 : 0.25
+    if (raw_params.pw === undefined) {
+      raw_params.pw =
+        pitchValue !== undefined && pitchValue > 0
+          ? pitchValue * 0.5
+          : 0.25
     }
   }
   return quad(raw_params)
