@@ -28,11 +28,11 @@ const variantDefaults: Record<
   { p: number; id: number; pw: number; pl: number; w: number; h: number }
 > = {
   ph: {
-    p: length.parse("2mm"),
-    id: length.parse("0.8mm"),
+    p: length.parse("2.2mm"),
+    id: length.parse("0.70mm"),
     pw: length.parse("1.2mm"),
     pl: length.parse("1.2mm"),
-    w: length.parse("5.95mm"),
+    w: length.parse("6mm"),
     h: length.parse("5mm"),
   },
   sh: {
