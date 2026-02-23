@@ -40,15 +40,11 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   pdip: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   pdip8: () => FootprinterParamsBuilder<
     "w" | "p" | "id" | "od" | "wide" | "narrow"
   >
-  pdip: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
-  pdip8: () => FootprinterParamsBuilder<
     "w" | "p" | "id" | "od" | "wide" | "narrow"
   >
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
@@ -57,15 +53,12 @@ export type Footprinter = {
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   quad: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
   >
   bga: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "grid"
     | "p"
@@ -83,7 +76,6 @@ export type Footprinter = {
   qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   tqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   soic: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads"
   >
@@ -92,7 +84,6 @@ export type Footprinter = {
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   pinrow: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "p"
     | "id"
@@ -183,20 +174,16 @@ export type Footprinter = {
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
   son: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
   >
   vson: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
   >
   vssop: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   msop: (
-    num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
