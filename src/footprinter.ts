@@ -274,7 +274,7 @@ export type Footprinter = {
 export const string = (def: string): Footprinter => {
   let fp_instance = footprinter()
 
-  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|replace(/^((?:\d{4}|\d{5}))(?=\$|_|x)/, "res$1")
+  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=\$|_|x)/, "res$1")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/)
@@ -431,7 +431,6 @@ export const footprinter = (): Footprinter & {
   )
   return proxy as any
 }
-
 ;(footprinter as any).string = string
 ;(footprinter as any).getFootprintNames = getFootprintNames
 
