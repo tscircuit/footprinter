@@ -274,9 +274,9 @@ export type Footprinter = {
 export const string = (def: string): Footprinter => {
   let fp_instance = footprinter()
 
-  // The regex below automatically inserts a \"res\" prefix so forms like
-  // \"0603_pw1.0_ph1.1\" are understood without typing \"res0603\".
-  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
+  // The regex below automatically inserts a "res" prefix so forms like
+  // "0603_pw1.0_ph1.1" are understood without typing "res0603".
+  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=\$|_|x)/, "res$1")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
@@ -292,12 +292,12 @@ export const string = (def: string): Footprinter => {
     .filter(isNotNull)
 
   for (const { fn, v } of def_parts) {
-    if (typeof (fp_instance as any)[fn] === \"function\") {
+    if (typeof (fp_instance as any)[fn] === "function") {
       fp_instance = (fp_instance as any)[fn](v)
     }
   }
 
-  (fp_instance as any).setString(def)
+  ;(fp_instance as any).setString(def)
 
   return fp_instance
 }
@@ -319,7 +319,7 @@ export const getFootprintNamesByType = (): {
   const passiveFootprintNames = allFootprintNames.filter((name) => {
     const fn = (FOOTPRINT_FN as any)[name]
 
-    return fn.toString().includes(\"passive(\")
+    return fn.toString().includes("passive(")
   })
 
   return {
@@ -339,8 +339,8 @@ export const footprinter = (): Footprinter & {
     {},
     {
       get: (target: any, prop: string) => {
-        if (prop === \"soup\" || prop === \"circuitJson\") {
-          if (\"fn\" in target && (FOOTPRINT_FN as any)[target.fn]) {
+        if (prop === "soup" || prop === "circuitJson") {
+          if ("fn" in target && (FOOTPRINT_FN as any)[target.fn]) {
             return () => {
               const { circuitJson } = (FOOTPRINT_FN as any)[target.fn](target)
               const circuitWithoutSilkscreen = applyNoSilkscreen(
@@ -357,8 +357,8 @@ export const footprinter = (): Footprinter & {
 
           if (!target.fn || !(FOOTPRINT_FN as any)[target.fn]) {
             throw new Error(
-              `Invalid footprint function, got \"${target.fn}\"${
-                target.string ? `, from string \"${target.string}\"` : \"\"
+              `Invalid footprint function, got "${target.fn}"${
+                target.string ? `, from string "${target.string}"` : ""
               }`,
             )
           }
@@ -366,41 +366,41 @@ export const footprinter = (): Footprinter & {
           return () => {
             // TODO improve error
             throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got \"${prop}\"`,
+              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
             )
           }
         }
-        if (prop === \"json\") {
+        if (prop === "json") {
           if (!target.fn || !(FOOTPRINT_FN as any)[target.fn]) {
             throw new Error(
-              `Invalid footprint function, got \"${target.fn}\"${
-                target.string ? `, from string \"${target.string}\"` : \"\"
+              `Invalid footprint function, got "${target.fn}"${
+                target.string ? `, from string "${target.string}"` : ""
               }`,
             )
           }
           return () => (FOOTPRINT_FN as any)[target.fn](target).parameters
         }
-        if (prop === \"getFootprintNames\") {
+        if (prop === "getFootprintNames") {
           return () => Object.keys(FOOTPRINT_FN)
         }
-        if (prop === \"params\") {
+        if (prop === "params") {
           // TODO
           return () => target
         }
-        if (prop === \"setString\") {
+        if (prop === "setString") {
           return (v: string) => {
             target.string = v
             return proxy
           }
         }
-        if (prop === \"string\") {
+        if (prop === "string") {
           return string
         }
         return (v: any) => {
           if (
             Object.keys(target).length === 0 ||
-            prop === \"pdip\" ||
-            prop === \"pdip8\"
+            prop === "pdip" ||
+            prop === "pdip8"
           ) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
@@ -408,10 +408,10 @@ export const footprinter = (): Footprinter & {
             } else {
               target[prop] = true
               target.fn = prop
-              if (prop === \"res\" || prop === \"cap\") {
+              if (prop === "res" || prop === "cap") {
                 if (v) {
-                  if (typeof v === \"string\" && v.includes(\"_metric\")) {
-                    target.metric = v.split(\"_metric\")[0]
+                  if (typeof v === "string" && v.includes("_metric")) {
+                    target.metric = v.split("_metric")[0]
                   } else {
                     target.imperial = v // e.g., res0402, cap0603 etc.
                   }
@@ -424,7 +424,7 @@ export const footprinter = (): Footprinter & {
             }
           } else {
             // handle dip_w or other invalid booleans
-            if (!v && [\"w\", \"h\", \"p\"].includes(prop as string)) {
+            if (!v && ["w", "h", "p"].includes(prop as string)) {
               // ignore
             } else {
               target[prop] = v ?? true
@@ -437,7 +437,7 @@ export const footprinter = (): Footprinter & {
   )
   return proxy as any
 }
-(footprinter as any).string = string
+;(footprinter as any).string = string
 ;(footprinter as any).getFootprintNames = getFootprintNames
 
 export const fp = footprinter
