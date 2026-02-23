@@ -26,7 +26,13 @@ export const sop8 = (
       widthincludeslegs: true,
     })
     pads.push(
-      rectpad(i + 1, x, y, Number.parseFloat(parameters.pl ?? "1.5mm"), Number.parseFloat(parameters.pw ?? "0.6mm")),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        Number.parseFloat(parameters.pl ?? "1.5mm"),
+        Number.parseFloat(parameters.pw ?? "0.6mm"),
+      ),
     )
   }
 

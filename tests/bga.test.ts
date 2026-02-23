@@ -62,8 +62,8 @@ test("bga origin parameters", () => {
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
   )
-  expect(firstPadBl && 'x' in firstPadBl ? firstPadBl.x : undefined).toBe(-0.5) // Left column
-  expect(firstPadBl && 'y' in firstPadBl ? firstPadBl.y : undefined).toBe(0.5) // Bottom row
+  expect(firstPadBl && "x" in firstPadBl ? firstPadBl.x : undefined).toBe(-0.5) // Left column
+  expect(firstPadBl && "y" in firstPadBl ? firstPadBl.y : undefined).toBe(0.5) // Bottom row
 
   // Test bottom-right origin (pin 1 at bottom-right)
   const soupBr = fp().bga(4).grid("2x2").p(1).brorigin(true).soup()
@@ -78,8 +78,8 @@ test("bga origin parameters", () => {
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
   )
-  expect(firstPadBr && 'x' in firstPadBr ? firstPadBr.x : undefined).toBe(0.5) // Right column
-  expect(firstPadBr && 'y' in firstPadBr ? firstPadBr.y : undefined).toBe(0.5) // Bottom row
+  expect(firstPadBr && "x" in firstPadBr ? firstPadBr.x : undefined).toBe(0.5) // Right column
+  expect(firstPadBr && "y" in firstPadBr ? firstPadBr.y : undefined).toBe(0.5) // Bottom row
 
   // Test top-right origin (pin 1 at top-right)
   const soupTr = fp().bga(4).grid("2x2").p(1).trorigin(true).soup()
@@ -94,8 +94,8 @@ test("bga origin parameters", () => {
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
   )
-  expect(firstPadTr && 'x' in firstPadTr ? firstPadTr.x : undefined).toBe(0.5) // Right column
-  expect(firstPadTr && 'y' in firstPadTr ? firstPadTr.y : undefined).toBe(-0.5) // Top row
+  expect(firstPadTr && "x" in firstPadTr ? firstPadTr.x : undefined).toBe(0.5) // Right column
+  expect(firstPadTr && "y" in firstPadTr ? firstPadTr.y : undefined).toBe(-0.5) // Top row
 
   // Test top-left origin (default, pin 1 at top-left)
   const soupTl = fp().bga(4).grid("2x2").p(1).soup()
@@ -110,13 +110,16 @@ test("bga origin parameters", () => {
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
   )
-  expect(firstPadTl && 'x' in firstPadTl ? firstPadTl.x : undefined).toBe(-0.5) // Left column
-  expect(firstPadTl && 'y' in firstPadTl ? firstPadTl.y : undefined).toBe(-0.5) // Top row
+  expect(firstPadTl && "x" in firstPadTl ? firstPadTl.x : undefined).toBe(-0.5) // Left column
+  expect(firstPadTl && "y" in firstPadTl ? firstPadTl.y : undefined).toBe(-0.5) // Top row
 
   // Verify that all pads are in the same physical positions regardless of origin
   const allPads = (soup: AnySoupElement[]) =>
     soup
-      .filter((el): el is PcbSmtPad & { x: number, y: number } => el.type === "pcb_smtpad" && 'x' in el && 'y' in el)
+      .filter(
+        (el): el is PcbSmtPad & { x: number; y: number } =>
+          el.type === "pcb_smtpad" && "x" in el && "y" in el,
+      )
       .sort((a, b) => (a.x === b.x ? a.y - b.y : a.x - b.x))
 
   const padsTl = allPads(soupTl)
@@ -126,12 +129,24 @@ test("bga origin parameters", () => {
 
   // All configurations should have pads in the same physical positions
   for (let i = 0; i < padsTl.length; i++) {
-    expect(padsTl[i] && 'x' in padsTl[i] ? padsTl[i].x : undefined).toBe(padsBl[i] && 'x' in padsBl[i] ? padsBl[i].x : undefined)
-    expect(padsTl[i] && 'y' in padsTl[i] ? padsTl[i].y : undefined).toBe(padsBl[i] && 'y' in padsBl[i] ? padsBl[i].y : undefined)
-    expect(padsTl[i] && 'x' in padsTl[i] ? padsTl[i].x : undefined).toBe(padsBr[i] && 'x' in padsBr[i] ? padsBr[i].x : undefined)
-    expect(padsTl[i] && 'y' in padsTl[i] ? padsTl[i].y : undefined).toBe(padsBr[i] && 'y' in padsBr[i] ? padsBr[i].y : undefined)
-    expect(padsTl[i] && 'x' in padsTl[i] ? padsTl[i].x : undefined).toBe(padsTr[i] && 'x' in padsTr[i] ? padsTr[i].x : undefined)
-    expect(padsTl[i] && 'y' in padsTl[i] ? padsTl[i].y : undefined).toBe(padsTr[i] && 'y' in padsTr[i] ? padsTr[i].y : undefined)
+    expect(padsTl[i] && "x" in padsTl[i] ? padsTl[i].x : undefined).toBe(
+      padsBl[i] && "x" in padsBl[i] ? padsBl[i].x : undefined,
+    )
+    expect(padsTl[i] && "y" in padsTl[i] ? padsTl[i].y : undefined).toBe(
+      padsBl[i] && "y" in padsBl[i] ? padsBl[i].y : undefined,
+    )
+    expect(padsTl[i] && "x" in padsTl[i] ? padsTl[i].x : undefined).toBe(
+      padsBr[i] && "x" in padsBr[i] ? padsBr[i].x : undefined,
+    )
+    expect(padsTl[i] && "y" in padsTl[i] ? padsTl[i].y : undefined).toBe(
+      padsBr[i] && "y" in padsBr[i] ? padsBr[i].y : undefined,
+    )
+    expect(padsTl[i] && "x" in padsTl[i] ? padsTl[i].x : undefined).toBe(
+      padsTr[i] && "x" in padsTr[i] ? padsTr[i].x : undefined,
+    )
+    expect(padsTl[i] && "y" in padsTl[i] ? padsTl[i].y : undefined).toBe(
+      padsTr[i] && "y" in padsTr[i] ? padsTr[i].y : undefined,
+    )
   }
 })
 
