@@ -37,9 +37,11 @@ type CommonPassiveOptionKey =
 
 export type Footprinter = {
   dip: (
+  pdip: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">; pdip8: () => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">;
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   pdip: (
+  pdip: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">; pdip8: () => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">;
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   pdip8: () => FootprinterParamsBuilder<
