@@ -3,11 +3,12 @@ import { fp } from "../src/footprinter"
 
 describe("pdip", () => {
   it("pdip8 should have 8 pins and correct dimensions", () => {
+    // Correct usage for the standard library structure: fp().fn()
     const circuitJson = fp().pdip8().circuitJson()
     const pins = circuitJson.filter((e) => e.type === "pcb_plated_hole")
     expect(pins.length).toBe(8)
 
-    // Find pins by port_hints
+    // Find pins by port_hints (standard in tscircuit)
     const pin1 = pins.find((p: any) => p.port_hints?.includes("1")) as any
     const pin2 = pins.find((p: any) => p.port_hints?.includes("2")) as any
     const pin8 = pins.find((p: any) => p.port_hints?.includes("8")) as any
