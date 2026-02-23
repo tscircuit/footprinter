@@ -274,12 +274,10 @@ export type Footprinter = {
 export const string = (def: string): Footprinter => {
   let fp_instance = footprinter()
 
-  // The regex below automatically inserts a "res" prefix so forms like
-  // "0603_pw1.0_ph1.1" are understood without typing "res0603".
   const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=\$|_|x)/, "res$1")
 
   const def_parts = modifiedDef
-    .split(/_(?!metric)/) // split on '_' not followed by 'metric'
+    .split(/_(?!metric)/)
     .map((s) => {
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
@@ -318,7 +316,6 @@ export const getFootprintNamesByType = (): {
 
   const passiveFootprintNames = allFootprintNames.filter((name) => {
     const fn = (FOOTPRINT_FN as any)[name]
-
     return fn.toString().includes("passive(")
   })
 
@@ -330,114 +327,90 @@ export const getFootprintNamesByType = (): {
   }
 }
 
-export const footprinter = (): Footprinter & {
-  string: typeof string
-  getFootprintNames: () => string[]
-  setString: (v: string) => void
-} => {
-  const proxy = new Proxy(
-    {},
-    {
-      get: (target: any, prop: string) => {
-        if (prop === "soup" || prop === "circuitJson") {
-          if ("fn" in target && (FOOTPRINT_FN as any)[target.fn]) {
-            return () => {
-              const { circuitJson } = (FOOTPRINT_FN as any)[target.fn](target)
-              const circuitWithoutSilkscreen = applyNoSilkscreen(
-                circuitJson,
-                target,
-              )
-              const circuitWithoutRefDes = applyNoRefDes(
-                circuitWithoutSilkscreen,
-                target,
-              )
-              return applyOrigin(circuitWithoutRefDes, target.origin)
-            }
-          }
-
-          if (!target.fn || !(FOOTPRINT_FN as any)[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
-          }
-
+const createProxy = (target: any): any => {
+  return new Proxy(target, {
+    get: (target: any, prop: string) => {
+      if (prop === "soup" || prop === "circuitJson") {
+        if ("fn" in target && (FOOTPRINT_FN as any)[target.fn]) {
           return () => {
-            // TODO improve error
-            throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
+            const { circuitJson } = (FOOTPRINT_FN as any)[target.fn](target)
+            const circuitWithoutSilkscreen = applyNoSilkscreen(
+              circuitJson,
+              target,
             )
-          }
-        }
-        if (prop === "json") {
-          if (!target.fn || !(FOOTPRINT_FN as any)[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
+            const circuitWithoutRefDes = applyNoRefDes(
+              circuitWithoutSilkscreen,
+              target,
             )
-          }
-          return () => (FOOTPRINT_FN as any)[target.fn](target).parameters
-        }
-        if (prop === "getFootprintNames") {
-          return () => Object.keys(FOOTPRINT_FN)
-        }
-        if (prop === "params") {
-          // TODO
-          return () => target
-        }
-        if (prop === "setString") {
-          return (v: string) => {
-            target.string = v
-            return proxy
+            return applyOrigin(circuitWithoutRefDes, target.origin)
           }
         }
-        if (prop === "string") {
-          return string
+        return () => {
+          throw new Error(`Invalid footprint function, got "${target.fn}"`)
         }
-        return (v: any) => {
-          if (
-            Object.keys(target).length === 0 ||
-            prop === "pdip" ||
-            prop === "pdip8"
-          ) {
-            if (`${prop}${v}` in FOOTPRINT_FN) {
-              target[`${prop}${v}`] = true
-              target.fn = `${prop}${v}`
-            } else {
-              target[prop] = true
-              target.fn = prop
-              if (prop === "res" || prop === "cap") {
-                if (v) {
-                  if (typeof v === "string" && v.includes("_metric")) {
-                    target.metric = v.split("_metric")[0]
-                  } else {
-                    target.imperial = v // e.g., res0402, cap0603 etc.
-                  }
-                }
-              } else {
-                target.num_pins = Number.isNaN(Number.parseFloat(v))
-                  ? undefined
-                  : Number.parseFloat(v)
-              }
-            }
+      }
+      if (prop === "json") {
+        return () => (FOOTPRINT_FN as any)[target.fn](target).parameters
+      }
+      if (prop === "params") {
+        return () => target
+      }
+      if (prop === "setString") {
+        return (v: string) => {
+          target.string = v
+          return createProxy(target)
+        }
+      }
+      return (v: any) => {
+        if (Object.keys(target).length === 0) {
+          if (`${prop}${v}` in FOOTPRINT_FN) {
+            target[`${prop}${v}`] = true
+            target.fn = `${prop}${v}`
           } else {
-            // handle dip_w or other invalid booleans
-            if (!v && ["w", "h", "p"].includes(prop as string)) {
-              // ignore
+            target[prop] = true
+            target.fn = prop
+            if (prop === "res" || prop === "cap") {
+              if (v) {
+                if (typeof v === "string" && v.includes("_metric")) {
+                  target.metric = v.split("_metric")[0]
+                } else {
+                  target.imperial = v
+                }
+              }
             } else {
-              target[prop] = v ?? true
+              target.num_pins = Number.isNaN(Number.parseFloat(v))
+                ? undefined
+                : Number.parseFloat(v)
             }
           }
-          return proxy
+        } else {
+          if (!v && ["w", "h", "p"].includes(prop)) {
+            // ignore
+          } else {
+            target[prop] = v ?? true
+          }
         }
-      },
+        return createProxy(target)
+      }
     },
-  )
-  return proxy as any
+  })
 }
+
+export const footprinter = () => {
+  return createProxy({})
+}
+
 ;(footprinter as any).string = string
 ;(footprinter as any).getFootprintNames = getFootprintNames
 
-export const fp = footprinter
+// Create fp as a callable function that also has properties
+export const fp = new Proxy(footprinter, {
+  get: (target, prop) => {
+    if (prop in target) return (target as any)[prop]
+    // If someone calls fp.led(), they want a new instance
+    return (footprinter() as any)[prop]
+  },
+  apply: (target, thisArg, argumentsList) => {
+    return (target as any)(...argumentsList)
+  },
+})
