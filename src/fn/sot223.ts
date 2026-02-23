@@ -35,7 +35,7 @@ export const sot223 = (
 
   const parameters = sot223_def.parse({
     ...raw_params,
-    num_pins: numPins,
+    num_pins: (raw_params as any).num_pins ?? numPins,
   })
 
   if (parameters.num_pins === 4) {
