@@ -31,7 +31,7 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   base_def
     .extend({
       fn: z.string(),
-      num_pins: z.number().optional(),
+      num_pins: z.number().optional().default(6),
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
       w: lengthInMm.optional(),
