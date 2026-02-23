@@ -3,7 +3,7 @@ import { fp } from "../src/footprinter"
 
 describe("pdip", () => {
   it("pdip8 should have 8 pins and correct dimensions", () => {
-    const circuitJson = fp.pdip8().circuitJson()
+    const circuitJson = fp().pdip8().circuitJson()
     const pins = circuitJson.filter((e) => e.type === "pcb_plated_hole")
     expect(pins.length).toBe(8)
 
@@ -20,7 +20,7 @@ describe("pdip", () => {
   })
 
   it("pdip should work with custom pin count", () => {
-    const circuitJson = fp.pdip(14).circuitJson()
+    const circuitJson = fp().pdip(14).circuitJson()
     const pins = circuitJson.filter((e) => e.type === "pcb_plated_hole")
     expect(pins.length).toBe(14)
   })
