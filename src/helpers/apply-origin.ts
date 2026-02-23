@@ -22,8 +22,7 @@ export const applyOrigin = (
   const pads = elements.filter(
     (el) =>
       el.type === "pcb_smtpad" ||
-      el.type === "pcb_plated_hole" ||
-      el.type === "pcb_thtpad",
+      el.type === "pcb_plated_hole",
   ) as Array<any>
 
   if (pads.length === 0) return elements
@@ -52,9 +51,7 @@ export const applyOrigin = (
     } else if (pad.type === "pcb_plated_hole") {
       const d = pad.outer_diameter ?? pad.hole_diameter
       updateBounds(pad.x, pad.y, d, d)
-    } else if (pad.type === "pcb_thtpad") {
-      const d = pad.diameter
-      updateBounds(pad.x, pad.y, d, d)
+    // pcb_thtpad type no longer exists in circuit-json types
     }
   }
 

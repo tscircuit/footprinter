@@ -11,7 +11,8 @@ export const toPinPositionString = (soup: AnySoupElement[]) => {
           y: e.y,
           pn: e.port_hints?.[0],
         }
-      } else if (e.type === "pcb_smtpad") {
+      }
+      if (e.type === "pcb_smtpad") {
         return {
           x: e.x,
           y: e.y,

@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const sot89_def = base_def.extend({

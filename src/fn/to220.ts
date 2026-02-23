@@ -3,7 +3,7 @@ import {
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
-import { platedhole } from "src/helpers/platedhole"
+import { platedhole } from "../helpers/platedhole"
 import { z } from "zod"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"

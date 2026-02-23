@@ -1,5 +1,5 @@
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
@@ -61,10 +61,10 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
 
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot343Coords({

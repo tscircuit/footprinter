@@ -3,10 +3,10 @@ import { length, rotation, type AnySoupElement } from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { silkscreenPin } from "../helpers/silkscreenPin"
 import { mm } from "@tscircuit/mm"
-import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
+import { determinePinlabelAnchorSide } from "../helpers/determine-pin-label-anchor-side"
 import { base_def } from "../helpers/zod/base_def"
 
 export const pinrow_def = base_def

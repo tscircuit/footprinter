@@ -1,5 +1,5 @@
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"

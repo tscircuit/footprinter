@@ -211,10 +211,10 @@ export async function compareFootprinterVsKicad(
   )
 
   // Bounding box for both sets
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (const elm of [...fpCircuitJson, ...transformedKiCad]) {
     if (

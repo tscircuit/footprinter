@@ -37,6 +37,7 @@ const variantDefaults: Record<
   },
   sh: {
     p: length.parse("1mm"),
+    id: length.parse("0.70mm"),
     pw: length.parse("0.6mm"),
     pl: length.parse("1.55mm"),
     w: length.parse("5.8mm"),
@@ -110,15 +111,14 @@ function generateSilkscreenBody(
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
     }
-  } else {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
+  }
+  return {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
   }
 }
 
@@ -147,8 +147,8 @@ export const jst = (
 
   // Robust parsing: find any sequence of digits after 'jst' or variant prefix
   const jstMatch = str.match(/jst.*(\d+)/i)
-  if (jstMatch && jstMatch[1]) {
-    numPins = parseInt(jstMatch[1], 10)
+  if (jstMatch?.[1]) {
+    numPins = Number.parseInt(jstMatch[1], 10)
   }
 
   if (typeof numPins !== "number") {

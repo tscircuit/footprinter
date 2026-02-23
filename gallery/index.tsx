@@ -1,5 +1,6 @@
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import React, { useState, useCallback } from "react"
+import type React from "react"
+import { useState, useCallback } from "react"
 import ReactDOM from "react-dom/client"
 import { fp } from "src/footprinter"
 // @ts-ignore data is built during CI

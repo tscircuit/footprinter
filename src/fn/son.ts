@@ -2,7 +2,7 @@ import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const son_def = base_def.extend({
@@ -22,7 +22,7 @@ export const son_def = base_def.extend({
 export const son = (
   raw_params: z.input<typeof son_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  if (raw_params.string && raw_params.string.includes("_ep")) {
+  if (raw_params.string?.includes("_ep")) {
     raw_params.ep = true
   }
 
