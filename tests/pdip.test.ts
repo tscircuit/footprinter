@@ -7,12 +7,12 @@ describe("pdip", () => {
     const pins = circuitJson.filter((e) => e.type === "pcb_plated_hole")
     expect(pins.length).toBe(8)
 
-    // Check pitch (2.54mm) and width (7.62mm)
-    // Pin 1 at (-3.81, 3.81), Pin 2 at (-3.81, 1.27)
-    const pin1 = pins.find((p: any) => p.pin_number === 1) as any
-    const pin2 = pins.find((p: any) => p.pin_number === 2) as any
-    const pin8 = pins.find((p: any) => p.pin_number === 8) as any
+    // Find pins by port_hints
+    const pin1 = pins.find((p: any) => p.port_hints?.includes("1")) as any
+    const pin2 = pins.find((p: any) => p.port_hints?.includes("2")) as any
+    const pin8 = pins.find((p: any) => p.port_hints?.includes("8")) as any
 
+    expect(pin1).toBeDefined()
     expect(Math.abs(pin1.x - -3.81)).toBeLessThan(0.01)
     expect(Math.abs(pin1.y - 3.81)).toBeLessThan(0.01)
     expect(Math.abs(pin2.y - 1.27)).toBeLessThan(0.01)
