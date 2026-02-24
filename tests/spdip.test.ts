@@ -1,5 +1,7 @@
 import { test, expect } from "bun:test"
 import { fp } from "../src/footprinter"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import type { AnyCircuitElement } from "circuit-json"
 
 test("spdip28 matches dip28 geometry parameters", () => {
   const sp = fp.string("spdip28").json()
@@ -10,4 +12,10 @@ test("spdip28 matches dip28 geometry parameters", () => {
   expect(sp.p).toBe(dip.p)
   expect(sp.id).toBe(dip.id)
   expect(sp.od).toBe(dip.od)
+})
+
+test("spdip28 svg snapshot", () => {
+  const circuitJson = fp.string("spdip28").circuitJson() as AnyCircuitElement[]
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip28")
 })
