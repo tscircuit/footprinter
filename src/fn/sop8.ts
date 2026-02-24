@@ -1,7 +1,7 @@
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
-import { rectpad } from "src/helpers/rectpad"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 export const sop8_def = extendSoicDef({
   w: "7.05mm",
@@ -26,7 +26,13 @@ export const sop8 = (
       widthincludeslegs: true,
     })
     pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1.5mm", parameters.pw ?? "0.6mm"),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        Number.parseFloat(parameters.pl ?? "1.5mm"),
+        Number.parseFloat(parameters.pw ?? "0.6mm"),
+      ),
     )
   }
 

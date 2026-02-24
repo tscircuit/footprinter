@@ -576,7 +576,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     svg += `<g id="footprint-b" opacity="0.85">`
 
@@ -606,7 +606,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     const centerX = viewBoxX + width / 2
     const centerY = viewBoxY + height / 2
@@ -615,7 +615,7 @@ export function createBooleanDifferenceVisualization(
     svg += `<g id="alignment-guides" opacity="0.3">`
     svg += `<line x1="${centerX}" y1="${viewBoxY}" x2="${centerX}" y2="${viewBoxY + height}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
     svg += `<line x1="${viewBoxX}" y1="${centerY}" x2="${viewBoxX + width}" y2="${centerY}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
-    svg += `</g>`
+    svg += "</g>"
 
     // Add compact legend for overlay visualization (sized to fit within bounds)
     if (showLegend) {
@@ -647,7 +647,7 @@ export function createBooleanDifferenceVisualization(
       // Compact instructions
       svg += `<text x="${viewBoxX + width / 2}" y="${legendY + legendHeight - 0.1}" text-anchor="middle" fill="#6c757d" font-size="${fontSize * 0.8}">Perfect alignment = complete overlap</text>`
 
-      svg += `</g>`
+      svg += "</g>"
     }
 
     svg += "</svg>"

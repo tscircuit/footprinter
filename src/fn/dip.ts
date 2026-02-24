@@ -3,7 +3,7 @@ import type {
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 import { z } from "zod"
@@ -16,9 +16,9 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 function convertMilToMm(value: string | number): number {
   if (typeof value === "string") {
     if (value.trim().toLowerCase().endsWith("mil")) {
-      return parseFloat(value) * 0.0254
+      return Number.parseFloat(value) * 0.0254
     }
-    return parseFloat(value)
+    return Number.parseFloat(value)
   }
   return Number(value)
 }

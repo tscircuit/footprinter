@@ -7,8 +7,8 @@ import { rectpad } from "../helpers/rectpad"
 import { z } from "zod"
 import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { dim2d } from "../helpers/zod/dim-2d"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({

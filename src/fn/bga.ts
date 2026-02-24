@@ -5,11 +5,11 @@ import { ALPHABET } from "../helpers/zod/ALPHABET"
 import { z } from "zod"
 import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { function_call } from "src/helpers/zod/function-call"
-import type { NowDefined } from "src/helpers/zod/now-defined"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { type PcbSilkscreenPath } from "circuit-json"
+import { dim2d } from "../helpers/zod/dim-2d"
+import { function_call } from "../helpers/zod/function-call"
+import type { NowDefined } from "../helpers/zod/now-defined"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import type { PcbSilkscreenPath } from "circuit-json"
 
 export const bga_def = base_def
   .extend({
@@ -136,7 +136,6 @@ export const bga = (
           pin_x = grid.x - 1 - x
           pin_y = y
           break
-        case "tl":
         default:
           // Keep original x,y for pin numbering
           break
@@ -201,7 +200,6 @@ export const bga = (
         { x: edgeX, y: edgeY }, // Back to start
       ]
       break
-    case "tl":
     default:
       markerRoute = [
         { x: -edgeX, y: edgeY }, // Start at corner

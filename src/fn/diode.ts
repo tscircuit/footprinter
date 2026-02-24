@@ -1,5 +1,5 @@
 import type { AnySoupElement } from "circuit-json"
-import { passive, type PassiveDef } from "src/helpers/passive-fn"
+import { passive, type PassiveDef } from "../helpers/passive-fn"
 
 export const diode = (parameters: {
   tht: boolean

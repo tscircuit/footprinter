@@ -5,12 +5,13 @@ export const function_call = z
   .or(z.array(z.any()))
   .transform((a) => {
     if (Array.isArray(a)) return a
-    if (a.startsWith("(") && a.endsWith(")")) {
-      a = a.slice(1, -1)
+    let str = a
+    if (str.startsWith("(") && str.endsWith(")")) {
+      str = str.slice(1, -1)
     }
-    return a.split(",").map((v) => {
+    return str.split(",").map((v) => {
       const numVal = Number(v)
-      return isNaN(numVal) ? v : numVal
+      return Number.isNaN(numVal) ? v : numVal
     })
   })
   .pipe(z.array(z.string().or(z.number())))

@@ -5,10 +5,10 @@ import {
   type SoicInput,
   getCcwSoicCoords,
 } from "./soic"
-import { rectpad } from "src/helpers/rectpad"
+import { rectpad } from "../helpers/rectpad"
 import { z } from "zod"
-import { CORNERS } from "src/helpers/corner"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { CORNERS } from "../helpers/corner"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 export const dfn_def = extendSoicDef({})
 
@@ -32,7 +32,13 @@ export const dfn = (
       widthincludeslegs: true,
     })
     pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
+      rectpad(
+        i + 1,
+        x,
+        y,
+        Number.parseFloat(parameters.pl ?? "1mm"),
+        Number.parseFloat(parameters.pw ?? "0.6mm"),
+      ),
     )
   }
 

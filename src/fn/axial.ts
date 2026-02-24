@@ -6,7 +6,7 @@ import {
 } from "circuit-json"
 import { passive, type PassiveDef } from "../helpers/passive-fn"
 import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
+import { platedhole } from "../helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 

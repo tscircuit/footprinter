@@ -1,4 +1,4 @@
-import { z } from "zod"
+import type { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnySoupElement } from "circuit-json"

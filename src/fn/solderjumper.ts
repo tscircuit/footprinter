@@ -35,7 +35,7 @@ export const solderjumper = (params: {
   for (let i = 0; i < num_pins; i++) {
     pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight))
   }
-  let traces: AnyCircuitElement[] = []
+  const traces: AnyCircuitElement[] = []
   if (bridged) {
     const pins = bridged.split("").map(Number)
     if (pins.length > 1) {
@@ -45,8 +45,8 @@ export const solderjumper = (params: {
         if (
           typeof from === "number" &&
           typeof to === "number" &&
-          !isNaN(from) &&
-          !isNaN(to)
+          !Number.isNaN(from) &&
+          !Number.isNaN(to)
         ) {
           const xCenterFrom = (from - 1) * padSpacing
           const xCenterTo = (to - 1) * padSpacing

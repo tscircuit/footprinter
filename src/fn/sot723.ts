@@ -1,7 +1,7 @@
 import { length, type AnySoupElement } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const sot723_def = base_def.extend({

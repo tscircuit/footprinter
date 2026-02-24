@@ -1,5 +1,5 @@
 import { string, z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
+import { platedhole } from "../helpers/platedhole"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"

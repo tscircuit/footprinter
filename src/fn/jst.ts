@@ -1,56 +1,43 @@
-import {
-  length,
-  type AnySoupElement,
-  type PcbSilkscreenPath,
-} from "circuit-json"
 import { z } from "zod"
-
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { rectpad } from "src/helpers/rectpad"
+import { length } from "circuit-json"
+import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 
-export const jst_def = base_def.extend({
+export const jst_def = z.object({
   fn: z.string(),
-  p: length.optional(),
-  id: length.optional(),
-  pw: length.optional(),
-  pl: length.optional(),
-  w: length.optional(),
-  h: length.optional(),
-  sh: z
-    .boolean()
-    .optional()
-    .describe(
-      'JST SH (Surface-mount) connector family. SH stands for "Super High-density".',
-    ),
-
-  ph: z
-    .boolean()
-    .optional()
-    .describe(
-      'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
-    ),
-
+  num_pins: z.number().optional(),
+  p: z.union([z.string(), z.number()]).optional(),
+  id: z.union([z.string(), z.number()]).optional(),
+  pw: z.union([z.string(), z.number()]).optional(),
+  pl: z.union([z.string(), z.number()]).optional(),
+  w: z.union([z.string(), z.number()]).optional(),
+  h: z.union([z.string(), z.number()]).optional(),
+  sh: z.boolean().optional(),
+  ph: z.boolean().optional(),
   string: z.string().optional(),
 })
 
-export type jstDef = z.input<typeof jst_def>
+export type jstDef = z.infer<typeof jst_def>
 
-// Variant type
 type JstVariant = "ph" | "sh"
 
-const variantDefaults: Record<JstVariant, any> = {
+const variantDefaults: Record<
+  JstVariant,
+  { p: number; id: number; pw: number; pl: number; w: number; h: number }
+> = {
   ph: {
     p: length.parse("2.2mm"),
     id: length.parse("0.70mm"),
-    pw: length.parse("1.20mm"),
-    pl: length.parse("1.20mm"),
+    pw: length.parse("1.2mm"),
+    pl: length.parse("1.2mm"),
     w: length.parse("6mm"),
     h: length.parse("5mm"),
   },
   sh: {
     p: length.parse("1mm"),
+    id: length.parse("0.70mm"),
     pw: length.parse("0.6mm"),
     pl: length.parse("1.55mm"),
     w: length.parse("5.8mm"),
@@ -124,15 +111,14 @@ function generateSilkscreenBody(
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
     }
-  } else {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
+  }
+  return {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route: [],
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
   }
 }
 
@@ -143,12 +129,12 @@ export const jst = (
   const variant = getVariant(params)
   const defaults = variantDefaults[variant]
 
-  const p = params.p ?? defaults.p
-  const id = params.id ?? defaults.id
-  const pw = params.pw ?? defaults.pw
-  const pl = params.pl ?? defaults.pl
-  const w = params.w ?? defaults.w
-  const h = params.h ?? defaults.h
+  const p = params.p ? length.parse(params.p) : defaults.p
+  const id = params.id ? length.parse(params.id) : defaults.id
+  const pw = params.pw ? length.parse(params.pw) : defaults.pw
+  const pl = params.pl ? length.parse(params.pl) : defaults.pl
+  const w = params.w ? length.parse(params.w) : defaults.w
+  const h = params.h ? length.parse(params.h) : defaults.h
 
   let numPins: number | undefined
 
@@ -158,12 +144,11 @@ export const jst = (
   }
 
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
-  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
-  if (match && match[1]) {
-    const parsed = parseInt(match[1], 10)
-    if (!Number.isNaN(parsed)) {
-      numPins = parsed
-    }
+
+  // Robust parsing: find any sequence of digits after 'jst' or variant prefix
+  const jstMatch = str.match(/jst.*(\d+)/i)
+  if (jstMatch?.[1]) {
+    numPins = Number.parseInt(jstMatch[1], 10)
   }
 
   if (typeof numPins !== "number") {
