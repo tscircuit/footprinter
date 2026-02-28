@@ -158,11 +158,22 @@ export const jst = (
   }
 
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
-  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
-  if (match && match[1]) {
-    const parsed = parseInt(match[1], 10)
+  
+  // Match jst followed by variant (ph/sh) and then number: jst_ph_4, jst_sh_6, jst_ph4, etc.
+  const variantMatch = str.match(/(?:^|_)jst_(ph|sh)_?(\d+)(?:_|$)/)
+  if (variantMatch && variantMatch[2]) {
+    const parsed = parseInt(variantMatch[2], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
+    }
+  } else {
+    // Fallback: match jst followed directly by number: jst6, jst6_sh, etc.
+    const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+    if (match && match[1]) {
+      const parsed = parseInt(match[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
     }
   }
 
