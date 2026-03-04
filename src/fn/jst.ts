@@ -6,6 +6,7 @@ import {
 import { z } from "zod"
 
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedHolePill } from "src/helpers/platedHolePill"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -109,16 +110,23 @@ function generatePads(
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
-      pads.push(
-        platedHoleWithRectPad({
-          pn: i + 1,
-          x,
-          y: 0,
-          holeDiameter: id,
-          rectPadWidth: pw,
-          rectPadHeight: pl,
-        }),
-      )
+      if (i === 0) {
+        // Pin 1: roundrect pad (KiCad roundrect_rratio 0.242718)
+        pads.push(
+          platedHoleWithRectPad({
+            pn: i + 1,
+            x,
+            y: 0,
+            holeDiameter: id,
+            rectPadWidth: pw,
+            rectPadHeight: pl,
+            rectBorderRadius: 0.12499977,
+          }),
+        )
+      } else {
+        // Pins 2+: oval/pill pad
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+      }
     }
   } else {
     const startX = -((numPins - 1) / 2) * p
