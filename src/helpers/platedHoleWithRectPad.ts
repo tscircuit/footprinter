@@ -34,7 +34,9 @@ export const platedHoleWithRectPad = (options: {
     pad_shape: "rect",
     rect_pad_width: mm(rectPadWidth),
     rect_pad_height: mm(rectPadHeight),
-    ...(rectBorderRadius !== undefined && { rect_border_radius: rectBorderRadius }),
+    ...(rectBorderRadius !== undefined && {
+      rect_border_radius: rectBorderRadius,
+    }),
     pcb_port_id: "",
     layers: ["top", "bottom"],
     port_hints: [pn.toString()],
