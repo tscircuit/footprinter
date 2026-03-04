@@ -272,7 +272,7 @@ export const string = (def: string): Footprinter => {
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
   const modifiedDef = def
     .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
-    .replace(/^(zh\d+)(?:$|_)/, "jst_$1")
+    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'

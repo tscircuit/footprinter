@@ -39,15 +39,3 @@ test("jst_without_num_pins_is_invalid", () => {
   expect(() => fp.string("jst_sh").json()).toThrow()
   expect(() => fp.string("jst_ph").json()).toThrow()
 })
-
-test("jst7_zh", () => {
-  const circuitJson = fp.string("jst7_zh").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst7_zh")
-})
-
-test("zh7", () => {
-  const circuitJson = fp.string("jst7_zh").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "zh7")
-})

@@ -65,10 +65,10 @@ const variantDefaults: Record<JstVariant, any> = {
   },
   zh: {
     p: length.parse("1.5mm"),
-    id: length.parse("0.8mm"),
-    pw: length.parse("1.1mm"),
-    pl: length.parse("1.7mm"),
-    w: length.parse("4mm"),
+    id: length.parse("0.73mm"),
+    pw: length.parse("1.03mm"),
+    pl: length.parse("1.73mm"),
+    w: length.parse("3mm"),
     h: length.parse("3.5mm"),
   },
 }
@@ -159,8 +159,8 @@ function generateSilkscreenBody(
     }
   } else if (variant === "zh" && numPins && p) {
     const pinSpan = (numPins - 1) * p
-    const bodyLeft = -pinSpan / 2 - 2
-    const bodyRight = pinSpan / 2 + 2
+    const bodyLeft = -pinSpan / 2 - 1.5
+    const bodyRight = pinSpan / 2 + 1.5
     const bodyTop = -h / 2
     const bodyBottom = h / 2
 
