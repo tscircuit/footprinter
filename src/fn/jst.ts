@@ -1,13 +1,13 @@
 import {
-  length,
   type AnySoupElement,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { z } from "zod"
 
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const jst_def = base_def.extend({
@@ -32,13 +32,20 @@ export const jst_def = base_def.extend({
       'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
     ),
 
+  zh: z
+    .boolean()
+    .optional()
+    .describe(
+      "JST ZH (Through-hole) connector family. 1.5mm pitch wire-to-board.",
+    ),
+
   string: z.string().optional(),
 })
 
 export type jstDef = z.input<typeof jst_def>
 
 // Variant type
-type JstVariant = "ph" | "sh"
+type JstVariant = "ph" | "sh" | "zh"
 
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
@@ -56,11 +63,20 @@ const variantDefaults: Record<JstVariant, any> = {
     w: length.parse("5.8mm"),
     h: length.parse("7.8mm"),
   },
+  zh: {
+    p: length.parse("1.5mm"),
+    id: length.parse("0.8mm"),
+    pw: length.parse("1.1mm"),
+    pl: length.parse("1.7mm"),
+    w: length.parse("4mm"),
+    h: length.parse("3.5mm"),
+  },
 }
 
 function getVariant(params: jstDef): JstVariant {
   if (params.sh) return "sh"
   if (params.ph) return "ph"
+  if (params.zh) return "zh"
   return "ph"
 }
 
@@ -89,6 +105,21 @@ function generatePads(
         }),
       )
     }
+  } else if (variant === "zh") {
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(
+        platedHoleWithRectPad({
+          pn: i + 1,
+          x,
+          y: 0,
+          holeDiameter: id,
+          rectPadWidth: pw,
+          rectPadHeight: pl,
+        }),
+      )
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
@@ -108,6 +139,8 @@ function generateSilkscreenBody(
   variant: JstVariant,
   w: number,
   h: number,
+  numPins?: number,
+  p?: number,
 ): PcbSilkscreenPath {
   if (variant === "ph") {
     return {
@@ -120,6 +153,27 @@ function generateSilkscreenBody(
         { x: 3, y: -2 },
         { x: -3, y: -2 },
         { x: -3, y: 3 },
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+    }
+  } else if (variant === "zh" && numPins && p) {
+    const pinSpan = (numPins - 1) * p
+    const bodyLeft = -pinSpan / 2 - 2
+    const bodyRight = pinSpan / 2 + 2
+    const bodyTop = -h / 2
+    const bodyBottom = h / 2
+
+    return {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: bodyLeft, y: bodyTop },
+        { x: bodyRight, y: bodyTop },
+        { x: bodyRight, y: bodyBottom },
+        { x: bodyLeft, y: bodyBottom },
+        { x: bodyLeft, y: bodyTop },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
@@ -159,8 +213,15 @@ export const jst = (
 
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+  const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
   if (match && match[1]) {
-    const parsed = parseInt(match[1], 10)
+    const parsed = Number.parseInt(match[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (zhMatch && zhMatch[1]) {
+    const parsed = Number.parseInt(zhMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
@@ -175,7 +236,7 @@ export const jst = (
   }
 
   const pads = generatePads(variant, numPins, p, id, pw, pl)
-  const silkscreenBody = generateSilkscreenBody(variant, w, h)
+  const silkscreenBody = generateSilkscreenBody(variant, w, h, numPins, p)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
   return {
@@ -191,6 +252,7 @@ export const jst = (
       num_pins: numPins,
       sh: variant === "sh",
       ph: variant === "ph",
+      zh: variant === "zh",
     },
   }
 }
