@@ -5,7 +5,6 @@ import { silkscreenRef } from "../helpers/silkscreenRef"
 
 export const led2835_def = z.object({
   fn: z.string().default("led2835"),
-  num_pins: z.number().default(2),
 })
 
 /**
