@@ -41,7 +41,11 @@ test("to220f_3", () => {
 })
 
 test("TO-220F-3 (alias)", () => {
-  const aliasSvg = convertCircuitJsonToPcbSvg(fp.string("TO-220F-3").circuitJson())
-  const canonicalSvg = convertCircuitJsonToPcbSvg(fp.string("to220f_3").circuitJson())
+  const aliasSvg = convertCircuitJsonToPcbSvg(
+    fp.string("TO-220F-3").circuitJson(),
+  )
+  const canonicalSvg = convertCircuitJsonToPcbSvg(
+    fp.string("to220f_3").circuitJson(),
+  )
   expect(aliasSvg).toEqual(canonicalSvg)
 })

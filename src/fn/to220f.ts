@@ -64,7 +64,13 @@ export const to220f = (
         }) as AnyCircuitElement
       }
 
-      return platedhole(i + 1, x, holeY, parameters.id, parameters.od) as AnyCircuitElement
+      return platedhole(
+        i + 1,
+        x,
+        holeY,
+        parameters.id,
+        parameters.od,
+      ) as AnyCircuitElement
     },
   )
 
