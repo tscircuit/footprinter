@@ -10,6 +10,7 @@ export const platedHoleWithRectPad = (options: {
   rectPadHeight: number | string
   holeOffsetX?: number
   holeOffsetY?: number
+  rectBorderRadius?: number
 }): PcbHoleCircularWithRectPad => {
   const {
     pn,
@@ -20,6 +21,7 @@ export const platedHoleWithRectPad = (options: {
     rectPadHeight,
     holeOffsetX = 0,
     holeOffsetY = 0,
+    rectBorderRadius,
   } = options
   return {
     pcb_plated_hole_id: "",
@@ -32,6 +34,9 @@ export const platedHoleWithRectPad = (options: {
     pad_shape: "rect",
     rect_pad_width: mm(rectPadWidth),
     rect_pad_height: mm(rectPadHeight),
+    ...(rectBorderRadius !== undefined && {
+      rect_border_radius: rectBorderRadius,
+    }),
     pcb_port_id: "",
     layers: ["top", "bottom"],
     port_hints: [pn.toString()],

@@ -1,12 +1,12 @@
-import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
-import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
-import { isNotNull } from "./helpers/is-not-null"
-import { footprintSizes } from "./helpers/passive-fn"
-import { applyOrigin } from "./helpers/apply-origin"
+import * as FOOTPRINT_FN from "./fn"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
+import { applyOrigin } from "./helpers/apply-origin"
+import { isNotNull } from "./helpers/is-not-null"
+import { footprintSizes } from "./helpers/passive-fn"
+import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 
 type BaseOptionKey =
   | "origin"
@@ -270,7 +270,9 @@ export const string = (def: string): Footprinter => {
 
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
-  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
+  const modifiedDef = def
+    .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
+    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
