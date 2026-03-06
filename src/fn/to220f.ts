@@ -1,15 +1,20 @@
 import type { AnyCircuitElement } from "circuit-json"
+import { mm } from "@tscircuit/mm"
 import { length } from "circuit-json"
 import { z } from "zod"
 import { to220 } from "./to220"
+import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { base_def } from "../helpers/zod/base_def"
 
+// TO-220F uses 2.54mm standard pitch to match KiCad
+const TO220F_PITCH_MM = 2.54
+
 export const to220f_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
-  id: length.optional().default("1.0mm"),
-  od: length.optional().default("1.9mm"),
+  // KiCad TO-220F-3_Vertical: hole=1.2mm, pad=1.905×2mm, pitch=2.54mm
+  id: length.optional().default("1.2mm"),
+  od: length.optional().default("1.905mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
@@ -23,35 +28,53 @@ export const to220f = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220f_def.parse(raw_params)
 
-  const result = to220({
+  const numPins =
+    parameters.num_pins ??
+    Number.parseInt(
+      parameters.string?.match(/^to220f(?:_|-)(\d+)/i)?.[1] ?? "3",
+    )
+
+  // Get silkscreen and other non-hole elements from to220
+  const baseResult = to220({
     ...parameters,
     fn: "to220",
     string: parameters.string?.replace(/^to220f/i, "to220"),
-    num_pins:
-      parameters.num_pins ??
-      Number.parseInt(
-        parameters.string?.match(/^to220f(?:_|-)(\d+)/i)?.[1] ?? "3",
-      ),
+    num_pins: numPins,
   })
 
-  // Replace pin 1 with a square (rect) pad to match KiCad TO-220F convention
-  const pin1Index = result.circuitJson.findIndex(
-    (e: any) =>
-      e.type === "pcb_plated_hole" &&
-      e.port_hints?.includes("1"),
+  // Compute exact hole positions at standard 2.54mm pitch (centered at x=0)
+  const holeY = -1
+  const newHoles: AnyCircuitElement[] = Array.from(
+    { length: numPins },
+    (_, i) => {
+      const x =
+        numPins % 2 === 0
+          ? (i - numPins / 2 + 0.5) * TO220F_PITCH_MM
+          : (i - Math.floor(numPins / 2)) * TO220F_PITCH_MM
+
+      if (i === 0) {
+        // Pin 1: square (rect) pad — standard TO-220F convention
+        return platedHoleWithRectPad({
+          pn: 1,
+          x,
+          y: holeY,
+          holeDiameter: parameters.id,
+          rectPadWidth: parameters.od,
+          rectPadHeight: parameters.od,
+        }) as AnyCircuitElement
+      }
+
+      return platedhole(i + 1, x, holeY, parameters.id, parameters.od) as AnyCircuitElement
+    },
   )
 
-  if (pin1Index !== -1) {
-    const originalPin1 = result.circuitJson[pin1Index] as any
-    result.circuitJson[pin1Index] = platedHoleWithRectPad({
-      pn: 1,
-      x: originalPin1.x,
-      y: originalPin1.y,
-      holeDiameter: parameters.id,
-      rectPadWidth: parameters.od,
-      rectPadHeight: parameters.od,
-    }) as AnyCircuitElement
-  }
+  // Replace plated holes in base result with our corrected ones
+  const nonHoleElements = baseResult.circuitJson.filter(
+    (e: any) => e.type !== "pcb_plated_hole",
+  )
 
-  return result
+  return {
+    circuitJson: [...newHoles, ...nonHoleElements],
+    parameters: { ...parameters, p: TO220F_PITCH_MM, num_pins: numPins },
+  }
 }
