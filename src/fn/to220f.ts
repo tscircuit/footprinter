@@ -3,8 +3,8 @@ import { mm } from "@tscircuit/mm"
 import { length } from "circuit-json"
 import { z } from "zod"
 import { to220 } from "./to220"
-import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedHolePill } from "../helpers/platedHolePill"
 import { base_def } from "../helpers/zod/base_def"
 
 // TO-220F uses 2.54mm standard pitch to match KiCad
@@ -12,9 +12,10 @@ const TO220F_PITCH_MM = 2.54
 
 export const to220f_def = base_def.extend({
   fn: z.string(),
-  // KiCad TO-220F-3_Vertical: hole=1.2mm, pad=1.905×2mm, pitch=2.54mm
+  // KiCad TO-220F-3_Vertical: hole=1.2mm, pad=1.905×2.0mm, pitch=2.54mm
   id: length.optional().default("1.2mm"),
   od: length.optional().default("1.905mm"),
+  pad_h: length.optional().default("2mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
@@ -53,23 +54,25 @@ export const to220f = (
           : (i - Math.floor(numPins / 2)) * TO220F_PITCH_MM
 
       if (i === 0) {
-        // Pin 1: square (rect) pad — standard TO-220F convention
+        // Pin 1: rectangular pad with circular drill (matches KiCad TO-220F-3)
         return platedHoleWithRectPad({
           pn: 1,
           x,
           y: holeY,
           holeDiameter: parameters.id,
           rectPadWidth: parameters.od,
-          rectPadHeight: parameters.od,
+          rectPadHeight: parameters.pad_h,
         }) as AnyCircuitElement
       }
 
-      return platedhole(
+      // Pins 2/3: pill pads with circular drill (matches KiCad TO-220F-3)
+      return platedHolePill(
         i + 1,
         x,
         holeY,
-        parameters.id,
-        parameters.od,
+        mm(parameters.id),
+        mm(parameters.od),
+        mm(parameters.pad_h),
       ) as AnyCircuitElement
     },
   )
