@@ -33,3 +33,19 @@ test("to220_5 (5 holes)", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to220_5")
 })
+
+test("to220f_3", () => {
+  const circuitJson = fp.string("to220f_3").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to220f_3")
+})
+
+test("TO-220F-3 (alias)", () => {
+  const aliasSvg = convertCircuitJsonToPcbSvg(
+    fp.string("TO-220F-3").circuitJson(),
+  )
+  const canonicalSvg = convertCircuitJsonToPcbSvg(
+    fp.string("to220f_3").circuitJson(),
+  )
+  expect(aliasSvg).toEqual(canonicalSvg)
+})

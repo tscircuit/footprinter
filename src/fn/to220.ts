@@ -25,9 +25,11 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { fn, id, od, w, h, string } = parameters
+  const { id, od, w, h, string } = parameters
 
-  const numPins = Number.parseInt(string?.split("_")[1] ?? "3")
+  const numPins =
+    parameters.num_pins ??
+    Number.parseInt(string?.match(/^to220(?:_|-)(\d+)/i)?.[1] ?? "3")
 
   const holeY = -1
   const halfWidth = w / 2

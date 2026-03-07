@@ -109,6 +109,7 @@ export type Footprinter = {
   >
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
@@ -265,12 +266,20 @@ export type Footprinter = {
   getFootprintNames: () => string[]
 }
 
+const normalizeDefinition = (def: string): string => {
+  return def
+    .trim()
+    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+    .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+}
+
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
+  const normalizedDef = normalizeDefinition(def)
 
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
-  const modifiedDef = def
+  const modifiedDef = normalizedDef
     .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
     .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
 
@@ -291,7 +300,7 @@ export const string = (def: string): Footprinter => {
     fp = fp[fn](v)
   }
 
-  fp.setString(def)
+  fp.setString(normalizedDef)
 
   return fp
 }
