@@ -4,7 +4,7 @@ import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sop8_def = extendSoicDef({
-  w: "7.05mm",
+  w: "7.50mm",
   p: "1.27mm",
   pw: "0.65mm",
   pl: "1.975mm",
