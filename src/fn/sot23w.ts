@@ -19,7 +19,7 @@ export const sot23w = (
   raw_params: z.input<typeof sot23w_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot23w_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 3) : 3
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
   const parameters = sot23w_def.parse({
     ...raw_params,
@@ -81,7 +81,7 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    Number.parseInt(parameters.h) / 2 + 1,
+    Number.parseFloat(parameters.h) / 2 + 1,
     0.3,
   )
 

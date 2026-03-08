@@ -51,7 +51,7 @@ export const bga_def = base_def
         const m = s.match(/([A-Z]+)(\d+)/)
         if (!m) return s
         const Y = ALPHABET.indexOf(m[1]!)
-        const X = Number.parseInt(m[2]!) - 1
+        const X = Number.parseInt(m[2]!, 10) - 1
         return Y * a.grid!.x + X + 1
       })
     }

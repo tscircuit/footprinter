@@ -102,7 +102,7 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    Number.parseInt(parameters.h),
+    Number.parseFloat(parameters.h),
     0.3,
   )
   return [...pads, silkscreenRefText as AnyCircuitElement]

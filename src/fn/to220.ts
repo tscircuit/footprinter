@@ -29,7 +29,7 @@ export const to220 = (
 
   const numPins =
     parameters.num_pins ??
-    Number.parseInt(string?.match(/^to220(?:_|-)(\d+)/i)?.[1] ?? "3")
+    Number.parseInt(string?.match(/^to220(?:_|-)(\d+)/i)?.[1] ?? "3", 10)
 
   const holeY = -1
   const halfWidth = w / 2
