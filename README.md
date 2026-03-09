@@ -146,3 +146,4 @@ file is.
 You'll sometimes see this `logSoup` function- this makes some debug output
 appear at https://debug.tscircuit.com. Make sure to hit "pcb" and "pcb_renderer"
 after the design.
+test
