@@ -15,7 +15,7 @@ export const to220f_def = base_def.extend({
   // KiCad TO-220F-3_Vertical: hole=1.2mm, pad=1.905×2.0mm, pitch=2.54mm
   id: length.optional().default("1.2mm"),
   od: length.optional().default("1.905mm"),
-  pad_h: length.optional().default("2mm"),
+  ph: length.optional().default("2mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
@@ -61,7 +61,7 @@ export const to220f = (
           y: holeY,
           holeDiameter: parameters.id,
           rectPadWidth: parameters.od,
-          rectPadHeight: parameters.pad_h,
+          rectPadHeight: parameters.ph,
         }) as AnyCircuitElement
       }
 
@@ -72,7 +72,7 @@ export const to220f = (
         holeY,
         mm(parameters.id),
         mm(parameters.od),
-        mm(parameters.pad_h),
+        mm(parameters.ph),
       ) as AnyCircuitElement
     },
   )
