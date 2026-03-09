@@ -33762,7 +33762,7 @@ var to220f_def = base_def.extend({
   fn: exports_external.string(),
   id: length.optional().default("1.2mm"),
   od: length.optional().default("1.905mm"),
-  pad_h: length.optional().default("2mm"),
+  ph: length.optional().default("2mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: exports_external.number().optional(),
@@ -33787,10 +33787,10 @@ var to220f = (raw_params) => {
         y: holeY,
         holeDiameter: parameters.id,
         rectPadWidth: parameters.od,
-        rectPadHeight: parameters.pad_h
+        rectPadHeight: parameters.ph
       });
     }
-    return platedHolePill(i + 1, x3, holeY, mm2(parameters.id), mm2(parameters.od), mm2(parameters.pad_h));
+    return platedHolePill(i + 1, x3, holeY, mm2(parameters.id), mm2(parameters.od), mm2(parameters.ph));
   });
   const nonHoleElements = baseResult.circuitJson.filter((e2) => e2.type !== "pcb_plated_hole");
   return {
