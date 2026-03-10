@@ -1,4 +1,4 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
@@ -23,8 +23,8 @@ export const extendSoicDef = (newDefaults: {
       num_pins: z.number().optional().default(8),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
-      pw: length.default(length.parse(newDefaults.pw ?? "0.6mm")),
-      pl: length.default(length.parse(newDefaults.pl ?? "1.0mm")),
+      pw: length.default(length.parse(newDefaults.pw ?? "0.65mm")),
+      pl: length.default(length.parse(newDefaults.pl ?? "1.67mm")),
       legsoutside: z
         .boolean()
         .optional()
@@ -38,12 +38,12 @@ export const extendSoicDef = (newDefaults: {
     .transform((v) => {
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
-        v.pw = length.parse("0.6mm")
-        v.pl = length.parse("1.0mm")
+        v.pw = length.parse("0.65mm")
+        v.pl = length.parse("1.67mm")
       } else if (!v.pw) {
-        v.pw = v.pl! * (0.6 / 1.0)
+        v.pw = v.pl! * (0.65 / 1.67)
       } else if (!v.pl) {
-        v.pl = v.pw! * (1.0 / 0.6)
+        v.pl = v.pw! * (1.67 / 0.65)
       }
 
       return v as NowDefined<
@@ -80,7 +80,7 @@ export const getCcwSoicCoords = (parameters: {
 
   const h = gs * leftPinGaps
 
-  const legoffset = legsoutside ? pl / 2 : -pl / 2
+  const legoffset = legsoutside ? pl / 2 + 0.23 : -(pl / 2 + 0.23)
 
   if (isLeft) {
     // The y position starts at h/2, then goes down by gap size
@@ -101,16 +101,18 @@ export const soic = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: SoicInput } => {
+}): { circuitJson: AnyCircuitElement[]; parameters: SoicInput } => {
   const parameters = soic_def.parse(raw_params)
   return {
-    circuitJson: soicWithoutParsing(parameters) as AnySoupElement[],
+    circuitJson: soicWithoutParsing(parameters) as AnyCircuitElement[],
     parameters,
   }
 }
 
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
+  const rectPadLength = parameters.pl
+  const rectPadWidth = parameters.pw
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -121,16 +123,16 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       legsoutside: parameters.legsoutside,
     })
     if (parameters.pillpads) {
-      pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw))
+      pads.push(pillpad(i + 1, x, y, rectPadLength, rectPadWidth))
     } else {
-      pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+      pads.push(rectpad(i + 1, x, y, rectPadLength, rectPadWidth))
     }
   }
 
   /** silkscreen width */
   const m = Math.min(1, parameters.p / 2)
   const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.8
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
@@ -157,5 +159,5 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  return [...pads, silkscreenBorder, silkscreenRefText] as AnySoupElement[]
+  return [...pads, silkscreenBorder, silkscreenRefText] as AnyCircuitElement[]
 }
