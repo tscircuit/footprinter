@@ -9,7 +9,7 @@ test("parity/soic20", async () => {
       "Package_SO.pretty/Infineon_SOIC-20W_7.6x12.8mm_P1.27mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "soic20")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

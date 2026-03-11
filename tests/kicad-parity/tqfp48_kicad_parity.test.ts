@@ -9,7 +9,7 @@ test("parity/tqfp48", async () => {
       "Package_QFP.pretty/TQFP-48_7x7mm_P0.5mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tqfp48")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

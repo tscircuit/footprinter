@@ -9,7 +9,7 @@ test("parity/to92l", async () => {
       "Package_TO_SOT_THT.pretty/TO-92L.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_parity")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
@@ -24,7 +24,7 @@ test("parity/to92l_inline", async () => {
       "Package_TO_SOT_THT.pretty/TO-92L_Inline.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_inline_parity")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

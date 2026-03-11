@@ -9,7 +9,7 @@ test("parity/VSON8-1EP_grid5x6_P1.27mm_ep4.35x4.51mm_epx0.33mm_w5.6mm_pinw0.7mm_
       "Package_SON.pretty/VSONP-8-1EP_5x6_P1.27mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "VSONP-8-1EP_5x6_P1.27mm",

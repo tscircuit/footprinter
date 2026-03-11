@@ -9,7 +9,7 @@ test("parity/hc49", async () => {
       "Crystal.pretty/Crystal_HC49-4H_Vertical.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "hc49")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
