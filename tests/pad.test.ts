@@ -34,6 +34,18 @@ test("pad footprint", async () => {
     "text": "{REF}",
     "type": "pcb_silkscreen_text",
   },
+  {
+    "center": {
+      "x": 0,
+      "y": 0,
+    },
+    "height": 1.5,
+    "layer": "top",
+    "pcb_component_id": "",
+    "pcb_courtyard_rect_id": "pcb_courtyard_rect_1",
+    "type": "pcb_courtyard_rect",
+    "width": 2.5,
+  },
 ]
 `)
   snapshotSoup(soup)
@@ -72,6 +84,18 @@ test("pad footprint with different dimensions", async () => {
     "pcb_silkscreen_text_id": "silkscreen_text_1",
     "text": "{REF}",
     "type": "pcb_silkscreen_text",
+  },
+  {
+    "center": {
+      "x": 0,
+      "y": 0,
+    },
+    "height": 2.5,
+    "layer": "top",
+    "pcb_component_id": "",
+    "pcb_courtyard_rect_id": "pcb_courtyard_rect_1",
+    "type": "pcb_courtyard_rect",
+    "width": 3.5,
   },
 ]
 `)
