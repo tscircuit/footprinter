@@ -9,7 +9,9 @@ test("parity/minimelf", async () => {
       "Diode_SMD.pretty/D_MiniMELF.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "minimelf")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

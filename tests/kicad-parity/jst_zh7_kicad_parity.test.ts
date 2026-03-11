@@ -9,7 +9,9 @@ test("parity/jst7_zh", async () => {
       "Connector_JST.pretty/JST_ZH_B7B-ZR_1x07_P1.50mm_Vertical.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "jst7_zh")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

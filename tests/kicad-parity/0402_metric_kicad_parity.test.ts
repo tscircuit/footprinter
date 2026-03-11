@@ -9,7 +9,9 @@ test("parity/0402_metric", async () => {
       "Resistor_SMD.pretty/R_01005_0402Metric.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402_metric_parity")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
