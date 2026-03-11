@@ -9,7 +9,9 @@ test("parity/sot886", async () => {
       "Package_TO_SOT_SMD.pretty/SOT-886.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot886")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

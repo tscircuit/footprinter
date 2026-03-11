@@ -9,7 +9,9 @@ test("parity/radial", async () => {
       "Capacitor_THT.pretty/C_Radial_D10.0mm_H12.5mm_P5.00mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "radial_parity_p5mm")
 

@@ -9,7 +9,9 @@ test("parity/sop-8", async () => {
       "Package_SO.pretty/SOP-8_3.76x4.96mm_P1.27mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sop-8")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

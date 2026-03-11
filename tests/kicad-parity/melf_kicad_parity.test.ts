@@ -9,7 +9,9 @@ test("parity/melf", async () => {
       "Diode_SMD.pretty/D_MELF.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "melf")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

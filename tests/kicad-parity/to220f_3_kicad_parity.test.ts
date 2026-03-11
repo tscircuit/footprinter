@@ -9,7 +9,9 @@ test("parity/to220f_3", async () => {
       "Package_TO_SOT_THT.pretty/TO-220F-3_Vertical.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to220f_3")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

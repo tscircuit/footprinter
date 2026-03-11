@@ -9,7 +9,9 @@ test("parity/qfn32_thermalpad3.1x3.1mm", async () => {
       "Package_DFN_QFN.pretty/QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, { showCourtyards: true })
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "qfn32_thermalpad3.1x3.1mm",
