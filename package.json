@@ -33,6 +33,7 @@
     "esbuild-register": "^3.5.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "schematic-symbols": "^0.0.224",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
