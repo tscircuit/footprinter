@@ -191,21 +191,21 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
-  // courtyard must enclose body, pads, AND silkscreen outline
+  // IPC-7351B: courtyard must enclose body, pads, AND silkscreen outline
   const excess = 0.25
-  const silkscreenXs = silkscreenLine.route.map((pt) => Math.abs(pt.x))
-  const silkscreenYs = silkscreenLine.route.map((pt) => Math.abs(pt.y))
-  const maxSilkX = Math.max(...silkscreenXs)
-  const maxSilkY = Math.max(...silkscreenYs)
-  const crtHalfW = Math.max((w ?? 0) / 2, p / 2 + pw / 2, maxSilkX) + excess
-  const crtHalfH = Math.max((h ?? 0) / 2, ph / 2, maxSilkY) + excess
+  const silkXs = silkscreenLine.route.map((pt) => pt.x)
+  const silkYs = silkscreenLine.route.map((pt) => pt.y)
+  const crtMinX = Math.min(-(w ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess
+  const crtMaxX = Math.max((w ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess
+  const crtMinY = Math.min(-(h ?? 0) / 2, -ph / 2, ...silkYs) - excess
+  const crtMaxY = Math.max((h ?? 0) / 2, ph / 2, ...silkYs) + excess
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: 0 },
-    width: crtHalfW * 2,
-    height: crtHalfH * 2,
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
     layer: "top",
   }
 
