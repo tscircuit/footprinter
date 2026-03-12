@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
@@ -187,12 +191,31 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
+  // courtyard must enclose body, pads, AND silkscreen outline
+  const excess = 0.25
+  const silkscreenXs = silkscreenLine.route.map((pt) => Math.abs(pt.x))
+  const silkscreenYs = silkscreenLine.route.map((pt) => Math.abs(pt.y))
+  const maxSilkX = Math.max(...silkscreenXs)
+  const maxSilkY = Math.max(...silkscreenYs)
+  const crtHalfW = Math.max((w ?? 0) / 2, p / 2 + pw / 2, maxSilkX) + excess
+  const crtHalfH = Math.max((h ?? 0) / 2, ph / 2, maxSilkY) + excess
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: 0, y: 0 },
+    width: crtHalfW * 2,
+    height: crtHalfH * 2,
+    layer: "top",
+  }
+
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
       silkscreenLine,
       silkscreenRefText,
+      courtyard,
     ]
   }
   return [
@@ -200,5 +223,6 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     rectpad(["2", "right"], p / 2, 0, pw, ph),
     silkscreenLine,
     silkscreenRefText,
+    courtyard,
   ]
 }

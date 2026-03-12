@@ -4,7 +4,6 @@ import * as FOOTPRINT_FN from "./fn"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
-import { addCourtyardFromPads } from "./helpers/courtyard"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
@@ -355,9 +354,7 @@ export const footprinter = (): Footprinter & {
                 circuitWithoutSilkscreen,
                 target,
               )
-              return addCourtyardFromPads(
-                applyOrigin(circuitWithoutRefDes, target.origin),
-              )
+              return applyOrigin(circuitWithoutRefDes, target.origin)
             }
           }
 
