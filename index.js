@@ -35616,19 +35616,37 @@ var passive = (params) => {
   };
   const textY = textbottom ? -ph2 / 2 - 0.9 : ph2 / 2 + 0.9;
   const silkscreenRefText = silkscreenRef(0, textY, 0.2);
+  const excess = 0.25;
+  const silkXs = silkscreenLine.route.map((pt2) => pt2.x);
+  const silkYs = silkscreenLine.route.map((pt2) => pt2.y);
+  const crtMinX = Math.min(-(w2 ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess;
+  const crtMaxX = Math.max((w2 ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess;
+  const crtMinY = Math.min(-(h ?? 0) / 2, -ph2 / 2, ...silkYs) - excess;
+  const crtMaxY = Math.max((h ?? 0) / 2, ph2 / 2, ...silkYs) + excess;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, pw * 1 / 0.8),
       platedhole(2, p / 2, 0, pw, pw * 1 / 0.8),
       silkscreenLine,
-      silkscreenRefText
+      silkscreenRefText,
+      courtyard
     ];
   }
   return [
     rectpad(["1", "left"], -p / 2, 0, pw, ph2),
     rectpad(["2", "right"], p / 2, 0, pw, ph2),
     silkscreenLine,
-    silkscreenRefText
+    silkscreenRefText,
+    courtyard
   ];
 };
 
