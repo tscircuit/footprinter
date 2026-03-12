@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
@@ -187,12 +191,31 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
+  // IPC-7351B: courtyard must enclose body, pads, AND silkscreen outline
+  const excess = 0.25
+  const silkXs = silkscreenLine.route.map((pt) => pt.x)
+  const silkYs = silkscreenLine.route.map((pt) => pt.y)
+  const crtMinX = Math.min(-(w ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess
+  const crtMaxX = Math.max((w ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess
+  const crtMinY = Math.min(-(h ?? 0) / 2, -ph / 2, ...silkYs) - excess
+  const crtMaxY = Math.max((h ?? 0) / 2, ph / 2, ...silkYs) + excess
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
       silkscreenLine,
       silkscreenRefText,
+      courtyard,
     ]
   }
   return [
@@ -200,5 +223,6 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     rectpad(["2", "right"], p / 2, 0, pw, ph),
     silkscreenLine,
     silkscreenRefText,
+    courtyard,
   ]
 }
