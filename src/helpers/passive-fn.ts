@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardOutline,
+  PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
@@ -199,17 +199,14 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const crtMaxX = Math.max((w ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess
   const crtMinY = Math.min(-(h ?? 0) / 2, -ph / 2, ...silkYs) - excess
   const crtMaxY = Math.max((h ?? 0) / 2, ph / 2, ...silkYs) + excess
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
     pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
     layer: "top",
-    outline: [
-      { x: crtMinX, y: crtMinY },
-      { x: crtMaxX, y: crtMinY },
-      { x: crtMaxX, y: crtMaxY },
-      { x: crtMinX, y: crtMaxY },
-    ],
   }
 
   if (tht) {
