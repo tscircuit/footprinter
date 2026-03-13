@@ -35624,13 +35624,16 @@ var passive = (params) => {
   const crtMinY = Math.min(-(h ?? 0) / 2, -ph2 / 2, ...silkYs) - excess;
   const crtMaxY = Math.max((h ?? 0) / 2, ph2 / 2, ...silkYs) + excess;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: [
+      { x: crtMinX, y: crtMinY },
+      { x: crtMaxX, y: crtMinY },
+      { x: crtMaxX, y: crtMaxY },
+      { x: crtMinX, y: crtMaxY }
+    ]
   };
   if (tht) {
     return [
