@@ -15,23 +15,23 @@ export const led5050 = (
   parameters: z.input<typeof led5050_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   const pads: AnySoupElement[] = []
-  
+
   // 5050 LED: 5.0mm x 5.0mm body, 6 pads (3 each side)
   const padWidth = 1.5
   const padHeight = 0.9
   const xOffset = 2.2
   const ySpacing = 1.6
-  
+
   // Left side pads (1, 2, 3)
   pads.push(rectpad(1, -xOffset, ySpacing, padWidth, padHeight))
   pads.push(rectpad(2, -xOffset, 0, padWidth, padHeight))
   pads.push(rectpad(3, -xOffset, -ySpacing, padWidth, padHeight))
-  
+
   // Right side pads (4, 5, 6)
   pads.push(rectpad(4, xOffset, -ySpacing, padWidth, padHeight))
   pads.push(rectpad(5, xOffset, 0, padWidth, padHeight))
   pads.push(rectpad(6, xOffset, ySpacing, padWidth, padHeight))
-  
+
   return {
     circuitJson: [...pads, silkscreenRef(0, 3.5, 0.5)],
     parameters,
