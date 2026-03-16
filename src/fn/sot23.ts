@@ -4,6 +4,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { getCourtyardFromElements } from "../helpers/courtyard"
 
 export const sot23_def = base_def.extend({
   fn: z.string(),
@@ -105,7 +106,11 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     Number.parseInt(parameters.h),
     0.3,
   )
-  return [...pads, silkscreenRefText as AnyCircuitElement]
+  const elements: AnyCircuitElement[] = [
+    ...pads,
+    silkscreenRefText as AnyCircuitElement,
+  ]
+  return [...elements, getCourtyardFromElements(elements)]
 }
 
 export const getCcwSot235Coords = (parameters: {
@@ -211,11 +216,12 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     stroke_width: 0.05,
   }
 
-  return [
+  const elements: AnyCircuitElement[] = [
     ...pads,
     silkscreenRefText,
     silkscreenPath1,
     silkscreenPath2,
     pin1Indicator as AnyCircuitElement,
   ]
+  return [...elements, getCourtyardFromElements(elements)]
 }

@@ -7,6 +7,7 @@ import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { getCourtyardFromElements } from "../helpers/courtyard"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -157,5 +158,10 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  return [...pads, silkscreenBorder, silkscreenRefText] as AnySoupElement[]
+  const elements = [
+    ...pads,
+    silkscreenBorder,
+    silkscreenRefText,
+  ] as AnySoupElement[]
+  return [...elements, getCourtyardFromElements(elements)] as AnySoupElement[]
 }

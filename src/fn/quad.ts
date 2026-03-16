@@ -8,6 +8,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { getCourtyardFromElements } from "../helpers/courtyard"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -304,11 +305,15 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
+  const elements = [
+    ...pads,
+    ...silkscreen_corners,
+    silkscreenRefText,
+  ] as AnySoupElement[]
   return {
     circuitJson: [
-      ...pads,
-      ...silkscreen_corners,
-      silkscreenRefText,
+      ...elements,
+      getCourtyardFromElements(elements),
     ] as AnySoupElement[],
     parameters,
   }

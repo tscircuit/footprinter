@@ -3,6 +3,7 @@ import type {
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
+import { getCourtyardFromElements } from "../helpers/courtyard"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -199,13 +200,14 @@ export const dip = (raw_params: {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
+  const elements: AnyCircuitElement[] = [
+    ...platedHoles,
+    silkscreenBorder,
+    silkscreenRefText,
+    ...silkscreenPins,
+  ]
   return {
-    circuitJson: [
-      ...platedHoles,
-      silkscreenBorder,
-      silkscreenRefText,
-      ...silkscreenPins,
-    ],
+    circuitJson: [...elements, getCourtyardFromElements(elements)],
     parameters,
   }
 }
