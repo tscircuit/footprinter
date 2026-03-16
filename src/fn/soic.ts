@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
@@ -101,16 +105,16 @@ export const soic = (raw_params: {
   p?: number
   id?: string | number
   od?: string | number
-}): { circuitJson: AnySoupElement[]; parameters: SoicInput } => {
+}): { circuitJson: AnyCircuitElement[]; parameters: SoicInput } => {
   const parameters = soic_def.parse(raw_params)
   return {
-    circuitJson: soicWithoutParsing(parameters) as AnySoupElement[],
+    circuitJson: soicWithoutParsing(parameters) as AnyCircuitElement[],
     parameters,
   }
 }
 
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -157,5 +161,30 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  return [...pads, silkscreenBorder, silkscreenRefText] as AnySoupElement[]
+  const excess = 0.25
+  const silkXs = silkscreenBorder.route.map((pt) => pt.x)
+  const silkYs = silkscreenBorder.route.map((pt) => pt.y)
+  const padXExtent = parameters.legsoutside
+    ? parameters.w / 2 + parameters.pl
+    : parameters.w / 2
+  const crtMinX = Math.min(-padXExtent, ...silkXs) - excess
+  const crtMaxX = Math.max(padXExtent, ...silkXs) + excess
+  const crtMinY = Math.min(...silkYs) - excess
+  const crtMaxY = Math.max(...silkYs) + excess
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
+  return [
+    ...pads,
+    silkscreenBorder,
+    silkscreenRefText,
+    courtyard,
+  ] as AnyCircuitElement[]
 }
