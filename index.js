@@ -35431,12 +35431,27 @@ var dip = (raw_params) => {
     });
   }
   const silkscreenRefText = silkscreenRef(0, sh2 / 2 + 0.5, 0.4);
+  const courtyardPadding = 0.25;
+  const crtMinX = -(parameters.w / 2 + parameters.od / 2) - courtyardPadding;
+  const crtMaxX = parameters.w / 2 + parameters.od / 2 + courtyardPadding;
+  const crtMinY = -sh2 / 2 - courtyardPadding;
+  const crtMaxY = sh2 / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...platedHoles,
       silkscreenBorder,
       silkscreenRefText,
-      ...silkscreenPins
+      ...silkscreenPins,
+      courtyard
     ],
     parameters
   };
@@ -36273,7 +36288,29 @@ var soicWithoutParsing = (parameters) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
-  return [...pads, silkscreenBorder, silkscreenRefText];
+  const courtyardPadding = 0.25;
+  const silkXs = silkscreenBorder.route.map((pt2) => pt2.x);
+  const silkYs = silkscreenBorder.route.map((pt2) => pt2.y);
+  const padXExtent = parameters.legsoutside ? parameters.w / 2 + parameters.pl : parameters.w / 2;
+  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding;
+  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding;
+  const crtMinY = Math.min(...silkYs) - courtyardPadding;
+  const crtMaxY = Math.max(...silkYs) + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
+  return [
+    ...pads,
+    silkscreenBorder,
+    silkscreenRefText,
+    courtyard
+  ];
 };
 // src/helpers/zod/pin-order-specifier.ts
 var pin_order_specifier = exports_external.enum([
@@ -36576,11 +36613,28 @@ var quad = (raw_params) => {
     }
   }
   const silkscreenRefText = silkscreenRef(0, parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5), 0.3);
+  const courtyardPadding = 0.25;
+  const padExtentX = parameters.legsoutside ? parameters.w / 2 + parameters.pl : parameters.w / 2;
+  const padExtentY = parameters.legsoutside ? parameters.h / 2 + parameters.pl : parameters.h / 2;
+  const crtMinX = -padExtentX - courtyardPadding;
+  const crtMaxX = padExtentX + courtyardPadding;
+  const crtMinY = -padExtentY - courtyardPadding;
+  const crtMaxY = padExtentY + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       ...silkscreen_corners,
-      silkscreenRefText
+      silkscreenRefText,
+      courtyard
     ],
     parameters
   };
@@ -37092,7 +37146,24 @@ var sot23_3 = (parameters) => {
     pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h), 0.3);
-  return [...pads, silkscreenRefText];
+  const courtyardPadding = 0.25;
+  const pl_val = Number.parseFloat(parameters.pl);
+  const pw_val = Number.parseFloat(parameters.pw);
+  const p_val = Number.parseFloat(parameters.p);
+  const crtMinX = -1.155 - pl_val / 2 - courtyardPadding;
+  const crtMaxX = 1.15 + pl_val / 2 + courtyardPadding;
+  const crtMinY = -(p_val + pw_val / 2) - courtyardPadding;
+  const crtMaxY = p_val + pw_val / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
+  return [...pads, silkscreenRefText, courtyard];
 };
 var getCcwSot235Coords = (parameters) => {
   const { p, h, pn: pn2 } = parameters;
@@ -37181,12 +37252,32 @@ var sot23_5 = (parameters) => {
     ],
     stroke_width: 0.05
   };
+  const courtyardPadding = 0.25;
+  const pl_val = Number.parseFloat(parameters.pl);
+  const pw_val = Number.parseFloat(parameters.pw);
+  const p_val = Number.parseFloat(parameters.p);
+  const silkY = height / 2 + p_val / 1.3;
+  const padYExtent = p_val + pw_val / 2;
+  const crtMinX = -(height / 2 + 0.5 + pl_val / 2) - courtyardPadding;
+  const crtMaxX = height / 2 + 0.5 + pl_val / 2 + courtyardPadding;
+  const crtMinY = -Math.max(silkY, padYExtent) - courtyardPadding;
+  const crtMaxY = Math.max(silkY, padYExtent) + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return [
     ...pads,
     silkscreenRefText,
     silkscreenPath1,
     silkscreenPath2,
-    pin1Indicator
+    pin1Indicator,
+    courtyard
   ];
 };
 // src/fn/sot25.ts
