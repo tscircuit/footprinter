@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
@@ -45,11 +49,27 @@ export const sop8 = (
     stroke_width: 0.1,
   }
 
+  const courtyardPadding = 0.25
+  const crtMinX = -parameters.w / 2 - courtyardPadding
+  const crtMaxX = parameters.w / 2 + courtyardPadding
+  const crtMinY = -sh / 2 - courtyardPadding
+  const crtMaxY = sh / 2 + 0.4 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
       silkscreenRefText,
       silkscreenLine,
+      courtyard,
     ] as AnyCircuitElement[],
     parameters,
   }

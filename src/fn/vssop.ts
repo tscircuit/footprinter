@@ -1,6 +1,7 @@
 import type {
   AnyCircuitElement,
   AnySoupElement,
+  PcbCourtyardRect,
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -130,6 +131,23 @@ export const vssop = (
     0.3,
   )
 
+  const courtyardPadding = 0.25
+  const padCenterX =
+    parameters.num_pins === 10 ? length.parse("2.2mm") : length.parse("1.8mm")
+  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
+  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
+  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
+  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
@@ -137,6 +155,7 @@ export const vssop = (
       silkscreenBottomLine,
       silkscreenRefText,
       pin1Marking,
+      courtyard,
     ],
     parameters,
   }

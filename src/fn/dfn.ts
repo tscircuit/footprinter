@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import {
   extendSoicDef,
   soicWithoutParsing,
@@ -19,9 +23,9 @@ export const dfn_def = extendSoicDef({})
  */
 export const dfn = (
   raw_params: SoicInput,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = dfn_def.parse(raw_params)
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -96,12 +100,28 @@ export const dfn = (
     sh / 2 + 0.4,
     sh / 12,
   )
+  const courtyardPadding = 0.25
+  const crtMinX = -sw / 2 - courtyardPadding
+  const crtMaxX = sw / 2 + courtyardPadding
+  const crtMinY = -sh / 2 - courtyardPadding
+  const crtMaxY = sh / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
       silkscreenRefText,
       ...silkscreenPaths,
-    ] as AnySoupElement[],
+      courtyard,
+    ] as AnyCircuitElement[],
     parameters,
   }
 }
