@@ -308,17 +308,17 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
-  const excess = 0.25
+  const courtyardPadding = 0.25
   const padExtentX = parameters.legsoutside
     ? parameters.w / 2 + parameters.pl
     : parameters.w / 2
   const padExtentY = parameters.legsoutside
     ? parameters.h / 2 + parameters.pl
     : parameters.h / 2
-  const crtMinX = -padExtentX - excess
-  const crtMaxX = padExtentX + excess
-  const crtMinY = -padExtentY - excess
-  const crtMaxY = padExtentY + excess
+  const crtMinX = -padExtentX - courtyardPadding
+  const crtMaxX = padExtentX + courtyardPadding
+  const crtMinY = -padExtentY - courtyardPadding
+  const crtMaxY = padExtentY + courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

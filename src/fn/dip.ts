@@ -200,11 +200,11 @@ export const dip = (raw_params: {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
-  const excess = 0.25
-  const crtMinX = -(parameters.w / 2 + parameters.od / 2) - excess
-  const crtMaxX = parameters.w / 2 + parameters.od / 2 + excess
-  const crtMinY = -sh / 2 - excess
-  const crtMaxY = sh / 2 + excess
+  const courtyardPadding = 0.25
+  const crtMinX = -(parameters.w / 2 + parameters.od / 2) - courtyardPadding
+  const crtMaxX = parameters.w / 2 + parameters.od / 2 + courtyardPadding
+  const crtMinY = -sh / 2 - courtyardPadding
+  const crtMaxY = sh / 2 + courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

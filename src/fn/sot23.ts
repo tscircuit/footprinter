@@ -110,14 +110,14 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     0.3,
   )
 
-  const excess = 0.25
+  const courtyardPadding = 0.25
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
   const p_val = Number.parseFloat(parameters.p)
-  const crtMinX = -1.155 - pl_val / 2 - excess
-  const crtMaxX = 1.15 + pl_val / 2 + excess
-  const crtMinY = -(p_val + pw_val / 2) - excess
-  const crtMaxY = p_val + pw_val / 2 + excess
+  const crtMinX = -1.155 - pl_val / 2 - courtyardPadding
+  const crtMaxX = 1.15 + pl_val / 2 + courtyardPadding
+  const crtMinY = -(p_val + pw_val / 2) - courtyardPadding
+  const crtMaxY = p_val + pw_val / 2 + courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -234,16 +234,16 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     stroke_width: 0.05,
   }
 
-  const excess = 0.25
+  const courtyardPadding = 0.25
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
   const p_val = Number.parseFloat(parameters.p)
   const silkY = height / 2 + p_val / 1.3
   const padYExtent = p_val + pw_val / 2
-  const crtMinX = -(height / 2 + 0.5 + pl_val / 2) - excess
-  const crtMaxX = height / 2 + 0.5 + pl_val / 2 + excess
-  const crtMinY = -Math.max(silkY, padYExtent) - excess
-  const crtMaxY = Math.max(silkY, padYExtent) + excess
+  const crtMinX = -(height / 2 + 0.5 + pl_val / 2) - courtyardPadding
+  const crtMaxX = height / 2 + 0.5 + pl_val / 2 + courtyardPadding
+  const crtMinY = -Math.max(silkY, padYExtent) - courtyardPadding
+  const crtMaxY = Math.max(silkY, padYExtent) + courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
