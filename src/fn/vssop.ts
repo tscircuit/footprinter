@@ -1,8 +1,6 @@
 import type {
   AnyCircuitElement,
-  AnySoupElement,
   PcbCourtyardRect,
-  PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -174,7 +172,7 @@ const getVssopPadCoord = (
   const row = (half - 1) / 2 - rowIndex
 
   return {
-    x: col * length.parse(pinCount === 8 ? "1.8mm" : "2.2mm"),
+    x: col * 2.11,
     y: row * p,
   }
 }
