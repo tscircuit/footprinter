@@ -36845,8 +36845,25 @@ var ssop = (raw_params) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
+  const courtyardPadding = 0.25;
+  const silkXs = silkscreenBorder.route.map((pt2) => pt2.x);
+  const silkYs = silkscreenBorder.route.map((pt2) => pt2.y);
+  const padXExtent = parameters.legsoutside ? parameters.w / 2 + parameters.pl : (parameters.w + 0.2) / 2 + parameters.pl / 2;
+  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding;
+  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding;
+  const crtMinY = Math.min(...silkYs) - courtyardPadding;
+  const crtMaxY = Math.max(...silkYs) + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
-    circuitJson: [...pads, silkscreenBorder, silkscreenRefText],
+    circuitJson: [...pads, silkscreenBorder, silkscreenRefText, courtyard],
     parameters
   };
 };
@@ -36914,8 +36931,25 @@ var tssop = (raw_params) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
+  const courtyardPadding = 0.25;
+  const silkXs = silkscreenBorder.route.map((pt2) => pt2.x);
+  const silkYs = silkscreenBorder.route.map((pt2) => pt2.y);
+  const padXExtent = parameters.legsoutside ? parameters.w / 2 + parameters.pl : parameters.w / 2;
+  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding;
+  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding;
+  const crtMinY = Math.min(...silkYs) - courtyardPadding;
+  const crtMaxY = Math.max(...silkYs) + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
-    circuitJson: [...pads, silkscreenBorder, silkscreenRefText],
+    circuitJson: [...pads, silkscreenBorder, silkscreenRefText, courtyard],
     parameters
   };
 };
@@ -36979,13 +37013,28 @@ var sot363 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
+  const courtyardPadding = 0.25;
+  const crtMinX = -(0.84 + pl2 / 2) - courtyardPadding;
+  const crtMaxX = 0.84 + pl2 / 2 + courtyardPadding;
+  const crtMinY = -(h / 2 + 0.1) - courtyardPadding;
+  const crtMaxY = h / 2 + 0.1 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
@@ -37057,13 +37106,28 @@ var sot886 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
+  const courtyardPadding = 0.25;
+  const crtMinX = -w2 / 2 - courtyardPadding;
+  const crtMaxX = w2 / 2 + courtyardPadding;
+  const crtMinY = -h / 2 - courtyardPadding;
+  const crtMaxY = h / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
@@ -37364,11 +37428,26 @@ var dfn = (raw_params) => {
     stroke_width: 0.1
   });
   const silkscreenRefText = silkscreenRef(0, sh2 / 2 + 0.4, sh2 / 12);
+  const courtyardPadding = 0.25;
+  const crtMinX = -sw / 2 - courtyardPadding;
+  const crtMaxX = sw / 2 + courtyardPadding;
+  const crtMinY = -sh2 / 2 - courtyardPadding;
+  const crtMaxY = sh2 / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenRefText,
-      ...silkscreenPaths
+      ...silkscreenPaths,
+      courtyard
     ],
     parameters
   };
@@ -37788,13 +37867,28 @@ var sot563 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
+  const courtyardPadding = 0.25;
+  const crtMinX = -w2 / 2 - courtyardPadding;
+  const crtMaxX = w2 / 2 + courtyardPadding;
+  const crtMinY = -h / 2 - courtyardPadding;
+  const crtMaxY = h / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
@@ -39073,11 +39167,26 @@ var sop8 = (raw_params) => {
     ],
     stroke_width: 0.1
   };
+  const courtyardPadding = 0.25;
+  const crtMinX = -parameters.w / 2 - courtyardPadding;
+  const crtMaxX = parameters.w / 2 + courtyardPadding;
+  const crtMinY = -sh2 / 2 - courtyardPadding;
+  const crtMaxY = sh2 / 2 + 0.4 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenRefText,
-      silkscreenLine
+      silkscreenLine,
+      courtyard
     ],
     parameters
   };
@@ -41188,13 +41297,29 @@ var vssop = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
+  const courtyardPadding = 0.25;
+  const padCenterX = parameters.num_pins === 10 ? length.parse("2.2mm") : length.parse("1.8mm");
+  const crtMinX = -(padCenterX + pl2 / 2) - courtyardPadding;
+  const crtMaxX = padCenterX + pl2 / 2 + courtyardPadding;
+  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding;
+  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
@@ -41322,13 +41447,29 @@ var msop = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
+  const courtyardPadding = 0.25;
+  const padCenterX = length.parse("2mm");
+  const crtMinX = -(padCenterX + pl2 / 2) - courtyardPadding;
+  const crtMaxX = padCenterX + pl2 / 2 + courtyardPadding;
+  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding;
+  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
@@ -41539,13 +41680,29 @@ var son = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
+  const courtyardPadding = 0.25;
+  const padCenterX = length.parse("1.4mm");
+  const crtMinX = -(padCenterX + pl2 / 2) - courtyardPadding;
+  const crtMaxX = padCenterX + pl2 / 2 + courtyardPadding;
+  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding;
+  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding;
+  const courtyard = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top"
+  };
   return {
     circuitJson: [
       ...pads,
       silkscreenTopLine,
       silkscreenBottomLine,
       silkscreenRefText,
-      pin1Marking
+      pin1Marking,
+      courtyard
     ],
     parameters
   };
