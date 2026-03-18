@@ -151,17 +151,23 @@ function generateSilkscreenBody(
   numPins?: number,
   p?: number,
 ): PcbSilkscreenPath {
-  if (variant === "ph") {
+  if (variant === "ph" && numPins && p) {
+    const pinSpan = (numPins - 1) * p
+    const bodyLeft = -pinSpan / 2 - 1.5
+    const bodyRight = pinSpan / 2 + 1.5
+    const bodyTop = -h / 2
+    const bodyBottom = h / 2
+
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
       pcb_component_id: "",
       route: [
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: bodyLeft, y: bodyBottom },
+        { x: bodyRight, y: bodyBottom },
+        { x: bodyRight, y: bodyTop },
+        { x: bodyLeft, y: bodyTop },
+        { x: bodyLeft, y: bodyBottom },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
@@ -233,6 +239,17 @@ export const jst = (
     const parsed = Number.parseInt(zhMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
+    }
+  }
+
+  // Support "jst_ph_4" / "jst_sh_6" format: pin count as trailing segment
+  if (typeof numPins !== "number") {
+    const variantPinMatch = str.match(/(?:ph|sh|zh)_(\d+)/)
+    if (variantPinMatch && variantPinMatch[1]) {
+      const parsed = Number.parseInt(variantPinMatch[1], 10)
+      if (!Number.isNaN(parsed)) {
+        numPins = parsed
+      }
     }
   }
 
