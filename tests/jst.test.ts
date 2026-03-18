@@ -33,9 +33,7 @@ test("jst6_sh", () => {
 
 test("jst_ph_4 generates 4 pads", () => {
   const circuitJson = fp.string("jst_ph_4").circuitJson()
-  const pads = circuitJson.filter(
-    (el: any) => el.type === "pcb_plated_hole",
-  )
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_plated_hole")
   expect(pads).toHaveLength(4)
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
@@ -43,9 +41,7 @@ test("jst_ph_4 generates 4 pads", () => {
 
 test("jst_sh_6 generates 6 signal pads", () => {
   const circuitJson = fp.string("jst_sh_6").circuitJson()
-  const pads = circuitJson.filter(
-    (el: any) => el.type === "pcb_smtpad",
-  )
+  const pads = circuitJson.filter((el: any) => el.type === "pcb_smtpad")
   // 6 signal pads + 2 mounting pads
   expect(pads).toHaveLength(8)
 })
