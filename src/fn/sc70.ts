@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { sot323, type sot323_def } from "./sot323"
 import type { z } from "zod"
+import { sot323, type sot323_def } from "./sot323"
 
 /**
  * SC-70 footprint — JEDEC MO-203 / SOT-323 package (same physical package).
