@@ -14,9 +14,9 @@ export const sma_def = base_def.extend({
   num_pins: z.literal(2).default(2),
   w: z.string().default("7.10mm"),
   h: z.string().default("3.40mm"),
-  pl: z.string().default("2.45mm"),
+  pl: z.string().default("2.50mm"),
   pw: z.string().default("1.80mm"),
-  p: z.string().default("4.05mm"),
+  p: z.string().default("4.00mm"),
 })
 
 export const sma = (
