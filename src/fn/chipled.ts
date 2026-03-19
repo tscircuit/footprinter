@@ -102,7 +102,9 @@ export const chipled = (
 
   // Fallback: try to match imperial from passive footprint sizes
   if (!sz && parameters.imperial) {
-    const passive = footprintSizes.find((s) => s.imperial === parameters.imperial)
+    const passive = footprintSizes.find(
+      (s) => s.imperial === parameters.imperial,
+    )
     if (passive) {
       sz = {
         imperial: passive.imperial,
