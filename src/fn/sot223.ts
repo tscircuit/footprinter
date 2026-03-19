@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -128,11 +132,32 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
     stroke_width: 0.1,
   }
 
+  const w = Number.parseFloat(parameters.w)
+  const pl = Number.parseFloat(parameters.pl)
+  const p = Number.parseFloat(parameters.p)
+  const pw = Number.parseFloat(parameters.pw)
+  const courtyardPadding = 0.25
+  const padCenterX = w / 2 - 1.1
+  const crtMinX = -(padCenterX + pl / 2 + courtyardPadding)
+  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
+  const crtMinY = -(p + pw / 2 + courtyardPadding)
+  const crtMaxY = p + pw / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return [
     ...pads,
     silkscreenPath1,
     silkscreenPath2,
     silkscreenRefText as AnyCircuitElement,
+    courtyard,
   ]
 }
 
@@ -220,7 +245,31 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  return [...pads, silkscreenPath1, silkscreenPath2, silkscreenRefText]
+  const w = Number.parseFloat(parameters.w)
+  const courtyardPadding = 0.25
+  const padOuterX = w / 2 - 1.2 + 2.2 / 2
+  const crtMinX = -(padOuterX + courtyardPadding)
+  const crtMaxX = padOuterX + courtyardPadding
+  const h5 = Number.parseFloat(parameters.h)
+  const crtMinY = -(Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding)
+  const crtMaxY = Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
+  return [
+    ...pads,
+    silkscreenPath1,
+    silkscreenPath2,
+    silkscreenRefText,
+    courtyard,
+  ]
 }
 
 export const get2CcwSot2236Coords = (parameters: {
@@ -304,5 +353,26 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  return [...pads, silkscreenPath1, silkscreenPath2, silkscreenRefText]
+  const courtyardPadding = 0.25
+  const crtMinX = -(4.25 + courtyardPadding)
+  const crtMaxX = 4.25 + courtyardPadding
+  const crtMinY = -(2.9 + courtyardPadding)
+  const crtMaxY = 2.9 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
+  return [
+    ...pads,
+    silkscreenPath1,
+    silkscreenPath2,
+    silkscreenRefText,
+    courtyard,
+  ]
 }

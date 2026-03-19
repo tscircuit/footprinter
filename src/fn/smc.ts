@@ -10,8 +10,8 @@ export const smc_def = base_def.extend({
   num_pins: z.literal(2).default(2),
   w: z.string().default("10.70mm"),
   h: z.string().default("6.60mm"),
-  pl: z.string().default("3.30mm"),
-  pw: z.string().default("2.50mm"),
+  pl: z.string().default("2.50mm"),
+  pw: z.string().default("3.30mm"),
   p: z.string().default("6.80mm"),
 })
 

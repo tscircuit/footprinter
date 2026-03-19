@@ -1,14 +1,22 @@
-import * as FOOTPRINT_FN from "./fn"
 import type { AnySoupElement } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
-import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
+import * as FOOTPRINT_FN from "./fn"
+import { applyNoRefDes } from "./helpers/apply-norefdes"
+import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
+import { applyOrigin } from "./helpers/apply-origin"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
-import { applyOrigin } from "./helpers/apply-origin"
-import { applyNoRefDes } from "./helpers/apply-norefdes"
+import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
+
+type BaseOptionKey =
+  | "origin"
+  | "norefdes"
+  | "invert"
+  | "faceup"
+  | "nosilkscreen"
 
 export type FootprinterParamsBuilder<K extends string> = {
-  [P in K | "params" | "soup" | "circuitJson"]: P extends
+  [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
     | "params"
     | "soup"
     | "circuitJson"
@@ -80,6 +88,11 @@ export type Footprinter = {
     | "male"
     | "female"
     | "rows"
+    | "smd"
+    | "surfacemount"
+    | "rightangle"
+    | "pw"
+    | "pl"
     | "pinlabeltextalignleft"
     | "pinlabeltextaligncenter"
     | "pinlabeltextalignright"
@@ -91,8 +104,12 @@ export type Footprinter = {
     | "bottomsidepinlabel"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
+  radial: () => FootprinterParamsBuilder<
+    "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
+  >
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
@@ -114,6 +131,7 @@ export type Footprinter = {
   sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
+  sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -150,12 +168,18 @@ export type Footprinter = {
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
   son: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
+  >
+  vson: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
   >
   vssop: (
     num_pins?: number,
@@ -242,12 +266,22 @@ export type Footprinter = {
   getFootprintNames: () => string[]
 }
 
+const normalizeDefinition = (def: string): string => {
+  return def
+    .trim()
+    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+    .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+}
+
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
+  const normalizedDef = normalizeDefinition(def)
 
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
-  const modifiedDef = def.replace(/^((?:\d{4}|\d{5}))(?=$|_)/, "res$1")
+  const modifiedDef = normalizedDef
+    .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
+    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
@@ -266,7 +300,7 @@ export const string = (def: string): Footprinter => {
     fp = fp[fn](v)
   }
 
-  fp.setString(def)
+  fp.setString(normalizedDef)
 
   return fp
 }
@@ -312,10 +346,15 @@ export const footprinter = (): Footprinter & {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
               const { circuitJson } = FOOTPRINT_FN[target.fn](target)
-              return applyOrigin(
-                applyNoRefDes(circuitJson, target),
-                target.origin,
+              const circuitWithoutSilkscreen = applyNoSilkscreen(
+                circuitJson,
+                target,
               )
+              const circuitWithoutRefDes = applyNoRefDes(
+                circuitWithoutSilkscreen,
+                target,
+              )
+              return applyOrigin(circuitWithoutRefDes, target.origin)
             }
           }
 

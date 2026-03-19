@@ -1,5 +1,6 @@
 import type {
   AnyCircuitElement,
+  PcbCourtyardRect,
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -116,14 +117,14 @@ export const dip = (raw_params: {
     )
     if (i === 0 && !parameters.nosquareplating) {
       platedHoles.push(
-        platedHoleWithRectPad(
-          i + 1,
+        platedHoleWithRectPad({
+          pn: i + 1,
           x,
           y,
-          parameters.id ?? "0.8mm",
-          parameters.od ?? "1mm",
-          parameters.od ?? "1mm",
-        ),
+          holeDiameter: parameters.id ?? "0.8mm",
+          rectPadWidth: parameters.od ?? "1mm",
+          rectPadHeight: parameters.od ?? "1mm",
+        }),
       )
       continue
     }
@@ -199,12 +200,28 @@ export const dip = (raw_params: {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
+  const courtyardPadding = 0.25
+  const crtMinX = -(parameters.w / 2 + parameters.od / 2) - courtyardPadding
+  const crtMaxX = parameters.w / 2 + parameters.od / 2 + courtyardPadding
+  const crtMinY = -sh / 2 - courtyardPadding
+  const crtMaxY = sh / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...platedHoles,
       silkscreenBorder,
       silkscreenRefText,
       ...silkscreenPins,
+      courtyard,
     ],
     parameters,
   }

@@ -9,7 +9,9 @@ test("parity/bga165", async () => {
       "Package_BGA.pretty/Analog_BGA-165_11.9x16mm_Layout11x15_P1.0mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga165")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

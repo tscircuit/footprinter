@@ -19,6 +19,10 @@ interface FootprintElement {
   height?: number
   outer_diameter?: number
   hole_diameter?: number
+  outer_height?: number
+  outer_width?: number
+  hole_width?: number
+  hole_height?: number
   rect_pad_width?: number
   rect_pad_height?: number
   hole_offset_x?: number
@@ -170,6 +174,104 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
       }
     }
 
+    if (element.type === "pcb_plated_hole" && element.shape === "pill") {
+      if (
+        element.outer_height &&
+        element.outer_width &&
+        element.hole_width &&
+        element.hole_height &&
+        element.x !== undefined &&
+        element.y !== undefined
+      ) {
+        const halfHeight = element.outer_height / 2
+        const halfWidth = element.outer_width / 2
+        const holeRadius = element.hole_width / 2
+
+        const radius = Math.min(halfHeight, halfWidth)
+        const isHorizontal = halfWidth > halfHeight
+
+        const numArcPoints = 32
+        const points: Flatten.Point[] = []
+
+        if (radius === 0) {
+          return null
+        }
+
+        if (isHorizontal) {
+          const rectHalfWidth = halfWidth - radius
+          const centerY = element.y
+
+          const rightCenterX = element.x + rectHalfWidth
+          const leftCenterX = element.x - rectHalfWidth
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = Math.PI / 2 + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                rightCenterX + radius * Math.cos(angle),
+                centerY + radius * Math.sin(angle),
+              ),
+            )
+          }
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = (3 * Math.PI) / 2 + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                leftCenterX + radius * Math.cos(angle),
+                centerY + radius * Math.sin(angle),
+              ),
+            )
+          }
+        } else {
+          const rectHalfHeight = halfHeight - radius
+          const centerX = element.x
+
+          const topCenterY = element.y + rectHalfHeight
+          const bottomCenterY = element.y - rectHalfHeight
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                centerX + radius * Math.cos(angle),
+                topCenterY + radius * Math.sin(angle),
+              ),
+            )
+          }
+
+          for (let i = 0; i <= numArcPoints; i++) {
+            const angle = Math.PI + (i * Math.PI) / numArcPoints
+            points.push(
+              new Flatten.Point(
+                centerX + radius * Math.cos(angle),
+                bottomCenterY + radius * Math.sin(angle),
+              ),
+            )
+          }
+        }
+
+        const stadiumPolygon = new Flatten.Polygon(points)
+
+        const drillCenter = new Flatten.Point(element.x, element.y)
+        const drillCircle = new Flatten.Circle(drillCenter, holeRadius)
+        const drillPolygon = new Flatten.Polygon(drillCircle)
+
+        try {
+          return Flatten.BooleanOperations.subtract(
+            stadiumPolygon,
+            drillPolygon,
+          )
+        } catch (error) {
+          console.warn(
+            "Failed to subtract circular drill from pill pad, returning solid stadium:",
+            error,
+          )
+          return stadiumPolygon
+        }
+      }
+    }
+
     if (
       element.type === "pcb_silkscreen_path" &&
       element.route &&
@@ -182,7 +284,7 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 
     return null
   } catch (error) {
-    console.warn(`Failed to convert element to polygon:`, error)
+    console.warn("Failed to convert element to polygon:", error)
     return null
   }
 }
@@ -266,10 +368,10 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   maxX: number
   maxY: number
 } {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (const polygon of polygons) {
     if (polygon && !polygon.isEmpty()) {
@@ -282,7 +384,7 @@ function calculateBoundingBox(polygons: Flatten.Polygon[]): {
   }
 
   // Fallback if no valid polygons
-  if (!isFinite(minX)) {
+  if (!Number.isFinite(minX)) {
     return { minX: -1, minY: -1, maxX: 1, maxY: 1 }
   }
 
@@ -347,7 +449,7 @@ export function createBooleanDifferenceVisualization(
     const viewBoxY = bbox.minY - padding
 
     // Perform boolean operations using flatten-js/core
-    let resultPolygons: Flatten.Polygon[] = []
+    const resultPolygons: Flatten.Polygon[] = []
 
     if (
       options?.operation === "difference" &&

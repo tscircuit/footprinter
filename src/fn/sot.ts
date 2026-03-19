@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -128,11 +132,35 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
     stroke_width: 0.05,
   }
 
+  const h_val = Number.parseFloat(parameters.h)
+  const p_val = Number.parseFloat(parameters.p)
+  const pl_val = Number.parseFloat(parameters.pl)
+  const pw_val = Number.parseFloat(parameters.pw)
+  const courtyardPadding = 0.25
+  const padCenterX = h_val / 2 + 0.5
+  const silkscreenY = h_val / 2 + p_val / 1.3
+  const crtMinX = -(padCenterX + pl_val / 2 + courtyardPadding)
+  const crtMaxX = padCenterX + pl_val / 2 + courtyardPadding
+  const crtMinY = -(
+    Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding
+  )
+  const crtMaxY = Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return [
     ...pads,
     silkscreenRefText,
     silkscreenPath1,
     silkscreenPath2,
     pin1Indicator as AnyCircuitElement,
+    courtyard,
   ]
 }

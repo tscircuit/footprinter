@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
@@ -19,7 +23,7 @@ export const sot886_def = base_def.extend({
 export const sot886 = (
   raw_params: z.input<typeof sot886_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sot886_def.parse({ fn: "sot886", ...raw_params })
+  const parameters = sot886_def.parse({ ...raw_params, fn: "sot886" })
 
   const w = length.parse(parameters.w)
   const h = length.parse(parameters.h)
@@ -74,6 +78,21 @@ export const sot886 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.4, 0.25)
 
+  const courtyardPadding = 0.25
+  const crtMinX = -w / 2 - courtyardPadding
+  const crtMaxX = w / 2 + courtyardPadding
+  const crtMinY = -h / 2 - courtyardPadding
+  const crtMaxY = h / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
@@ -81,6 +100,7 @@ export const sot886 = (
       silkscreenBottomLine,
       silkscreenRefText,
       pin1Marking,
+      courtyard,
     ],
     parameters,
   }

@@ -31,3 +31,39 @@ test("0603_textbottom", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603_textbottom")
 })
+
+test("0402_x2", () => {
+  const soup = fp.string("0402_x2").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402_x2")
+})
+
+test("0402_x4", () => {
+  const soup = fp.string("0402_x4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402_x4")
+})
+
+test("0603_x2", () => {
+  const soup = fp.string("0603_x2").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603_x2")
+})
+
+test("0603_x4", () => {
+  const soup = fp.string("0603_x4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0603_x4")
+})
+
+test("0606_x2", () => {
+  const soup = fp.string("0606_x2").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0606_x2")
+})
+
+test("1206_x4", () => {
+  const soup = fp.string("1206_x4").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "1206_x4")
+})

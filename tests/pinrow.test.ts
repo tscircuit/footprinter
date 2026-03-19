@@ -204,3 +204,45 @@ test("pinrow5_bottomsidepinlabel", () => {
     "pinrow5_bottomsidepinlabel",
   )
 })
+
+test("pinrow3_smd", () => {
+  const circuitJson = fp.string("pinrow3_smd").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+
+  const pinrowJson = fp.string("pinrow3_smd").json()
+  expect(pinrowJson).toMatchObject({
+    fn: "pinrow",
+    num_pins: 3,
+    p: 2.54,
+    smd: true,
+    rightangle: false,
+    pw: 1,
+    pl: 2,
+  })
+
+  // Verify SMD pads are used instead of plated holes
+  expect(circuitJson.some((el) => el.type === "pcb_smtpad")).toBe(true)
+  expect(circuitJson.some((el) => el.type === "pcb_plated_hole")).toBe(false)
+
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd")
+})
+
+test("pinrow3_smd_rightangle_male", () => {
+  const circuitJson = fp.string("pinrow3_smd_rightangle_male").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+
+  const pinrowJson = fp.string("pinrow3_smd_rightangle_male").json()
+  expect(pinrowJson).toMatchObject({
+    fn: "pinrow",
+    num_pins: 3,
+    p: 2.54,
+    smd: true,
+    rightangle: true,
+    male: true,
+    female: false,
+    pw: 1,
+    pl: 2,
+  })
+
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd_ra_male")
+})

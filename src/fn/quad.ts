@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { optional, z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
@@ -111,9 +115,9 @@ export const getQuadCoords = (params: {
 
 export const quad = (
   raw_params: z.input<typeof quad_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
@@ -304,12 +308,34 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
+  const courtyardPadding = 0.25
+  const padExtentX = parameters.legsoutside
+    ? parameters.w / 2 + parameters.pl
+    : parameters.w / 2
+  const padExtentY = parameters.legsoutside
+    ? parameters.h / 2 + parameters.pl
+    : parameters.h / 2
+  const crtMinX = -padExtentX - courtyardPadding
+  const crtMaxX = padExtentX + courtyardPadding
+  const crtMinY = -padExtentY - courtyardPadding
+  const crtMaxY = padExtentY + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
       ...silkscreen_corners,
       silkscreenRefText,
-    ] as AnySoupElement[],
+      courtyard,
+    ] as AnyCircuitElement[],
     parameters,
   }
 }

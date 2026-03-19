@@ -1,4 +1,4 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -17,7 +17,7 @@ export const sod_def = base_def.extend({
 
 export const sod123 = (
   raw_params: z.input<typeof sod_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
@@ -25,9 +25,28 @@ export const sod123 = (
     0.3,
   )
 
+  const p_val = length.parse(parameters.p)
+  const pl_val = length.parse(parameters.pl)
+  const pw_val = length.parse(parameters.pw)
+  const courtyardPadding = 0.25
+  const crtMinX = -(p_val / 2 + pl_val / 2 + courtyardPadding)
+  const crtMaxX = p_val / 2 + pl_val / 2 + courtyardPadding
+  const crtMinY = -(pw_val / 2 + courtyardPadding)
+  const crtMaxY = pw_val / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ),
     parameters,
   }
@@ -48,7 +67,7 @@ export const getSodCoords = (parameters: {
 }
 
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({

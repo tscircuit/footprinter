@@ -9,7 +9,9 @@ test("parity/dip10", async () => {
       "Package_DIP.pretty/DIP-10_W10.16mm.circuit.json",
     )
 
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements)
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip10")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

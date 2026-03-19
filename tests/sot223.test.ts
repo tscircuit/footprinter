@@ -18,6 +18,15 @@ test("sot223_5", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot223_5")
 })
+test("SOT-223-5 (alias)", () => {
+  const aliasSvg = convertCircuitJsonToPcbSvg(
+    fp.string("SOT-223-5").circuitJson(),
+  )
+  const canonicalSvg = convertCircuitJsonToPcbSvg(
+    fp.string("sot223_5").circuitJson(),
+  )
+  expect(aliasSvg).toEqual(canonicalSvg)
+})
 test("sot223_6", () => {
   const circuitJson = fp.string("sot223_6").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)

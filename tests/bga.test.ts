@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
-import type { AnySoupElement, PCBSMTPad } from "circuit-json"
+import type { AnySoupElement, PcbSmtPad } from "circuit-json"
 
 test("bga footprint", () => {
   const soup = fp()
@@ -57,7 +57,7 @@ test("bga origin parameters", () => {
     "bga_2x2_bottom_left_origin",
   )
   const firstPadBl = soupBl.find(
-    (el): el is PCBSMTPad =>
+    (el): el is PcbSmtPad =>
       el.type === "pcb_smtpad" &&
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
@@ -73,7 +73,7 @@ test("bga origin parameters", () => {
     "bga_2x2_bottom_right_origin",
   )
   const firstPadBr = soupBr.find(
-    (el): el is PCBSMTPad =>
+    (el): el is PcbSmtPad =>
       el.type === "pcb_smtpad" &&
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
@@ -89,7 +89,7 @@ test("bga origin parameters", () => {
     "bga_2x2_top_right_origin",
   )
   const firstPadTr = soupTr.find(
-    (el): el is PCBSMTPad =>
+    (el): el is PcbSmtPad =>
       el.type === "pcb_smtpad" &&
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
@@ -105,7 +105,7 @@ test("bga origin parameters", () => {
     "bga_2x2_top_left_origin",
   )
   const firstPadTl = soupTl.find(
-    (el): el is PCBSMTPad =>
+    (el): el is PcbSmtPad =>
       el.type === "pcb_smtpad" &&
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",
@@ -116,7 +116,7 @@ test("bga origin parameters", () => {
   // Verify that all pads are in the same physical positions regardless of origin
   const allPads = (soup: AnySoupElement[]) =>
     soup
-      .filter((el): el is PCBSMTPad => el.type === "pcb_smtpad")
+      .filter((el): el is PcbSmtPad => el.type === "pcb_smtpad")
       .sort((a, b) => (a.x === b.x ? a.y - b.y : a.x - b.x))
 
   const padsTl = allPads(soupTl)
@@ -140,7 +140,7 @@ test("bga circular pads", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_circular_pads")
   const firstPad = soup.find(
-    (el): el is PCBSMTPad =>
+    (el): el is PcbSmtPad =>
       el.type === "pcb_smtpad" &&
       el.port_hints !== undefined &&
       el.port_hints[0] === "1",

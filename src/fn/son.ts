@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
@@ -114,6 +118,22 @@ export const son = (
     0.3,
   )
 
+  const courtyardPadding = 0.25
+  const padCenterX = length.parse("1.4mm")
+  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
+  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
+  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
+  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...pads,
@@ -121,6 +141,7 @@ export const son = (
       silkscreenBottomLine,
       silkscreenRefText,
       pin1Marking,
+      courtyard,
     ],
     parameters,
   }
