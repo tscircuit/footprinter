@@ -5,8 +5,8 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -222,6 +222,8 @@ export const jst = (
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
+  // Handle variant_N patterns like jst_ph_4, jst_sh_6, jst_zh_3
+  const variantPinMatch = str.match(/(?:^|_)(?:ph|sh|zh)_(\d+)(?:_|$)/)
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
     if (!Number.isNaN(parsed)) {
@@ -230,6 +232,12 @@ export const jst = (
   }
   if (zhMatch && zhMatch[1]) {
     const parsed = Number.parseInt(zhMatch[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (variantPinMatch && variantPinMatch[1] && numPins === undefined) {
+    const parsed = Number.parseInt(variantPinMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
