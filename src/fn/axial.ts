@@ -1,6 +1,7 @@
 import {
   length,
-  type AnySoupElement,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenLine,
   type PcbSilkscreenPath,
 } from "circuit-json"
@@ -20,7 +21,7 @@ export type AxialDef = z.input<typeof axial_def>
 
 export const axial = (
   raw_params: AxialDef,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = axial_def.parse(raw_params)
 
   const { p, id, od } = parameters
@@ -42,11 +43,26 @@ export const axial = (
     pcb_silkscreen_path_id: "",
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 1.5, 0.5)
+  const courtyardPadding = 0.25
+  const crtMinX = -(p / 2 + od / 2 + courtyardPadding)
+  const crtMaxX = p / 2 + od / 2 + courtyardPadding
+  const crtMinY = -(od / 2 + courtyardPadding)
+  const crtMaxY = od / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
   return {
     circuitJson: [
       ...plated_holes,
       silkscreenLine,
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard,
     ],
     parameters,
   }

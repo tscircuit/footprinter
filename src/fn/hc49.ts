@@ -1,6 +1,7 @@
 import {
   length,
-  type AnySoupElement,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -36,7 +37,7 @@ export type Hc49Def = z.input<typeof hc49_def>
 
 export const hc49 = (
   raw_params: Hc49Def,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = hc49_def.parse(raw_params)
 
   const { p, id, od, w, h } = parameters
@@ -69,11 +70,27 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
+  const courtyardPadding = 0.25
+  const crtMinX = -(w / 2 + radius + courtyardPadding)
+  const crtMaxX = w / 2 + radius + courtyardPadding
+  const crtMinY = -(radius + courtyardPadding)
+  const crtMaxY = radius + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...plated_holes,
       silkscreenBody,
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ],
     parameters,
   }

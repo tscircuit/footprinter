@@ -1,4 +1,8 @@
-import { length, type AnySoupElement } from "circuit-json"
+import {
+  length,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -16,7 +20,7 @@ export const sot723_def = base_def.extend({
 
 export const sot723 = (
   raw_params: z.input<typeof sot723_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sot723_def.parse(raw_params)
   const pad = sot723WithoutParsing(parameters)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -24,8 +28,28 @@ export const sot723 = (
     length.parse(parameters.h),
     0.2,
   )
+
+  const p_val = length.parse(parameters.p)
+  const pl_val = length.parse(parameters.pl)
+  const pw_val = length.parse(parameters.pw)
+  const h_val = length.parse(parameters.h)
+  const courtyardPadding = 0.25
+  const crtMinX = -(p_val + pl_val / 2 + courtyardPadding)
+  const crtMaxX = p_val + pl_val / 2 + courtyardPadding
+  const crtMinY = -(Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding)
+  const crtMaxY = Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...pad, silkscreenRefText as AnySoupElement],
+    circuitJson: [...pad, silkscreenRefText as AnyCircuitElement, courtyard],
     parameters,
   }
 }
@@ -52,7 +76,7 @@ export const getCcwSot723Coords = (parameters: {
 export const sot723WithoutParsing = (
   parameters: z.infer<typeof sot723_def>,
 ) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < 3; i++) {
     const { x, y } = getCcwSot723Coords({

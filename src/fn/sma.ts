@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -17,7 +21,7 @@ export const sma_def = base_def.extend({
 
 export const sma = (
   raw_params: z.input<typeof sma_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sma_def.parse(raw_params)
 
   // Define silkscreen reference text
@@ -53,10 +57,30 @@ export const sma = (
     pcb_silkscreen_path_id: "",
   }
 
+  const p_val = length.parse(parameters.p)
+  const pl_val = length.parse(parameters.pl)
+  const h_val = length.parse(parameters.h)
+  const w_val = length.parse(parameters.w)
+  const courtyardPadding = 0.25
+  const crtMinX = -(w_val / 2 + 0.5 + courtyardPadding)
+  const crtMaxX = p_val / 2 + pl_val / 2 + courtyardPadding
+  const crtMinY = -(h_val / 2 + courtyardPadding)
+  const crtMaxY = h_val / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: smaWithoutParsing(parameters).concat(
-      silkscreenLine as AnySoupElement,
-      silkscreenRefText as AnySoupElement,
+      silkscreenLine as AnyCircuitElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ),
     parameters,
   }
@@ -77,7 +101,7 @@ export const getSmaCoords = (parameters: {
 
 // Function to generate sma pads
 export const smaWithoutParsing = (parameters: z.infer<typeof sma_def>) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSmaCoords({
