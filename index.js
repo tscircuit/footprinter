@@ -43524,7 +43524,7 @@ var applyNoSilkscreen = (elements, parameters) => {
 var applyOrigin = (elements, origin) => {
   if (!origin)
     return elements;
-  const pads = elements.filter((el2) => el2.type === "pcb_smtpad" || el2.type === "pcb_plated_hole" || el2.type === "pcb_thtpad");
+  const pads = elements.filter((el2) => el2.type === "pcb_smtpad" || el2.type === "pcb_plated_hole");
   if (pads.length === 0)
     return elements;
   let minX = Number.POSITIVE_INFINITY;
@@ -43548,9 +43548,6 @@ var applyOrigin = (elements, origin) => {
       updateBounds(pad2.x, pad2.y, w2, h);
     } else if (pad2.type === "pcb_plated_hole") {
       const d = pad2.outer_diameter ?? pad2.hole_diameter;
-      updateBounds(pad2.x, pad2.y, d, d);
-    } else if (pad2.type === "pcb_thtpad") {
-      const d = pad2.diameter;
       updateBounds(pad2.x, pad2.y, d, d);
     }
   }
