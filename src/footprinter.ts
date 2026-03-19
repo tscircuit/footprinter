@@ -110,6 +110,9 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220h: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "tabup" | "tabid" | "tabod" | "tabw" | "tabh"
+  >
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
@@ -271,6 +274,11 @@ const normalizeDefinition = (def: string): string => {
     .trim()
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+    .replace(/^to-220-(\d+)_horizontal(?:_tabup)?(?=_|$)/i, (m, n) =>
+      m.toLowerCase().includes("tabup")
+        ? `to220h_${n}_tabup`
+        : `to220h_${n}`,
+    )
 }
 
 export const string = (def: string): Footprinter => {
