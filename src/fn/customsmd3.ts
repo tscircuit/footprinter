@@ -39,18 +39,10 @@ export const customsmd3_def = base_def.extend({
   eqsz: z.boolean().optional(),
 
   // Pin position specifiers
-  leftmostn: z
-    .union([z.number(), z.string().transform(Number)])
-    .optional(),
-  rightmostn: z
-    .union([z.number(), z.string().transform(Number)])
-    .optional(),
-  topmostn: z
-    .union([z.number(), z.string().transform(Number)])
-    .optional(),
-  bottommostn: z
-    .union([z.number(), z.string().transform(Number)])
-    .optional(),
+  leftmostn: z.union([z.number(), z.string().transform(Number)]).optional(),
+  rightmostn: z.union([z.number(), z.string().transform(Number)]).optional(),
+  topmostn: z.union([z.number(), z.string().transform(Number)]).optional(),
+  bottommostn: z.union([z.number(), z.string().transform(Number)]).optional(),
 
   // Center-to-center / edge-to-edge distances
   // These can be set via API directly or parsed from the string representation
@@ -77,13 +69,10 @@ export type CustomSmd3Def = z.input<typeof customsmd3_def>
  *   c2cvert(2,3)1.9  →  { key: "c2cvert_2_3", value: "1.9mm" }
  *   e2ehorz(1,2)2.3mm → { key: "e2ehorz_1_2", value: "2.3mm" }
  */
-function parseDistanceSpecifiers(
-  s: string,
-): Record<string, string> {
+function parseDistanceSpecifiers(s: string): Record<string, string> {
   const result: Record<string, string> = {}
   // Match patterns like c2cvert(2,3)1.9 or e2ehorz(1,2)2.3mm
-  const re =
-    /(c2cvert|c2chorz|e2evert|e2ehorz)\((\d+),(\d+)\)([\d.]+)(mm)?/gi
+  const re = /(c2cvert|c2chorz|e2evert|e2ehorz)\((\d+),(\d+)\)([\d.]+)(mm)?/gi
   let m: RegExpExecArray | null
   while ((m = re.exec(s)) !== null) {
     const [, type, a, b, val, unit] = m
@@ -110,11 +99,7 @@ export const customsmd3 = (
   const padW =
     params.w !== undefined ? mm(params.w) : isCircle ? radius * 2 : 1.5
   const padH =
-    params.h !== undefined
-      ? mm(params.h)
-      : isCircle
-        ? radius * 2
-        : padW * 0.8
+    params.h !== undefined ? mm(params.h) : isCircle ? radius * 2 : padW * 0.8
 
   // --- Position specifiers (defaults: 1=left, 2=top-right, 3=bottom-right) ---
   const leftPin = params.leftmostn !== undefined ? params.leftmostn : 1
@@ -187,9 +172,7 @@ export const customsmd3 = (
         }) as AnyCircuitElement,
       )
     } else {
-      pads.push(
-        rectpad(pinNum, pos.x, pos.y, padW, padH) as AnyCircuitElement,
-      )
+      pads.push(rectpad(pinNum, pos.x, pos.y, padW, padH) as AnyCircuitElement)
     }
   }
 

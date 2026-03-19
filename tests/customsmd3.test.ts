@@ -68,10 +68,7 @@ test("customsmd3 with position specifiers (leftmost=2)", async () => {
 
 test("customsmd3 with c2cvert (center-to-center vertical distance)", async () => {
   const { snapshotSoup } = await getTestFixture("customsmd3_c2cvert_2_3_2mm")
-  const circuitJson = fp()
-    .customsmd3()
-    .c2cvert_2_3("2mm")
-    .circuitJson()
+  const circuitJson = fp().customsmd3().c2cvert_2_3("2mm").circuitJson()
   snapshotSoup(circuitJson)
 
   const pads = circuitJson.filter((el: any) => el.type === "pcb_smtpad")
