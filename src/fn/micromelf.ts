@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnySoupElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -53,10 +57,29 @@ export const micromelf = (
     pcb_silkscreen_path_id: "",
   }
 
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const p = length.parse(parameters.p)
+  const courtyardPadding = 0.25
+  const crtMinX = -(p / 2 + pl / 2) - courtyardPadding
+  const crtMaxX = p / 2 + pl / 2 + courtyardPadding
+  const crtMinY = -h / 2 - courtyardPadding
+  const crtMaxY = h / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: microMelfWithoutParsing(parameters).concat(
       silkscreenLine as AnySoupElement,
       silkscreenRefText as AnySoupElement,
+      courtyard as AnySoupElement,
     ),
     parameters,
   }
