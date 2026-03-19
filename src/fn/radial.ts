@@ -31,8 +31,15 @@ export const radial = (
   const { p, id, od } = parameters
 
   if (id === 0.8 && od === 1.6) {
-    parameters.id = p === 5 ? 0.8 : p * 0.25
-    parameters.od = p === 5 ? 1.6 : p * 0.5
+    // Use KiCad-standard hole sizes:
+    // - polarized/electrolytic caps (CP_Radial): id=1.0, od=2.0
+    // - non-polarized caps (C_Radial): id=0.8, od=1.6 (keep defaults)
+    const isPolarized =
+      parameters.electrolytic === true || parameters.polarized === true
+    if (isPolarized) {
+      parameters.id = 1.0
+      parameters.od = 2.0
+    }
   }
 
   const plated_holes = [
