@@ -257,6 +257,29 @@ export type Footprinter = {
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
+  customsmd3: () => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "r"
+    | "sym"
+    | "eqsz"
+    | "leftmostn"
+    | "rightmostn"
+    | "topmostn"
+    | "bottommostn"
+    | "c2cvert_1_2"
+    | "c2cvert_1_3"
+    | "c2cvert_2_3"
+    | "c2chorz_1_2"
+    | "c2chorz_1_3"
+    | "c2chorz_2_3"
+    | "e2evert_1_2"
+    | "e2evert_1_3"
+    | "e2evert_2_3"
+    | "e2ehorz_1_2"
+    | "e2ehorz_1_3"
+    | "e2ehorz_2_3"
+  >
 
   params: () => any
   /** @deprecated use circuitJson() instead */
