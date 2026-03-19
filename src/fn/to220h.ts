@@ -43,35 +43,32 @@ export const to220h = (
   const sign = isTabUp ? -1 : 1
 
   // Holes: centered at x=0 with 2.54mm pitch (matches to220f)
-  const holes: AnyCircuitElement[] = Array.from(
-    { length: numPins },
-    (_, i) => {
-      const x =
-        numPins % 2 === 0
-          ? (i - numPins / 2 + 0.5) * TO220H_PITCH_MM
-          : (i - Math.floor(numPins / 2)) * TO220H_PITCH_MM
+  const holes: AnyCircuitElement[] = Array.from({ length: numPins }, (_, i) => {
+    const x =
+      numPins % 2 === 0
+        ? (i - numPins / 2 + 0.5) * TO220H_PITCH_MM
+        : (i - Math.floor(numPins / 2)) * TO220H_PITCH_MM
 
-      if (i === 0) {
-        return platedHoleWithRectPad({
-          pn: 1,
-          x,
-          y: 0,
-          holeDiameter: parameters.id,
-          rectPadWidth: parameters.od,
-          rectPadHeight: parameters.ph,
-        }) as AnyCircuitElement
-      }
-
-      return platedHolePill(
-        i + 1,
+    if (i === 0) {
+      return platedHoleWithRectPad({
+        pn: 1,
         x,
-        0,
-        mm(parameters.id),
-        mm(parameters.od),
-        mm(parameters.ph),
-      ) as AnyCircuitElement
-    },
-  )
+        y: 0,
+        holeDiameter: parameters.id,
+        rectPadWidth: parameters.od,
+        rectPadHeight: parameters.ph,
+      }) as AnyCircuitElement
+    }
+
+    return platedHolePill(
+      i + 1,
+      x,
+      0,
+      mm(parameters.id),
+      mm(parameters.od),
+      mm(parameters.ph),
+    ) as AnyCircuitElement
+  })
 
   // Body silkscreen dimensions derived from KiCad TO-220-3_Horizontal_TabDown
   // KiCad pins at x=0,2.54,5.08 (our pins centered at x=0: -2.54,0,2.54)
