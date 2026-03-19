@@ -1,5 +1,6 @@
 import {
   type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
@@ -102,6 +103,21 @@ export const to220 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
 
+  const courtyardPadding = 0.25
+  const crtMinX = -(halfWidth + courtyardPadding)
+  const crtMaxX = halfWidth + courtyardPadding
+  const crtMinY = -(halfHeight + courtyardPadding)
+  const crtMaxY = halfHeight + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...plated_holes,
@@ -109,6 +125,7 @@ export const to220 = (
       horizontalLine,
       ...verticalLines,
       silkscreenRefText as AnyCircuitElement,
+      courtyard,
     ],
     parameters: { ...parameters, p: computedPitch },
   }

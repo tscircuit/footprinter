@@ -3,7 +3,11 @@ import { mm } from "@tscircuit/mm"
 import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -153,11 +157,27 @@ export const to92 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
+  const courtyardPadding = 0.25
+  const crtMinX = -(radius + courtyardPadding)
+  const crtMaxX = radius + courtyardPadding
+  const crtMaxY = holeY + radius + courtyardPadding
+  const crtMinY = -(padDia / 2 + courtyardPadding)
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...platedHoles,
       silkscreenBody,
       silkscreenRefText as AnyCircuitElement,
+      courtyard,
     ],
     parameters,
   }

@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -123,10 +127,26 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     stroke_width: 0.1,
   }
 
+  const courtyardPadding = 0.25
+  const crtMinX = minX - pl / 2 - courtyardPadding
+  const crtMaxX = maxX + pl / 2 + courtyardPadding
+  const crtMinY = -(offsetY + courtyardPadding)
+  const crtMaxY = offsetY + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return [
     ...pads,
     silkscreenPathTop,
     silkscreenPathBottom,
     silkscreenRefText as AnyCircuitElement,
+    courtyard,
   ]
 }

@@ -1,5 +1,6 @@
 import type {
   AnyCircuitElement,
+  PcbCourtyardRect,
   PcbSmtPad,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -68,8 +69,24 @@ export const vson = (
     grid.y / 6,
   )
 
+  const courtyardPadding = 0.25
+  const centerY = ((num_pins / 2 - 1) * p) / 2
+  const crtMinX = -(w / 2 + pinw / 2 + courtyardPadding)
+  const crtMaxX = w / 2 + pinw / 2 + courtyardPadding
+  const crtMinY = -(Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding)
+  const crtMaxY = Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText],
+    circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText, courtyard],
     parameters,
   }
 }

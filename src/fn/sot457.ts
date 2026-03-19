@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { pillpad } from "../helpers/pillpad"
@@ -190,12 +194,37 @@ const generateSot457Elements = (
     stroke_width: 0.05,
   }
 
+  const courtyardPadding = 0.25
+  let crtMinX: number, crtMaxX: number, crtMinY: number, crtMaxY: number
+  if (params.wave) {
+    crtMinX = -(pitch + padWidth / 2 + courtyardPadding)
+    crtMaxX = pitch + padWidth / 2 + courtyardPadding
+    crtMinY = -(pitch + padLength / 2 + courtyardPadding)
+    crtMaxY = pitch + padLength / 2 + courtyardPadding
+  } else {
+    const padCenterX = width / 2 + 0.1
+    crtMinX = -(padCenterX + padLength / 2 + courtyardPadding)
+    crtMaxX = padCenterX + padLength / 2 + courtyardPadding
+    crtMinY = -(pitch + padWidth / 2 + courtyardPadding)
+    crtMaxY = pitch + padWidth / 2 + courtyardPadding
+  }
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return [
     silkscreenRefText,
     silkscreenPath1,
     silkscreenPath2,
     pin1Indicator,
     ...pads,
+    courtyard,
   ]
 }
 
