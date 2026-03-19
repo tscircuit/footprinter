@@ -87,7 +87,7 @@ export const to92l = (
   const crtMinX = cx - radius - courtyardPadding
   const crtMaxX = cx + radius + courtyardPadding
   const crtMaxY = cy + radius + courtyardPadding
-  const crtMinY = y_bottom - od / 2 - courtyardPadding
+  const crtMinY = y_bottom - courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

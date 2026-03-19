@@ -161,7 +161,7 @@ export const to92 = (
   const crtMinX = -(radius + courtyardPadding)
   const crtMaxX = radius + courtyardPadding
   const crtMaxY = holeY + radius + courtyardPadding
-  const crtMinY = -(padDia / 2 + courtyardPadding)
+  const crtMinY = -courtyardPadding
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
