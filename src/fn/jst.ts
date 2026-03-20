@@ -151,17 +151,23 @@ function generateSilkscreenBody(
   numPins?: number,
   p?: number,
 ): PcbSilkscreenPath {
-  if (variant === "ph") {
+  if (variant === "ph" && numPins && p) {
+    const pinSpan = (numPins - 1) * p
+    const bodyLeft = -pinSpan / 2 - 1.5
+    const bodyRight = pinSpan / 2 + 1.5
+    const bodyTop = -2
+    const bodyBottom = 3
+
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
       pcb_component_id: "",
       route: [
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: bodyLeft, y: bodyTop },
+        { x: bodyRight, y: bodyTop },
+        { x: bodyRight, y: bodyBottom },
+        { x: bodyLeft, y: bodyBottom },
+        { x: bodyLeft, y: bodyTop },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
@@ -223,6 +229,10 @@ export const jst = (
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
+  // Also match trailing pin count after variant with underscore: jst_ph_4, jst_sh_6, etc.
+  const variantTrailingMatch = str.match(
+    /(?:^|_)(?:ph|sh|zh)_(\d+)(?:_|$)/,
+  )
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
     if (!Number.isNaN(parsed)) {
@@ -231,6 +241,16 @@ export const jst = (
   }
   if (zhMatch && zhMatch[1]) {
     const parsed = Number.parseInt(zhMatch[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (
+    typeof numPins !== "number" &&
+    variantTrailingMatch &&
+    variantTrailingMatch[1]
+  ) {
+    const parsed = Number.parseInt(variantTrailingMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
