@@ -4,7 +4,9 @@ import { fp } from "../src/footprinter"
 
 test("potentiometer with ca14_h5 configuration", () => {
   const circuitJson = fp.string("potentiometer_ca14_h5").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "potentiometer_ca14_h5",

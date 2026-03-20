@@ -4,6 +4,8 @@ import { fp } from "../src/footprinter"
 
 test("sod128", () => {
   const circuitJson = fp.string("sod128").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod128")
 })

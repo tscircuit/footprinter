@@ -1,6 +1,7 @@
 import {
   length,
-  type AnySoupElement,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -25,7 +26,7 @@ export type RadialDef = z.input<typeof radial_def>
 
 export const radial = (
   raw_params: RadialDef,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = radial_def.parse(raw_params)
 
   const { p, id, od } = parameters
@@ -116,12 +117,12 @@ export const radial = (
     0.1 * p,
   )
 
-  const circuitJson: AnySoupElement[] = [
+  const circuitJson: AnyCircuitElement[] = [
     ...plated_holes,
     silkscreenBodyTop,
     silkscreenBodyBottom,
     silkscreenCenterLine,
-    silkscreenRefText as AnySoupElement,
+    silkscreenRefText as AnyCircuitElement,
   ]
 
   const hasPolarity =
@@ -129,6 +130,24 @@ export const radial = (
   if (hasPolarity) {
     circuitJson.push(plusHoriz, plusVert)
   }
+
+  const courtyardPadding = 0.25
+  const crtMinX = hasPolarity
+    ? plusX - plusSize - courtyardPadding
+    : -(bodyR + courtyardPadding)
+  const crtMaxX = bodyR + courtyardPadding
+  const crtMinY = -(bodyR + courtyardPadding)
+  const crtMaxY = bodyR + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+  circuitJson.push(courtyard as AnyCircuitElement)
 
   return {
     circuitJson,

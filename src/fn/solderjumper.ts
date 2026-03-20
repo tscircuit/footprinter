@@ -1,6 +1,6 @@
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { length } from "circuit-json"
 
 /**
@@ -121,8 +121,23 @@ export const solderjumper = (params: {
   const refY = outlineCenterY + outlineHeight / 2 + refOffset
   const silk = silkscreenRef(outlineCenterX, refY, 0.4)
 
+  const courtyardPadding = 0.25
+  const crtMinX = outlineCenterX - outlineWidth / 2 - courtyardPadding
+  const crtMaxX = outlineCenterX + outlineWidth / 2 + courtyardPadding
+  const crtMinY = -(outlineHeight / 2 + courtyardPadding)
+  const crtMaxY = outlineHeight / 2 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...pads, ...traces, silkscreenRect, silk],
+    circuitJson: [...pads, ...traces, silkscreenRect, silk, courtyard],
     parameters: params,
   }
 }

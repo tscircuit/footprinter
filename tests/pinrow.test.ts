@@ -39,7 +39,9 @@ test("pinrow8_rows4", () => {
 
 test("pinrow9_male_rows3", () => {
   const circuitJson = fp.string("pinrow9_male_rows3").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
 
   const pinrowJson = fp.string("pinrow9_male_rows3").json()
 
@@ -67,7 +69,9 @@ test("pinrow9_male_rows3", () => {
 
 test("pinrow6_female_rows2", () => {
   const circuitJson = fp.string("pinrow6_female_rows2").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
 
   const pinrowJson = fp.string("pinrow6_female_rows2").json()
 
@@ -95,7 +99,9 @@ test("pinrow6_female_rows2", () => {
 
 test("pinrow6_nosquareplating", () => {
   const circuitJson = fp.string("pinrow6_nosquareplating").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
 
   const pinrowJson = fp.string("pinrow6_nosquareplating").json()
 
@@ -163,7 +169,7 @@ for (const textAlign of textAlignments) {
 test("pinrow5_doublesidedpinlabel", () => {
   const def = "pinrow5_doublesidedpinlabel"
   const soup = fp.string(def).circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
 
   const pinrowJson = fp.string(def).json() as any
   expect(pinrowJson.doublesidedpinlabel).toBe(true)
@@ -192,7 +198,7 @@ test("pinrow5_nopinlabels", () => {
 test("pinrow5_bottomsidepinlabel", () => {
   const def = "pinrow5_bottomsidepinlabel"
   const soup = fp.string(def).circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
 
   const pinrowJson = fp.string(def).json() as any
   expect(pinrowJson.bottomsidepinlabel).toBe(true)
@@ -229,7 +235,9 @@ test("pinrow3_smd", () => {
 
 test("pinrow3_smd_rightangle_male", () => {
   const circuitJson = fp.string("pinrow3_smd_rightangle_male").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
 
   const pinrowJson = fp.string("pinrow3_smd_rightangle_male").json()
   expect(pinrowJson).toMatchObject({

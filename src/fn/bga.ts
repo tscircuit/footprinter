@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSmtPad } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSmtPad,
+} from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
 import { ALPHABET } from "../helpers/zod/ALPHABET"
@@ -66,7 +70,7 @@ export type BgaDef = z.infer<typeof bga_def>
 
 export const bga = (
   raw_params: BgaDefInput,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = bga_def.parse(raw_params)
   let { num_pins, grid, p, w, h, ball, pad, missing } = parameters
 
@@ -221,8 +225,24 @@ export const bga = (
     stroke_width: 0.05,
   }
 
+  const courtyardPadding = 0.25
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: 0, y: 0 },
+    width: 2 * (edgeX + courtyardPadding),
+    height: 2 * (edgeY + courtyardPadding),
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...pads, silkscreenRefText, pin1Marker as AnySoupElement],
+    circuitJson: [
+      ...pads,
+      silkscreenRefText,
+      pin1Marker as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
+    ],
     parameters,
   }
 }

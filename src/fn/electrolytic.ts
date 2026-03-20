@@ -1,6 +1,7 @@
 import {
   length,
-  type AnySoupElement,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -67,7 +68,7 @@ const generate_circle_arcs = (
 
 export const electrolytic = (
   raw_params: ElectrolyticDef,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = electrolytic_def.parse(raw_params)
 
   const { p, id, od, d } = parameters
@@ -145,6 +146,23 @@ export const electrolytic = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5)
 
+  const bodyR = d / 2 + 0.1
+  const plusLeftExtent = Math.abs(X) + Size // d/2 + 1.0
+  const courtyardPadding = 0.25
+  const crtMinX = -Math.max(bodyR, plusLeftExtent) - courtyardPadding
+  const crtMaxX = bodyR + courtyardPadding
+  const crtMinY = -(bodyR + courtyardPadding)
+  const crtMaxY = bodyR + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...plated_holes,
@@ -153,7 +171,8 @@ export const electrolytic = (
       silkscreenBody,
       silkscreenpath,
       silkscreenline,
-      silkscreenRefText as AnySoupElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ],
     parameters,
   }

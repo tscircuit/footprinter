@@ -1,6 +1,10 @@
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -82,11 +86,27 @@ export const to92s = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
+  const od_v = Number.parseFloat(parameters.od)
+  const courtyardPadding = 0.25
+  const crtHalfX = Math.max(holeY, padSpacing + od_v / 2) + courtyardPadding
+  const crtMinY = -courtyardPadding
+  const crtMaxY = holeY + 0.5 + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: 0, y: (crtMinY + crtMaxY) / 2 },
+    width: 2 * crtHalfX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: [
       ...platedHoles,
       silkscreenBody,
       silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ],
     parameters,
   }
