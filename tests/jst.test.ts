@@ -39,3 +39,30 @@ test("jst_without_num_pins_is_invalid", () => {
   expect(() => fp.string("jst_sh").json()).toThrow()
   expect(() => fp.string("jst_ph").json()).toThrow()
 })
+
+test("jst_ph_4 (pretransform)", () => {
+  const circuitJson = fp.string("jst_ph_4").circuitJson()
+  const params = fp.string("jst_ph_4").json() as any
+  expect(params.num_pins).toBe(4)
+  expect(params.ph).toBe(true)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
+})
+
+test("jst_sh_6 (pretransform)", () => {
+  const circuitJson = fp.string("jst_sh_6").circuitJson()
+  const params = fp.string("jst_sh_6").json() as any
+  expect(params.num_pins).toBe(6)
+  expect(params.sh).toBe(true)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_sh_6")
+})
+
+test("jst_zh_2 (pretransform)", () => {
+  const circuitJson = fp.string("jst_zh_2").circuitJson()
+  const params = fp.string("jst_zh_2").json() as any
+  expect(params.num_pins).toBe(2)
+  expect(params.zh).toBe(true)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_zh_2")
+})
