@@ -9,7 +9,9 @@ test("solderjumper 2-pin no bridge", () => {
     2,
   )
   expect(result.circuitJson.find((e) => e.type === "pcb_trace")).toBeUndefined()
-  const svg = convertCircuitJsonToPcbSvg(result.circuitJson)
+  const svg = convertCircuitJsonToPcbSvg(result.circuitJson, {
+    showCourtyards: true,
+  })
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2")
 })
 
@@ -24,7 +26,9 @@ test("solderjumper 3-pin bridge 1-2", () => {
     expect(trace.route[0].x).toBe(0.75)
     expect(trace.route[1].x).toBe(1.79)
   }
-  const svg = convertCircuitJsonToPcbSvg(result.circuitJson)
+  const svg = convertCircuitJsonToPcbSvg(result.circuitJson, {
+    showCourtyards: true,
+  })
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper3_bridged12")
 })
 
@@ -66,7 +70,7 @@ test("solderjumper 2-pin custom pitch", () => {
     expect(trace.route[0].x).toBe(0.75)
     expect(trace.route[1].x).toBe(5.25)
   }
-  const svg = convertCircuitJsonToPcbSvg(circuitJson)
+  const svg = convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true })
   expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper2bridged12p6")
 })
 

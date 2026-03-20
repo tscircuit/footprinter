@@ -1,4 +1,8 @@
-import { length, type AnyCircuitElement } from "circuit-json"
+import {
+  length,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+} from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
@@ -55,8 +59,21 @@ export const pushbutton = (
     height / 2 + 0.4,
     0.5,
   )
+
+  const outerRadius = (holeDiameter * 1.5) / 2
+  const courtyardPadding = 0.25
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: 0, y: 0 },
+    width: width + 2 * outerRadius + 2 * courtyardPadding,
+    height: height + 2 * outerRadius + 2 * courtyardPadding,
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...holes, ...silkscreenLines, silkscreenRefText],
+    circuitJson: [...holes, ...silkscreenLines, silkscreenRefText, courtyard],
     parameters,
   }
 }

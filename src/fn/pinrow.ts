@@ -1,5 +1,10 @@
 import { z } from "zod"
-import { length, rotation, type AnySoupElement } from "circuit-json"
+import {
+  length,
+  rotation,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+} from "circuit-json"
 import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { rectpad } from "../helpers/rectpad"
@@ -84,7 +89,7 @@ export const pinrow_def = base_def
 
 export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = pinrow_def.parse(raw_params)
   const {
     p,
@@ -105,7 +110,7 @@ export const pinrow = (
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
-  const holes: AnySoupElement[] = []
+  const holes: AnyCircuitElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
   const ySpacing = -p
 
@@ -346,8 +351,22 @@ export const pinrow = (
   // Add centered silkscreen reference text
   const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
 
+  const halfSpanX = ((numPinsPerRow - 1) / 2) * p
+  const padHalfX = parameters.smd ? parameters.pw / 2 : od / 2
+  const padHalfY = parameters.smd ? parameters.pl / 2 : od / 2
+  const courtyardPadding = 0.25
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: 0, y: -((rows - 1) * p) / 2 },
+    width: 2 * (halfSpanX + padHalfX + courtyardPadding),
+    height: (rows - 1) * p + 2 * (padHalfY + courtyardPadding),
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...holes, refText],
+    circuitJson: [...holes, refText, courtyard as AnyCircuitElement],
     parameters,
   }
 }

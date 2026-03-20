@@ -1,5 +1,6 @@
 import {
-  type AnySoupElement,
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
@@ -88,8 +89,8 @@ function generatePads(
   id: number,
   pw: number,
   pl: number,
-): AnySoupElement[] {
-  const pads: AnySoupElement[] = []
+): AnyCircuitElement[] {
+  const pads: AnyCircuitElement[] = []
 
   if (variant === "ph") {
     const startX = -((numPins - 1) / 2) * p
@@ -200,7 +201,7 @@ function generateSilkscreenBody(
 
 export const jst = (
   raw_params: jstDef,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const params = jst_def.parse(raw_params)
   const variant = getVariant(params)
   const defaults = variantDefaults[variant]
@@ -247,8 +248,49 @@ export const jst = (
   const silkscreenBody = generateSilkscreenBody(variant, w, h, numPins, p)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
 
+  const courtyardPadding = 0.25
+  let crtMinX: number
+  let crtMaxX: number
+  let crtMinY: number
+  let crtMaxY: number
+  if (variant === "ph") {
+    const pinHalfSpan = ((numPins - 1) / 2) * p + pw / 2
+    crtMinX = -Math.max(pinHalfSpan, 3) - courtyardPadding
+    crtMaxX = Math.max(pinHalfSpan, 3) + courtyardPadding
+    crtMinY = -2 - courtyardPadding
+    crtMaxY = 3 + courtyardPadding
+  } else if (variant === "sh") {
+    const sideOffset = ((numPins - 1) / 2) * p + 1.3
+    crtMinX = -(sideOffset + 0.6 + courtyardPadding)
+    crtMaxX = sideOffset + 0.6 + courtyardPadding
+    crtMinY = -1.325 - pl / 2 - courtyardPadding
+    crtMaxY = 1.22 + 0.9 + courtyardPadding
+  } else {
+    // zh
+    const pinSpan = (numPins - 1) * p
+    const bodyHalfW = pinSpan / 2 + 1.5
+    crtMinX = -(bodyHalfW + courtyardPadding)
+    crtMaxX = bodyHalfW + courtyardPadding
+    crtMinY = -h / 2 - courtyardPadding
+    crtMaxY = h / 2 + courtyardPadding
+  }
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
-    circuitJson: [...pads, silkscreenBody, silkscreenRefText as AnySoupElement],
+    circuitJson: [
+      ...pads,
+      silkscreenBody,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
+    ],
     parameters: {
       ...params,
       p,

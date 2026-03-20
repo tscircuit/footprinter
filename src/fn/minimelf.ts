@@ -1,4 +1,8 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
@@ -17,7 +21,7 @@ export const minimelf_def = base_def.extend({
 
 export const minimelf = (
   raw_params: z.input<typeof minimelf_def>,
-): { circuitJson: AnySoupElement[]; parameters: any } => {
+): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = minimelf_def.parse(raw_params)
 
   // Define silkscreen reference text
@@ -53,10 +57,31 @@ export const minimelf = (
     pcb_silkscreen_path_id: "",
   }
 
+  const p_v = length.parse(parameters.p)
+  const pl_v = length.parse(parameters.pl)
+  const pw_v = length.parse(parameters.pw)
+  const h_v = length.parse(parameters.h)
+  const w_v = length.parse(parameters.w)
+  const courtyardPadding = 0.25
+  const crtMinX = -(Math.max(w_v / 2, p_v / 2 + pl_v / 2) + courtyardPadding)
+  const crtMaxX = p_v / 2 + pl_v / 2 + courtyardPadding
+  const crtMinY = -(Math.max(h_v / 2, pw_v / 2) + courtyardPadding)
+  const crtMaxY = Math.max(h_v / 2, pw_v / 2) + courtyardPadding
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
+    pcb_component_id: "",
+    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+    width: crtMaxX - crtMinX,
+    height: crtMaxY - crtMinY,
+    layer: "top",
+  }
+
   return {
     circuitJson: miniMelfWithoutParsing(parameters).concat(
-      silkscreenLine as AnySoupElement,
-      silkscreenRefText as AnySoupElement,
+      silkscreenLine as AnyCircuitElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ),
     parameters,
   }
@@ -74,7 +99,7 @@ export const getMiniMelfCoords = (parameters: {
 export const miniMelfWithoutParsing = (
   parameters: z.infer<typeof minimelf_def>,
 ) => {
-  const pads: AnySoupElement[] = []
+  const pads: AnyCircuitElement[] = []
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getMiniMelfCoords({
