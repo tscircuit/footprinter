@@ -33,9 +33,7 @@ test("jst6_sh", () => {
 
 test("jst_ph_4 (trailing pin count format)", () => {
   const circuitJson = fp.string("jst_ph_4").circuitJson()
-  const holes = circuitJson.filter(
-    (e: any) => e.type === "pcb_plated_hole",
-  )
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
   expect(holes.length).toBe(4)
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
@@ -43,9 +41,7 @@ test("jst_ph_4 (trailing pin count format)", () => {
 
 test("jst4_ph generates 4 pads", () => {
   const circuitJson = fp.string("jst4_ph").circuitJson()
-  const holes = circuitJson.filter(
-    (e: any) => e.type === "pcb_plated_hole",
-  )
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
   expect(holes.length).toBe(4)
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4_ph")

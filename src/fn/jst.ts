@@ -230,9 +230,7 @@ export const jst = (
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
   // Also match trailing pin count after variant with underscore: jst_ph_4, jst_sh_6, etc.
-  const variantTrailingMatch = str.match(
-    /(?:^|_)(?:ph|sh|zh)_(\d+)(?:_|$)/,
-  )
+  const variantTrailingMatch = str.match(/(?:^|_)(?:ph|sh|zh)_(\d+)(?:_|$)/)
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
     if (!Number.isNaN(parsed)) {
