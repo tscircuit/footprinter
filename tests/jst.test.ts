@@ -31,8 +31,27 @@ test("jst6_sh", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst6_sh")
 })
 
-test("jst_sh6_is_invalid", () => {
-  expect(() => fp.string("jst_sh6").json()).toThrow()
+test("jst_ph_4 (trailing pin count format)", () => {
+  const circuitJson = fp.string("jst_ph_4").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(4)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
+})
+
+test("jst4_ph generates 4 pads", () => {
+  const circuitJson = fp.string("jst4_ph").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(4)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4_ph")
+})
+
+test("jst_sh_6 (trailing pin count format)", () => {
+  const circuitJson = fp.string("jst_sh_6").circuitJson()
+  const pads = circuitJson.filter((e: any) => e.type === "pcb_smtpad")
+  // 6 signal pads + 2 mounting pads = 8
+  expect(pads.length).toBe(8)
 })
 
 test("jst_without_num_pins_is_invalid", () => {
