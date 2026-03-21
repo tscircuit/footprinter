@@ -96,18 +96,29 @@ export const getQuadCoords = (params: {
   /** inner box height */
   const ibh = p * (sidePinCount - 1)
 
-  /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? pl / 2 : -pl / 2
+  /**
+   * pad center distance from edge (positive = outside body).
+   * QFP/TQFP/LQFP: pad center is pl/2 outside the body edge.
+   * QFN/MLP: pad center is at the body edge (leads are underneath).
+   */
+  const pcdfe = legsoutside ? pl / 2 : 0
+
+  /** legacy inward nudge — only applies to legsoutside packages */
+  const edgeOffset = legsoutside ? 0.1 : 0
 
   switch (side) {
     case "left":
-      return { x: -w / 2 - pcdfe + 0.1, y: ibh / 2 - pos * p, o: "vert" }
+      return { x: -w / 2 - pcdfe + edgeOffset, y: ibh / 2 - pos * p, o: "vert" }
     case "bottom":
-      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe + 0.1, o: "horz" }
+      return {
+        x: -ibw / 2 + pos * p,
+        y: -h / 2 - pcdfe + edgeOffset,
+        o: "horz",
+      }
     case "right":
-      return { x: w / 2 + pcdfe - 0.1, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2 + pcdfe - edgeOffset, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
-      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe - 0.1, o: "horz" }
+      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe - edgeOffset, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }

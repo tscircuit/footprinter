@@ -8,10 +8,10 @@ export const qfn = (
   parameters: z.input<typeof qfn_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   parameters.legsoutside = false
-  if (!parameters.pl) {
+  if (parameters.pl === undefined) {
     parameters.pl = 0.875
   }
-  if (!parameters.pw) {
+  if (parameters.pw === undefined) {
     parameters.pw = 0.25
   }
   return quad(parameters)
