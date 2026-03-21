@@ -17,9 +17,7 @@ test("PDIP8 case-insensitive", () => {
 
 test("pdip8 generates 8 plated holes", () => {
   const circuitJson = fp.string("pdip8").circuitJson() as AnyCircuitElement[]
-  const platedHoles = circuitJson.filter(
-    (el) => el.type === "pcb_plated_hole",
-  )
+  const platedHoles = circuitJson.filter((el) => el.type === "pcb_plated_hole")
   expect(platedHoles.length).toBe(8)
 })
 
@@ -37,8 +35,6 @@ test("spdip28 resolves to dip28", () => {
 
 test("spdip28 generates 28 plated holes", () => {
   const circuitJson = fp.string("spdip28").circuitJson() as AnyCircuitElement[]
-  const platedHoles = circuitJson.filter(
-    (el) => el.type === "pcb_plated_hole",
-  )
+  const platedHoles = circuitJson.filter((el) => el.type === "pcb_plated_hole")
   expect(platedHoles.length).toBe(28)
 })
