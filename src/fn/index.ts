@@ -1,4 +1,6 @@
 export { dip } from "./dip"
+export { pdip } from "./pdip"
+export { spdip } from "./spdip"
 export { diode } from "./diode"
 export { cap } from "./cap"
 export { led } from "./led"
