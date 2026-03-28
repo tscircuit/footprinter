@@ -117,7 +117,12 @@ export const bga = (
 
   const missing_pin_nums_set = new Set(missing_pin_nums)
 
-  let missing_pins_passed = 0
+  // Sort missing pin numbers so we can efficiently count how many are
+  // below a given pin_num. This is necessary because with non-default
+  // origins (bl, br, tr) the physical iteration order doesn't match
+  // the pin numbering order.
+  const sorted_missing = [...missing_pin_nums_set].sort((a, b) => a - b)
+
   for (let y = 0; y < grid.y; y++) {
     for (let x = 0; x < grid.x; x++) {
       // Calculate physical pad position (always centered around origin)
@@ -146,15 +151,22 @@ export const bga = (
           break
       }
 
-      let pin_num = pin_y * grid.x + pin_x + 1
+      const pin_num = pin_y * grid.x + pin_x + 1
       if (missing_pin_nums_set.has(pin_num)) {
-        missing_pins_passed++
         continue
       }
-      pin_num -= missing_pins_passed
+
+      // Count how many missing pins have a lower pin number than this one
+      // to compute the correct renumbered pin index.
+      let missing_below = 0
+      for (const m of sorted_missing) {
+        if (m < pin_num) missing_below++
+        else break
+      }
+      const renumbered_pin = pin_num - missing_below
 
       // TODO handle >26 rows
-      const portHints = [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`]
+      const portHints = [renumbered_pin, `${ALPHABET[pin_y]}${pin_x + 1}`]
       pads.push(
         parameters.circularpads
           ? circlepad(portHints, {
