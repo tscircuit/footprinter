@@ -12,9 +12,7 @@ test("bga missing center with trorigin renumbers pins correctly", () => {
     .trorigin(true)
     .soup()
 
-  const pads = soup.filter(
-    (el): el is PcbSmtPad => el.type === "pcb_smtpad",
-  )
+  const pads = soup.filter((el): el is PcbSmtPad => el.type === "pcb_smtpad")
   expect(pads).toHaveLength(8)
 
   const pinNums = pads

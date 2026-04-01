@@ -6,9 +6,7 @@ import { fp } from "../src/footprinter"
 test("bga missing specific pin with blorigin via string", () => {
   const soup = fp.string("bga8_grid3x3_p1_missing(B2)_blorigin").circuitJson()
 
-  const pads = soup.filter(
-    (el): el is PcbSmtPad => el.type === "pcb_smtpad",
-  )
+  const pads = soup.filter((el): el is PcbSmtPad => el.type === "pcb_smtpad")
   expect(pads).toHaveLength(8)
 
   const pinNums = pads

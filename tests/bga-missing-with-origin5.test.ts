@@ -11,9 +11,7 @@ test("all origins produce same physical pad positions with missing center", () =
   ]
 
   const allPositions = configs.map((soup) => {
-    const pads = soup.filter(
-      (el): el is PcbSmtPad => el.type === "pcb_smtpad",
-    )
+    const pads = soup.filter((el): el is PcbSmtPad => el.type === "pcb_smtpad")
     expect(pads).toHaveLength(8)
 
     const pinNums = pads
