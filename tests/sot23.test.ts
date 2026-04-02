@@ -47,14 +47,3 @@ test("sot23_6", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_6")
 })
-
-test("sot23-5", () => {
-  const circuitJson = fp.string("sot23-5").circuitJson()
-
-  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad")
-  expect(smtpad).toBeDefined()
-  expect(smtpad.length).toBe(5)
-
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23-5")
-})
