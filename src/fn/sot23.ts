@@ -14,7 +14,7 @@ export const sot23_def = base_def.extend({
   num_pins: z.number().default(3),
   w: z.string().default("1.92mm"),
   h: z.string().default("2.74mm"),
-  pl: z.string().default("1.32mm"),
+  pl: z.string().default("1.325mm"),
   pw: z.string().default("0.6mm"),
   p: z.string().default("0.95mm"),
   string: z.string().optional(),
@@ -73,13 +73,13 @@ export const getCcwSot23Coords = (parameters: {
   const { pn, w, h, pl, p } = parameters
 
   if (pn === 1) {
-    return { x: -1.155, y: p }
+    return { x: -1.1375, y: p }
   }
   if (pn === 2) {
-    return { x: -1.155, y: -p }
+    return { x: -1.1375, y: -p }
   }
 
-  return { x: 1.15, y: 0 }
+  return { x: 1.1375, y: 0 }
 }
 
 export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
@@ -114,8 +114,8 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
   const p_val = Number.parseFloat(parameters.p)
-  const crtMinX = -1.155 - pl_val / 2 - courtyardPadding
-  const crtMaxX = 1.15 + pl_val / 2 + courtyardPadding
+  const crtMinX = -1.1375 - pl_val / 2 - courtyardPadding
+  const crtMaxX = 1.1375 + pl_val / 2 + courtyardPadding
   const crtMinY = -(p_val + pw_val / 2) - courtyardPadding
   const crtMaxY = p_val + pw_val / 2 + courtyardPadding
   const courtyard: PcbCourtyardRect = {
@@ -138,19 +138,19 @@ export const getCcwSot235Coords = (parameters: {
 }) => {
   const { p, h, pn } = parameters
   if (pn === 1) {
-    return { x: -h / 2 - 0.5, y: p }
+    return { x: -1.1375, y: p }
   }
   if (pn === 2) {
-    return { x: -h / 2 - 0.5, y: 0 }
+    return { x: -1.1375, y: 0 }
   }
   if (pn === 3) {
-    return { x: -h / 2 - 0.5, y: -p }
+    return { x: -1.1375, y: -p }
   }
   if (pn === 4) {
-    return { x: h / 2 + 0.5, y: -p }
+    return { x: 1.1375, y: -p }
   }
   if (pn === 5) {
-    return { x: h / 2 + 0.5, y: p }
+    return { x: 1.1375, y: p }
   }
   throw new Error("Invalid pin number")
 }
@@ -240,8 +240,9 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const p_val = Number.parseFloat(parameters.p)
   const silkY = height / 2 + p_val / 1.3
   const padYExtent = p_val + pw_val / 2
-  const crtMinX = -(height / 2 + 0.5 + pl_val / 2) - courtyardPadding
-  const crtMaxX = height / 2 + 0.5 + pl_val / 2 + courtyardPadding
+  const padXExtent = 1.1375 + pl_val / 2
+  const crtMinX = -padXExtent - courtyardPadding
+  const crtMaxX = padXExtent + courtyardPadding
   const crtMinY = -Math.max(silkY, padYExtent) - courtyardPadding
   const crtMaxY = Math.max(silkY, padYExtent) + courtyardPadding
   const courtyard: PcbCourtyardRect = {
