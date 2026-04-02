@@ -56,5 +56,5 @@ test("sot23-5", () => {
   expect(smtpad.length).toBe(5)
 
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_5")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23-5")
 })
