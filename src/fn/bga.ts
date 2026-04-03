@@ -5,7 +5,7 @@ import type {
 } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { circlepad } from "../helpers/circlepad"
-import { ALPHABET } from "../helpers/zod/ALPHABET"
+import { ALPHABET, bgaRowLabel } from "../helpers/zod/ALPHABET"
 import { z } from "zod"
 import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
@@ -153,8 +153,7 @@ export const bga = (
       }
       pin_num -= missing_pins_passed
 
-      // TODO handle >26 rows
-      const portHints = [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`]
+      const portHints = [pin_num, `${bgaRowLabel(pin_y)}${pin_x + 1}`]
       pads.push(
         parameters.circularpads
           ? circlepad(portHints, {
