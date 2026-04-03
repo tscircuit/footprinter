@@ -267,12 +267,34 @@ export type Footprinter = {
 }
 
 const normalizeDefinition = (def: string): string => {
-  return def
-    .trim()
-    .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
-    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
-    .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
-    .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+  let normalized = def.trim()
+
+  // Normalize JST variant format: jst_ph_4 -> jst4_ph
+  normalized = normalized.replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+
+  // Handle sot23-N specifically (digits in prefix, not caught by general rule)
+  normalized = normalized.replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
+
+  // Normalize hyphenated package names commonly found in datasheets.
+  // The pattern targets names where letters precede a hyphen followed by
+  // digits (with optional trailing letters), e.g.:
+  //   sot-23      -> sot23         sot-23-5    -> sot23_5
+  //   to-92       -> to92          to-220f-3   -> to220f_3
+  //   sod-123     -> sod123        sod-323f    -> sod323f
+  //   soic-8      -> soic8         qfn-32      -> qfn32
+  //   tssop-16    -> tssop16       lqfp-48     -> lqfp48
+  //   bga-100     -> bga100        ms-012      -> ms012
+  //
+  // Names like VSON8-1EP (digit before hyphen) are intentionally NOT matched.
+  normalized = normalized.replace(
+    /^([a-zA-Z]+)-(\d+[a-zA-Z]*)(?:-(\d+))?(?=_|$)/i,
+    (_match, prefix, body, pinCount) => {
+      const base = `${prefix.toLowerCase()}${body.toLowerCase()}`
+      return pinCount ? `${base}_${pinCount}` : base
+    },
+  )
+
+  return normalized
 }
 
 export const string = (def: string): Footprinter => {
