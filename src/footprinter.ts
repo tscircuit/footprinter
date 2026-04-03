@@ -272,6 +272,9 @@ const normalizeDefinition = (def: string): string => {
   // Normalize JST variant format: jst_ph_4 -> jst4_ph
   normalized = normalized.replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
 
+  // Handle sot23-N specifically (digits in prefix, not caught by general rule)
+  normalized = normalized.replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
+
   // Normalize hyphenated package names commonly found in datasheets.
   // The pattern targets names where letters precede a hyphen followed by
   // digits (with optional trailing letters), e.g.:
