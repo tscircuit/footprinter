@@ -33,6 +33,7 @@ export const to220f = (
     parameters.num_pins ??
     Number.parseInt(
       parameters.string?.match(/^to220f(?:_|-)(\d+)/i)?.[1] ?? "3",
+      10,
     )
 
   // Get silkscreen and other non-hole elements from to220
