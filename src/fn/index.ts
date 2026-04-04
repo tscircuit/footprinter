@@ -1,4 +1,5 @@
 export { dip } from "./dip"
+export { spdip28 } from "./spdip28"
 export { pdip } from "./pdip"
 export { diode } from "./diode"
 export { cap } from "./cap"
