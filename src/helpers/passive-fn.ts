@@ -139,12 +139,14 @@ export const passive_def = base_def.extend({
   w: length.optional(),
   h: length.optional(),
   textbottom: z.boolean().optional(),
+  mark_cathode: z.boolean().optional(),
 })
 
 export type PassiveDef = z.input<typeof passive_def>
 
 export const passive = (params: PassiveDef): AnyCircuitElement[] => {
-  let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
+  let { tht, p, pw, ph, metric, imperial, w, h, textbottom, mark_cathode } =
+    params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -188,6 +190,23 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     pcb_silkscreen_path_id: "",
   }
 
+  const elements: AnyCircuitElement[] = []
+
+  if (mark_cathode) {
+    const cathodeLine: PcbSilkscreenPath = {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: -p / 2 - pw / 2 - 0.4, y: ph / 2 + 0.4 },
+        { x: -p / 2 - pw / 2 - 0.4, y: -ph / 2 - 0.4 },
+      ],
+      stroke_width: 0.2,
+      pcb_silkscreen_path_id: "",
+    }
+    elements.push(cathodeLine)
+  }
+
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
 
@@ -195,6 +214,16 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const excess = 0.25
   const silkXs = silkscreenLine.route.map((pt) => pt.x)
   const silkYs = silkscreenLine.route.map((pt) => pt.y)
+  if (mark_cathode) {
+    const cathodeLines = elements.filter(
+      (e) => e.type === "pcb_silkscreen_path",
+    ) as PcbSilkscreenPath[]
+    for (const line of cathodeLines) {
+      silkXs.push(...line.route.map((pt) => pt.x))
+      silkYs.push(...line.route.map((pt) => pt.y))
+    }
+  }
+
   const crtMinX = Math.min(-(w ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess
   const crtMaxX = Math.max((w ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess
   const crtMinY = Math.min(-(h ?? 0) / 2, -ph / 2, ...silkYs) - excess
@@ -209,20 +238,19 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     layer: "top",
   }
 
+  elements.push(silkscreenLine, silkscreenRefText, courtyard)
+
   if (tht) {
-    return [
+    elements.unshift(
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
-      silkscreenLine,
-      silkscreenRefText,
-      courtyard,
-    ]
+    )
+  } else {
+    elements.unshift(
+      rectpad(["1", "left"], -p / 2, 0, pw, ph),
+      rectpad(["2", "right"], p / 2, 0, pw, ph),
+    )
   }
-  return [
-    rectpad(["1", "left"], -p / 2, 0, pw, ph),
-    rectpad(["2", "right"], p / 2, 0, pw, ph),
-    silkscreenLine,
-    silkscreenRefText,
-    courtyard,
-  ]
+
+  return elements
 }

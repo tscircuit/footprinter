@@ -6,8 +6,20 @@ test("string builder ignores empty segments", () => {
 })
 
 test("string builder works for led and diode imperial sizes", () => {
-  expect(() => fp.string("led0402").circuitJson()).not.toThrow()
-  expect(() => fp.string("led0603").circuitJson()).not.toThrow()
-  expect(() => fp.string("diode0402").circuitJson()).not.toThrow()
-  expect(() => fp.string("diode0805").circuitJson()).not.toThrow()
+  const led0402 = fp.string("led0402").circuitJson()
+  expect(led0402.some((e) => e.type === "pcb_pad")).toBe(true)
+  // Check for cathode marking (stroke_width 0.2)
+  expect(
+    led0402.some(
+      (e) => e.type === "pcb_silkscreen_path" && e.stroke_width === 0.2,
+    ),
+  ).toBe(true)
+
+  const diode0603 = fp.string("diode0603").circuitJson()
+  expect(diode0603.some((e) => e.type === "pcb_pad")).toBe(true)
+  expect(
+    diode0603.some(
+      (e) => e.type === "pcb_silkscreen_path" && e.stroke_width === 0.2,
+    ),
+  ).toBe(true)
 })

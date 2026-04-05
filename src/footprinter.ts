@@ -340,6 +340,7 @@ export const footprinter = (): Footprinter & {
   getFootprintNames: string[]
   setString: (string) => void
 } => {
+  const { passiveFootprintNames } = getFootprintNamesByType()
   const proxy = new Proxy(
     {},
     {
@@ -406,7 +407,7 @@ export const footprinter = (): Footprinter & {
             } else {
               target[prop] = true
               target.fn = prop
-              if (["res", "cap", "led", "diode"].includes(prop)) {
+              if (passiveFootprintNames.includes(prop)) {
                 if (v) {
                   if (typeof v === "string" && v.includes("_metric")) {
                     target.metric = v.split("_metric")[0]
@@ -424,6 +425,12 @@ export const footprinter = (): Footprinter & {
             // handle dip_w or other invalid booleans
             if (!v && ["w", "h", "p"].includes(prop as string)) {
               // ignore
+            } else if (
+              passiveFootprintNames.includes(target.fn) &&
+              /^\d{4,5}$/.test(prop)
+            ) {
+              // Handle standalone size code for passives (e.g. .res().0603())
+              target.imperial = prop
             } else {
               target[prop] = v ?? true
             }
