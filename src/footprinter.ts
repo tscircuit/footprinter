@@ -257,6 +257,7 @@ export type Footprinter = {
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
+  chipled: () => FootprinterParamsBuilder<"imperial" | "p" | "pw" | "ph" | "w" | "h">
 
   params: () => any
   /** @deprecated use circuitJson() instead */
