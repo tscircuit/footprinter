@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardOutline,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { rectpad } from "./rectpad"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 
@@ -11,6 +15,7 @@ export interface ChipArrayParams {
   textbottom?: boolean
   convex?: boolean
   concave?: boolean
+  courtyardOutline?: Array<{ x: number; y: number }>
 }
 
 /**
@@ -22,8 +27,15 @@ export interface ChipArrayParams {
  * @returns Array of circuit elements (pads, silkscreen, pin1 marker, ref text)
  */
 export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
-  const { padSpacing, padWidth, padHeight, padPitch, numRows, textbottom } =
-    params
+  const {
+    padSpacing,
+    padWidth,
+    padHeight,
+    padPitch,
+    numRows,
+    textbottom,
+    courtyardOutline,
+  } = params
 
   // Calculate Y positions for pads (centered around origin)
   const yPositions: number[] = []
@@ -104,6 +116,15 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
   // Reference text
   const textY = textbottom ? bottom - 0.9 : top + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
+  const courtyard: PcbCourtyardOutline | null = courtyardOutline
+    ? {
+        type: "pcb_courtyard_outline",
+        pcb_courtyard_outline_id: "",
+        pcb_component_id: "",
+        layer: "top",
+        outline: courtyardOutline,
+      }
+    : null
 
   return [
     ...pads,
@@ -111,5 +132,6 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     silkscreenBottom,
     pin1Marker,
     silkscreenRefText,
+    ...(courtyard ? [courtyard] : []),
   ]
 }

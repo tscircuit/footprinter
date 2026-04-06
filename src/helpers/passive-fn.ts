@@ -19,6 +19,8 @@ type StandardSize = {
   pw_mm_min: number // pad width
   h_mm_min: number // body height
   w_mm_min: number // body width
+  courtyard_width_mm?: number
+  courtyard_height_mm?: number
 }
 
 // Updated footprint sizes
@@ -31,6 +33,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 0.3,
     w_mm_min: 0.58,
     h_mm_min: 0.21,
+    courtyard_width_mm: 1.2,
+    courtyard_height_mm: 0.6,
   },
   {
     imperial: "0504",
@@ -49,6 +53,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 3.4,
     w_mm_min: 5.4,
     h_mm_min: 3.4,
+    courtyard_width_mm: 5.9,
+    courtyard_height_mm: 3.9,
   },
   {
     imperial: "0201",
@@ -58,6 +64,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 0.4,
     w_mm_min: 0.9,
     h_mm_min: 0.3,
+    courtyard_width_mm: 1.4,
+    courtyard_height_mm: 0.7,
   },
   {
     imperial: "0402",
@@ -67,6 +75,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 0.64,
     w_mm_min: 1.56,
     h_mm_min: 0.64,
+    courtyard_width_mm: 1.86,
+    courtyard_height_mm: 0.94,
   },
   {
     imperial: "0603",
@@ -76,6 +86,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 0.95,
     w_mm_min: 2.45,
     h_mm_min: 0.95,
+    courtyard_width_mm: 2.96,
+    courtyard_height_mm: 1.46,
   },
   {
     imperial: "0805",
@@ -85,6 +97,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 1.4,
     w_mm_min: 2.8499999999999996,
     h_mm_min: 1.4,
+    courtyard_width_mm: 3.36,
+    courtyard_height_mm: 1.9,
   },
   {
     imperial: "1206",
@@ -94,6 +108,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 1.75,
     w_mm_min: 4.05,
     h_mm_min: 1.75,
+    courtyard_width_mm: 4.56,
+    courtyard_height_mm: 2.26,
   },
   {
     imperial: "1210",
@@ -103,6 +119,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 2.65,
     w_mm_min: 4.05,
     h_mm_min: 2.65,
+    courtyard_width_mm: 4.56,
+    courtyard_height_mm: 3.16,
   },
   {
     imperial: "2010",
@@ -112,6 +130,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 2.65,
     w_mm_min: 5.85,
     h_mm_min: 2.65,
+    courtyard_width_mm: 6.36,
+    courtyard_height_mm: 3.16,
   },
   {
     imperial: "2512",
@@ -121,6 +141,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 3.35,
     w_mm_min: 7.15,
     h_mm_min: 3.35,
+    courtyard_width_mm: 7.66,
+    courtyard_height_mm: 3.86,
   },
 ]
 
@@ -128,6 +150,19 @@ const metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]))
 const imperialMap = Object.fromEntries(
   footprintSizes.map((s) => [s.imperial, s]),
 )
+
+const createCourtyardRect = (
+  width: number,
+  height: number,
+): PcbCourtyardRect => ({
+  type: "pcb_courtyard_rect",
+  pcb_courtyard_rect_id: "",
+  pcb_component_id: "",
+  center: { x: 0, y: 0 },
+  width,
+  height,
+  layer: "top",
+})
 
 export const passive_def = base_def.extend({
   tht: z.boolean(),
@@ -190,24 +225,10 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-
-  // IPC-7351B: courtyard must enclose body, pads, AND silkscreen outline
-  const excess = 0.25
-  const silkXs = silkscreenLine.route.map((pt) => pt.x)
-  const silkYs = silkscreenLine.route.map((pt) => pt.y)
-  const crtMinX = Math.min(-(w ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess
-  const crtMaxX = Math.max((w ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess
-  const crtMinY = Math.min(-(h ?? 0) / 2, -ph / 2, ...silkYs) - excess
-  const crtMaxY = Math.max((h ?? 0) / 2, ph / 2, ...silkYs) + excess
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
-  }
+  const courtyard =
+    sz?.courtyard_width_mm && sz.courtyard_height_mm
+      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
+      : null
 
   if (tht) {
     return [
@@ -215,7 +236,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
       silkscreenLine,
       silkscreenRefText,
-      courtyard,
+      ...(courtyard ? [courtyard] : []),
     ]
   }
   return [
@@ -223,6 +244,6 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     rectpad(["2", "right"], p / 2, 0, pw, ph),
     silkscreenLine,
     silkscreenRefText,
-    courtyard,
+    ...(courtyard ? [courtyard] : []),
   ]
 }
