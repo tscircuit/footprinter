@@ -48,7 +48,6 @@ function signedPolygonArea(points: Point[]): number {
 function normalizePolygonWinding(points: Point[]): Point[] {
   return signedPolygonArea(points) < 0 ? [...points].reverse() : points
 }
-
 function courtyardElementToPolygon(
   element: CourtyardElement,
 ): Flatten.Polygon | null {
@@ -296,6 +295,7 @@ export async function compareFootprinterVsKicad(
 
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
+<<<<<<< HEAD
   const referenceCenter = getPadsAndHolesCenter(referencePadsAndHoles)
   const kicadCenter = getPadsAndHolesCenter(kicadPadsAndHoles)
   const normalizedKicadCourtyardElements = translateCourtyardElements(
@@ -305,6 +305,10 @@ export async function compareFootprinterVsKicad(
   )
   const { courtyardDiffPercent, courtyardIntersectionOverUnionPercent } =
     getCourtyardMetrics(fpCourtyardElements, normalizedKicadCourtyardElements)
+=======
+  const { courtyardDiffPercent, courtyardIntersectionOverUnionPercent } =
+    getCourtyardMetrics(fpCourtyardElements, kicadCourtyardElements)
+>>>>>>> 8abf343 (Define explicit courtyards and report parity courtyard overlap)
 
   console.log(
     `📐 ${normalizedFootprintName} courtyard IoU: ${courtyardIntersectionOverUnionPercent.toFixed(2)}% (diff ${courtyardDiffPercent.toFixed(2)}%)`,
