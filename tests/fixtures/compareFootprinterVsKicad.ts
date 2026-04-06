@@ -1,3 +1,4 @@
+import Flatten from "@flatten-js/core"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
@@ -12,6 +13,143 @@ type PcbSmtPad = {
   height: number
   port_hints?: string[]
   shape?: string
+}
+
+type Point = {
+  x: number
+  y: number
+}
+
+type CourtyardElement = {
+  type:
+    | "pcb_courtyard_rect"
+    | "pcb_courtyard_outline"
+    | "pcb_courtyard_circle"
+    | "pcb_courtyard_polygon"
+  center?: Point
+  width?: number
+  height?: number
+  radius?: number
+  diameter?: number
+  outline?: Point[]
+  points?: Point[]
+}
+
+function courtyardElementToPolygon(
+  element: CourtyardElement,
+): Flatten.Polygon | null {
+  if (
+    element.type === "pcb_courtyard_rect" &&
+    element.center &&
+    element.width !== undefined &&
+    element.height !== undefined
+  ) {
+    const halfWidth = element.width / 2
+    const halfHeight = element.height / 2
+    return new Flatten.Polygon([
+      [element.center.x - halfWidth, element.center.y - halfHeight],
+      [element.center.x + halfWidth, element.center.y - halfHeight],
+      [element.center.x + halfWidth, element.center.y + halfHeight],
+      [element.center.x - halfWidth, element.center.y + halfHeight],
+    ])
+  }
+
+  if (
+    (element.type === "pcb_courtyard_outline" ||
+      element.type === "pcb_courtyard_polygon") &&
+    element.outline &&
+    element.outline.length >= 3
+  ) {
+    return new Flatten.Polygon(
+      element.outline.map((point) => [point.x, point.y]),
+    )
+  }
+
+  if (
+    element.type === "pcb_courtyard_polygon" &&
+    element.points &&
+    element.points.length >= 3
+  ) {
+    return new Flatten.Polygon(
+      element.points.map((point) => [point.x, point.y]),
+    )
+  }
+
+  if (element.type === "pcb_courtyard_circle" && element.center) {
+    const radius =
+      element.radius ??
+      (element.diameter !== undefined ? element.diameter / 2 : undefined)
+    if (radius !== undefined) {
+      return new Flatten.Polygon(
+        new Flatten.Circle(
+          new Flatten.Point(element.center.x, element.center.y),
+          radius,
+        ),
+      )
+    }
+  }
+
+  return null
+}
+
+function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
+  if (polygons.length === 0) return null
+
+  let union = polygons[0]!
+  for (let i = 1; i < polygons.length; i++) {
+    union = Flatten.BooleanOperations.unify(union, polygons[i]!)
+  }
+
+  return union
+}
+
+function getCourtyardMetrics(
+  footprinterCourtyards: CourtyardElement[],
+  kicadCourtyards: CourtyardElement[],
+) {
+  if (footprinterCourtyards.length === 0) {
+    throw new Error("Footprinter output is missing an explicit courtyard")
+  }
+  if (kicadCourtyards.length === 0) {
+    throw new Error("KiCad footprint is missing a courtyard")
+  }
+
+  const fpPolygon = unionPolygons(
+    footprinterCourtyards
+      .map(courtyardElementToPolygon)
+      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
+  )
+  const kicadPolygon = unionPolygons(
+    kicadCourtyards
+      .map(courtyardElementToPolygon)
+      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
+  )
+
+  if (!fpPolygon || !kicadPolygon) {
+    throw new Error("Could not convert courtyard geometry into polygons")
+  }
+
+  const intersection = Flatten.BooleanOperations.intersect(
+    fpPolygon,
+    kicadPolygon,
+  )
+  const fpArea = Math.abs(fpPolygon.area())
+  const kicadArea = Math.abs(kicadPolygon.area())
+  const intersectionArea = Math.abs(intersection.area())
+  const unionArea = fpArea + kicadArea - intersectionArea
+
+  if (unionArea === 0) {
+    throw new Error("Courtyard union area is zero")
+  }
+
+  const intersectionOverUnion = intersectionArea / unionArea
+
+  return {
+    courtyardIntersectionArea: intersectionArea,
+    courtyardUnionArea: unionArea,
+    courtyardIntersectionOverUnionPercent: intersectionOverUnion * 100,
+    courtyardDiffPercent: (1 - intersectionOverUnion) * 100,
+  }
 }
 
 // --- Helpers to handle both pads & holes safely ---
@@ -55,6 +193,8 @@ export async function compareFootprinterVsKicad(
   avgRelDiff: number
   combinedFootprintElements: any[]
   booleanDifferenceSvg: string
+  courtyardDiffPercent: number
+  courtyardIntersectionOverUnionPercent: number
   fpSilkscreenElements: any[]
 }> {
   const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
@@ -83,6 +223,20 @@ export async function compareFootprinterVsKicad(
   )
 
   const fpCircuitJson = fp.string(footprinterString).circuitJson()
+  const fpCourtyardElements = fpCircuitJson.filter(
+    (e) =>
+      e.type === "pcb_courtyard_outline" ||
+      e.type === "pcb_courtyard_rect" ||
+      e.type === "pcb_courtyard_circle" ||
+      e.type === "pcb_courtyard_polygon",
+  ) as CourtyardElement[]
+  const kicadCourtyardElements = kicadCircuitJson.filter(
+    (e) =>
+      e.type === "pcb_courtyard_outline" ||
+      e.type === "pcb_courtyard_rect" ||
+      e.type === "pcb_courtyard_circle" ||
+      e.type === "pcb_courtyard_polygon",
+  ) as CourtyardElement[]
 
   const referencePads = (fpCircuitJson as any[]).filter(
     (e) => e.type === "pcb_smtpad",
@@ -99,6 +253,12 @@ export async function compareFootprinterVsKicad(
 
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
+  const { courtyardDiffPercent, courtyardIntersectionOverUnionPercent } =
+    getCourtyardMetrics(fpCourtyardElements, kicadCourtyardElements)
+
+  console.log(
+    `📐 ${normalizedFootprintName} courtyard IoU: ${courtyardIntersectionOverUnionPercent.toFixed(2)}% (diff ${courtyardDiffPercent.toFixed(2)}%)`,
+  )
 
   // Pitch detection
   if (diffPercent > 0 && kicadPadsAndHoles.length >= 2) {
@@ -295,6 +455,8 @@ export async function compareFootprinterVsKicad(
     avgRelDiff,
     combinedFootprintElements,
     booleanDifferenceSvg,
+    courtyardDiffPercent,
+    courtyardIntersectionOverUnionPercent,
     fpSilkscreenElements,
   }
 }

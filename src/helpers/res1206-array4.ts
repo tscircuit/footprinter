@@ -37,5 +37,11 @@ export const res1206Array4 = (
     textbottom: params.textbottom,
     convex: params.convex,
     concave: params.concave,
+    courtyardOutline: [
+      { x: -2.21, y: 2.85 },
+      { x: -2.21, y: -2.85 },
+      { x: 2.2, y: -2.85 },
+      { x: 2.2, y: 2.85 },
+    ],
   })
 }
