@@ -35480,7 +35480,9 @@ var footprintSizes = [
     pw_mm_min: 0.4,
     ph_mm_min: 0.3,
     w_mm_min: 0.58,
-    h_mm_min: 0.21
+    h_mm_min: 0.21,
+    courtyard_width_mm: 1.2,
+    courtyard_height_mm: 0.6
   },
   {
     imperial: "0504",
@@ -35498,7 +35500,9 @@ var footprintSizes = [
     pw_mm_min: 1.125,
     ph_mm_min: 3.4,
     w_mm_min: 5.4,
-    h_mm_min: 3.4
+    h_mm_min: 3.4,
+    courtyard_width_mm: 5.9,
+    courtyard_height_mm: 3.9
   },
   {
     imperial: "0201",
@@ -35507,7 +35511,9 @@ var footprintSizes = [
     pw_mm_min: 0.46,
     ph_mm_min: 0.4,
     w_mm_min: 0.9,
-    h_mm_min: 0.3
+    h_mm_min: 0.3,
+    courtyard_width_mm: 1.4,
+    courtyard_height_mm: 0.7
   },
   {
     imperial: "0402",
@@ -35516,7 +35522,9 @@ var footprintSizes = [
     pw_mm_min: 0.54,
     ph_mm_min: 0.64,
     w_mm_min: 1.56,
-    h_mm_min: 0.64
+    h_mm_min: 0.64,
+    courtyard_width_mm: 1.86,
+    courtyard_height_mm: 0.94
   },
   {
     imperial: "0603",
@@ -35525,7 +35533,9 @@ var footprintSizes = [
     pw_mm_min: 0.8,
     ph_mm_min: 0.95,
     w_mm_min: 2.45,
-    h_mm_min: 0.95
+    h_mm_min: 0.95,
+    courtyard_width_mm: 2.96,
+    courtyard_height_mm: 1.46
   },
   {
     imperial: "0805",
@@ -35534,7 +35544,9 @@ var footprintSizes = [
     pw_mm_min: 1.025,
     ph_mm_min: 1.4,
     w_mm_min: 2.8499999999999996,
-    h_mm_min: 1.4
+    h_mm_min: 1.4,
+    courtyard_width_mm: 3.36,
+    courtyard_height_mm: 1.9
   },
   {
     imperial: "1206",
@@ -35543,7 +35555,9 @@ var footprintSizes = [
     pw_mm_min: 1.125,
     ph_mm_min: 1.75,
     w_mm_min: 4.05,
-    h_mm_min: 1.75
+    h_mm_min: 1.75,
+    courtyard_width_mm: 4.56,
+    courtyard_height_mm: 2.26
   },
   {
     imperial: "1210",
@@ -35552,7 +35566,9 @@ var footprintSizes = [
     pw_mm_min: 1.125,
     ph_mm_min: 2.65,
     w_mm_min: 4.05,
-    h_mm_min: 2.65
+    h_mm_min: 2.65,
+    courtyard_width_mm: 4.56,
+    courtyard_height_mm: 3.16
   },
   {
     imperial: "2010",
@@ -35561,7 +35577,9 @@ var footprintSizes = [
     pw_mm_min: 1.225,
     ph_mm_min: 2.65,
     w_mm_min: 5.85,
-    h_mm_min: 2.65
+    h_mm_min: 2.65,
+    courtyard_width_mm: 6.36,
+    courtyard_height_mm: 3.16
   },
   {
     imperial: "2512",
@@ -35570,11 +35588,22 @@ var footprintSizes = [
     pw_mm_min: 1.225,
     ph_mm_min: 3.35,
     w_mm_min: 7.15,
-    h_mm_min: 3.35
+    h_mm_min: 3.35,
+    courtyard_width_mm: 7.66,
+    courtyard_height_mm: 3.86
   }
 ];
 var metricMap = Object.fromEntries(footprintSizes.map((s2) => [s2.metric, s2]));
 var imperialMap = Object.fromEntries(footprintSizes.map((s2) => [s2.imperial, s2]));
+var createCourtyardRect = (width, height) => ({
+  type: "pcb_courtyard_rect",
+  pcb_courtyard_rect_id: "",
+  pcb_component_id: "",
+  center: { x: 0, y: 0 },
+  width,
+  height,
+  layer: "top"
+});
 var passive_def = base_def.extend({
   tht: exports_external.boolean(),
   p: length.optional(),
@@ -35631,29 +35660,14 @@ var passive = (params) => {
   };
   const textY = textbottom ? -ph2 / 2 - 0.9 : ph2 / 2 + 0.9;
   const silkscreenRefText = silkscreenRef(0, textY, 0.2);
-  const excess = 0.25;
-  const silkXs = silkscreenLine.route.map((pt2) => pt2.x);
-  const silkYs = silkscreenLine.route.map((pt2) => pt2.y);
-  const crtMinX = Math.min(-(w2 ?? 0) / 2, -(p / 2 + pw / 2), ...silkXs) - excess;
-  const crtMaxX = Math.max((w2 ?? 0) / 2, p / 2 + pw / 2, ...silkXs) + excess;
-  const crtMinY = Math.min(-(h ?? 0) / 2, -ph2 / 2, ...silkYs) - excess;
-  const crtMaxY = Math.max((h ?? 0) / 2, ph2 / 2, ...silkYs) + excess;
-  const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
-  };
+  const courtyard = sz?.courtyard_width_mm && sz.courtyard_height_mm ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm) : null;
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, pw * 1 / 0.8),
       platedhole(2, p / 2, 0, pw, pw * 1 / 0.8),
       silkscreenLine,
       silkscreenRefText,
-      courtyard
+      ...courtyard ? [courtyard] : []
     ];
   }
   return [
@@ -35661,7 +35675,7 @@ var passive = (params) => {
     rectpad(["2", "right"], p / 2, 0, pw, ph2),
     silkscreenLine,
     silkscreenRefText,
-    courtyard
+    ...courtyard ? [courtyard] : []
   ];
 };
 
@@ -35679,7 +35693,15 @@ var led = (parameters) => {
 };
 // src/helpers/chipArray.ts
 var chipArray = (params) => {
-  const { padSpacing, padWidth, padHeight, padPitch, numRows, textbottom } = params;
+  const {
+    padSpacing,
+    padWidth,
+    padHeight,
+    padPitch,
+    numRows,
+    textbottom,
+    courtyardOutline
+  } = params;
   const yPositions = [];
   const halfRange = (numRows - 1) * (padPitch / 2);
   for (let i = 0;i < numRows; i++) {
@@ -35738,12 +35760,20 @@ var chipArray = (params) => {
   };
   const textY = textbottom ? bottom - 0.9 : top + 0.9;
   const silkscreenRefText = silkscreenRef(0, textY, 0.2);
+  const courtyard = courtyardOutline ? {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
+    pcb_component_id: "",
+    layer: "top",
+    outline: courtyardOutline
+  } : null;
   return [
     ...pads,
     silkscreenTop,
     silkscreenBottom,
     pin1Marker,
-    silkscreenRefText
+    silkscreenRefText,
+    ...courtyard ? [courtyard] : []
   ];
 };
 
@@ -35773,7 +35803,13 @@ var res0402Array2 = (rawParams) => {
     numRows: 2,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -1, y: 0.95 },
+      { x: -1, y: -0.95 },
+      { x: 1, y: -0.95 },
+      { x: 1, y: 0.95 }
+    ]
   });
 };
 
@@ -35800,7 +35836,13 @@ var res0402Array4 = (rawParams) => {
     numRows: 4,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -1, y: 1.25 },
+      { x: -1, y: -1.25 },
+      { x: 1, y: -1.25 },
+      { x: 1, y: 1.25 }
+    ]
   });
 };
 
@@ -35827,7 +35869,13 @@ var res0603Array2 = (rawParams) => {
     numRows: 2,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -1.55, y: 1.05 },
+      { x: -1.55, y: -1.05 },
+      { x: 1.55, y: -1.05 },
+      { x: 1.55, y: 1.05 }
+    ]
   });
 };
 
@@ -35854,7 +35902,13 @@ var res0603Array4 = (rawParams) => {
     numRows: 4,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -1.55, y: 1.88 },
+      { x: -1.55, y: -1.87 },
+      { x: 1.55, y: -1.87 },
+      { x: 1.55, y: 1.88 }
+    ]
   });
 };
 
@@ -35881,7 +35935,13 @@ var res0606Array2 = (rawParams) => {
     numRows: 2,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -1.3, y: 1.05 },
+      { x: -1.3, y: -1.05 },
+      { x: 1.3, y: -1.05 },
+      { x: 1.3, y: 1.05 }
+    ]
   });
 };
 
@@ -35908,7 +35968,13 @@ var res1206Array4 = (rawParams) => {
     numRows: 4,
     textbottom: params.textbottom,
     convex: params.convex,
-    concave: params.concave
+    concave: params.concave,
+    courtyardOutline: [
+      { x: -2.21, y: 2.85 },
+      { x: -2.21, y: -2.85 },
+      { x: 2.2, y: -2.85 },
+      { x: 2.2, y: 2.85 }
+    ]
   });
 };
 
@@ -45428,7 +45494,7 @@ var content_default = [
     title: "to220_3"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="185.71428571428572" y="100.84033613445382" width="428.5714285714285" height="398.3193277310924" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="205.8823529411765" y="191.59663865546224" width="113.4453781512605" height="267.2268907563025" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="500.8403361344539" y="191.59663865546224" width="113.4453781512605" height="267.2268907563025" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 557.5630252100841 151.26050420168073 L 185.71428571428572 151.26050420168073 L 185.71428571428572 499.15966386554624 L 557.5630252100841 499.15966386554624" fill="none" stroke="#f2eda1" stroke-width="10.084033613445378" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="20.168067226890756" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,410.0840336134454,100.84033613445382)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><rect x="160.50420168067228" y="126.05042016806726" width="478.99159663865544" height="398.31932773109247" class="pcb-courtyard-rect pcb-courtyard-top" data-pcb-courtyard-rect-id="" data-type="pcb_courtyard_rect" data-pcb-layer="top" fill="none" stroke="#FF00FF" stroke-width="5.042016806722689"/></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="185.71428571428572" y="100.84033613445382" width="428.5714285714285" height="398.3193277310924" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="205.8823529411765" y="191.59663865546224" width="113.4453781512605" height="267.2268907563025" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="500.8403361344539" y="191.59663865546224" width="113.4453781512605" height="267.2268907563025" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 557.5630252100841 151.26050420168073 L 185.71428571428572 151.26050420168073 L 185.71428571428572 499.15966386554624 L 557.5630252100841 499.15966386554624" fill="none" stroke="#f2eda1" stroke-width="10.084033613445378" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="20.168067226890756" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,410.0840336134454,100.84033613445382)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><rect x="180.1680672268908" y="165.88235294117652" width="459.8319327731092" height="318.65546218487395" class="pcb-courtyard-rect pcb-courtyard-top" data-pcb-courtyard-rect-id="" data-type="pcb_courtyard_rect" data-pcb-layer="top" fill="none" stroke="#FF00FF" stroke-width="5.042016806722689"/></svg>\n',
     title: "diode1210"
   },
   {
