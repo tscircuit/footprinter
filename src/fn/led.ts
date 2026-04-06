@@ -4,5 +4,8 @@ import { type PassiveDef, passive } from "../helpers/passive-fn"
 export const led = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  return { circuitJson: passive(parameters), parameters }
+  return {
+    circuitJson: passive({ ...parameters, mark_cathode: true }),
+    parameters,
+  }
 }
