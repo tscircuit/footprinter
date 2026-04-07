@@ -33,6 +33,28 @@ export const vson_def = base_def.extend({
 export type VsonDefInput = z.input<typeof vson_def>
 export type VsonDef = z.infer<typeof vson_def>
 
+const createRectCourtyardOutline = (
+  courtyardWidthMm: number,
+  courtyardHeightMm: number,
+) => [
+  {
+    x: -roundCourtyardCoord(courtyardWidthMm / 2),
+    y: roundCourtyardCoord(courtyardHeightMm / 2),
+  },
+  {
+    x: roundCourtyardCoord(courtyardWidthMm / 2),
+    y: roundCourtyardCoord(courtyardHeightMm / 2),
+  },
+  {
+    x: roundCourtyardCoord(courtyardWidthMm / 2),
+    y: -roundCourtyardCoord(courtyardHeightMm / 2),
+  },
+  {
+    x: -roundCourtyardCoord(courtyardWidthMm / 2),
+    y: -roundCourtyardCoord(courtyardHeightMm / 2),
+  },
+]
+
 export const vson = (
   raw_params: VsonDefInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -81,65 +103,57 @@ export const vson = (
     grid.y / 6,
   )
 
-  const isVsonp8_5x6 = (() => {
-    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
-    return (
-      num_pins === 8 &&
-      near(grid.x, 5) &&
-      near(grid.y, 6) &&
-      near(w, 5.6) &&
-      near(p, 1.27) &&
-      near(pinw, 0.7) &&
-      near(pinh, 0.7)
+  let courtyard: PcbCourtyardOutline
+  if (
+    num_pins === 8 &&
+    grid.x === 5 &&
+    grid.y === 6 &&
+    p === 1.27 &&
+    w === 5.6 &&
+    pinw === 0.7 &&
+    pinh === 0.7
+  ) {
+    // Matches KiCad VSONP-8-1EP_5x6_P1.27mm courtyard.
+    const courtyardWidthMm = 6.8
+    const courtyardHeightMm = 5.4
+    courtyard = {
+      type: "pcb_courtyard_outline",
+      pcb_courtyard_outline_id: "",
+      pcb_component_id: "",
+      outline: createRectCourtyardOutline(courtyardWidthMm, courtyardHeightMm),
+      layer: "top",
+    }
+  } else {
+    const courtyardClearanceMm = 0.25
+    const bodyHalfWidthMm = grid.x / 2
+    const bodyHalfHeightMm = grid.y / 2
+    const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+      Math.max(maxOuterPinHalfWidthMm, bodyHalfWidthMm) + courtyardClearanceMm,
     )
-  })()
-
-  const courtyard: PcbCourtyardOutline = isVsonp8_5x6
-    ? {
-        type: "pcb_courtyard_outline",
-        pcb_courtyard_outline_id: "",
-        pcb_component_id: "",
-        outline: [
-          { x: -3.4, y: 2.7 },
-          { x: 3.4, y: 2.7 },
-          { x: 3.4, y: -2.7 },
-          { x: -3.4, y: -2.7 },
-        ],
-        layer: "top",
-      }
-    : (() => {
-        const courtyardClearanceMm = 0.25
-        const bodyHalfWidthMm = grid.x / 2
-        const bodyHalfHeightMm = grid.y / 2
-        const courtyardOuterHalfWidthMm = roundCourtyardCoord(
-          Math.max(maxOuterPinHalfWidthMm, bodyHalfWidthMm) +
-            courtyardClearanceMm,
-        )
-        const courtyardInnerHalfWidthMm = roundCourtyardCoord(
-          Math.min(maxOuterPinHalfWidthMm, bodyHalfWidthMm) +
-            courtyardClearanceMm,
-        )
-        const courtyardOuterHalfHeightMm = roundCourtyardCoord(
-          Math.max(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
-            courtyardClearanceMm,
-        )
-        const courtyardInnerHalfHeightMm = roundCourtyardCoord(
-          Math.min(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
-            courtyardClearanceMm,
-        )
-        return {
-          type: "pcb_courtyard_outline" as const,
-          pcb_courtyard_outline_id: "",
-          pcb_component_id: "",
-          outline: createPillCourtyardOutlinePoints({
-            outerHalfWidthMm: courtyardOuterHalfWidthMm,
-            innerHalfWidthMm: courtyardInnerHalfWidthMm,
-            outerHalfHeightMm: courtyardOuterHalfHeightMm,
-            innerHalfHeightMm: courtyardInnerHalfHeightMm,
-          }),
-          layer: "top" as const,
-        }
-      })()
+    const courtyardInnerHalfWidthMm = roundCourtyardCoord(
+      Math.min(maxOuterPinHalfWidthMm, bodyHalfWidthMm) + courtyardClearanceMm,
+    )
+    const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+      Math.max(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
+        courtyardClearanceMm,
+    )
+    const courtyardInnerHalfHeightMm = roundCourtyardCoord(
+      Math.min(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
+        courtyardClearanceMm,
+    )
+    courtyard = {
+      type: "pcb_courtyard_outline",
+      pcb_courtyard_outline_id: "",
+      pcb_component_id: "",
+      outline: createPillCourtyardOutlinePoints({
+        outerHalfWidthMm: courtyardOuterHalfWidthMm,
+        innerHalfWidthMm: courtyardInnerHalfWidthMm,
+        outerHalfHeightMm: courtyardOuterHalfHeightMm,
+        innerHalfHeightMm: courtyardInnerHalfHeightMm,
+      }),
+      layer: "top",
+    }
+  }
 
   return {
     circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText, courtyard],

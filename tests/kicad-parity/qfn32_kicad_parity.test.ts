@@ -9,7 +9,7 @@ test("parity/qfn32_thermalpad3.1x3.1mm", async () => {
     booleanDifferenceSvg,
     courtyardDiffPercent,
   } = await compareFootprinterVsKicad(
-    "qfn32_thermalpad3.1x3.1mm",
+    "qfn32_thermalpad3.1x3.1mm_w5.96mm_h5.96mm",
     "Package_DFN_QFN.pretty/QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm.circuit.json",
   )
 
