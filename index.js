@@ -18391,6 +18391,7 @@ __export(exports_dist, {
   source_simple_diode: () => source_simple_diode,
   source_simple_current_source: () => source_simple_current_source,
   source_simple_crystal: () => source_simple_crystal,
+  source_simple_connector: () => source_simple_connector,
   source_simple_chip: () => source_simple_chip,
   source_simple_capacitor: () => source_simple_capacitor,
   source_simple_battery: () => source_simple_battery,
@@ -18399,16 +18400,23 @@ __export(exports_dist, {
   source_port: () => source_port,
   source_pin_must_be_connected_error: () => source_pin_must_be_connected_error,
   source_pin_missing_trace_warning: () => source_pin_missing_trace_warning,
+  source_pin_attributes: () => source_pin_attributes,
   source_pcb_ground_plane: () => source_pcb_ground_plane,
+  source_no_power_pin_defined_warning: () => source_no_power_pin_defined_warning,
+  source_no_ground_pin_defined_warning: () => source_no_ground_pin_defined_warning,
   source_net: () => source_net,
   source_missing_property_error: () => source_missing_property_error,
   source_manually_placed_via: () => source_manually_placed_via,
+  source_invalid_component_property_error: () => source_invalid_component_property_error,
   source_interconnect: () => source_interconnect,
+  source_i2c_misconfigured_error: () => source_i2c_misconfigured_error,
   source_group: () => source_group,
   source_failed_to_create_component_error: () => source_failed_to_create_component_error,
+  source_component_pins_underspecified_warning: () => source_component_pins_underspecified_warning,
   source_component_internal_connection: () => source_component_internal_connection,
   source_component_base: () => source_component_base,
   source_board: () => source_board,
+  source_ambiguous_port_reference: () => source_ambiguous_port_reference,
   size: () => size,
   simulation_voltage_source: () => simulation_voltage_source,
   simulation_voltage_probe: () => simulation_voltage_probe,
@@ -18521,6 +18529,7 @@ __export(exports_dist, {
   pcb_cutout: () => pcb_cutout,
   pcb_courtyard_rect: () => pcb_courtyard_rect,
   pcb_courtyard_polygon: () => pcb_courtyard_polygon,
+  pcb_courtyard_overlap_error: () => pcb_courtyard_overlap_error,
   pcb_courtyard_outline: () => pcb_courtyard_outline,
   pcb_courtyard_circle: () => pcb_courtyard_circle,
   pcb_copper_text: () => pcb_copper_text,
@@ -18528,7 +18537,9 @@ __export(exports_dist, {
   pcb_copper_pour_polygon: () => pcb_copper_pour_polygon,
   pcb_copper_pour_brep: () => pcb_copper_pour_brep,
   pcb_copper_pour: () => pcb_copper_pour,
+  pcb_connector_not_in_accessible_orientation_warning: () => pcb_connector_not_in_accessible_orientation_warning,
   pcb_component_outside_board_error: () => pcb_component_outside_board_error,
+  pcb_component_not_on_board_edge_error: () => pcb_component_not_on_board_edge_error,
   pcb_component_invalid_layer_error: () => pcb_component_invalid_layer_error,
   pcb_component: () => pcb_component,
   pcb_breakout_point: () => pcb_breakout_point,
@@ -18540,6 +18551,21 @@ __export(exports_dist, {
   length: () => length,
   layer_string: () => layer_string,
   layer_ref: () => layer_ref,
+  kicadSymbolProperty: () => kicadSymbolProperty,
+  kicadSymbolProperties: () => kicadSymbolProperties,
+  kicadSymbolPinNumbers: () => kicadSymbolPinNumbers,
+  kicadSymbolPinNames: () => kicadSymbolPinNames,
+  kicadSymbolMetadata: () => kicadSymbolMetadata,
+  kicadSymbolEffects: () => kicadSymbolEffects,
+  kicadProperty: () => kicadProperty,
+  kicadFootprintProperties: () => kicadFootprintProperties,
+  kicadFootprintPad: () => kicadFootprintPad,
+  kicadFootprintModel: () => kicadFootprintModel,
+  kicadFootprintMetadata: () => kicadFootprintMetadata,
+  kicadFootprintAttributes: () => kicadFootprintAttributes,
+  kicadFont: () => kicadFont,
+  kicadEffects: () => kicadEffects,
+  kicadAt: () => kicadAt,
   inductance: () => inductance,
   getZodPrefixedIdWithDefault: () => getZodPrefixedIdWithDefault,
   frequency: () => frequency,
@@ -18550,10 +18576,14 @@ __export(exports_dist, {
   current: () => current,
   circuit_json_footprint_load_error: () => circuit_json_footprint_load_error,
   capacitance: () => capacitance,
+  cad_model_formats: () => cad_model_formats,
+  cad_model_axis_directions: () => cad_model_axis_directions,
   cad_component: () => cad_component,
+  cadModelDefaultDirectionMap: () => cadModelDefaultDirectionMap,
   brep_shape: () => brep_shape,
   battery_capacity: () => battery_capacity,
   base_circuit_json_error: () => base_circuit_json_error,
+  asset: () => asset,
   any_source_component: () => any_source_component,
   any_soup_element: () => any_soup_element,
   any_circuit_element: () => any_circuit_element,
@@ -22847,6 +22877,124 @@ var pcbRenderLayer = exports_external.enum([
   "drill"
 ]);
 expectTypesMatch(true);
+var asset = exports_external.object({
+  project_relative_path: exports_external.string(),
+  url: exports_external.string(),
+  mimetype: exports_external.string()
+});
+expectTypesMatch(true);
+var kicadAt = point.extend({
+  rotation: rotation.optional()
+});
+expectTypesMatch(true);
+var kicadFont = exports_external.object({
+  size: point.optional(),
+  thickness: distance.optional()
+});
+expectTypesMatch(true);
+var kicadEffects = exports_external.object({
+  font: kicadFont.optional()
+});
+expectTypesMatch(true);
+var kicadProperty = exports_external.object({
+  value: exports_external.string(),
+  at: kicadAt.optional(),
+  layer: exports_external.string().optional(),
+  uuid: exports_external.string().optional(),
+  hide: exports_external.boolean().optional(),
+  effects: kicadEffects.optional()
+});
+expectTypesMatch(true);
+var kicadFootprintProperties = exports_external.object({
+  Reference: kicadProperty.optional(),
+  Value: kicadProperty.optional(),
+  Datasheet: kicadProperty.optional(),
+  Description: kicadProperty.optional()
+});
+expectTypesMatch(true);
+var kicadFootprintAttributes = exports_external.object({
+  through_hole: exports_external.boolean().optional(),
+  smd: exports_external.boolean().optional(),
+  exclude_from_pos_files: exports_external.boolean().optional(),
+  exclude_from_bom: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
+var kicadFootprintPad = exports_external.object({
+  name: exports_external.string(),
+  type: exports_external.string(),
+  shape: exports_external.string().optional(),
+  at: kicadAt.optional(),
+  size: point.optional(),
+  drill: distance.optional(),
+  layers: exports_external.array(exports_external.string()).optional(),
+  removeUnusedLayers: exports_external.boolean().optional(),
+  uuid: exports_external.string().optional()
+});
+expectTypesMatch(true);
+var kicadFootprintModel = exports_external.object({
+  path: exports_external.string(),
+  offset: point3.optional(),
+  scale: point3.optional(),
+  rotate: point3.optional()
+});
+expectTypesMatch(true);
+var kicadFootprintMetadata = exports_external.object({
+  footprintName: exports_external.string().optional(),
+  version: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  generator: exports_external.string().optional(),
+  generatorVersion: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  layer: exports_external.string().optional(),
+  properties: kicadFootprintProperties.optional(),
+  attributes: kicadFootprintAttributes.optional(),
+  pads: exports_external.array(kicadFootprintPad).optional(),
+  embeddedFonts: exports_external.boolean().optional(),
+  model: kicadFootprintModel.optional()
+});
+expectTypesMatch(true);
+var kicadSymbolPinNumbers = exports_external.object({
+  hide: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
+var kicadSymbolPinNames = exports_external.object({
+  offset: distance.optional(),
+  hide: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
+var kicadSymbolEffects = exports_external.object({
+  font: kicadFont.optional(),
+  justify: exports_external.union([exports_external.string(), exports_external.array(exports_external.string())]).optional(),
+  hide: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
+var kicadSymbolProperty = exports_external.object({
+  value: exports_external.string(),
+  id: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  at: kicadAt.optional(),
+  effects: kicadSymbolEffects.optional()
+});
+expectTypesMatch(true);
+var kicadSymbolProperties = exports_external.object({
+  Reference: kicadSymbolProperty.optional(),
+  Value: kicadSymbolProperty.optional(),
+  Footprint: kicadSymbolProperty.optional(),
+  Datasheet: kicadSymbolProperty.optional(),
+  Description: kicadSymbolProperty.optional(),
+  ki_keywords: kicadSymbolProperty.optional(),
+  ki_fp_filters: kicadSymbolProperty.optional()
+});
+expectTypesMatch(true);
+var kicadSymbolMetadata = exports_external.object({
+  symbolName: exports_external.string().optional(),
+  extends: exports_external.string().optional(),
+  pinNumbers: kicadSymbolPinNumbers.optional(),
+  pinNames: kicadSymbolPinNames.optional(),
+  excludeFromSim: exports_external.boolean().optional(),
+  inBom: exports_external.boolean().optional(),
+  onBoard: exports_external.boolean().optional(),
+  properties: kicadSymbolProperties.optional(),
+  embeddedFonts: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
 var base_circuit_json_error = exports_external.object({
   error_type: exports_external.string(),
   message: exports_external.string(),
@@ -22928,6 +23076,46 @@ var source_simple_current_source = source_component_base.extend({
   duty_cycle: exports_external.number().min(0).max(1).optional()
 });
 expectTypesMatch(true);
+var source_pin_attributes = exports_external.object({
+  must_be_connected: exports_external.boolean().optional(),
+  provides_power: exports_external.boolean().optional(),
+  requires_power: exports_external.boolean().optional(),
+  provides_ground: exports_external.boolean().optional(),
+  requires_ground: exports_external.boolean().optional(),
+  provides_voltage: exports_external.union([exports_external.string(), exports_external.number()]).optional(),
+  requires_voltage: exports_external.union([exports_external.string(), exports_external.number()]).optional(),
+  do_not_connect: exports_external.boolean().optional(),
+  include_in_board_pinout: exports_external.boolean().optional(),
+  can_use_internal_pullup: exports_external.boolean().optional(),
+  is_using_internal_pullup: exports_external.boolean().optional(),
+  needs_external_pullup: exports_external.boolean().optional(),
+  can_use_internal_pulldown: exports_external.boolean().optional(),
+  is_using_internal_pulldown: exports_external.boolean().optional(),
+  needs_external_pulldown: exports_external.boolean().optional(),
+  can_use_open_drain: exports_external.boolean().optional(),
+  is_using_open_drain: exports_external.boolean().optional(),
+  can_use_push_pull: exports_external.boolean().optional(),
+  is_using_push_pull: exports_external.boolean().optional(),
+  should_have_decoupling_capacitor: exports_external.boolean().optional(),
+  recommended_decoupling_capacitor_capacitance: exports_external.union([exports_external.string(), exports_external.number()]).optional(),
+  is_configured_for_i2c_sda: exports_external.boolean().optional(),
+  is_configured_for_i2c_scl: exports_external.boolean().optional(),
+  is_configured_for_spi_mosi: exports_external.boolean().optional(),
+  is_configured_for_spi_miso: exports_external.boolean().optional(),
+  is_configured_for_spi_sck: exports_external.boolean().optional(),
+  is_configured_for_spi_cs: exports_external.boolean().optional(),
+  is_configured_for_uart_tx: exports_external.boolean().optional(),
+  is_configured_for_uart_rx: exports_external.boolean().optional(),
+  supports_i2c_sda: exports_external.boolean().optional(),
+  supports_i2c_scl: exports_external.boolean().optional(),
+  supports_spi_mosi: exports_external.boolean().optional(),
+  supports_spi_miso: exports_external.boolean().optional(),
+  supports_spi_sck: exports_external.boolean().optional(),
+  supports_spi_cs: exports_external.boolean().optional(),
+  supports_uart_tx: exports_external.boolean().optional(),
+  supports_uart_rx: exports_external.boolean().optional()
+});
+expectTypesMatch(true);
 var source_simple_fuse = source_component_base.extend({
   ftype: exports_external.literal("simple_fuse"),
   current_rating_amps: exports_external.number().describe("Nominal current in amps the fuse is rated for"),
@@ -22966,6 +23154,11 @@ var source_simple_pin_header = source_component_base.extend({
   ftype: exports_external.literal("simple_pin_header"),
   pin_count: exports_external.number(),
   gender: exports_external.enum(["male", "female"]).optional().default("male")
+});
+expectTypesMatch(true);
+var source_simple_connector = source_component_base.extend({
+  ftype: exports_external.literal("simple_connector"),
+  standard: exports_external.enum(["usb_c", "m2"]).optional()
 });
 expectTypesMatch(true);
 var source_simple_pinout = source_component_base.extend({
@@ -23042,6 +23235,17 @@ var source_failed_to_create_component_error = base_circuit_json_error.extend({
   }).optional()
 }).describe("Error emitted when a component fails to be constructed");
 expectTypesMatch(true);
+var source_invalid_component_property_error = base_circuit_json_error.extend({
+  type: exports_external.literal("source_invalid_component_property_error"),
+  source_invalid_component_property_error_id: getZodPrefixedIdWithDefault("source_invalid_component_property_error"),
+  source_component_id: exports_external.string(),
+  property_name: exports_external.string(),
+  property_value: exports_external.unknown().optional(),
+  expected_format: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  error_type: exports_external.literal("source_invalid_component_property_error").default("source_invalid_component_property_error")
+}).describe("The source component property is invalid");
+expectTypesMatch(true);
 var source_trace_not_connected_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_trace_not_connected_error"),
   source_trace_not_connected_error_id: getZodPrefixedIdWithDefault("source_trace_not_connected_error"),
@@ -23081,6 +23285,13 @@ var source_interconnect = source_component_base.extend({
   ftype: exports_external.literal("interconnect")
 });
 expectTypesMatch(true);
+var source_i2c_misconfigured_error = base_circuit_json_error.extend({
+  type: exports_external.literal("source_i2c_misconfigured_error"),
+  source_i2c_misconfigured_error_id: getZodPrefixedIdWithDefault("source_i2c_misconfigured_error"),
+  error_type: exports_external.literal("source_i2c_misconfigured_error").default("source_i2c_misconfigured_error"),
+  source_port_ids: exports_external.array(exports_external.string())
+}).describe("Error emitted when incompatible I2C pins (e.g. SDA and SCL) are connected to the same net");
+expectTypesMatch(true);
 var source_simple_voltage_source = source_component_base.extend({
   ftype: exports_external.literal("simple_voltage_source"),
   voltage,
@@ -23107,6 +23318,7 @@ var any_source_component = exports_external.union([
   source_simple_potentiometer,
   source_simple_crystal,
   source_simple_pin_header,
+  source_simple_connector,
   source_simple_pinout,
   source_simple_resonator,
   source_simple_switch,
@@ -23120,10 +23332,12 @@ var any_source_component = exports_external.union([
   source_simple_voltage_source,
   source_project_metadata,
   source_missing_property_error,
+  source_invalid_component_property_error,
   source_failed_to_create_component_error,
   source_trace_not_connected_error,
   source_property_ignored_warning,
-  source_pin_missing_trace_warning
+  source_pin_missing_trace_warning,
+  source_i2c_misconfigured_error
 ]);
 expectTypesMatch(true);
 var source_port = exports_external.object({
@@ -23134,10 +23348,10 @@ var source_port = exports_external.object({
   source_port_id: exports_external.string(),
   source_component_id: exports_external.string().optional(),
   source_group_id: exports_external.string().optional(),
+  most_frequently_referenced_by_name: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
-  subcircuit_connectivity_map_key: exports_external.string().optional(),
-  must_be_connected: exports_external.boolean().optional()
-});
+  subcircuit_connectivity_map_key: exports_external.string().optional()
+}).merge(source_pin_attributes);
 expectTypesMatch(true);
 var source_component_internal_connection = exports_external.object({
   type: exports_external.literal("source_component_internal_connection"),
@@ -23193,6 +23407,14 @@ var source_board = exports_external.object({
   title: exports_external.string().optional()
 }).describe("Defines a board in the source domain");
 expectTypesMatch(true);
+var source_ambiguous_port_reference = base_circuit_json_error.extend({
+  type: exports_external.literal("source_ambiguous_port_reference"),
+  source_ambiguous_port_reference_id: getZodPrefixedIdWithDefault("source_ambiguous_port_reference"),
+  error_type: exports_external.literal("source_ambiguous_port_reference").default("source_ambiguous_port_reference"),
+  source_port_id: exports_external.string().optional(),
+  source_component_id: exports_external.string().optional()
+}).describe("Error emitted when a port hint matches multiple non-overlapping pads, making the port reference ambiguous");
+expectTypesMatch(true);
 var source_pcb_ground_plane = exports_external.object({
   type: exports_external.literal("source_pcb_ground_plane"),
   source_pcb_ground_plane_id: exports_external.string(),
@@ -23230,6 +23452,36 @@ var source_manually_placed_via = exports_external.object({
   subcircuit_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional()
 }).describe("Defines a via that is manually placed in the source domain");
+expectTypesMatch(true);
+var source_no_power_pin_defined_warning = exports_external.object({
+  type: exports_external.literal("source_no_power_pin_defined_warning"),
+  source_no_power_pin_defined_warning_id: getZodPrefixedIdWithDefault("source_no_power_pin_defined_warning"),
+  warning_type: exports_external.literal("source_no_power_pin_defined_warning").default("source_no_power_pin_defined_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  source_port_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a chip has no source ports with requires_power=true");
+expectTypesMatch(true);
+var source_no_ground_pin_defined_warning = exports_external.object({
+  type: exports_external.literal("source_no_ground_pin_defined_warning"),
+  source_no_ground_pin_defined_warning_id: getZodPrefixedIdWithDefault("source_no_ground_pin_defined_warning"),
+  warning_type: exports_external.literal("source_no_ground_pin_defined_warning").default("source_no_ground_pin_defined_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  source_port_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a chip has no source ports marked as ground pins");
+expectTypesMatch(true);
+var source_component_pins_underspecified_warning = exports_external.object({
+  type: exports_external.literal("source_component_pins_underspecified_warning"),
+  source_component_pins_underspecified_warning_id: getZodPrefixedIdWithDefault("source_component_pins_underspecified_warning"),
+  warning_type: exports_external.literal("source_component_pins_underspecified_warning").default("source_component_pins_underspecified_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  source_port_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when all ports on a source component are underspecified");
 expectTypesMatch(true);
 var source_pin_must_be_connected_error = base_circuit_json_error.extend({
   type: exports_external.literal("source_pin_must_be_connected_error"),
@@ -23330,10 +23582,14 @@ var schematic_component = exports_external.object({
   is_box_with_pins: exports_external.boolean().optional().default(true)
 });
 expectTypesMatch(true);
+var schematicSymbolMetadata = exports_external.object({
+  kicad_symbol: kicadSymbolMetadata.optional()
+}).catchall(exports_external.unknown());
 var schematic_symbol = exports_external.object({
   type: exports_external.literal("schematic_symbol"),
   schematic_symbol_id: exports_external.string(),
-  name: exports_external.string().optional()
+  name: exports_external.string().optional(),
+  metadata: schematicSymbolMetadata.optional()
 }).describe("Defines a named schematic symbol that can be referenced by components.");
 expectTypesMatch(true);
 var schematic_line = exports_external.object({
@@ -23645,11 +23901,23 @@ var pcb_component = exports_external.object({
   width: length,
   height: length,
   do_not_place: exports_external.boolean().optional(),
+  is_allowed_to_be_off_board: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
   pcb_group_id: exports_external.string().optional(),
-  position_mode: exports_external.enum(["packed", "relative_to_group_anchor", "none"]).optional(),
+  position_mode: exports_external.enum([
+    "packed",
+    "relative_to_group_anchor",
+    "relative_to_another_component",
+    "none"
+  ]).optional(),
+  anchor_position: point.optional(),
+  anchor_alignment: ninePointAnchor.optional(),
   positioned_relative_to_pcb_group_id: exports_external.string().optional(),
   positioned_relative_to_pcb_board_id: exports_external.string().optional(),
+  cable_insertion_center: point.optional(),
+  metadata: exports_external.object({
+    kicad_footprint: kicadFootprintMetadata.optional()
+  }).optional(),
   obstructs_within_bounds: exports_external.boolean().default(true).describe("Does this component take up all the space within its bounds on a layer. This is generally true except for when separated pin headers are being represented by a single component (in which case, chips can be placed between the pin headers) or for tall modules where chips fit underneath")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
@@ -23807,7 +24075,8 @@ var pcb_circular_hole_with_rect_pad = exports_external.object({
   pcb_component_id: exports_external.string().optional(),
   pcb_port_id: exports_external.string().optional(),
   pcb_plated_hole_id: getZodPrefixedIdWithDefault("pcb_plated_hole"),
-  soldermask_margin: exports_external.number().optional()
+  soldermask_margin: exports_external.number().optional(),
+  rect_ccw_rotation: rotation.optional()
 });
 var pcb_pill_hole_with_rect_pad = exports_external.object({
   type: exports_external.literal("pcb_plated_hole"),
@@ -24142,6 +24411,8 @@ var pcb_trace_route_point_wire = exports_external.object({
   x: distance,
   y: distance,
   width: distance,
+  copper_pour_id: exports_external.string().optional(),
+  is_inside_copper_pour: exports_external.boolean().optional(),
   start_pcb_port_id: exports_external.string().optional(),
   end_pcb_port_id: exports_external.string().optional(),
   layer: layer_ref
@@ -24150,10 +24421,12 @@ var pcb_trace_route_point_via = exports_external.object({
   route_type: exports_external.literal("via"),
   x: distance,
   y: distance,
+  copper_pour_id: exports_external.string().optional(),
+  is_inside_copper_pour: exports_external.boolean().optional(),
   hole_diameter: distance.optional(),
   outer_diameter: distance.optional(),
-  from_layer: exports_external.string(),
-  to_layer: exports_external.string()
+  from_layer: layer_ref,
+  to_layer: layer_ref
 });
 var pcb_trace_route_point = exports_external.union([
   pcb_trace_route_point_wire,
@@ -24270,6 +24543,7 @@ var pcb_panel = exports_external.object({
   width: length,
   height: length,
   center: point,
+  thickness: length.optional().default(1.4),
   covered_with_solder_mask: exports_external.boolean().optional().default(true)
 }).describe("Defines a PCB panel that can contain multiple boards");
 expectTypesMatch(true);
@@ -24406,7 +24680,8 @@ var pcb_silkscreen_circle = exports_external.object({
   center: point,
   radius: length,
   layer: visible_layer,
-  stroke_width: length.default("1mm")
+  stroke_width: length.default("1mm"),
+  is_filled: exports_external.boolean().optional()
 }).describe("Defines a silkscreen circle on the PCB");
 expectTypesMatch(true);
 var pcb_silkscreen_oval = exports_external.object({
@@ -24598,6 +24873,13 @@ var pcb_footprint_overlap_error = base_circuit_json_error.extend({
   pcb_keepout_ids: exports_external.array(exports_external.string()).optional()
 }).describe("Error emitted when a pcb footprint overlaps with another element");
 expectTypesMatch(true);
+var pcb_courtyard_overlap_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_courtyard_overlap_error"),
+  pcb_error_id: getZodPrefixedIdWithDefault("pcb_error"),
+  error_type: exports_external.literal("pcb_courtyard_overlap_error").default("pcb_courtyard_overlap_error"),
+  pcb_component_ids: exports_external.tuple([exports_external.string(), exports_external.string()])
+}).describe("Error emitted when the courtyard (CrtYd) of one PCB component overlaps with the courtyard of another");
+expectTypesMatch(true);
 var pcb_keepout = exports_external.object({
   type: exports_external.literal("pcb_keepout"),
   shape: exports_external.literal("rect"),
@@ -24742,6 +25024,20 @@ var pcb_manual_edit_conflict_warning = exports_external.object({
   source_component_id: exports_external.string()
 }).describe("Warning emitted when a component has both manual placement and explicit pcbX/pcbY coordinates");
 expectTypesMatch(true);
+var connectorOrientationDirection = exports_external.enum(["x-", "x+", "y+", "y-"]);
+var pcb_connector_not_in_accessible_orientation_warning = exports_external.object({
+  type: exports_external.literal("pcb_connector_not_in_accessible_orientation_warning"),
+  pcb_connector_not_in_accessible_orientation_warning_id: getZodPrefixedIdWithDefault("pcb_connector_not_in_accessible_orientation_warning"),
+  warning_type: exports_external.literal("pcb_connector_not_in_accessible_orientation_warning").default("pcb_connector_not_in_accessible_orientation_warning"),
+  message: exports_external.string(),
+  pcb_component_id: exports_external.string(),
+  source_component_id: exports_external.string().optional(),
+  pcb_board_id: exports_external.string().optional(),
+  facing_direction: connectorOrientationDirection,
+  recommended_facing_direction: connectorOrientationDirection,
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a connector PCB component is facing inward toward the board and should be reoriented to an outward-facing direction");
+expectTypesMatch(true);
 var pcb_breakout_point = exports_external.object({
   type: exports_external.literal("pcb_breakout_point"),
   pcb_breakout_point_id: getZodPrefixedIdWithDefault("pcb_breakout_point"),
@@ -24836,6 +25132,18 @@ var pcb_component_outside_board_error = base_circuit_json_error.extend({
   source_component_id: exports_external.string().optional()
 }).describe("Error emitted when a PCB component is placed outside the board boundaries");
 expectTypesMatch(true);
+var pcb_component_not_on_board_edge_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_component_not_on_board_edge_error"),
+  pcb_component_not_on_board_edge_error_id: getZodPrefixedIdWithDefault("pcb_component_not_on_board_edge_error"),
+  error_type: exports_external.literal("pcb_component_not_on_board_edge_error").default("pcb_component_not_on_board_edge_error"),
+  pcb_component_id: exports_external.string(),
+  pcb_board_id: exports_external.string(),
+  component_center: point,
+  pad_to_nearest_board_edge_distance: exports_external.number(),
+  source_component_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when a component that must be placed on the board edge is centered away from the edge");
+expectTypesMatch(true);
 var pcb_component_invalid_layer_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_component_invalid_layer_error"),
   pcb_component_invalid_layer_error_id: getZodPrefixedIdWithDefault("pcb_component_invalid_layer_error"),
@@ -24870,6 +25178,7 @@ var pcb_courtyard_rect = exports_external.object({
   width: length,
   height: length,
   layer: visible_layer,
+  ccw_rotation: rotation.optional(),
   color: exports_external.string().optional()
 }).describe("Defines a courtyard rectangle on the PCB");
 expectTypesMatch(true);
@@ -24906,6 +25215,32 @@ var pcb_courtyard_circle = exports_external.object({
   color: exports_external.string().optional()
 }).describe("Defines a courtyard circle on the PCB");
 expectTypesMatch(true);
+var cad_model_formats = [
+  "obj",
+  "stl",
+  "3mf",
+  "gltf",
+  "glb",
+  "step",
+  "wrl"
+];
+var cad_model_axis_directions = [
+  "x+",
+  "x-",
+  "y+",
+  "y-",
+  "z+",
+  "z-"
+];
+var cadModelDefaultDirectionMap = {
+  obj: "z+",
+  stl: "z+",
+  "3mf": "z+",
+  gltf: "y+",
+  glb: "y+",
+  step: "z+",
+  wrl: "y+"
+};
 var cad_component = exports_external.object({
   type: exports_external.literal("cad_component"),
   cad_component_id: exports_external.string(),
@@ -24924,10 +25259,20 @@ var cad_component = exports_external.object({
   model_glb_url: exports_external.string().optional(),
   model_step_url: exports_external.string().optional(),
   model_wrl_url: exports_external.string().optional(),
+  model_asset: asset.optional(),
   model_unit_to_mm_scale_factor: exports_external.number().optional(),
+  model_board_normal_direction: exports_external.enum(cad_model_axis_directions).optional().describe(`The direction in the model's coordinate space that is considered "up" or "coming out of the board surface"`),
+  model_origin_position: point3.optional(),
+  model_origin_alignment: exports_external.enum([
+    "unknown",
+    "center",
+    "center_of_component_on_board_surface",
+    "bottom_center_of_component"
+  ]).optional(),
+  model_object_fit: exports_external.enum(["contain_within_bounds", "fill_bounds"]).optional().default("contain_within_bounds"),
   model_jscad: exports_external.any().optional(),
   show_as_translucent_model: exports_external.boolean().optional(),
-  anchor_alignment: exports_external.enum(["center", "xy_center_z_board"]).optional().default("center")
+  anchor_alignment: exports_external.enum(["center", "center_of_component_on_board_surface"]).optional().default("center")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
 var wave_shape = exports_external.enum(["sinewave", "square", "triangle", "sawtooth"]);
@@ -25142,16 +25487,23 @@ var any_circuit_element = exports_external.union([
   source_manually_placed_via,
   source_board,
   source_project_metadata,
+  source_invalid_component_property_error,
   source_trace_not_connected_error,
   source_pin_missing_trace_warning,
+  source_no_power_pin_defined_warning,
+  source_no_ground_pin_defined_warning,
+  source_component_pins_underspecified_warning,
   source_pin_must_be_connected_error,
   unknown_error_finding_part,
+  source_i2c_misconfigured_error,
+  source_ambiguous_port_reference,
   pcb_component,
   pcb_hole,
   pcb_missing_footprint_error,
   external_footprint_load_error,
   circuit_json_footprint_load_error,
   pcb_manual_edit_conflict_warning,
+  pcb_connector_not_in_accessible_orientation_warning,
   pcb_plated_hole,
   pcb_keepout,
   pcb_port,
@@ -25191,6 +25543,7 @@ var any_circuit_element = exports_external.union([
   pcb_note_dimension,
   pcb_autorouting_error,
   pcb_footprint_overlap_error,
+  pcb_courtyard_overlap_error,
   pcb_breakout_point,
   pcb_cutout,
   pcb_ground_plane,
@@ -25198,6 +25551,7 @@ var any_circuit_element = exports_external.union([
   pcb_thermal_spoke,
   pcb_copper_pour,
   pcb_component_outside_board_error,
+  pcb_component_not_on_board_edge_error,
   pcb_component_invalid_layer_error,
   pcb_courtyard_rect,
   pcb_courtyard_outline,
@@ -37035,6 +37389,20 @@ var tssop = (raw_params) => {
   };
 };
 // src/fn/sot363.ts
+var sot363CourtyardOutline = [
+  { x: -1.45, y: 0.93 },
+  { x: -0.73, y: 0.93 },
+  { x: -0.73, y: 1.1 },
+  { x: 0.73, y: 1.1 },
+  { x: 0.73, y: 0.93 },
+  { x: 1.45, y: 0.93 },
+  { x: 1.45, y: -0.93 },
+  { x: 0.73, y: -0.93 },
+  { x: 0.73, y: -1.1 },
+  { x: -0.73, y: -1.1 },
+  { x: -0.73, y: -0.93 },
+  { x: -1.45, y: -0.93 }
+];
 var sot363_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
@@ -37094,18 +37462,11 @@ var sot363 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(0.84 + pl2 / 2) - courtyardPadding;
-  const crtMaxX = 0.84 + pl2 / 2 + courtyardPadding;
-  const crtMinY = -(h / 2 + 0.1) - courtyardPadding;
-  const crtMaxY = h / 2 + 0.1 + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot363CourtyardOutline,
     layer: "top"
   };
   return {
@@ -37128,6 +37489,12 @@ var getSot363PadCoord = (pn2, w2, p, pl2) => {
   return { x: 0.84, y: -p + (pn2 - 4) * p };
 };
 // src/fn/sot886.ts
+var sot886CourtyardOutline = [
+  { x: -0.75, y: 1 },
+  { x: -0.75, y: -1 },
+  { x: 0.75, y: -1 },
+  { x: 0.75, y: 1 }
+];
 var sot886_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
@@ -37187,18 +37554,11 @@ var sot886 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
-  const courtyardPadding = 0.25;
-  const crtMinX = -w2 / 2 - courtyardPadding;
-  const crtMaxX = w2 / 2 + courtyardPadding;
-  const crtMinY = -h / 2 - courtyardPadding;
-  const crtMaxY = h / 2 + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot886CourtyardOutline,
     layer: "top"
   };
   return {
@@ -37221,6 +37581,42 @@ var getSot886PadCoord = (pn2, w2, p, pl2) => {
   return { x: padCenterOffset, y: -p + (pn2 - 4) * p };
 };
 // src/fn/sot23.ts
+var sot23_3CourtyardOutline = [
+  { x: -2.05, y: 1.5 },
+  { x: -1.05, y: 1.5 },
+  { x: -1.05, y: 1.7 },
+  { x: 1.05, y: 1.7 },
+  { x: 1.05, y: 0.55 },
+  { x: 2.05, y: 0.55 },
+  { x: 2.05, y: -0.55 },
+  { x: 1.05, y: -0.55 },
+  { x: 1.05, y: -1.7 },
+  { x: -1.05, y: -1.7 },
+  { x: -1.05, y: -1.5 },
+  { x: -2.05, y: -1.5 },
+  { x: -2.05, y: -0.39 },
+  { x: -1.05, y: -0.39 },
+  { x: -1.05, y: 0.39 },
+  { x: -2.05, y: 0.39 }
+];
+var sot23_5CourtyardOutline = [
+  { x: -2.05, y: 1.5 },
+  { x: -1.05, y: 1.5 },
+  { x: -1.05, y: 1.7 },
+  { x: 1.05, y: 1.7 },
+  { x: 1.05, y: 1.5 },
+  { x: 2.05, y: 1.5 },
+  { x: 2.05, y: 0.39 },
+  { x: 1.05, y: 0.39 },
+  { x: 1.05, y: -0.39 },
+  { x: 2.05, y: -0.39 },
+  { x: 2.05, y: -1.5 },
+  { x: 1.05, y: -1.5 },
+  { x: 1.05, y: -1.7 },
+  { x: -1.05, y: -1.7 },
+  { x: -1.05, y: -1.5 },
+  { x: -2.05, y: -1.5 }
+];
 var sot23_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
@@ -37291,21 +37687,11 @@ var sot23_3 = (parameters) => {
     pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), Number.parseFloat(parameters.pw)));
   }
   const silkscreenRefText = silkscreenRef(0, Number.parseInt(parameters.h), 0.3);
-  const courtyardPadding = 0.25;
-  const pl_val = Number.parseFloat(parameters.pl);
-  const pw_val = Number.parseFloat(parameters.pw);
-  const p_val = Number.parseFloat(parameters.p);
-  const crtMinX = -1.1375 - pl_val / 2 - courtyardPadding;
-  const crtMaxX = 1.1375 + pl_val / 2 + courtyardPadding;
-  const crtMinY = -(p_val + pw_val / 2) - courtyardPadding;
-  const crtMaxY = p_val + pw_val / 2 + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot23_3CourtyardOutline,
     layer: "top"
   };
   return [...pads, silkscreenRefText, courtyard];
@@ -37397,24 +37783,11 @@ var sot23_5 = (parameters) => {
     ],
     stroke_width: 0.05
   };
-  const courtyardPadding = 0.25;
-  const pl_val = Number.parseFloat(parameters.pl);
-  const pw_val = Number.parseFloat(parameters.pw);
-  const p_val = Number.parseFloat(parameters.p);
-  const silkY = height / 2 + p_val / 1.3;
-  const padYExtent = p_val + pw_val / 2;
-  const padXExtent = 1.1375 + pl_val / 2;
-  const crtMinX = -padXExtent - courtyardPadding;
-  const crtMaxX = padXExtent + courtyardPadding;
-  const crtMinY = -Math.max(silkY, padYExtent) - courtyardPadding;
-  const crtMaxY = Math.max(silkY, padYExtent) + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot23_5CourtyardOutline,
     layer: "top"
   };
   return [
@@ -37903,6 +38276,20 @@ var pinrow = (raw_params) => {
   };
 };
 // src/fn/sot563.ts
+var sot563CourtyardOutline = [
+  { x: -1.2, y: 0.83 },
+  { x: -0.75, y: 0.83 },
+  { x: -0.75, y: 0.95 },
+  { x: 0.75, y: 0.95 },
+  { x: 0.75, y: 0.83 },
+  { x: 1.2, y: 0.83 },
+  { x: 1.2, y: -0.83 },
+  { x: 0.75, y: -0.83 },
+  { x: 0.75, y: -0.95 },
+  { x: -0.75, y: -0.95 },
+  { x: -0.75, y: -0.83 },
+  { x: -1.2, y: -0.83 }
+];
 var sot563_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
@@ -37962,18 +38349,11 @@ var sot563 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
-  const courtyardPadding = 0.25;
-  const crtMinX = -w2 / 2 - courtyardPadding;
-  const crtMaxX = w2 / 2 + courtyardPadding;
-  const crtMinY = -h / 2 - courtyardPadding;
-  const crtMaxY = h / 2 + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot563CourtyardOutline,
     layer: "top"
   };
   return {
@@ -38035,22 +38415,18 @@ var sot723 = (raw_params) => {
   const parameters = sot723_def.parse(raw_params);
   const pad = sot723WithoutParsing(parameters);
   const silkscreenRefText = silkscreenRef(0, length.parse(parameters.h), 0.2);
-  const p_val = length.parse(parameters.p);
-  const pl_val = length.parse(parameters.pl);
-  const pw_val = length.parse(parameters.pw);
-  const h_val = length.parse(parameters.h);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(p_val + pl_val / 2 + courtyardPadding);
-  const crtMaxX = p_val + pl_val / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding;
+  const courtyardWidthMm = 1.8;
+  const courtyardHeightMm = 1.8;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: [
+      { x: -courtyardWidthMm / 2, y: courtyardHeightMm / 2 },
+      { x: courtyardWidthMm / 2, y: courtyardHeightMm / 2 },
+      { x: courtyardWidthMm / 2, y: -courtyardHeightMm / 2 },
+      { x: -courtyardWidthMm / 2, y: -courtyardHeightMm / 2 }
+    ],
     layer: "top"
   };
   return {
@@ -38296,18 +38672,13 @@ var radial = (raw_params) => {
   if (hasPolarity) {
     circuitJson.push(plusHoriz, plusVert);
   }
-  const courtyardPadding = 0.25;
-  const crtMinX = hasPolarity ? plusX - plusSize - courtyardPadding : -(bodyR + courtyardPadding);
-  const crtMaxX = bodyR + courtyardPadding;
-  const crtMinY = -(bodyR + courtyardPadding);
-  const crtMaxY = bodyR + courtyardPadding;
+  const courtyardRadiusMm = p + 0.25;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_circle",
+    pcb_courtyard_circle_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    radius: courtyardRadiusMm,
     layer: "top"
   };
   circuitJson.push(courtyard);
@@ -39148,6 +39519,12 @@ var platedHolePill = (pn2, x, y, holeDiameter, outerWidth, outerHeight) => {
 };
 
 // src/fn/to92.ts
+var to92CourtyardOutline = [
+  { x: -2.73, y: 3.71 },
+  { x: -2.73, y: -1.03 },
+  { x: 2.73, y: -1.03 },
+  { x: 2.73, y: 3.71 }
+];
 var to92_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(2)]).default(3),
@@ -39242,18 +39619,11 @@ var to92 = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   const silkscreenRefText = silkscreenRef(0, holeY + 1, 0.5);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(radius + courtyardPadding);
-  const crtMaxX = radius + courtyardPadding;
-  const crtMaxY = holeY + radius + courtyardPadding;
-  const crtMinY = -courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: to92CourtyardOutline,
     layer: "top"
   };
   return {
@@ -40122,6 +40492,18 @@ var sodWithoutParsing11 = (parameters) => {
   return pads;
 };
 // src/fn/sot89.ts
+var sot89_3CourtyardOutline = [
+  { x: -3.0875, y: -2.5 },
+  { x: -3.0875, y: 2.5 },
+  { x: 2.0125, y: 2.5 },
+  { x: 2.0125, y: -2.5 }
+];
+var sot89_5CourtyardOutline = [
+  { x: -2.85, y: -2.5 },
+  { x: -2.85, y: 2.5 },
+  { x: 2.85, y: 2.5 },
+  { x: 2.85, y: -2.5 }
+];
 var sot89_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.union([exports_external.literal(3), exports_external.literal(5)]).default(3),
@@ -40168,19 +40550,11 @@ var sot89_3 = (parameters) => {
     type: "pcb_silkscreen_path",
     stroke_width: 0.1
   };
-  const courtyardPadding = 0.25;
-  const padOuterX = length2 / 2 + (padHeight + centerExtra) / 2;
-  const crtMinX = -(padOuterX + courtyardPadding);
-  const crtMaxX = length2 / 2 - 1 + courtyardPadding;
-  const crtMinY = -(height + courtyardPadding);
-  const crtMaxY = height + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot89_3CourtyardOutline,
     layer: "top"
   };
   return [
@@ -40222,18 +40596,11 @@ var sot89_5 = (parameters) => {
     type: "pcb_silkscreen_path",
     stroke_width: 0.1
   };
-  const courtyardPadding = 0.25;
-  const crtMinX = -(2.6 + courtyardPadding);
-  const crtMaxX = 2.6 + courtyardPadding;
-  const crtMinY = -(height + courtyardPadding);
-  const crtMaxY = height + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot89_5CourtyardOutline,
     layer: "top"
   };
   return [
@@ -40447,23 +40814,15 @@ var minimelf = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const p_v = length.parse(parameters.p);
-  const pl_v = length.parse(parameters.pl);
-  const pw_v = length.parse(parameters.pw);
-  const h_v = length.parse(parameters.h);
-  const w_v = length.parse(parameters.w);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(Math.max(w_v / 2, p_v / 2 + pl_v / 2) + courtyardPadding);
-  const crtMaxX = p_v / 2 + pl_v / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h_v / 2, pw_v / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h_v / 2, pw_v / 2) + courtyardPadding;
+  const courtyardWidthMm = 5.3;
+  const courtyardHeightMm = 2.2;
   const courtyard = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top"
   };
   return {
@@ -40597,23 +40956,15 @@ var melf = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const p_v = length.parse(parameters.p);
-  const pl_v = length.parse(parameters.pl);
-  const pw_v = length.parse(parameters.pw);
-  const h_v = length.parse(parameters.h);
-  const w_v = length.parse(parameters.w);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(Math.max(w_v / 2, p_v / 2 + pl_v / 2) + courtyardPadding);
-  const crtMaxX = p_v / 2 + pl_v / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h_v / 2, pw_v / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h_v / 2, pw_v / 2) + courtyardPadding;
+  const courtyardWidthMm = 6.8;
+  const courtyardHeightMm = 3.2;
   const courtyard = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top"
   };
   return {
@@ -40678,23 +41029,15 @@ var micromelf = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const p_v = length.parse(parameters.p);
-  const pl_v = length.parse(parameters.pl);
-  const pw_v = length.parse(parameters.pw);
-  const h_v = length.parse(parameters.h);
-  const w_v = length.parse(parameters.w);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(Math.max(w_v / 2 + 0.1, p_v / 2 + pl_v / 2) + courtyardPadding);
-  const crtMaxX = p_v / 2 + pl_v / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h_v / 2, pw_v / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h_v / 2, pw_v / 2) + courtyardPadding;
+  const courtyardWidthMm = 2.9;
+  const courtyardHeightMm = 1.7;
   const courtyard = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top"
   };
   return {
@@ -42766,6 +43109,12 @@ var sot457 = (rawParams) => {
   };
 };
 // src/fn/sot963.ts
+var sot963CourtyardOutline = [
+  { x: -0.8, y: 0.75 },
+  { x: 0.8, y: 0.75 },
+  { x: 0.8, y: -0.75 },
+  { x: -0.8, y: -0.75 }
+];
 var sot963_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.literal(6).default(6),
@@ -42825,18 +43174,11 @@ var sot963 = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.4, 0.25);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(w2 / 2 + courtyardPadding);
-  const crtMaxX = w2 / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h / 2, p + pw / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h / 2, p + pw / 2) + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot963CourtyardOutline,
     layer: "top"
   };
   return {
@@ -43144,6 +43486,24 @@ var smbfWithoutParsing = (parameters) => {
   return pads;
 };
 // src/fn/sot323.ts
+var sot323CourtyardOutline = [
+  { x: -1.45, y: 0.98 },
+  { x: -0.73, y: 0.98 },
+  { x: -0.73, y: 1.1 },
+  { x: 0.73, y: 1.1 },
+  { x: 0.73, y: 0.33 },
+  { x: 1.45, y: 0.33 },
+  { x: 1.45, y: -0.33 },
+  { x: 0.73, y: -0.33 },
+  { x: 0.73, y: -1.1 },
+  { x: -0.73, y: -1.1 },
+  { x: -0.73, y: -0.98 },
+  { x: -1.45, y: -0.98 },
+  { x: -1.45, y: -0.32 },
+  { x: -0.73, y: -0.32 },
+  { x: -0.73, y: 0.32 },
+  { x: -1.45, y: 0.32 }
+];
 var sot323_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
@@ -43219,22 +43579,11 @@ var sot323_3 = (parameters) => {
     type: "pcb_silkscreen_path",
     stroke_width: 0.1
   };
-  const p = Number.parseFloat(parameters.p);
-  const pl2 = Number.parseFloat(parameters.pl);
-  const pw = Number.parseFloat(parameters.pw);
-  const h = Number.parseFloat(parameters.h);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(p + pl2 / 2 + courtyardPadding);
-  const crtMaxX = p + pl2 / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(h / 2 + 0.3, 0.65 + pw / 2) + courtyardPadding);
-  const crtMaxY = Math.max(h / 2 + 0.3, 0.65 + pw / 2) + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot323CourtyardOutline,
     layer: "top"
   };
   return [
@@ -43542,6 +43891,20 @@ var sotWithoutParsing = (parameters) => {
   ];
 };
 // src/fn/sot343.ts
+var sot343CourtyardOutline = [
+  { x: -1.703, y: 0.98 },
+  { x: -0.983, y: 0.98 },
+  { x: -0.983, y: 1.1 },
+  { x: 0.477, y: 1.1 },
+  { x: 0.477, y: 0.98 },
+  { x: 1.197, y: 0.98 },
+  { x: 1.197, y: -0.98 },
+  { x: 0.477, y: -0.98 },
+  { x: 0.477, y: -1.1 },
+  { x: -0.983, y: -1.1 },
+  { x: -0.983, y: -0.98 },
+  { x: -1.703, y: -0.98 }
+];
 var sot343_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(4),
@@ -43640,18 +44003,11 @@ var sot343_4 = (parameters) => {
     type: "pcb_silkscreen_path",
     stroke_width: 0.1
   };
-  const courtyardPadding = 0.25;
-  const crtMinX = minX - pl2 / 2 - courtyardPadding;
-  const crtMaxX = maxX + pl2 / 2 + courtyardPadding;
-  const crtMinY = -(offsetY + courtyardPadding);
-  const crtMaxY = offsetY + courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot343CourtyardOutline,
     layer: "top"
   };
   return [
@@ -44250,6 +44606,18 @@ var mountedpcbmodule = (raw_params) => {
   };
 };
 // src/fn/to92l.ts
+var to92lCourtyardOutline = [
+  { x: -1.45, y: 2.75 },
+  { x: -1.45, y: -1.85 },
+  { x: 4.05, y: -1.85 },
+  { x: 4.05, y: 2.75 }
+];
+var to92lInlineCourtyardOutline = [
+  { x: -1.55, y: 2.75 },
+  { x: -1.55, y: -1.85 },
+  { x: 3.95, y: -1.85 },
+  { x: 3.95, y: 2.75 }
+];
 var to92l_def = base_def.extend({
   fn: exports_external.string(),
   num_pins: exports_external.number().default(3),
@@ -44304,18 +44672,11 @@ var to92l = (raw_params) => {
     ]
   };
   const silkscreenRefText = silkscreenRef(cx2, cy2 + radius + 1, 0.5);
-  const courtyardPadding = 0.25;
-  const crtMinX = cx2 - radius - courtyardPadding;
-  const crtMaxX = cx2 + radius + courtyardPadding;
-  const crtMaxY = cy2 + radius + courtyardPadding;
-  const crtMinY = y_bottom - courtyardPadding;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: parameters.inline ? to92lInlineCourtyardOutline : to92lCourtyardOutline,
     layer: "top"
   };
   return {
