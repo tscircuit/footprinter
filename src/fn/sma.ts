@@ -57,22 +57,15 @@ export const sma = (
     pcb_silkscreen_path_id: "",
   }
 
-  const p_val = length.parse(parameters.p)
-  const pl_val = length.parse(parameters.pl)
-  const h_val = length.parse(parameters.h)
-  const w_val = length.parse(parameters.w)
-  const courtyardPadding = 0.25
-  const crtMinX = -(w_val / 2 + 0.5 + courtyardPadding)
-  const crtMaxX = p_val / 2 + pl_val / 2 + courtyardPadding
-  const crtMinY = -(h_val / 2 + courtyardPadding)
-  const crtMaxY = h_val / 2 + courtyardPadding
+  const courtyardWidthMm = 7
+  const courtyardHeightMm = 3.5
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

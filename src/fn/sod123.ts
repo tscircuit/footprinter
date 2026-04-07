@@ -25,21 +25,15 @@ export const sod123 = (
     0.3,
   )
 
-  const p_val = length.parse(parameters.p)
-  const pl_val = length.parse(parameters.pl)
-  const pw_val = length.parse(parameters.pw)
-  const courtyardPadding = 0.25
-  const crtMinX = -(p_val / 2 + pl_val / 2 + courtyardPadding)
-  const crtMaxX = p_val / 2 + pl_val / 2 + courtyardPadding
-  const crtMinY = -(pw_val / 2 + courtyardPadding)
-  const crtMaxY = pw_val / 2 + courtyardPadding
+  const courtyardWidthMm = 4.7
+  const courtyardHeightMm = 2.3
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

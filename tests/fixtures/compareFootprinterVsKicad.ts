@@ -35,6 +35,20 @@ type CourtyardElement = {
   points?: Point[]
 }
 
+function signedPolygonArea(points: Point[]): number {
+  let area = 0
+  for (let i = 0; i < points.length; i++) {
+    const current = points[i]!
+    const next = points[(i + 1) % points.length]!
+    area += current.x * next.y - next.x * current.y
+  }
+  return area / 2
+}
+
+function normalizePolygonWinding(points: Point[]): Point[] {
+  return signedPolygonArea(points) < 0 ? [...points].reverse() : points
+}
+
 function courtyardElementToPolygon(
   element: CourtyardElement,
 ): Flatten.Polygon | null {
@@ -60,8 +74,9 @@ function courtyardElementToPolygon(
     element.outline &&
     element.outline.length >= 3
   ) {
+    const normalizedPoints = normalizePolygonWinding(element.outline)
     return new Flatten.Polygon(
-      element.outline.map((point) => [point.x, point.y]),
+      normalizedPoints.map((point) => [point.x, point.y]),
     )
   }
 
@@ -70,8 +85,9 @@ function courtyardElementToPolygon(
     element.points &&
     element.points.length >= 3
   ) {
+    const normalizedPoints = normalizePolygonWinding(element.points)
     return new Flatten.Polygon(
-      element.points.map((point) => [point.x, point.y]),
+      normalizedPoints.map((point) => [point.x, point.y]),
     )
   }
 
