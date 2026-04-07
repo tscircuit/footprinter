@@ -169,14 +169,13 @@ export const msop = (
   const courtyardInnerHalfHeightMm = roundCourtyardCoord(
     Math.min(maxPadExtentY, bodyExtentY) + courtyardClearanceMm,
   )
-  const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
   const manualCourtyardOutline =
     parameters.num_pins === 8 &&
-    near(w, 3) &&
-    near(h, 3) &&
-    near(p, 0.65) &&
-    near(pl, 1.625) &&
-    near(pw, 0.4)
+    w === 3 &&
+    h === 3 &&
+    p === 0.65 &&
+    pl === 1.625 &&
+    pw === 0.4
       ? [
           { x: -3.18, y: 1.43 },
           { x: -1.75, y: 1.43 },
