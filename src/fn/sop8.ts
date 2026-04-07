@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
@@ -49,19 +49,33 @@ export const sop8 = (
     stroke_width: 0.1,
   }
 
-  const courtyardPadding = 0.25
-  const crtMinX = -parameters.w / 2 - courtyardPadding
-  const crtMaxX = parameters.w / 2 + courtyardPadding
-  const crtMinY = -sh / 2 - courtyardPadding
-  const crtMaxY = sh / 2 + 0.4 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const pinRowSpanY =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 - 1.395)
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.255)
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.5)
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: [
+      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
+      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
+      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
+      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
+      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
+      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
+      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
+      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
+      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
+      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
+      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
+      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
+    ],
   }
 
   return {
