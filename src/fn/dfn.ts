@@ -102,16 +102,17 @@ export const dfn = (
   )
   const roundUpToCourtyardGrid = (value: number) =>
     Math.ceil(value / 0.05) * 0.05
-  const rowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const courtyardHalfWidth = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
-  const courtyardHalfHeight = roundUpToCourtyardGrid(rowSpanY / 2 + 0.45)
+  const pinRowSpanY =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const courtyardHalfWidthMm = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
+  const courtyardHalfHeightMm = roundUpToCourtyardGrid(pinRowSpanY / 2 + 0.45)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: courtyardHalfWidth * 2,
-    height: courtyardHalfHeight * 2,
+    width: courtyardHalfWidthMm * 2,
+    height: courtyardHalfHeightMm * 2,
     layer: "top",
   }
 
