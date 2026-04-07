@@ -11,6 +11,7 @@ import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
+import { createPillCourtyardOutlinePoints } from "../helpers/create-pill-courtyard-outline-points"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -130,56 +131,12 @@ export const vson = (
           type: "pcb_courtyard_outline" as const,
           pcb_courtyard_outline_id: "",
           pcb_component_id: "",
-          outline: [
-            {
-              x: -courtyardOuterHalfWidthMm,
-              y: courtyardInnerHalfHeightMm,
-            },
-            {
-              x: -courtyardInnerHalfWidthMm,
-              y: courtyardInnerHalfHeightMm,
-            },
-            {
-              x: -courtyardInnerHalfWidthMm,
-              y: courtyardOuterHalfHeightMm,
-            },
-            {
-              x: courtyardInnerHalfWidthMm,
-              y: courtyardOuterHalfHeightMm,
-            },
-            {
-              x: courtyardInnerHalfWidthMm,
-              y: courtyardInnerHalfHeightMm,
-            },
-            {
-              x: courtyardOuterHalfWidthMm,
-              y: courtyardInnerHalfHeightMm,
-            },
-            {
-              x: courtyardOuterHalfWidthMm,
-              y: -courtyardInnerHalfHeightMm,
-            },
-            {
-              x: courtyardInnerHalfWidthMm,
-              y: -courtyardInnerHalfHeightMm,
-            },
-            {
-              x: courtyardInnerHalfWidthMm,
-              y: -courtyardOuterHalfHeightMm,
-            },
-            {
-              x: -courtyardInnerHalfWidthMm,
-              y: -courtyardOuterHalfHeightMm,
-            },
-            {
-              x: -courtyardInnerHalfWidthMm,
-              y: -courtyardInnerHalfHeightMm,
-            },
-            {
-              x: -courtyardOuterHalfWidthMm,
-              y: -courtyardInnerHalfHeightMm,
-            },
-          ],
+          outline: createPillCourtyardOutlinePoints({
+            outerHalfWidthMm: courtyardOuterHalfWidthMm,
+            innerHalfWidthMm: courtyardInnerHalfWidthMm,
+            outerHalfHeightMm: courtyardOuterHalfHeightMm,
+            innerHalfHeightMm: courtyardInnerHalfHeightMm,
+          }),
           layer: "top" as const,
         }
       })()
