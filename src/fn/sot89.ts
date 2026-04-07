@@ -2,11 +2,25 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+
+const sot89_3CourtyardOutline = [
+  { x: -3.0875, y: -2.5 },
+  { x: -3.0875, y: 2.5 },
+  { x: 2.0125, y: 2.5 },
+  { x: 2.0125, y: -2.5 },
+]
+
+const sot89_5CourtyardOutline = [
+  { x: -2.85, y: -2.5 },
+  { x: -2.85, y: 2.5 },
+  { x: 2.85, y: 2.5 },
+  { x: 2.85, y: -2.5 },
+]
 
 export const sot89_def = base_def.extend({
   fn: z.string(),
@@ -64,19 +78,11 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
     stroke_width: 0.1,
   }
 
-  const courtyardPadding = 0.25
-  const padOuterX = length / 2 + (padHeight + centerExtra) / 2
-  const crtMinX = -(padOuterX + courtyardPadding)
-  const crtMaxX = length / 2 - 1 + courtyardPadding
-  const crtMinY = -(height + courtyardPadding)
-  const crtMaxY = height + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot89_3CourtyardOutline,
     layer: "top",
   }
 
@@ -135,18 +141,11 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
     stroke_width: 0.1,
   }
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(2.6 + courtyardPadding)
-  const crtMaxX = 2.6 + courtyardPadding
-  const crtMinY = -(height + courtyardPadding)
-  const crtMaxY = height + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot89_5CourtyardOutline,
     layer: "top",
   }
 

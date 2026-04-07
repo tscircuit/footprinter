@@ -3,15 +3,19 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/to92l", async () => {
-  const { combinedFootprintElements, booleanDifferenceSvg } =
-    await compareFootprinterVsKicad(
-      "to92l",
-      "Package_TO_SOT_THT.pretty/TO-92L.circuit.json",
-    )
+  const {
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "to92l",
+    "Package_TO_SOT_THT.pretty/TO-92L.circuit.json",
+  )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
+  expect(courtyardDiffPercent).toBeLessThan(5)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_parity")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
@@ -20,15 +24,19 @@ test("parity/to92l", async () => {
 })
 
 test("parity/to92l_inline", async () => {
-  const { combinedFootprintElements, booleanDifferenceSvg } =
-    await compareFootprinterVsKicad(
-      "to92l_inline",
-      "Package_TO_SOT_THT.pretty/TO-92L_Inline.circuit.json",
-    )
+  const {
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "to92l_inline",
+    "Package_TO_SOT_THT.pretty/TO-92L_Inline.circuit.json",
+  )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
+  expect(courtyardDiffPercent).toBeLessThan(5)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_inline_parity")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

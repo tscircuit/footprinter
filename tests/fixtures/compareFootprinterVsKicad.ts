@@ -202,6 +202,33 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
   return getWidth(elm) * getHeight(elm)
 }
 
+function getPadsAndHolesCenter(elements: (PcbSmtPad | PcbPlatedHole)[]): Point {
+  const maxX = Math.max(...elements.map((e) => e.x))
+  const minX = Math.min(...elements.map((e) => e.x))
+  const maxY = Math.max(...elements.map((e) => e.y))
+  const minY = Math.min(...elements.map((e) => e.y))
+
+  return {
+    x: (minX + maxX) / 2,
+    y: (minY + maxY) / 2,
+  }
+}
+
+function translateCourtyardElements(
+  courtyards: CourtyardElement[],
+  dx: number,
+  dy: number,
+): CourtyardElement[] {
+  return courtyards.map((courtyard) => ({
+    ...courtyard,
+    center: courtyard.center
+      ? { x: courtyard.center.x + dx, y: courtyard.center.y + dy }
+      : courtyard.center,
+    outline: courtyard.outline?.map((p) => ({ x: p.x + dx, y: p.y + dy })),
+    points: courtyard.points?.map((p) => ({ x: p.x + dx, y: p.y + dy })),
+  }))
+}
+
 export async function compareFootprinterVsKicad(
   footprinterString: string,
   kicadPath: string,
@@ -269,8 +296,15 @@ export async function compareFootprinterVsKicad(
 
   const avgRelDiff = Math.abs(refArea - kicadArea) / (refArea + kicadArea) || 0
   const diffPercent = avgRelDiff * 100
+  const referenceCenter = getPadsAndHolesCenter(referencePadsAndHoles)
+  const kicadCenter = getPadsAndHolesCenter(kicadPadsAndHoles)
+  const normalizedKicadCourtyardElements = translateCourtyardElements(
+    kicadCourtyardElements,
+    referenceCenter.x - kicadCenter.x,
+    referenceCenter.y - kicadCenter.y,
+  )
   const { courtyardDiffPercent, courtyardIntersectionOverUnionPercent } =
-    getCourtyardMetrics(fpCourtyardElements, kicadCourtyardElements)
+    getCourtyardMetrics(fpCourtyardElements, normalizedKicadCourtyardElements)
 
   console.log(
     `📐 ${normalizedFootprintName} courtyard IoU: ${courtyardIntersectionOverUnionPercent.toFixed(2)}% (diff ${courtyardDiffPercent.toFixed(2)}%)`,

@@ -1,12 +1,27 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
+
+const sot343CourtyardOutline = [
+  { x: -1.703, y: 0.98 },
+  { x: -0.983, y: 0.98 },
+  { x: -0.983, y: 1.1 },
+  { x: 0.477, y: 1.1 },
+  { x: 0.477, y: 0.98 },
+  { x: 1.197, y: 0.98 },
+  { x: 1.197, y: -0.98 },
+  { x: 0.477, y: -0.98 },
+  { x: 0.477, y: -1.1 },
+  { x: -0.983, y: -1.1 },
+  { x: -0.983, y: -0.98 },
+  { x: -1.703, y: -0.98 },
+]
 
 export const sot343_def = base_def.extend({
   fn: z.string(),
@@ -127,18 +142,11 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     stroke_width: 0.1,
   }
 
-  const courtyardPadding = 0.25
-  const crtMinX = minX - pl / 2 - courtyardPadding
-  const crtMaxX = maxX + pl / 2 + courtyardPadding
-  const crtMinY = -(offsetY + courtyardPadding)
-  const crtMaxY = offsetY + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot343CourtyardOutline,
     layer: "top",
   }
 

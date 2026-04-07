@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -8,6 +8,13 @@ import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+
+const sot963CourtyardOutline = [
+  { x: -0.8, y: 0.75 },
+  { x: 0.8, y: 0.75 },
+  { x: 0.8, y: -0.75 },
+  { x: -0.8, y: -0.75 },
+]
 
 export const sot963_def = base_def.extend({
   fn: z.string(),
@@ -78,18 +85,11 @@ export const sot963 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.4, 0.25)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(w / 2 + courtyardPadding)
-  const crtMaxX = w / 2 + courtyardPadding
-  const crtMinY = -(Math.max(h / 2, p + pw / 2) + courtyardPadding)
-  const crtMaxY = Math.max(h / 2, p + pw / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot963CourtyardOutline,
     layer: "top",
   }
 

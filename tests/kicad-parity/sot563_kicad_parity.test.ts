@@ -3,15 +3,19 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/sot563", async () => {
-  const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
-    await compareFootprinterVsKicad(
-      "sot563",
-      "Package_TO_SOT_SMD.pretty/SOT-563.circuit.json",
-    )
+  const {
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "sot563",
+    "Package_TO_SOT_SMD.pretty/SOT-563.circuit.json",
+  )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
+  expect(courtyardDiffPercent).toBeLessThan(5)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot563")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
