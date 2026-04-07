@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
@@ -8,6 +8,44 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+
+const sot23_3CourtyardOutline = [
+  { x: -2.05, y: 1.5 },
+  { x: -1.05, y: 1.5 },
+  { x: -1.05, y: 1.7 },
+  { x: 1.05, y: 1.7 },
+  { x: 1.05, y: 0.55 },
+  { x: 2.05, y: 0.55 },
+  { x: 2.05, y: -0.55 },
+  { x: 1.05, y: -0.55 },
+  { x: 1.05, y: -1.7 },
+  { x: -1.05, y: -1.7 },
+  { x: -1.05, y: -1.5 },
+  { x: -2.05, y: -1.5 },
+  { x: -2.05, y: -0.39 },
+  { x: -1.05, y: -0.39 },
+  { x: -1.05, y: 0.39 },
+  { x: -2.05, y: 0.39 },
+]
+
+const sot23_5CourtyardOutline = [
+  { x: -2.05, y: 1.5 },
+  { x: -1.05, y: 1.5 },
+  { x: -1.05, y: 1.7 },
+  { x: 1.05, y: 1.7 },
+  { x: 1.05, y: 1.5 },
+  { x: 2.05, y: 1.5 },
+  { x: 2.05, y: 0.39 },
+  { x: 1.05, y: 0.39 },
+  { x: 1.05, y: -0.39 },
+  { x: 2.05, y: -0.39 },
+  { x: 2.05, y: -1.5 },
+  { x: 1.05, y: -1.5 },
+  { x: 1.05, y: -1.7 },
+  { x: -1.05, y: -1.7 },
+  { x: -1.05, y: -1.5 },
+  { x: -2.05, y: -1.5 },
+]
 
 export const sot23_def = base_def.extend({
   fn: z.string(),
@@ -110,21 +148,11 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     0.3,
   )
 
-  const courtyardPadding = 0.25
-  const pl_val = Number.parseFloat(parameters.pl)
-  const pw_val = Number.parseFloat(parameters.pw)
-  const p_val = Number.parseFloat(parameters.p)
-  const crtMinX = -1.1375 - pl_val / 2 - courtyardPadding
-  const crtMaxX = 1.1375 + pl_val / 2 + courtyardPadding
-  const crtMinY = -(p_val + pw_val / 2) - courtyardPadding
-  const crtMaxY = p_val + pw_val / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot23_3CourtyardOutline,
     layer: "top",
   }
 
@@ -234,24 +262,11 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     stroke_width: 0.05,
   }
 
-  const courtyardPadding = 0.25
-  const pl_val = Number.parseFloat(parameters.pl)
-  const pw_val = Number.parseFloat(parameters.pw)
-  const p_val = Number.parseFloat(parameters.p)
-  const silkY = height / 2 + p_val / 1.3
-  const padYExtent = p_val + pw_val / 2
-  const padXExtent = 1.1375 + pl_val / 2
-  const crtMinX = -padXExtent - courtyardPadding
-  const crtMaxX = padXExtent + courtyardPadding
-  const crtMinY = -Math.max(silkY, padYExtent) - courtyardPadding
-  const crtMaxY = Math.max(silkY, padYExtent) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: sot23_5CourtyardOutline,
     layer: "top",
   }
 

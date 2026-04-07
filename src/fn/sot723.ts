@@ -1,7 +1,7 @@
 import {
   length,
   type AnyCircuitElement,
-  type PcbCourtyardRect,
+  type PcbCourtyardOutline,
 } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
@@ -29,22 +29,18 @@ export const sot723 = (
     0.2,
   )
 
-  const p_val = length.parse(parameters.p)
-  const pl_val = length.parse(parameters.pl)
-  const pw_val = length.parse(parameters.pw)
-  const h_val = length.parse(parameters.h)
-  const courtyardPadding = 0.25
-  const crtMinX = -(p_val + pl_val / 2 + courtyardPadding)
-  const crtMaxX = p_val + pl_val / 2 + courtyardPadding
-  const crtMinY = -(Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding)
-  const crtMaxY = Math.max(h_val / 2, 0.4 + pw_val / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyardWidthMm = 1.8
+  const courtyardHeightMm = 1.8
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: [
+      { x: -courtyardWidthMm / 2, y: courtyardHeightMm / 2 },
+      { x: courtyardWidthMm / 2, y: courtyardHeightMm / 2 },
+      { x: courtyardWidthMm / 2, y: -courtyardHeightMm / 2 },
+      { x: -courtyardWidthMm / 2, y: -courtyardHeightMm / 2 },
+    ],
     layer: "top",
   }
 

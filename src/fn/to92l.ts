@@ -4,11 +4,25 @@ import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "src/helpers/zod/base_def"
+
+const to92lCourtyardOutline = [
+  { x: -1.45, y: 2.75 },
+  { x: -1.45, y: -1.85 },
+  { x: 4.05, y: -1.85 },
+  { x: 4.05, y: 2.75 },
+]
+
+const to92lInlineCourtyardOutline = [
+  { x: -1.55, y: 2.75 },
+  { x: -1.55, y: -1.85 },
+  { x: 3.95, y: -1.85 },
+  { x: 3.95, y: 2.75 },
+]
 
 export const to92l_def = base_def.extend({
   fn: z.string(),
@@ -83,18 +97,13 @@ export const to92l = (
     0.5,
   )
 
-  const courtyardPadding = 0.25
-  const crtMinX = cx - radius - courtyardPadding
-  const crtMaxX = cx + radius + courtyardPadding
-  const crtMaxY = cy + radius + courtyardPadding
-  const crtMinY = y_bottom - courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: parameters.inline
+      ? to92lInlineCourtyardOutline
+      : to92lCourtyardOutline,
     layer: "top",
   }
 
