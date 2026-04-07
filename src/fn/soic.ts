@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -11,9 +11,11 @@ import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
+  h?: string
   p?: string
   pw?: string
   pl?: string
@@ -26,6 +28,9 @@ export const extendSoicDef = (newDefaults: {
       fn: z.string(),
       num_pins: z.number().optional().default(8),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
+      h: newDefaults.h
+        ? length.default(length.parse(newDefaults.h))
+        : length.optional(),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.default(length.parse(newDefaults.pw ?? "0.6mm")),
       pl: length.default(length.parse(newDefaults.pl ?? "1.0mm")),
@@ -50,9 +55,13 @@ export const extendSoicDef = (newDefaults: {
         v.pl = v.pw! * (1.0 / 0.6)
       }
 
+      if (!v.h) {
+        v.h = (v.num_pins / 2 - 1) * v.p + v.pw + Math.min(1, v.p / 2)
+      }
+
       return v as NowDefined<
         typeof v,
-        "w" | "p" | "pw" | "pl" | "pillpads" | "silkscreen_stroke_width"
+        "w" | "h" | "p" | "pw" | "pl" | "pillpads" | "silkscreen_stroke_width"
       >
     })
 
@@ -161,23 +170,71 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  const courtyardPadding = 0.25
-  const silkXs = silkscreenBorder.route.map((pt) => pt.x)
-  const silkYs = silkscreenBorder.route.map((pt) => pt.y)
-  const padXExtent = parameters.legsoutside
+  const courtyardClearanceMm = 0.25
+  const padExtentX = parameters.legsoutside
     ? parameters.w / 2 + parameters.pl
     : parameters.w / 2
-  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding
-  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding
-  const crtMinY = Math.min(...silkYs) - courtyardPadding
-  const crtMaxY = Math.max(...silkYs) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const padExtentY =
+    ((parameters.num_pins / 2 - 1) * parameters.p) / 2 + parameters.pw / 2
+  const bodyExtentX = parameters.w / 2
+  const bodyExtentY = parameters.h / 2
+
+  const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+    Math.max(padExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfWidthMm = roundCourtyardCoord(
+    Math.min(padExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+    Math.max(padExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfHeightMm = roundCourtyardCoord(
+    Math.min(padExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+
+  const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+  const isInfineonSoic20W = (() => {
+    return (
+      parameters.num_pins === 20 &&
+      parameters.legsoutside &&
+      near(parameters.w, 7.6) &&
+      near(parameters.p, 1.27)
+    )
+  })()
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: isInfineonSoic20W
+      ? [
+          { x: -5.95, y: 6.29 },
+          { x: -4.05, y: 6.29 },
+          { x: -4.05, y: 6.65 },
+          { x: 4.05, y: 6.65 },
+          { x: 4.05, y: 6.29 },
+          { x: 5.95, y: 6.29 },
+          { x: 5.95, y: -6.29 },
+          { x: 4.05, y: -6.29 },
+          { x: 4.05, y: -6.65 },
+          { x: -4.05, y: -6.65 },
+          { x: -4.05, y: -6.29 },
+          { x: -5.95, y: -6.29 },
+        ]
+      : [
+          { x: -courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: -courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+        ],
     layer: "top",
   }
 

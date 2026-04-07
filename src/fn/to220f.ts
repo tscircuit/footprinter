@@ -1,4 +1,4 @@
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { mm } from "@tscircuit/mm"
 import { length } from "circuit-json"
 import { z } from "zod"
@@ -78,12 +78,33 @@ export const to220f = (
   )
 
   // Replace plated holes in base result with our corrected ones
-  const nonHoleElements = baseResult.circuitJson.filter(
-    (e: any) => e.type !== "pcb_plated_hole",
-  )
+  const nonHoleElements =
+    numPins === 3
+      ? baseResult.circuitJson.filter(
+          (e: any) =>
+            e.type !== "pcb_plated_hole" && e.type !== "pcb_courtyard_rect",
+        )
+      : baseResult.circuitJson.filter((e: any) => e.type !== "pcb_plated_hole")
+
+  const coutryard: PcbCourtyardRect | null =
+    numPins === 3
+      ? {
+          type: "pcb_courtyard_rect",
+          pcb_courtyard_rect_id: "",
+          pcb_component_id: "",
+          center: { x: 0, y: -0.305 },
+          width: 10.76,
+          height: 5.21,
+          layer: "top",
+        }
+      : null
 
   return {
-    circuitJson: [...newHoles, ...nonHoleElements],
+    circuitJson: [
+      ...newHoles,
+      ...nonHoleElements,
+      ...(coutryard ? [coutryard as AnyCircuitElement] : []),
+    ],
     parameters: { ...parameters, p: TO220F_PITCH_MM, num_pins: numPins },
   }
 }

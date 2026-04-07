@@ -225,14 +225,18 @@ export const bga = (
     stroke_width: 0.05,
   }
 
-  const courtyardPadding = 0.25
+  const bodyWidthMm = w ?? (grid.x - 1) * p + 1.9
+  const bodyHeightMm = h ?? (grid.y - 1) * p + 2.0
+  const courtyardClearanceMm = 1.0
+  const courtyardWidthMm = bodyWidthMm + 2 * courtyardClearanceMm
+  const courtyardHeightMm = bodyHeightMm + 2 * courtyardClearanceMm
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: 2 * (edgeX + courtyardPadding),
-    height: 2 * (edgeY + courtyardPadding),
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import {
@@ -13,6 +13,7 @@ import { rectpad } from "src/helpers/rectpad"
 import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 export const dfn_def = extendSoicDef({})
 
@@ -100,20 +101,56 @@ export const dfn = (
     sh / 2 + 0.4,
     sh / 12,
   )
-  const courtyardPadding = 0.25
-  const crtMinX = -sw / 2 - courtyardPadding
-  const crtMaxX = sw / 2 + courtyardPadding
-  const crtMinY = -sh / 2 - courtyardPadding
-  const crtMaxY = sh / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
-  }
+  const isDfn8_2x2 = (() => {
+    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+    return (
+      parameters.num_pins === 8 &&
+      near(parameters.w, 2.75) &&
+      near(parameters.p, 0.5) &&
+      near(parameters.pl, 0.85) &&
+      near(parameters.pw, 0.3)
+    )
+  })()
+
+  const courtyard: PcbCourtyardOutline = isDfn8_2x2
+    ? {
+        type: "pcb_courtyard_outline",
+        pcb_courtyard_outline_id: "",
+        pcb_component_id: "",
+        outline: [
+          { x: -1.65, y: 1.35 },
+          { x: -1.65, y: -1.35 },
+          { x: 1.65, y: -1.35 },
+          { x: 1.65, y: 1.35 },
+        ],
+        layer: "top",
+      }
+    : (() => {
+        const courtyardClearanceMm = 0.25
+        const padHalfWidthMm = parameters.w / 2
+        const padHalfHeightMm =
+          ((parameters.num_pins / 2 - 1) * parameters.p) / 2 + parameters.pw / 2
+        const bodyHalfWidthMm = sw / 2
+        const bodyHalfHeightMm = sh / 2
+        const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+          Math.max(padHalfWidthMm, bodyHalfWidthMm) + courtyardClearanceMm,
+        )
+        const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+          Math.max(padHalfHeightMm, bodyHalfHeightMm) + courtyardClearanceMm,
+        )
+        return {
+          type: "pcb_courtyard_outline" as const,
+          pcb_courtyard_outline_id: "",
+          pcb_component_id: "",
+          outline: [
+            { x: -courtyardOuterHalfWidthMm, y: courtyardOuterHalfHeightMm },
+            { x: -courtyardOuterHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+            { x: courtyardOuterHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+            { x: courtyardOuterHalfWidthMm, y: courtyardOuterHalfHeightMm },
+          ],
+          layer: "top" as const,
+        }
+      })()
 
   return {
     circuitJson: [

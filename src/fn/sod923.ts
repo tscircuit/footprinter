@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -57,16 +57,25 @@ export const sod923 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const courtyardWidthMm = 1.5
-  const courtyardHeightMm = 0.9
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: 0 },
-    width: courtyardWidthMm,
-    height: courtyardHeightMm,
     layer: "top",
+    outline: [
+      { x: -0.75, y: 0.28 },
+      { x: -0.75, y: -0.28 },
+      { x: -0.55, y: -0.28 },
+      { x: -0.55, y: -0.45 },
+      { x: 0.55, y: -0.45 },
+      { x: 0.55, y: -0.28 },
+      { x: 0.75, y: -0.28 },
+      { x: 0.75, y: 0.28 },
+      { x: 0.55, y: 0.28 },
+      { x: 0.55, y: 0.45 },
+      { x: -0.55, y: 0.45 },
+      { x: -0.55, y: 0.28 },
+    ],
   }
 
   return {

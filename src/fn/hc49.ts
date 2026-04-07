@@ -1,7 +1,7 @@
 import {
   length,
   type AnyCircuitElement,
-  type PcbCourtyardRect,
+  type PcbCourtyardOutline,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -34,6 +34,29 @@ export const hc49_def = base_def.extend({
 })
 
 export type Hc49Def = z.input<typeof hc49_def>
+
+const hc49CourtyardOutlineAtPin1 = [
+  { x: -0.76, y: 2.83 },
+  { x: 5.64, y: 2.83 },
+  { x: 6.607917005611641, y: 2.659330116824121 },
+  { x: 7.459088935412906, y: 2.1679057740267087 },
+  { x: 8.09085189270996, y: 1.415000000000001 },
+  { x: 8.427005941024548, y: 0.4914243427974141 },
+  { x: 8.427005941024548, y: -0.4914243427974115 },
+  { x: 8.090851892709962, y: -1.4149999999999985 },
+  { x: 7.459088935412907, y: -2.167905774026706 },
+  { x: 6.607917005611643, y: -2.659330116824119 },
+  { x: 5.64, y: -2.83 },
+  { x: -0.7600000000000002, y: -2.83 },
+  { x: -1.7279170056116429, y: -2.659330116824121 },
+  { x: -2.5790889354129063, y: -2.167905774026708 },
+  { x: -3.2108518927099614, y: -1.4149999999999998 },
+  { x: -3.5470059410245485, y: -0.4914243427974127 },
+  { x: -3.5470059410245485, y: 0.49142434279741326 },
+  { x: -3.210851892709961, y: 1.4150000000000003 },
+  { x: -2.5790889354129067, y: 2.1679057740267074 },
+  { x: -1.7279170056116417, y: 2.659330116824121 },
+]
 
 export const hc49 = (
   raw_params: Hc49Def,
@@ -70,18 +93,14 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(w / 2 + radius + courtyardPadding)
-  const crtMaxX = w / 2 + radius + courtyardPadding
-  const crtMinY = -(radius + courtyardPadding)
-  const crtMaxY = radius + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: hc49CourtyardOutlineAtPin1.map((pt) => ({
+      x: pt.x - p / 2,
+      y: pt.y,
+    })),
     layer: "top",
   }
 

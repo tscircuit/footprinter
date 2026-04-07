@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -8,6 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -84,10 +85,14 @@ export const msop = (
   const pw = length.parse(parameters.pw || defaults.pw)
 
   const pads: AnyCircuitElement[] = []
+  let maxPadExtentX = 0
+  let maxPadExtentY = 0
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p)
     pads.push(rectpad(i + 1, x, y, pl, pw))
+    maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + pl / 2)
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + pw / 2)
   }
 
   const silkscreenBoxWidth = w
@@ -149,19 +154,65 @@ export const msop = (
     0.3,
   )
 
-  const courtyardPadding = 0.25
-  const padCenterX = length.parse("2mm")
-  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
-  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyardClearanceMm = 0.25
+  const bodyExtentX = w / 2
+  const bodyExtentY = h / 2
+  const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+    Math.max(maxPadExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfWidthMm = roundCourtyardCoord(
+    Math.min(maxPadExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+    Math.max(maxPadExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfHeightMm = roundCourtyardCoord(
+    Math.min(maxPadExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+  const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+  const isMsop8_3x3 = (() => {
+    return (
+      parameters.num_pins === 8 &&
+      near(w, 3) &&
+      near(h, 3) &&
+      near(p, 0.65) &&
+      near(pl, 1.625) &&
+      near(pw, 0.4)
+    )
+  })()
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: isMsop8_3x3
+      ? [
+          { x: -3.18, y: 1.43 },
+          { x: -1.75, y: 1.43 },
+          { x: -1.75, y: 1.75 },
+          { x: 1.75, y: 1.75 },
+          { x: 1.75, y: 1.43 },
+          { x: 3.18, y: 1.43 },
+          { x: 3.18, y: -1.43 },
+          { x: 1.75, y: -1.43 },
+          { x: 1.75, y: -1.75 },
+          { x: -1.75, y: -1.75 },
+          { x: -1.75, y: -1.43 },
+          { x: -3.18, y: -1.43 },
+        ]
+      : [
+          { x: -courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+          { x: courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+          { x: -courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+          { x: -courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+        ],
     layer: "top",
   }
 

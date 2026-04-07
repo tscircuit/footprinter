@@ -268,11 +268,13 @@ export const jst = (
   } else {
     // zh
     const pinSpan = (numPins - 1) * p
-    const bodyHalfW = pinSpan / 2 + 1.5
-    crtMinX = -(bodyHalfW + courtyardPadding)
-    crtMaxX = bodyHalfW + courtyardPadding
-    crtMinY = -h / 2 - courtyardPadding
-    crtMaxY = h / 2 + courtyardPadding
+    const courtyardWidthMm = pinSpan + 4
+    const courtyardHeightMm = 4.5
+    const courtyardCenterY = -0.45
+    crtMinX = -courtyardWidthMm / 2
+    crtMaxX = courtyardWidthMm / 2
+    crtMinY = courtyardCenterY - courtyardHeightMm / 2
+    crtMaxY = courtyardCenterY + courtyardHeightMm / 2
   }
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",

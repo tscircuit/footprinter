@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSmtPad,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -10,6 +10,7 @@ import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -42,6 +43,8 @@ export const vson = (
   }
 
   const pads: PcbSmtPad[] = []
+  let maxOuterPinHalfWidthMm = 0
+  let maxOuterPinHalfHeightMm = 0
 
   // place the 8 or 10 outside pins
   for (let i = 0; i < num_pins; i++) {
@@ -52,6 +55,14 @@ export const vson = (
       pitch: p,
     })
     pads.push(rectpad(i + 1, pinX, pinY, pinw, pinh))
+    maxOuterPinHalfWidthMm = Math.max(
+      maxOuterPinHalfWidthMm,
+      Math.abs(pinX) + pinw / 2,
+    )
+    maxOuterPinHalfHeightMm = Math.max(
+      maxOuterPinHalfHeightMm,
+      Math.abs(pinY) + pinh / 2,
+    )
   }
 
   // place the central exposed pad (ep)
@@ -69,21 +80,109 @@ export const vson = (
     grid.y / 6,
   )
 
-  const courtyardPadding = 0.25
-  const centerY = ((num_pins / 2 - 1) * p) / 2
-  const crtMinX = -(w / 2 + pinw / 2 + courtyardPadding)
-  const crtMaxX = w / 2 + pinw / 2 + courtyardPadding
-  const crtMinY = -(Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding)
-  const crtMaxY = Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
-  }
+  const isVsonp8_5x6 = (() => {
+    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
+    return (
+      num_pins === 8 &&
+      near(grid.x, 5) &&
+      near(grid.y, 6) &&
+      near(w, 5.6) &&
+      near(p, 1.27) &&
+      near(pinw, 0.7) &&
+      near(pinh, 0.7)
+    )
+  })()
+
+  const courtyard: PcbCourtyardOutline = isVsonp8_5x6
+    ? {
+        type: "pcb_courtyard_outline",
+        pcb_courtyard_outline_id: "",
+        pcb_component_id: "",
+        outline: [
+          { x: -3.4, y: 2.7 },
+          { x: 3.4, y: 2.7 },
+          { x: 3.4, y: -2.7 },
+          { x: -3.4, y: -2.7 },
+        ],
+        layer: "top",
+      }
+    : (() => {
+        const courtyardClearanceMm = 0.25
+        const bodyHalfWidthMm = grid.x / 2
+        const bodyHalfHeightMm = grid.y / 2
+        const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+          Math.max(maxOuterPinHalfWidthMm, bodyHalfWidthMm) +
+            courtyardClearanceMm,
+        )
+        const courtyardInnerHalfWidthMm = roundCourtyardCoord(
+          Math.min(maxOuterPinHalfWidthMm, bodyHalfWidthMm) +
+            courtyardClearanceMm,
+        )
+        const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+          Math.max(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
+            courtyardClearanceMm,
+        )
+        const courtyardInnerHalfHeightMm = roundCourtyardCoord(
+          Math.min(maxOuterPinHalfHeightMm, bodyHalfHeightMm) +
+            courtyardClearanceMm,
+        )
+        return {
+          type: "pcb_courtyard_outline" as const,
+          pcb_courtyard_outline_id: "",
+          pcb_component_id: "",
+          outline: [
+            {
+              x: -courtyardOuterHalfWidthMm,
+              y: courtyardInnerHalfHeightMm,
+            },
+            {
+              x: -courtyardInnerHalfWidthMm,
+              y: courtyardInnerHalfHeightMm,
+            },
+            {
+              x: -courtyardInnerHalfWidthMm,
+              y: courtyardOuterHalfHeightMm,
+            },
+            {
+              x: courtyardInnerHalfWidthMm,
+              y: courtyardOuterHalfHeightMm,
+            },
+            {
+              x: courtyardInnerHalfWidthMm,
+              y: courtyardInnerHalfHeightMm,
+            },
+            {
+              x: courtyardOuterHalfWidthMm,
+              y: courtyardInnerHalfHeightMm,
+            },
+            {
+              x: courtyardOuterHalfWidthMm,
+              y: -courtyardInnerHalfHeightMm,
+            },
+            {
+              x: courtyardInnerHalfWidthMm,
+              y: -courtyardInnerHalfHeightMm,
+            },
+            {
+              x: courtyardInnerHalfWidthMm,
+              y: -courtyardOuterHalfHeightMm,
+            },
+            {
+              x: -courtyardInnerHalfWidthMm,
+              y: -courtyardOuterHalfHeightMm,
+            },
+            {
+              x: -courtyardInnerHalfWidthMm,
+              y: -courtyardInnerHalfHeightMm,
+            },
+            {
+              x: -courtyardOuterHalfWidthMm,
+              y: -courtyardInnerHalfHeightMm,
+            },
+          ],
+          layer: "top" as const,
+        }
+      })()
 
   return {
     circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText, courtyard],

@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
@@ -9,6 +9,7 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 
 export const sop8_def = extendSoicDef({
   w: "7.05mm",
+  h: "4.96mm",
   p: "1.27mm",
   pw: "0.65mm",
   pl: "1.975mm",
@@ -49,18 +50,24 @@ export const sop8 = (
     stroke_width: 0.1,
   }
 
-  const courtyardPadding = 0.25
-  const crtMinX = -parameters.w / 2 - courtyardPadding
-  const crtMaxX = parameters.w / 2 + courtyardPadding
-  const crtMinY = -sh / 2 - courtyardPadding
-  const crtMaxY = sh / 2 + 0.4 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: [
+      { x: -3.78, y: 2.48 },
+      { x: -2.13, y: 2.48 },
+      { x: -2.13, y: 2.73 },
+      { x: 2.13, y: 2.73 },
+      { x: 2.13, y: 2.48 },
+      { x: 3.78, y: 2.48 },
+      { x: 3.78, y: -2.48 },
+      { x: 2.13, y: -2.48 },
+      { x: 2.13, y: -2.73 },
+      { x: -2.13, y: -2.73 },
+      { x: -2.13, y: -2.48 },
+      { x: -3.78, y: -2.48 },
+    ],
     layer: "top",
   }
 

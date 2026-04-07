@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -8,6 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -63,11 +64,15 @@ export const vssop = (
 
   const pads: AnyCircuitElement[] = []
   const half = parameters.num_pins / 2
+  let maxPadExtentX = 0
+  let maxPadExtentY = 0
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getVssopPadCoord(parameters.num_pins, i + 1, w, p)
     const logical_pn = i < half ? i + 1 : parameters.num_pins - (i - half)
     pads.push(rectpad(logical_pn, x, y, pl, pw))
+    maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + pl / 2)
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + pw / 2)
   }
 
   const silkscreenBoxWidth = w
@@ -129,20 +134,39 @@ export const vssop = (
     0.3,
   )
 
-  const courtyardPadding = 0.25
-  const padCenterX =
-    parameters.num_pins === 10 ? length.parse("2.2mm") : length.parse("1.8mm")
-  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
-  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyardClearanceMm = 0.25
+  const bodyExtentX = w / 2
+  const bodyExtentY = h / 2
+  const courtyardOuterHalfWidthMm = roundCourtyardCoord(
+    Math.max(maxPadExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfWidthMm = roundCourtyardCoord(
+    Math.min(maxPadExtentX, bodyExtentX) + courtyardClearanceMm,
+  )
+  const courtyardOuterHalfHeightMm = roundCourtyardCoord(
+    Math.max(maxPadExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+  const courtyardInnerHalfHeightMm = roundCourtyardCoord(
+    Math.min(maxPadExtentY, bodyExtentY) + courtyardClearanceMm,
+  )
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: [
+      { x: -courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+      { x: -courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+      { x: -courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+      { x: courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+      { x: courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+      { x: courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+      { x: courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+      { x: courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+      { x: courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+      { x: -courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+      { x: -courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+      { x: -courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+    ],
     layer: "top",
   }
 

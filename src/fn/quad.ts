@@ -1,9 +1,9 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { optional, z } from "zod"
+import { z } from "zod"
 import { length } from "circuit-json"
 import type { NowDefined } from "../helpers/zod/now-defined"
 import { rectpad } from "../helpers/rectpad"
@@ -12,6 +12,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -26,6 +27,8 @@ export const base_quad_def = base_def.extend({
   num_pins: z.number().optional().default(64),
   w: length.optional(),
   h: length.optional(),
+  courtyard_w_mm: length.optional(),
+  courtyard_h_mm: length.optional(),
   p: length.default(length.parse("0.5mm")),
   pw: length.optional(),
   pl: length.optional(),
@@ -40,6 +43,12 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.h = v.w
   } else if (!v.w && v.h) {
     v.w = v.h
+  }
+
+  if (v.courtyard_w_mm && !v.courtyard_h_mm) {
+    v.courtyard_h_mm = v.courtyard_w_mm
+  } else if (!v.courtyard_w_mm && v.courtyard_h_mm) {
+    v.courtyard_w_mm = v.courtyard_h_mm
   }
 
   const side_pin_count = v.num_pins / 4
@@ -76,6 +85,31 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
 export const quad_def = base_quad_def.transform(quadTransform)
 
 const SIDES_CCW = ["left", "bottom", "right", "top"] as const
+
+const compressOutlinePoints = (points: { x: number; y: number }[]) => {
+  const compressed: { x: number; y: number }[] = []
+  for (const point of points) {
+    const last = compressed[compressed.length - 1]
+    if (
+      !last ||
+      Math.abs(last.x - point.x) > 1e-9 ||
+      Math.abs(last.y - point.y) > 1e-9
+    ) {
+      compressed.push(point)
+    }
+  }
+  const first = compressed[0]
+  const last = compressed[compressed.length - 1]
+  if (
+    first &&
+    last &&
+    Math.abs(first.x - last.x) < 1e-9 &&
+    Math.abs(first.y - last.y) < 1e-9
+  ) {
+    compressed.pop()
+  }
+  return compressed
+}
 
 export const getQuadCoords = (params: {
   pin_count: number
@@ -118,6 +152,10 @@ export const quad = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
+  let verticalPadExtentX = 0
+  let verticalPadExtentY = 0
+  let horizontalPadExtentX = 0
+  let horizontalPadExtentY = 0
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
@@ -140,6 +178,16 @@ export const quad = (
     let pl = parameters.pl
     if (orientation === "vert") {
       ;[pw, pl] = [pl, pw]
+    }
+
+    const padExtentX = Math.abs(x) + pw / 2
+    const padExtentY = Math.abs(y) + pl / 2
+    if (orientation === "vert") {
+      verticalPadExtentX = Math.max(verticalPadExtentX, padExtentX)
+      verticalPadExtentY = Math.max(verticalPadExtentY, padExtentY)
+    } else {
+      horizontalPadExtentX = Math.max(horizontalPadExtentX, padExtentX)
+      horizontalPadExtentY = Math.max(horizontalPadExtentY, padExtentY)
     }
 
     const pn = pin_map[i + 1]!
@@ -308,24 +356,114 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
-  const courtyardPadding = 0.25
-  const padExtentX = parameters.legsoutside
-    ? parameters.w / 2 + parameters.pl
-    : parameters.w / 2
-  const padExtentY = parameters.legsoutside
-    ? parameters.h / 2 + parameters.pl
-    : parameters.h / 2
-  const crtMinX = -padExtentX - courtyardPadding
-  const crtMaxX = padExtentX + courtyardPadding
-  const crtMinY = -padExtentY - courtyardPadding
-  const crtMaxY = padExtentY + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const courtyardClearanceMm = 0.25
+  const courtyardBodyWidthMm = parameters.courtyard_w_mm ?? parameters.w
+  const courtyardBodyHeightMm = parameters.courtyard_h_mm ?? parameters.h
+  const bodyHalfWidthMm = courtyardBodyWidthMm / 2 + courtyardClearanceMm
+  const bodyHalfHeightMm = courtyardBodyHeightMm / 2 + courtyardClearanceMm
+  const courtyardOuterHalfWidthMm = Math.max(
+    verticalPadExtentX + courtyardClearanceMm,
+    bodyHalfWidthMm,
+  )
+  const courtyardOuterHalfHeightMm = Math.max(
+    horizontalPadExtentY + courtyardClearanceMm,
+    bodyHalfHeightMm,
+  )
+  const courtyardInnerHalfWidthMm = Math.min(
+    horizontalPadExtentX + courtyardClearanceMm,
+    bodyHalfWidthMm,
+  )
+  const courtyardInnerHalfHeightMm = Math.min(
+    verticalPadExtentY + courtyardClearanceMm,
+    bodyHalfHeightMm,
+  )
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: compressOutlinePoints([
+      {
+        x: -roundCourtyardCoord(courtyardOuterHalfWidthMm),
+        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(bodyHalfWidthMm),
+        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(bodyHalfWidthMm),
+        y: roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: roundCourtyardCoord(courtyardOuterHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: roundCourtyardCoord(courtyardOuterHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(bodyHalfWidthMm),
+        y: roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(bodyHalfWidthMm),
+        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardOuterHalfWidthMm),
+        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardOuterHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(bodyHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(bodyHalfWidthMm),
+        y: -roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: -roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardOuterHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardOuterHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
+        y: -roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(bodyHalfWidthMm),
+        y: -roundCourtyardCoord(bodyHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(bodyHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+      {
+        x: -roundCourtyardCoord(courtyardOuterHalfWidthMm),
+        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
+      },
+    ]),
     layer: "top",
   }
 
