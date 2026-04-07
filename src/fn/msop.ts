@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -149,20 +149,32 @@ export const msop = (
     0.3,
   )
 
-  const courtyardPadding = 0.25
-  const padCenterX = length.parse("2mm")
-  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
-  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const rowSpanY = (parameters.num_pins / 2 - 1) * p + pw
+  const notchX = roundToCourtyardGrid(w / 2 + 0.25)
+  const outerX = roundToCourtyardGrid(notchX + 1.43)
+  const notchY = roundToCourtyardGrid(rowSpanY / 2 + 0.255)
+  const outerY = roundToCourtyardGrid(h / 2 + 0.25)
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: [
+      { x: -outerX, y: notchY },
+      { x: -notchX, y: notchY },
+      { x: -notchX, y: outerY },
+      { x: notchX, y: outerY },
+      { x: notchX, y: notchY },
+      { x: outerX, y: notchY },
+      { x: outerX, y: -notchY },
+      { x: notchX, y: -notchY },
+      { x: notchX, y: -outerY },
+      { x: -notchX, y: -outerY },
+      { x: -notchX, y: -notchY },
+      { x: -outerX, y: -notchY },
+    ],
   }
 
   return {

@@ -100,18 +100,18 @@ export const dfn = (
     sh / 2 + 0.4,
     sh / 12,
   )
-  const courtyardPadding = 0.25
-  const crtMinX = -sw / 2 - courtyardPadding
-  const crtMaxX = sw / 2 + courtyardPadding
-  const crtMinY = -sh / 2 - courtyardPadding
-  const crtMaxY = sh / 2 + courtyardPadding
+  const roundUpToCourtyardGrid = (value: number) =>
+    Math.ceil(value / 0.05) * 0.05
+  const rowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const courtyardHalfWidth = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
+  const courtyardHalfHeight = roundUpToCourtyardGrid(rowSpanY / 2 + 0.45)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardHalfWidth * 2,
+    height: courtyardHalfHeight * 2,
     layer: "top",
   }
 

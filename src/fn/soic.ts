@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -161,24 +161,32 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     ],
   }
 
-  const courtyardPadding = 0.25
-  const silkXs = silkscreenBorder.route.map((pt) => pt.x)
-  const silkYs = silkscreenBorder.route.map((pt) => pt.y)
-  const padXExtent = parameters.legsoutside
-    ? parameters.w / 2 + parameters.pl
-    : parameters.w / 2
-  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding
-  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding
-  const crtMinY = Math.min(...silkYs) - courtyardPadding
-  const crtMaxY = Math.max(...silkYs) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const rowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const notchX = roundToCourtyardGrid(parameters.w / 2 + 0.25)
+  const outerX = roundToCourtyardGrid(notchX + 1.93)
+  const notchY = roundToCourtyardGrid(rowSpanY / 2 + 0.27)
+  const outerY = roundToCourtyardGrid(rowSpanY / 2 + 0.63)
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: [
+      { x: -outerX, y: notchY },
+      { x: -notchX, y: notchY },
+      { x: -notchX, y: outerY },
+      { x: notchX, y: outerY },
+      { x: notchX, y: notchY },
+      { x: outerX, y: notchY },
+      { x: outerX, y: -notchY },
+      { x: notchX, y: -notchY },
+      { x: notchX, y: -outerY },
+      { x: -notchX, y: -outerY },
+      { x: -notchX, y: -notchY },
+      { x: -outerX, y: -notchY },
+    ],
   }
 
   return [
