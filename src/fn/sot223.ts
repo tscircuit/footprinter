@@ -136,19 +136,17 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const p = Number.parseFloat(parameters.p)
   const pw = Number.parseFloat(parameters.pw)
-  const courtyardPadding = 0.25
+  const courtyardClearanceMm = 0.25
   const padCenterX = w / 2 - 1.1
-  const crtMinX = -(padCenterX + pl / 2 + courtyardPadding)
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -(p + pw / 2 + courtyardPadding)
-  const crtMaxY = p + pw / 2 + courtyardPadding
+  const courtyardWidthMm = 2 * (padCenterX + pl / 2 + courtyardClearanceMm)
+  const courtyardHeightMm = 2 * (p + pw / 2 + courtyardClearanceMm)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 
@@ -246,20 +244,19 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
   const w = Number.parseFloat(parameters.w)
-  const courtyardPadding = 0.25
+  const courtyardClearanceMm = 0.25
   const padOuterX = w / 2 - 1.2 + 2.2 / 2
-  const crtMinX = -(padOuterX + courtyardPadding)
-  const crtMaxX = padOuterX + courtyardPadding
+  const courtyardWidthMm = 2 * (padOuterX + courtyardClearanceMm)
   const h5 = Number.parseFloat(parameters.h)
-  const crtMinY = -(Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding)
-  const crtMaxY = Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding
+  const courtyardHeightMm =
+    2 * (Math.max(h5 / 2, 2.25 + 0.5) + courtyardClearanceMm)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 
@@ -353,18 +350,16 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(4.25 + courtyardPadding)
-  const crtMaxX = 4.25 + courtyardPadding
-  const crtMinY = -(2.9 + courtyardPadding)
-  const crtMaxY = 2.9 + courtyardPadding
+  const courtyardClearanceMm = 0.25
+  const courtyardWidthMm = 2 * (4.25 + courtyardClearanceMm)
+  const courtyardHeightMm = 2 * (2.9 + courtyardClearanceMm)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

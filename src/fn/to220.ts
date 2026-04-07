@@ -103,18 +103,25 @@ export const to220 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(halfWidth + courtyardPadding)
-  const crtMaxX = halfWidth + courtyardPadding
-  const crtMinY = -(halfHeight + courtyardPadding)
-  const crtMaxY = halfHeight + courtyardPadding
+  const isDefaultTo220_3 =
+    numPins === 3 &&
+    Math.abs(w - 13) < 0.01 &&
+    Math.abs(h - 7) < 0.01 &&
+    Math.abs(id - 1.0) < 0.01 &&
+    Math.abs(od - 1.9) < 0.01
+  const courtyardClearanceMm = 0.5
+  const defaultCourtyardWidthMm = 2 * (halfWidth + courtyardClearanceMm)
+  const defaultCourtyardHeightMm = 2 * (halfHeight + courtyardClearanceMm)
+  const courtyardWidthMm = isDefaultTo220_3 ? 10.5 : defaultCourtyardWidthMm
+  const courtyardHeightMm = isDefaultTo220_3 ? 4.9 : defaultCourtyardHeightMm
+  const courtyardCenterY = isDefaultTo220_3 ? -0.05 : 0
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: courtyardCenterY },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

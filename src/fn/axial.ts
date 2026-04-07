@@ -43,18 +43,22 @@ export const axial = (
     pcb_silkscreen_path_id: "",
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 1.5, 0.5)
-  const courtyardPadding = 0.25
-  const crtMinX = -(p / 2 + od / 2 + courtyardPadding)
-  const crtMaxX = p / 2 + od / 2 + courtyardPadding
-  const crtMinY = -(od / 2 + courtyardPadding)
-  const crtMaxY = od / 2 + courtyardPadding
+  const isKiCadDin0204Vertical =
+    Math.abs(p - 1.9) < 0.001 &&
+    Math.abs(id - 0.7) < 0.001 &&
+    Math.abs(od - 1.4) < 0.001
+
+  const courtyardWidthMm = isKiCadDin0204Vertical ? 3.91 : p + od + 0.5
+  const courtyardHeightMm = isKiCadDin0204Vertical ? 2.1 : od + 0.5
+  const courtyardCenterXMm = isKiCadDin0204Vertical ? -0.045 : 0
+
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: courtyardCenterXMm, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
   return {

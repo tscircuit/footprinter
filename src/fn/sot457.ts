@@ -194,19 +194,19 @@ const generateSot457Elements = (
     stroke_width: 0.05,
   }
 
-  const courtyardPadding = 0.25
+  const courtyardClearanceMm = 0.25
   let crtMinX: number, crtMaxX: number, crtMinY: number, crtMaxY: number
   if (params.wave) {
-    crtMinX = -(pitch + padWidth / 2 + courtyardPadding)
-    crtMaxX = pitch + padWidth / 2 + courtyardPadding
-    crtMinY = -(pitch + padLength / 2 + courtyardPadding)
-    crtMaxY = pitch + padLength / 2 + courtyardPadding
+    crtMinX = -(pitch + padWidth / 2 + courtyardClearanceMm)
+    crtMaxX = pitch + padWidth / 2 + courtyardClearanceMm
+    crtMinY = -(pitch + padLength / 2 + courtyardClearanceMm)
+    crtMaxY = pitch + padLength / 2 + courtyardClearanceMm
   } else {
     const padCenterX = width / 2 + 0.1
-    crtMinX = -(padCenterX + padLength / 2 + courtyardPadding)
-    crtMaxX = padCenterX + padLength / 2 + courtyardPadding
-    crtMinY = -(pitch + padWidth / 2 + courtyardPadding)
-    crtMaxY = pitch + padWidth / 2 + courtyardPadding
+    crtMinX = -(padCenterX + padLength / 2 + courtyardClearanceMm)
+    crtMaxX = padCenterX + padLength / 2 + courtyardClearanceMm
+    crtMinY = -(pitch + padWidth / 2 + courtyardClearanceMm)
+    crtMaxY = pitch + padWidth / 2 + courtyardClearanceMm
   }
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",

@@ -115,24 +115,20 @@ export const ssop = (
     ],
   }
 
-  const courtyardPadding = 0.25
-  const silkXs = silkscreenBorder.route.map((pt) => pt.x)
-  const silkYs = silkscreenBorder.route.map((pt) => pt.y)
   // getSsopCoords uses padRowSpan = w + 0.2mm, so pad center is at (w + 0.2) / 2
   const padXExtent = parameters.legsoutside
     ? parameters.w / 2 + parameters.pl
     : (parameters.w + 0.2) / 2 + parameters.pl / 2
-  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding
-  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding
-  const crtMinY = Math.min(...silkYs) - courtyardPadding
-  const crtMaxY = Math.max(...silkYs) + courtyardPadding
+  const padYExtent = ((parameters.num_pins / 2 - 1) * parameters.p) / 2
+  const courtyardWidthMm = padXExtent * 2 + 0.5
+  const courtyardHeightMm = (padYExtent + parameters.pw / 2) * 2 + 0.89
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

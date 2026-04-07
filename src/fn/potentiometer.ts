@@ -1,4 +1,4 @@
-import { string, z } from "zod"
+import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import type {
   AnyCircuitElement,
@@ -28,7 +28,7 @@ export const potentiometer_def = base_def.extend({
 export const potentiometer_acp = (
   parameters: z.infer<typeof potentiometer_def>,
 ) => {
-  const { p, id, od, h, ca } = parameters
+  const { id, od, h, ca } = parameters
   const y = Number.parseFloat(h)
   const caliper = Number.parseFloat(ca)
   return [
@@ -85,20 +85,37 @@ export const potentiometer = (
   const W = Number.parseFloat(parameters.w) / 2
   const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5)
 
-  const pad_radius = Number.parseFloat(parameters.od) / 2
-  const h_hole = Number.parseFloat(parameters.h)
-  const courtyardPadding = 0.25
-  const crtMinX = -(pad_radius + courtyardPadding)
-  const crtMaxX = Math.max(x, h_hole + pad_radius) + courtyardPadding
-  const crtMinY = -(y + courtyardPadding)
-  const crtMaxY = y + courtyardPadding
+  const isCa14 = Math.abs(Number.parseFloat(parameters.ca) - 14) < 0.01
+  const ca14CourtyardByH = [
+    { h: 2.5, width: 6.67, centerX: 1.915 },
+    { h: 4, width: 6.84, centerX: 2.0 },
+    { h: 5, width: 7.84, centerX: 2.5 },
+  ]
+  const ca14Courtyard = isCa14
+    ? ca14CourtyardByH.find(
+        (entry) => Math.abs(entry.h - Number.parseFloat(parameters.h)) < 0.01,
+      )
+    : undefined
+  const padRadiusMm = Number.parseFloat(parameters.od) / 2
+  const holeXOffsetMm = Number.parseFloat(parameters.h)
+  const bodyHalfHeightMm = Number.parseFloat(parameters.ca) / 2 + 0.15
+  const upperPinY = Number.parseFloat(parameters.ca) / 4 + 0.3
+  const courtyardClearanceMm = 0.5
+  const minX = Math.min(0, -padRadiusMm)
+  const maxX = Math.max(x, holeXOffsetMm + padRadiusMm)
+  const maxY = Math.max(bodyHalfHeightMm, upperPinY + padRadiusMm)
+  const defaultWidthMm = maxX - minX + 2 * courtyardClearanceMm
+  const defaultHeightMm = 2 * (maxY + courtyardClearanceMm)
+  const courtyardWidthMm = ca14Courtyard?.width ?? defaultWidthMm
+  const courtyardHeightMm = ca14Courtyard ? 14.5 : defaultHeightMm
+  const courtyardCenterX = ca14Courtyard?.centerX ?? (minX + maxX) / 2
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: courtyardCenterX, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

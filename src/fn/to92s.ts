@@ -87,17 +87,18 @@ export const to92s = (
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
   const od_v = Number.parseFloat(parameters.od)
-  const courtyardPadding = 0.25
-  const crtHalfX = Math.max(holeY, padSpacing + od_v / 2) + courtyardPadding
-  const crtMinY = -courtyardPadding
-  const crtMaxY = holeY + 0.5 + courtyardPadding
+  const courtyardClearanceMm = 0.25
+  const courtyardHalfX =
+    Math.max(holeY, padSpacing + od_v / 2) + courtyardClearanceMm
+  const minY = -courtyardClearanceMm
+  const maxY = holeY + 0.5 + courtyardClearanceMm
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: (crtMinY + crtMaxY) / 2 },
-    width: 2 * crtHalfX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: (minY + maxY) / 2 },
+    width: 2 * courtyardHalfX,
+    height: maxY - minY,
     layer: "top",
   }
 

@@ -1,5 +1,6 @@
 import type {
   AnyCircuitElement,
+  PcbCourtyardOutline,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -136,24 +137,49 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
   const p_val = Number.parseFloat(parameters.p)
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
-  const courtyardPadding = 0.25
+  const courtyardClearanceMm = 0.25
+  const courtyardInsetStepMm = 0.2
   const padCenterX = h_val / 2 + 0.5
-  const silkscreenY = h_val / 2 + p_val / 1.3
-  const crtMinX = -(padCenterX + pl_val / 2 + courtyardPadding)
-  const crtMaxX = padCenterX + pl_val / 2 + courtyardPadding
-  const crtMinY = -(
-    Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding
-  )
-  const crtMaxY = Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
-  }
+  const bodyHalfY = h_val / 2
+  const padHalfY = p_val + pw_val / 2
+  const activeHalfY = Math.max(bodyHalfY, padHalfY)
+  const courtyardWidthMm = 2 * (padCenterX + pl_val / 2 + courtyardClearanceMm)
+  const courtyardHeightMm = 2 * (activeHalfY + courtyardClearanceMm)
+  const courtyardOuterX = courtyardWidthMm / 2
+  const courtyardInnerX = h_val / 2 + courtyardClearanceMm
+  const courtyardOuterY = activeHalfY + courtyardClearanceMm
+  const courtyardInnerY = courtyardOuterY + courtyardInsetStepMm
+  const courtyard: PcbCourtyardOutline | PcbCourtyardRect =
+    parameters.num_pins === 6
+      ? {
+          type: "pcb_courtyard_outline",
+          pcb_courtyard_outline_id: "",
+          pcb_component_id: "",
+          layer: "top",
+          outline: [
+            { x: -courtyardOuterX, y: courtyardOuterY },
+            { x: -courtyardInnerX, y: courtyardOuterY },
+            { x: -courtyardInnerX, y: courtyardInnerY },
+            { x: courtyardInnerX, y: courtyardInnerY },
+            { x: courtyardInnerX, y: courtyardOuterY },
+            { x: courtyardOuterX, y: courtyardOuterY },
+            { x: courtyardOuterX, y: -courtyardOuterY },
+            { x: courtyardInnerX, y: -courtyardOuterY },
+            { x: courtyardInnerX, y: -courtyardInnerY },
+            { x: -courtyardInnerX, y: -courtyardInnerY },
+            { x: -courtyardInnerX, y: -courtyardOuterY },
+            { x: -courtyardOuterX, y: -courtyardOuterY },
+          ],
+        }
+      : {
+          type: "pcb_courtyard_rect",
+          pcb_courtyard_rect_id: "",
+          pcb_component_id: "",
+          center: { x: 0, y: 0 },
+          width: courtyardWidthMm,
+          height: courtyardHeightMm,
+          layer: "top",
+        }
 
   return [
     ...pads,
