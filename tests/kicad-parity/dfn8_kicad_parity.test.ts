@@ -8,11 +8,10 @@ test("parity/dfn8", async () => {
     combinedFootprintElements,
     booleanDifferenceSvg,
     courtyardDiffPercent,
-  } =
-    await compareFootprinterVsKicad(
-      "dfn8_w2.75mm_p0.5mm_pl0.85mm_pw0.3mm",
-      "Package_DFN_QFN.pretty/DFN-8_2x2mm_P0.5mm.circuit.json",
-    )
+  } = await compareFootprinterVsKicad(
+    "dfn8_w2.75mm_p0.5mm_pl0.85mm_pw0.3mm",
+    "Package_DFN_QFN.pretty/DFN-8_2x2mm_P0.5mm.circuit.json",
+  )
 
   expect(courtyardDiffPercent).toBeLessThan(0.5)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
