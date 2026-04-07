@@ -11,6 +11,7 @@ import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createSteppedCourtyardOutline } from "src/helpers/stepped-courtyard-outline"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -176,20 +177,16 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-    ],
+    outline: createSteppedCourtyardOutline({
+      xHalfStepsFromInnerToOuter: [
+        courtyardStepInnerHalfX,
+        courtyardStepOuterHalfX,
+      ],
+      yHalfStepsFromInnerToOuter: [
+        courtyardStepInnerHalfY,
+        courtyardStepOuterHalfY,
+      ],
+    }),
   }
 
   return [

@@ -8,6 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
+import { createSteppedCourtyardOutline } from "src/helpers/stepped-courtyard-outline"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -163,20 +164,16 @@ export const msop = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-    ],
+    outline: createSteppedCourtyardOutline({
+      xHalfStepsFromInnerToOuter: [
+        courtyardStepInnerHalfX,
+        courtyardStepOuterHalfX,
+      ],
+      yHalfStepsFromInnerToOuter: [
+        courtyardStepInnerHalfY,
+        courtyardStepOuterHalfY,
+      ],
+    }),
   }
 
   return {
