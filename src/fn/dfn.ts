@@ -14,6 +14,7 @@ import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
+import { createRectCourtyardOutlinePoints } from "src/helpers/create-rect-courtyard-outline-points"
 
 export const dfn_def = extendSoicDef({})
 
@@ -101,28 +102,20 @@ export const dfn = (
     sh / 2 + 0.4,
     sh / 12,
   )
-  const isDfn8_2x2 = (() => {
-    const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
-    return (
-      parameters.num_pins === 8 &&
-      near(parameters.w, 2.75) &&
-      near(parameters.p, 0.5) &&
-      near(parameters.pl, 0.85) &&
-      near(parameters.pw, 0.3)
-    )
-  })()
+  const useManualCourtyardForDfn8_2x2 =
+    parameters.num_pins === 8 &&
+    parameters.w === 2.75 &&
+    parameters.p === 0.5 &&
+    parameters.pl === 0.85 &&
+    parameters.pw === 0.3
 
-  const courtyard: PcbCourtyardOutline = isDfn8_2x2
+  const courtyard: PcbCourtyardOutline = useManualCourtyardForDfn8_2x2
     ? {
         type: "pcb_courtyard_outline",
         pcb_courtyard_outline_id: "",
         pcb_component_id: "",
-        outline: [
-          { x: -1.65, y: 1.35 },
-          { x: -1.65, y: -1.35 },
-          { x: 1.65, y: -1.35 },
-          { x: 1.65, y: 1.35 },
-        ],
+        // KiCad parity: DFN-8_2x2mm_P0.5mm
+        outline: createRectCourtyardOutlinePoints(3.3, 2.7),
         layer: "top",
       }
     : (() => {

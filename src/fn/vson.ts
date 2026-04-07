@@ -12,6 +12,7 @@ import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { roundCourtyardCoord } from "../helpers/round-courtyard-coord"
 import { createPillCourtyardOutlinePoints } from "../helpers/create-pill-courtyard-outline-points"
+import { createRectCourtyardOutlinePoints } from "../helpers/create-rect-courtyard-outline-points"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -32,28 +33,6 @@ export const vson_def = base_def.extend({
 
 export type VsonDefInput = z.input<typeof vson_def>
 export type VsonDef = z.infer<typeof vson_def>
-
-const createRectCourtyardOutline = (
-  courtyardWidthMm: number,
-  courtyardHeightMm: number,
-) => [
-  {
-    x: -roundCourtyardCoord(courtyardWidthMm / 2),
-    y: roundCourtyardCoord(courtyardHeightMm / 2),
-  },
-  {
-    x: roundCourtyardCoord(courtyardWidthMm / 2),
-    y: roundCourtyardCoord(courtyardHeightMm / 2),
-  },
-  {
-    x: roundCourtyardCoord(courtyardWidthMm / 2),
-    y: -roundCourtyardCoord(courtyardHeightMm / 2),
-  },
-  {
-    x: -roundCourtyardCoord(courtyardWidthMm / 2),
-    y: -roundCourtyardCoord(courtyardHeightMm / 2),
-  },
-]
 
 export const vson = (
   raw_params: VsonDefInput,
@@ -120,7 +99,10 @@ export const vson = (
       type: "pcb_courtyard_outline",
       pcb_courtyard_outline_id: "",
       pcb_component_id: "",
-      outline: createRectCourtyardOutline(courtyardWidthMm, courtyardHeightMm),
+      outline: createRectCourtyardOutlinePoints(
+        courtyardWidthMm,
+        courtyardHeightMm,
+      ),
       layer: "top",
     }
   } else {
