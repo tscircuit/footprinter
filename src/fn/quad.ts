@@ -12,7 +12,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
-import { createSteppedCourtyardOutline } from "src/helpers/stepped-courtyard-outline"
+import { createOuterAndInnerRectUnionOutline } from "src/helpers/stepped-courtyard-outline"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -119,25 +119,8 @@ export const quad = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
-  let inferredPadOuterHalfX = 0
-  let inferredPadOuterHalfY = 0
-  const pushTrackedRectPad = (
-    pn: number | Array<string | number>,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-  ) => {
-    inferredPadOuterHalfX = Math.max(
-      inferredPadOuterHalfX,
-      Math.abs(x) + width / 2,
-    )
-    inferredPadOuterHalfY = Math.max(
-      inferredPadOuterHalfY,
-      Math.abs(y) + height / 2,
-    )
-    pads.push(rectpad(pn, x, y, width, height))
-  }
+  let padOuterHalfX = 0
+  let padOuterHalfY = 0
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
@@ -156,28 +139,36 @@ export const quad = (
       legsoutside: parameters.legsoutside,
     })
 
-    let pw = parameters.pw
-    let pl = parameters.pl
+    let padWidth = parameters.pw
+    let padHeight = parameters.pl
     if (orientation === "vert") {
-      ;[pw, pl] = [pl, pw]
+      ;[padWidth, padHeight] = [padHeight, padWidth]
     }
 
     const pn = pin_map[i + 1]!
-    pushTrackedRectPad(pn, x, y, pw, pl)
+    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
+    pads.push(rectpad(pn, x, y, padWidth, padHeight))
   }
 
   if (parameters.thermalpad) {
     if (typeof parameters.thermalpad === "boolean") {
       const ibw = parameters.p * (spc - 1) + parameters.pw
       const ibh = parameters.p * (spc - 1) + parameters.pw
-      pushTrackedRectPad(["thermalpad"], 0, 0, ibw, ibh)
+      padOuterHalfX = Math.max(padOuterHalfX, ibw / 2)
+      padOuterHalfY = Math.max(padOuterHalfY, ibh / 2)
+      pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
-      pushTrackedRectPad(
-        ["thermalpad"],
-        0,
-        0,
-        parameters.thermalpad.x,
-        parameters.thermalpad.y,
+      padOuterHalfX = Math.max(padOuterHalfX, parameters.thermalpad.x / 2)
+      padOuterHalfY = Math.max(padOuterHalfY, parameters.thermalpad.y / 2)
+      pads.push(
+        rectpad(
+          ["thermalpad"],
+          0,
+          0,
+          parameters.thermalpad.x,
+          parameters.thermalpad.y,
+        ),
       )
     }
   }
@@ -339,9 +330,6 @@ export const quad = (
   const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25)
   const courtyardStepOuterHalfY = roundToCourtyardGrid(parameters.h / 2 + 0.25)
 
-  const padOuterHalfX = inferredPadOuterHalfX
-  const padOuterHalfY = inferredPadOuterHalfY
-
   const courtyardOuterHalfX = Math.max(
     courtyardStepOuterHalfX,
     roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25),
@@ -356,17 +344,19 @@ export const quad = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: createSteppedCourtyardOutline({
-      xHalfStepsFromInnerToOuter: [
-        courtyardStepInnerHalfX,
-        courtyardStepOuterHalfX,
-        courtyardOuterHalfX,
-      ],
-      yHalfStepsFromInnerToOuter: [
-        courtyardStepInnerHalfY,
-        courtyardStepOuterHalfY,
-        courtyardOuterHalfY,
-      ],
+    outline: createOuterAndInnerRectUnionOutline({
+      outerRectBounds: {
+        halfX: courtyardOuterHalfX,
+        halfY: courtyardStepInnerHalfY,
+      },
+      middleRectBounds: {
+        halfX: courtyardStepOuterHalfX,
+        halfY: courtyardStepOuterHalfY,
+      },
+      innerRectBounds: {
+        halfX: courtyardStepInnerHalfX,
+        halfY: courtyardOuterHalfY,
+      },
     }),
   }
 

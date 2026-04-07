@@ -8,7 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
-import { createSteppedCourtyardOutline } from "src/helpers/stepped-courtyard-outline"
+import { createOuterAndInnerRectUnionOutline } from "src/helpers/stepped-courtyard-outline"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -164,15 +164,15 @@ export const msop = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: createSteppedCourtyardOutline({
-      xHalfStepsFromInnerToOuter: [
-        courtyardStepInnerHalfX,
-        courtyardStepOuterHalfX,
-      ],
-      yHalfStepsFromInnerToOuter: [
-        courtyardStepInnerHalfY,
-        courtyardStepOuterHalfY,
-      ],
+    outline: createOuterAndInnerRectUnionOutline({
+      outerRectBounds: {
+        halfX: courtyardStepOuterHalfX,
+        halfY: courtyardStepInnerHalfY,
+      },
+      innerRectBounds: {
+        halfX: courtyardStepInnerHalfX,
+        halfY: courtyardStepOuterHalfY,
+      },
     }),
   }
 
