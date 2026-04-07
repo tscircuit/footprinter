@@ -3,12 +3,17 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/dfn8", async () => {
-  const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
-    await compareFootprinterVsKicad(
-      "dfn8_w2.75mm_p0.5mm_pl0.85mm_pw0.3mm",
-      "Package_DFN_QFN.pretty/DFN-8_2x2mm_P0.5mm.circuit.json",
-    )
+  const {
+    avgRelDiff,
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "dfn8_w2.75mm_p0.5mm_pl0.85mm_pw0.3mm",
+    "Package_DFN_QFN.pretty/DFN-8_2x2mm_P0.5mm.circuit.json",
+  )
 
+  expect(courtyardDiffPercent).toBeLessThan(0.5)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
