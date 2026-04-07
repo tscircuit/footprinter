@@ -111,6 +111,42 @@ const compressOutlinePoints = (points: { x: number; y: number }[]) => {
   return compressed
 }
 
+const buildSteppedCourtyardOutline = (dimensions: {
+  courtyardOuterHalfWidthMm: number
+  bodyHalfWidthMm: number
+  courtyardInnerHalfWidthMm: number
+  courtyardOuterHalfHeightMm: number
+  bodyHalfHeightMm: number
+  courtyardInnerHalfHeightMm: number
+}) => {
+  const xOuter = roundCourtyardCoord(dimensions.courtyardOuterHalfWidthMm)
+  const xBody = roundCourtyardCoord(dimensions.bodyHalfWidthMm)
+  const xInner = roundCourtyardCoord(dimensions.courtyardInnerHalfWidthMm)
+  const yOuter = roundCourtyardCoord(dimensions.courtyardOuterHalfHeightMm)
+  const yBody = roundCourtyardCoord(dimensions.bodyHalfHeightMm)
+  const yInner = roundCourtyardCoord(dimensions.courtyardInnerHalfHeightMm)
+
+  // Top edge is a stepped profile from left to right.
+  const topEdge = [
+    { x: -xOuter, y: yInner },
+    { x: -xBody, y: yInner },
+    { x: -xBody, y: yBody },
+    { x: -xInner, y: yBody },
+    { x: -xInner, y: yOuter },
+    { x: xInner, y: yOuter },
+    { x: xInner, y: yBody },
+    { x: xBody, y: yBody },
+    { x: xBody, y: yInner },
+    { x: xOuter, y: yInner },
+  ]
+  // Bottom edge is the mirrored reverse, preserving clockwise winding.
+  const bottomEdge = topEdge
+    .toReversed()
+    .map((point) => ({ x: point.x, y: -point.y }))
+
+  return compressOutlinePoints([...topEdge, ...bottomEdge])
+}
+
 export const getQuadCoords = (params: {
   pin_count: number
   pn: number // pin number
@@ -382,88 +418,14 @@ export const quad = (
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    outline: compressOutlinePoints([
-      {
-        x: -roundCourtyardCoord(courtyardOuterHalfWidthMm),
-        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(bodyHalfWidthMm),
-        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(bodyHalfWidthMm),
-        y: roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: roundCourtyardCoord(courtyardOuterHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: roundCourtyardCoord(courtyardOuterHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(bodyHalfWidthMm),
-        y: roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(bodyHalfWidthMm),
-        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardOuterHalfWidthMm),
-        y: roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardOuterHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(bodyHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(bodyHalfWidthMm),
-        y: -roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: -roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardOuterHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardOuterHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(courtyardInnerHalfWidthMm),
-        y: -roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(bodyHalfWidthMm),
-        y: -roundCourtyardCoord(bodyHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(bodyHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-      {
-        x: -roundCourtyardCoord(courtyardOuterHalfWidthMm),
-        y: -roundCourtyardCoord(courtyardInnerHalfHeightMm),
-      },
-    ]),
+    outline: buildSteppedCourtyardOutline({
+      courtyardOuterHalfWidthMm,
+      bodyHalfWidthMm,
+      courtyardInnerHalfWidthMm,
+      courtyardOuterHalfHeightMm,
+      bodyHalfHeightMm,
+      courtyardInnerHalfHeightMm,
+    }),
     layer: "top",
   }
 
