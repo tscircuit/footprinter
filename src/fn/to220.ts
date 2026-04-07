@@ -109,7 +109,7 @@ export const to220 = (
     Math.abs(h - 7) < 0.01 &&
     Math.abs(id - 1.0) < 0.01 &&
     Math.abs(od - 1.9) < 0.01
-  const courtyardClearanceMm = 0.5
+  const courtyardClearanceMm = 0.25
   const defaultCourtyardWidthMm = 2 * (halfWidth + courtyardClearanceMm)
   const defaultCourtyardHeightMm = 2 * (halfHeight + courtyardClearanceMm)
   const courtyardWidthMm = isDefaultTo220_3 ? 10.5 : defaultCourtyardWidthMm
