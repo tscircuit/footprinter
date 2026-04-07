@@ -128,7 +128,10 @@ export const quad = (
     width: number,
     height: number,
   ) => {
-    inferredPadOuterHalfX = Math.max(inferredPadOuterHalfX, Math.abs(x) + width / 2)
+    inferredPadOuterHalfX = Math.max(
+      inferredPadOuterHalfX,
+      Math.abs(x) + width / 2,
+    )
     inferredPadOuterHalfY = Math.max(
       inferredPadOuterHalfY,
       Math.abs(y) + height / 2,
