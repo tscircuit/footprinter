@@ -191,22 +191,11 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const courtyardInnerHalfHeightMm = roundCourtyardCoord(
     Math.min(padExtentY, bodyExtentY) + courtyardClearanceMm,
   )
-
-  const near = (a: number, b: number) => Math.abs(a - b) < 1e-6
-  const isInfineonSoic20W = (() => {
-    return (
-      parameters.num_pins === 20 &&
-      parameters.legsoutside &&
-      near(parameters.w, 7.6) &&
-      near(parameters.p, 1.27)
-    )
-  })()
-
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
-    pcb_component_id: "",
-    outline: isInfineonSoic20W
+  const manualCourtyardOutline =
+    parameters.num_pins === 20 &&
+    parameters.legsoutside &&
+    parameters.w === 7.6 &&
+    parameters.p === 1.27
       ? [
           { x: -5.95, y: 6.29 },
           { x: -4.05, y: 6.29 },
@@ -221,20 +210,28 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
           { x: -4.05, y: -6.29 },
           { x: -5.95, y: -6.29 },
         ]
-      : [
-          { x: -courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
-          { x: -courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
-          { x: -courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
-          { x: courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
-          { x: courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
-          { x: courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
-          { x: courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
-          { x: courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
-          { x: courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
-          { x: -courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
-          { x: -courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
-          { x: -courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
-        ],
+      : null
+
+  const genericCourtyardOutline = [
+    { x: -courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+    { x: -courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+    { x: -courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+    { x: courtyardInnerHalfWidthMm, y: courtyardOuterHalfHeightMm },
+    { x: courtyardInnerHalfWidthMm, y: courtyardInnerHalfHeightMm },
+    { x: courtyardOuterHalfWidthMm, y: courtyardInnerHalfHeightMm },
+    { x: courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+    { x: courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+    { x: courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+    { x: -courtyardInnerHalfWidthMm, y: -courtyardOuterHalfHeightMm },
+    { x: -courtyardInnerHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+    { x: -courtyardOuterHalfWidthMm, y: -courtyardInnerHalfHeightMm },
+  ]
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
+    pcb_component_id: "",
+    outline: manualCourtyardOutline ?? genericCourtyardOutline,
     layer: "top",
   }
 
