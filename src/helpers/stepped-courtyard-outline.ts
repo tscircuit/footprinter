@@ -20,7 +20,9 @@ export const createOuterAndInnerRectUnionOutline = (params: {
   ]
 
   if (rectBoundsFromOuterToInner.length < 2) {
-    throw new Error("Rect union outline requires at least outer and inner bounds")
+    throw new Error(
+      "Rect union outline requires at least outer and inner bounds",
+    )
   }
 
   for (let i = 1; i < rectBoundsFromOuterToInner.length; i++) {
