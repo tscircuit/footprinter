@@ -26,8 +26,8 @@ export const qfn = (
 
   // Keep generic qfn32 behavior unchanged; only tune the thermal-pad parity variant.
   if (isQfn32Pitch05 && hasThermalPad) {
-    if (parameters.courtyard_w_mm == null) parameters.courtyard_w_mm = 5
-    if (parameters.courtyard_h_mm == null) parameters.courtyard_h_mm = 5
+    if (parameters.courtyardwidth == null) parameters.courtyardwidth = 5
+    if (parameters.courtyardheight == null) parameters.courtyardheight = 5
     if (parameters.w == null) parameters.w = 5.96
     if (parameters.h == null) parameters.h = 5.96
   }

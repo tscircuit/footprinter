@@ -27,8 +27,8 @@ export const base_quad_def = base_def.extend({
   num_pins: z.number().optional().default(64),
   w: length.optional(),
   h: length.optional(),
-  courtyard_w_mm: length.optional(),
-  courtyard_h_mm: length.optional(),
+  courtyardwidth: length.optional(),
+  courtyardheight: length.optional(),
   p: length.default(length.parse("0.5mm")),
   pw: length.optional(),
   pl: length.optional(),
@@ -45,10 +45,10 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.w = v.h
   }
 
-  if (v.courtyard_w_mm && !v.courtyard_h_mm) {
-    v.courtyard_h_mm = v.courtyard_w_mm
-  } else if (!v.courtyard_w_mm && v.courtyard_h_mm) {
-    v.courtyard_w_mm = v.courtyard_h_mm
+  if (v.courtyardwidth && !v.courtyardheight) {
+    v.courtyardheight = v.courtyardwidth
+  } else if (!v.courtyardwidth && v.courtyardheight) {
+    v.courtyardwidth = v.courtyardheight
   }
 
   const side_pin_count = v.num_pins / 4
@@ -393,8 +393,8 @@ export const quad = (
     0.3,
   )
   const courtyardClearanceMm = 0.25
-  const courtyardBodyWidthMm = parameters.courtyard_w_mm ?? parameters.w
-  const courtyardBodyHeightMm = parameters.courtyard_h_mm ?? parameters.h
+  const courtyardBodyWidthMm = parameters.courtyardwidth ?? parameters.w
+  const courtyardBodyHeightMm = parameters.courtyardheight ?? parameters.h
   const bodyHalfWidthMm = courtyardBodyWidthMm / 2 + courtyardClearanceMm
   const bodyHalfHeightMm = courtyardBodyHeightMm / 2 + courtyardClearanceMm
   const courtyardOuterHalfWidthMm = Math.max(
