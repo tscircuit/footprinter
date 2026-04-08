@@ -6,6 +6,7 @@ import type {
 import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sop8_def = extendSoicDef({
   w: "7.05mm",
@@ -62,20 +63,20 @@ export const sop8 = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-    ],
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
   }
 
   return {
