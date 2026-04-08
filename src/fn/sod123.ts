@@ -1,10 +1,9 @@
-import type { AnyCircuitElement, PcbCourtyardOutline } from "circuit-json"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sod_def = base_def.extend({
   fn: z.string(),
@@ -20,50 +19,21 @@ export const sod123 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
-  const w = length.parse(parameters.w)
-  const h = length.parse(parameters.h)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
-  const p = length.parse(parameters.p)
-
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 4 + 0.4, 0.3)
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
-  const pinRowSpanX = p + pl
-  const pinRowSpanY = pw
-  const bodyHalfX = w / 2
-  const bodyHalfY = h / 2
-  const pinToeHalfX = pinRowSpanX / 2
-  const pinRowHalfY = pinRowSpanY / 2
-  const courtyardEnvelopeHalfX = Math.max(bodyHalfX, pinToeHalfX)
-  const courtyardEnvelopeHalfY = Math.max(bodyHalfY, pinRowHalfY)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardEnvelopeHalfX + 0.25,
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    length.parse(parameters.h) / 4 + 0.4,
+    0.3,
   )
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(
-    courtyardEnvelopeHalfY + 0.54,
-  )
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
+
+  const courtyardWidthMm = 4.7
+  const courtyardHeightMm = 2.3
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    outline: createRectUnionOutline([
-      {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
-      },
-      {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
-      },
-    ]),
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 

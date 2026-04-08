@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardOutline,
+  PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -8,7 +8,6 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sod_def = base_def.extend({
   fn: z.string(),
@@ -24,14 +23,13 @@ export const sod882d = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
-  const w = length.parse(parameters.w)
-  const h = length.parse(parameters.h)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
-  const p = length.parse(parameters.p)
 
   // Define silkscreen reference text
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h + 0.1, 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    length.parse(parameters.h) + 0.1,
+    0.3,
+  )
 
   // Define silkscreen path that goes till half of the second pad
   const silkscreenLine: PcbSilkscreenPath = {
@@ -40,62 +38,35 @@ export const sod882d = (
     pcb_component_id: "",
     route: [
       {
-        x: p / 2 + 0.1,
-        y: h / 2,
+        x: length.parse(parameters.p) / 2 + 0.1,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -w / 2,
-        y: h / 2,
+        x: -length.parse(parameters.w) / 2,
+        y: length.parse(parameters.h) / 2,
       },
       {
-        x: -w / 2,
-        y: -h / 2,
+        x: -length.parse(parameters.w) / 2,
+        y: -length.parse(parameters.h) / 2,
       },
       {
-        x: p / 2 + 0.1,
-        y: -h / 2,
+        x: length.parse(parameters.p) / 2 + 0.1,
+        y: -length.parse(parameters.h) / 2,
       },
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
-  const pinRowSpanX = p + pl
-  const pinRowSpanY = pw
-  const bodyHalfX = w / 2
-  const bodyHalfY = h / 2
-  const pinToeHalfX = pinRowSpanX / 2
-  const pinRowHalfY = pinRowSpanY / 2
-  const courtyardEnvelopeHalfX = Math.max(bodyHalfX, pinToeHalfX)
-  const courtyardEnvelopeHalfY = Math.max(bodyHalfY, pinRowHalfY)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardEnvelopeHalfX - 0.05,
-  )
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(
-    courtyardEnvelopeHalfY - 0.065,
-  )
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
+  const courtyardWidthMm = 1.8
+  const courtyardHeightMm = 1.2
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    outline: createRectUnionOutline([
-      {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
-      },
-      {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
-      },
-    ]),
+    center: { x: 0, y: 0 },
+    width: courtyardWidthMm,
+    height: courtyardHeightMm,
     layer: "top",
   }
 
