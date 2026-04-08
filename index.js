@@ -42818,20 +42818,33 @@ var son = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
-  const courtyardPadding = 0.25;
-  const padCenterX = length.parse("1.4mm");
-  const crtMinX = -(padCenterX + pl2 / 2) - courtyardPadding;
-  const crtMaxX = padCenterX + pl2 / 2 + courtyardPadding;
-  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding;
-  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding;
+  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
+  const pinColumnCenterX = Math.abs(getSonPadCoord(parameters.num_pins, 1, w2, p).x);
+  const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw;
+  const pinRowSpanX = pinColumnCenterX * 2 + pl2;
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(w2 / 2 + 0.25);
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25);
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25);
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY
+      }
+    ])
   };
   return {
     circuitJson: [
