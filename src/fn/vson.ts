@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSmtPad,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -10,6 +10,7 @@ import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -69,20 +70,49 @@ export const vson = (
     grid.y / 6,
   )
 
-  const courtyardPadding = 0.25
-  const centerY = ((num_pins / 2 - 1) * p) / 2
-  const crtMinX = -(w / 2 + pinw / 2 + courtyardPadding)
-  const crtMaxX = w / 2 + pinw / 2 + courtyardPadding
-  const crtMinY = -(Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding)
-  const crtMaxY = Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const pinRowSpanY = (num_pins / 2 - 1) * p + pinh
+  const pinRowSpanX = w + pinw
+  const courtyardStepInnerHalfWidth = grid.x / 2 + 0.25
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
+  const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25
+  const pinRowExtendedCourtyardHalfY =
+    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p)
+  const courtyardStepOuterHalfHeight = Math.min(
+    grid.y / 2 + 0.25,
+    pinRowExtendedCourtyardHalfY,
+  )
+  const courtyardStepNotchDepthY = Math.max(
+    0,
+    0.37 -
+      Math.max(
+        0,
+        courtyardStepOuterHalfWidth - courtyardStepInnerHalfWidth - 0.38,
+      ) *
+        1.4,
+  )
+  const courtyardStepInnerHalfHeight = Math.max(
+    pinRowCourtyardHalfY,
+    courtyardStepOuterHalfHeight - courtyardStepNotchDepthY,
+  )
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
+      },
+      {
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
+      },
+    ]),
   }
 
   return {

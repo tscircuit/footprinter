@@ -59,44 +59,36 @@ export const sod923 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanX = p + pl
   const pinRowSpanY = pw
   const bodyHalfX = w / 2
   const bodyHalfY = h / 2
   const pinToeHalfX = pinRowSpanX / 2
   const pinRowHalfY = pinRowSpanY / 2
-  const courtyardEnvelopeHalfX = Math.max(bodyHalfX, pinToeHalfX)
-  const courtyardEnvelopeHalfY = Math.max(bodyHalfY, pinRowHalfY)
-  const courtyardNarrowHalfX = Math.min(bodyHalfX, pinToeHalfX)
-  const courtyardNarrowHalfY = Math.min(bodyHalfY, pinRowHalfY)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardEnvelopeHalfX + 0.05,
-  )
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(
-    courtyardNarrowHalfX - 0.055,
-  )
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(courtyardEnvelopeHalfY)
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(
-    courtyardNarrowHalfY + 0.155,
-  )
+  const courtyardEnvelopeHalfWidth = Math.max(bodyHalfX, pinToeHalfX)
+  const courtyardEnvelopeHalfHeight = Math.max(bodyHalfY, pinRowHalfY)
+  const courtyardNarrowHalfWidth = Math.min(bodyHalfX, pinToeHalfX)
+  const courtyardNarrowHalfHeight = Math.min(bodyHalfY, pinRowHalfY)
+  const courtyardStepOuterHalfWidth = courtyardEnvelopeHalfWidth + 0.05
+  const courtyardStepInnerHalfWidth = courtyardNarrowHalfWidth - 0.055
+  const courtyardStepOuterHalfHeight = courtyardEnvelopeHalfHeight
+  const courtyardStepInnerHalfHeight = courtyardNarrowHalfHeight + 0.155
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
     layer: "top",

@@ -102,12 +102,20 @@ export const to220 = (
   ]
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
-
-  const courtyardPadding = 0.25
-  const crtMinX = -(halfWidth + courtyardPadding)
-  const crtMaxX = halfWidth + courtyardPadding
-  const crtMinY = -(halfHeight + courtyardPadding)
-  const crtMaxY = halfHeight + courtyardPadding
+  const pinToeHalfSpanX =
+    Math.max(...plated_holes.map((hole) => Math.abs(hole.x))) + od / 2
+  const pinToeTopY = holeY + od / 2
+  const pinToeBottomY = holeY - od / 2
+  const courtyardHalfWidth = Math.max(
+    pinToeHalfSpanX + 0.25,
+    halfWidth - od * 0.59,
+  )
+  const courtyardTopY = halfHeight - od * 0.63
+  const courtyardBottomY = pinToeBottomY - (od / 2 + 0.01)
+  const crtMinX = -courtyardHalfWidth
+  const crtMaxX = courtyardHalfWidth
+  const crtMinY = Math.min(courtyardBottomY, pinToeBottomY - 0.25)
+  const crtMaxY = Math.max(courtyardTopY, pinToeTopY + 0.25)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

@@ -149,16 +149,11 @@ export const msop = (
     silkscreenBoxHeight / 2 + 0.5,
     0.3,
   )
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(w / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardStepInnerHalfX + 1.43,
-  )
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.255)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25)
+  const courtyardStepInnerHalfWidth = w / 2 + 0.25
+  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.43
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.255
+  const courtyardStepOuterHalfHeight = h / 2 + 0.25
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -166,16 +161,16 @@ export const msop = (
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
   }
