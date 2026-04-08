@@ -70,32 +70,26 @@ export const vson = (
     grid.y / 6,
   )
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanY = (num_pins / 2 - 1) * p + pinh
   const pinRowSpanX = w + pinw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(grid.x / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
-  const pinRowCourtyardHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
-  const pinRowExtendedCourtyardHalfY = roundToCourtyardGrid(
-    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p),
+  const courtyardStepInnerHalfX = grid.x / 2 + 0.25
+  const courtyardStepOuterHalfX = pinRowSpanX / 2 + 0.25
+  const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25
+  const pinRowExtendedCourtyardHalfY =
+    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p)
+  const courtyardStepOuterHalfY = Math.min(
+    grid.y / 2 + 0.25,
+    pinRowExtendedCourtyardHalfY,
   )
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(
-    Math.min(grid.y / 2 + 0.25, pinRowExtendedCourtyardHalfY),
+  const courtyardStepNotchDepthY = Math.max(
+    0,
+    0.37 -
+      Math.max(0, courtyardStepOuterHalfX - courtyardStepInnerHalfX - 0.38) *
+        1.4,
   )
-  const courtyardStepNotchDepthY = roundToCourtyardGrid(
-    Math.max(
-      0,
-      0.37 -
-        Math.max(0, courtyardStepOuterHalfX - courtyardStepInnerHalfX - 0.38) *
-          1.4,
-    ),
-  )
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(
-    Math.max(
-      pinRowCourtyardHalfY,
-      courtyardStepOuterHalfY - courtyardStepNotchDepthY,
-    ),
+  const courtyardStepInnerHalfY = Math.max(
+    pinRowCourtyardHalfY,
+    courtyardStepOuterHalfY - courtyardStepNotchDepthY,
   )
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",

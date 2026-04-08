@@ -137,17 +137,13 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
   const p_val = Number.parseFloat(parameters.p)
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.05) * 0.05
   const pinColumnCenterX = h_val / 2 + 0.5
   const pinRowSpanY = p_val * 2 + pw_val
   const pinToeHalfSpanX = pinColumnCenterX + pl_val / 2
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(h_val / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinToeHalfSpanX + 0.25)
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.2)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(
-    courtyardStepInnerHalfY + 0.2,
-  )
+  const courtyardStepInnerHalfX = h_val / 2 + 0.25
+  const courtyardStepOuterHalfX = pinToeHalfSpanX + 0.25
+  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.2
+  const courtyardStepOuterHalfY = courtyardStepInnerHalfY + 0.2
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",

@@ -161,17 +161,12 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       { x: -sw / 2, y: -sh / 2 },
     ],
   }
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardStepInnerHalfX + 1.93,
-  )
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.27)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.63)
+  const courtyardStepInnerHalfX = parameters.w / 2 + 0.25
+  const courtyardStepOuterHalfX = courtyardStepInnerHalfX + 1.93
+  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.275
+  const courtyardStepOuterHalfY = pinRowSpanY / 2 + 0.635
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",

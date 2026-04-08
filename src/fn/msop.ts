@@ -149,16 +149,11 @@ export const msop = (
     silkscreenBoxHeight / 2 + 0.5,
     0.3,
   )
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(w / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardStepInnerHalfX + 1.43,
-  )
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.255)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25)
+  const courtyardStepInnerHalfX = w / 2 + 0.25
+  const courtyardStepOuterHalfX = courtyardStepInnerHalfX + 1.43
+  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.255
+  const courtyardStepOuterHalfY = h / 2 + 0.25
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",

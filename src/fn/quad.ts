@@ -317,18 +317,15 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const roundUpToCourtyardOuterGrid = (value: number) =>
     Math.ceil(value / 0.05) * 0.05
 
   const pinRowSpanX = (spc - 1) * parameters.p + parameters.pw
   const pinRowSpanY = (spc - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(parameters.h / 2 + 0.25)
+  const courtyardStepInnerHalfX = pinRowSpanX / 2 + 0.25
+  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.25
+  const courtyardStepOuterHalfX = parameters.w / 2 + 0.25
+  const courtyardStepOuterHalfY = parameters.h / 2 + 0.25
 
   const courtyardOuterHalfX = Math.max(
     courtyardStepOuterHalfX,

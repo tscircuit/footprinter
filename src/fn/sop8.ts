@@ -49,15 +49,12 @@ export const sop8 = (
     ],
     stroke_width: 0.1,
   }
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 - 1.395)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.255)
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.5)
+  const courtyardStepInnerHalfX = parameters.w / 2 - 1.395
+  const courtyardStepOuterHalfX = parameters.w / 2 + 0.255
+  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.25
+  const courtyardStepOuterHalfY = pinRowSpanY / 2 + 0.5
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",

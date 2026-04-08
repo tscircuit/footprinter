@@ -63,13 +63,19 @@ const createEmptyBounds = (): Bounds => ({
   maxY: Number.NEGATIVE_INFINITY,
 })
 
-const includeRectInBounds = (
-  bounds: Bounds,
-  centerX: number,
-  centerY: number,
-  width: number,
-  height: number,
-) => {
+const modifyBoundsToIncludeRect = ({
+  bounds,
+  centerX,
+  centerY,
+  width,
+  height,
+}: {
+  bounds: Bounds
+  centerX: number
+  centerY: number
+  width: number
+  height: number
+}) => {
   const halfX = width / 2
   const halfY = height / 2
   bounds.minX = Math.min(bounds.minX, centerX - halfX)
@@ -111,14 +117,21 @@ function getVariant(params: jstDef): JstVariant {
   return "ph"
 }
 
-function generatePads(
-  variant: JstVariant,
-  numPins: number,
-  p: number,
-  id: number,
-  pw: number,
-  pl: number,
-): {
+function generatePads({
+  variant,
+  numPins,
+  p,
+  id,
+  pw,
+  pl,
+}: {
+  variant: JstVariant
+  numPins: number
+  p: number
+  id: number
+  pw: number
+  pl: number
+}): {
   pads: AnyCircuitElement[]
   padBounds: Bounds
   maxPadHalfY: number
@@ -141,7 +154,13 @@ function generatePads(
           rectPadHeight: pl,
         }),
       )
-      includeRectInBounds(padBounds, x, 2, pw, pl)
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 2,
+        width: pw,
+        height: pl,
+      })
       maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
     }
   } else if (variant === "zh") {
@@ -165,7 +184,13 @@ function generatePads(
         // Pins 2+: oval/pill pad
         pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
       }
-      includeRectInBounds(padBounds, x, 0, pw, pl)
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 0,
+        width: pw,
+        height: pl,
+      })
       maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
     }
   } else {
@@ -173,28 +198,52 @@ function generatePads(
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
       pads.push(rectpad(i + 1, x, -1.325, pw, pl))
-      includeRectInBounds(padBounds, x, -1.325, pw, pl)
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: -1.325,
+        width: pw,
+        height: pl,
+      })
       maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
     }
 
     const sideOffset = ((numPins - 1) / 2) * p + 1.3
     pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8))
     pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8))
-    includeRectInBounds(padBounds, -sideOffset, 1.22, 1.2, 1.8)
-    includeRectInBounds(padBounds, sideOffset, 1.22, 1.2, 1.8)
+    modifyBoundsToIncludeRect({
+      bounds: padBounds,
+      centerX: -sideOffset,
+      centerY: 1.22,
+      width: 1.2,
+      height: 1.8,
+    })
+    modifyBoundsToIncludeRect({
+      bounds: padBounds,
+      centerX: sideOffset,
+      centerY: 1.22,
+      width: 1.2,
+      height: 1.8,
+    })
     maxPadHalfY = Math.max(maxPadHalfY, 0.9)
   }
 
   return { pads, padBounds, maxPadHalfY }
 }
 
-function generateSilkscreenBody(
-  variant: JstVariant,
-  w: number,
-  h: number,
-  numPins?: number,
-  p?: number,
-): PcbSilkscreenPath {
+function generateSilkscreenBody({
+  variant,
+  w,
+  h,
+  numPins,
+  p,
+}: {
+  variant: JstVariant
+  w: number
+  h: number
+  numPins?: number
+  p?: number
+}): PcbSilkscreenPath {
   if (variant === "ph") {
     return {
       type: "pcb_silkscreen_path",
@@ -288,13 +337,23 @@ export const jst = (
     )
   }
 
-  const padGeometry = generatePads(variant, numPins, p, id, pw, pl)
+  const padGeometry = generatePads({
+    variant,
+    numPins,
+    p,
+    id,
+    pw,
+    pl,
+  })
   const { pads, padBounds, maxPadHalfY } = padGeometry
-  const silkscreenBody = generateSilkscreenBody(variant, w, h, numPins, p)
+  const silkscreenBody = generateSilkscreenBody({
+    variant,
+    w,
+    h,
+    numPins,
+    p,
+  })
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
-
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.05) * 0.05
 
   const silkscreenXs = silkscreenBody.route.map((point) => point.x)
   const silkscreenYs = silkscreenBody.route.map((point) => point.y)
@@ -317,10 +376,10 @@ export const jst = (
   const courtyardSideClearanceX = 0.5
   const courtyardFrontClearanceY = 0.05
   const courtyardRearClearanceY = maxPadHalfY + 0.085
-  const crtMinX = roundToCourtyardGrid(featureMinX - courtyardSideClearanceX)
-  const crtMaxX = roundToCourtyardGrid(featureMaxX + courtyardSideClearanceX)
-  const crtMinY = roundToCourtyardGrid(featureMinY - courtyardRearClearanceY)
-  const crtMaxY = roundToCourtyardGrid(featureMaxY + courtyardFrontClearanceY)
+  const crtMinX = featureMinX - courtyardSideClearanceX
+  const crtMaxX = featureMaxX + courtyardSideClearanceX
+  const crtMinY = featureMinY - courtyardRearClearanceY
+  const crtMaxY = featureMaxY + courtyardFrontClearanceY
 
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
