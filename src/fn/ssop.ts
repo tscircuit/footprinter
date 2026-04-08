@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { length } from "circuit-json"
@@ -115,25 +115,35 @@ export const ssop = (
     ],
   }
 
-  const courtyardPadding = 0.25
-  const silkXs = silkscreenBorder.route.map((pt) => pt.x)
-  const silkYs = silkscreenBorder.route.map((pt) => pt.y)
-  // getSsopCoords uses padRowSpan = w + 0.2mm, so pad center is at (w + 0.2) / 2
-  const padXExtent = parameters.legsoutside
-    ? parameters.w / 2 + parameters.pl
-    : (parameters.w + 0.2) / 2 + parameters.pl / 2
-  const crtMinX = Math.min(-padXExtent, ...silkXs) - courtyardPadding
-  const crtMaxX = Math.max(padXExtent, ...silkXs) + courtyardPadding
-  const crtMinY = Math.min(...silkYs) - courtyardPadding
-  const crtMaxY = Math.max(...silkYs) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const pinOnePosition = getSsopCoords({
+    num_pins: parameters.num_pins,
+    pn: 1,
+    w: parameters.w,
+    p: parameters.p,
+    pl: parameters.pl,
+    legsoutside: parameters.legsoutside,
+  })
+  const pinRowSpanY =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+  const pinToeHalfSpanX = Math.abs(pinOnePosition.x) + parameters.pl / 2
+  const bodyHalfY = parameters.w / 2
+  const courtyardHalfX = roundToCourtyardGrid(pinToeHalfSpanX + 0.25)
+  const courtyardHalfY = roundToCourtyardGrid(
+    Math.max(pinRowSpanY / 2 + 0.25, bodyHalfY + 0.25),
+  )
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: [
+      { x: -courtyardHalfX, y: courtyardHalfY },
+      { x: -courtyardHalfX, y: -courtyardHalfY },
+      { x: courtyardHalfX, y: -courtyardHalfY },
+      { x: courtyardHalfX, y: courtyardHalfY },
+    ],
   }
 
   return {

@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSmtPad,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -10,6 +10,7 @@ import { base_def } from "../helpers/zod/base_def"
 import { length, distance } from "circuit-json"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -69,20 +70,52 @@ export const vson = (
     grid.y / 6,
   )
 
-  const courtyardPadding = 0.25
-  const centerY = ((num_pins / 2 - 1) * p) / 2
-  const crtMinX = -(w / 2 + pinw / 2 + courtyardPadding)
-  const crtMaxX = w / 2 + pinw / 2 + courtyardPadding
-  const crtMinY = -(Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding)
-  const crtMaxY = Math.max(grid.y / 2, centerY + pinh / 2) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const pinRowSpanY = (num_pins / 2 - 1) * p + pinh
+  const pinRowSpanX = w + pinw
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(grid.x / 2 + 0.25)
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
+  const pinRowCourtyardHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
+  const pinRowExtendedCourtyardHalfY = roundToCourtyardGrid(
+    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p),
+  )
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(
+    Math.min(grid.y / 2 + 0.25, pinRowExtendedCourtyardHalfY),
+  )
+  const courtyardStepNotchDepthY = roundToCourtyardGrid(
+    Math.max(
+      0,
+      0.37 -
+        Math.max(0, courtyardStepOuterHalfX - courtyardStepInnerHalfX - 0.38) *
+          1.4,
+    ),
+  )
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(
+    Math.max(
+      pinRowCourtyardHalfY,
+      courtyardStepOuterHalfY - courtyardStepNotchDepthY,
+    ),
+  )
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
   }
 
   return {
