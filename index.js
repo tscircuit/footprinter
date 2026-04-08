@@ -39872,19 +39872,31 @@ var sop8 = (raw_params) => {
     ],
     stroke_width: 0.1
   };
-  const courtyardPadding = 0.25;
-  const crtMinX = -parameters.w / 2 - courtyardPadding;
-  const crtMaxX = parameters.w / 2 + courtyardPadding;
-  const crtMinY = -sh2 / 2 - courtyardPadding;
-  const crtMaxY = sh2 / 2 + 0.4 + courtyardPadding;
+  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
+  const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 - 1.395);
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.255);
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.5);
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY
+      }
+    ])
   };
   return {
     circuitJson: [
