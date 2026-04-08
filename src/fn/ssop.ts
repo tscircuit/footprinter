@@ -115,15 +115,18 @@ export const ssop = (
       { x: -sw / 2, y: -sh / 2 },
     ],
   }
+
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
   const padToeHalfX = parameters.legsoutside
     ? parameters.w / 2 + parameters.pl
     : (parameters.w + 0.2) / 2 + parameters.pl / 2
   const pinRowHalfY = pinRowSpanY / 2
-  const courtyardStepOuterHalfX = padToeHalfX + 0.25
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(padToeHalfX + 0.25)
   const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = pinRowHalfY + 0.445
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowHalfY + 0.445)
   const courtyardStepInnerHalfY = courtyardStepOuterHalfY
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
