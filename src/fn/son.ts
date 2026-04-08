@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -8,6 +8,7 @@ import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const son_def = base_def.extend({
   fn: z.string(),
@@ -118,20 +119,36 @@ export const son = (
     0.3,
   )
 
-  const courtyardPadding = 0.25
-  const padCenterX = length.parse("1.4mm")
-  const crtMinX = -(padCenterX + pl / 2) - courtyardPadding
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -silkscreenBoxHeight / 2 - courtyardPadding
-  const crtMaxY = silkscreenBoxHeight / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const pinColumnCenterX = Math.abs(
+    getSonPadCoord(parameters.num_pins, 1, w, p).x,
+  )
+  const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw
+  const pinRowSpanX = pinColumnCenterX * 2 + pl
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(w / 2 + 0.25)
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25)
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
   }
 
   return {
