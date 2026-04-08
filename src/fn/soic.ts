@@ -163,10 +163,10 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   }
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfX = parameters.w / 2 + 0.25
-  const courtyardStepOuterHalfX = courtyardStepInnerHalfX + 1.93
-  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.275
-  const courtyardStepOuterHalfY = pinRowSpanY / 2 + 0.635
+  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25
+  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.93
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.275
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.635
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -174,16 +174,16 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
   }

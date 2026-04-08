@@ -106,11 +106,14 @@ export const to220 = (
     Math.max(...plated_holes.map((hole) => Math.abs(hole.x))) + od / 2
   const pinToeTopY = holeY + od / 2
   const pinToeBottomY = holeY - od / 2
-  const courtyardHalfX = Math.max(pinToeHalfSpanX + 0.25, halfWidth - od * 0.59)
+  const courtyardHalfWidth = Math.max(
+    pinToeHalfSpanX + 0.25,
+    halfWidth - od * 0.59,
+  )
   const courtyardTopY = halfHeight - od * 0.63
   const courtyardBottomY = pinToeBottomY - (od / 2 + 0.01)
-  const crtMinX = -courtyardHalfX
-  const crtMaxX = courtyardHalfX
+  const crtMinX = -courtyardHalfWidth
+  const crtMaxX = courtyardHalfWidth
   const crtMinY = Math.min(courtyardBottomY, pinToeBottomY - 0.25)
   const crtMaxY = Math.max(courtyardTopY, pinToeTopY + 0.25)
   const courtyard: PcbCourtyardRect = {

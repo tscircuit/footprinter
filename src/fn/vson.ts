@@ -72,24 +72,27 @@ export const vson = (
 
   const pinRowSpanY = (num_pins / 2 - 1) * p + pinh
   const pinRowSpanX = w + pinw
-  const courtyardStepInnerHalfX = grid.x / 2 + 0.25
-  const courtyardStepOuterHalfX = pinRowSpanX / 2 + 0.25
+  const courtyardStepInnerHalfWidth = grid.x / 2 + 0.25
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
   const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25
   const pinRowExtendedCourtyardHalfY =
     pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p)
-  const courtyardStepOuterHalfY = Math.min(
+  const courtyardStepOuterHalfHeight = Math.min(
     grid.y / 2 + 0.25,
     pinRowExtendedCourtyardHalfY,
   )
   const courtyardStepNotchDepthY = Math.max(
     0,
     0.37 -
-      Math.max(0, courtyardStepOuterHalfX - courtyardStepInnerHalfX - 0.38) *
+      Math.max(
+        0,
+        courtyardStepOuterHalfWidth - courtyardStepInnerHalfWidth - 0.38,
+      ) *
         1.4,
   )
-  const courtyardStepInnerHalfY = Math.max(
+  const courtyardStepInnerHalfHeight = Math.max(
     pinRowCourtyardHalfY,
-    courtyardStepOuterHalfY - courtyardStepNotchDepthY,
+    courtyardStepOuterHalfHeight - courtyardStepNotchDepthY,
   )
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -98,16 +101,16 @@ export const vson = (
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
   }

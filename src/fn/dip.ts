@@ -203,26 +203,26 @@ export const dip = (raw_params: {
 
   const pinRowSpanX = parameters.w + parameters.od
   const pinRowSpanY = padEdgeHeight
-  const courtyardStepOuterHalfX = pinRowSpanX / 2 + 0.25
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = pinRowSpanY / 2 + 0.72
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.72
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
     layer: "top",

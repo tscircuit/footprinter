@@ -230,30 +230,32 @@ export const bga = (
   const padSpanY = (grid.y - 1) * p + pad
   const bodySpanX = w ?? padSpanX
   const bodySpanY = h ?? padSpanY
-  const courtyardEnvelopeHalfX = Math.max(padSpanX / 2, bodySpanX / 2)
-  const courtyardEnvelopeHalfY = Math.max(padSpanY / 2, bodySpanY / 2)
+  const courtyardEnvelopeHalfWidth = Math.max(padSpanX / 2, bodySpanX / 2)
+  const courtyardEnvelopeHalfHeight = Math.max(padSpanY / 2, bodySpanY / 2)
   const courtyardClearanceX = 1.715
   const courtyardClearanceY = 1.765
-  const courtyardStepOuterHalfX = courtyardEnvelopeHalfX + courtyardClearanceX
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = courtyardEnvelopeHalfY + courtyardClearanceY
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
+  const courtyardStepOuterHalfWidth =
+    courtyardEnvelopeHalfWidth + courtyardClearanceX
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth
+  const courtyardStepOuterHalfHeight =
+    courtyardEnvelopeHalfHeight + courtyardClearanceY
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
     layer: "top",

@@ -322,17 +322,17 @@ export const quad = (
 
   const pinRowSpanX = (spc - 1) * parameters.p + parameters.pw
   const pinRowSpanY = (spc - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfX = pinRowSpanX / 2 + 0.25
-  const courtyardStepInnerHalfY = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfX = parameters.w / 2 + 0.25
-  const courtyardStepOuterHalfY = parameters.h / 2 + 0.25
+  const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
+  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25
+  const courtyardStepOuterHalfHeight = parameters.h / 2 + 0.25
 
-  const courtyardOuterHalfX = Math.max(
-    courtyardStepOuterHalfX,
+  const courtyardOuterHalfWidth = Math.max(
+    courtyardStepOuterHalfWidth,
     roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25),
   )
-  const courtyardOuterHalfY = Math.max(
-    courtyardStepOuterHalfY,
+  const courtyardOuterHalfHeight = Math.max(
+    courtyardStepOuterHalfHeight,
     roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25),
   )
 
@@ -343,22 +343,22 @@ export const quad = (
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardOuterHalfX,
-        maxX: courtyardOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minX: -courtyardOuterHalfWidth,
+        maxX: courtyardOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardOuterHalfY,
-        maxY: courtyardOuterHalfY,
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardOuterHalfHeight,
+        maxY: courtyardOuterHalfHeight,
       },
     ]),
   }

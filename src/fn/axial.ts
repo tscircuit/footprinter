@@ -50,10 +50,10 @@ export const axial = (
   const pinPadHalfY = od / 2
   const courtyardStepOuterMinX = pin1CenterX - pinPadHalfX - 0.35
   const courtyardStepOuterMaxX = pin2CenterX + pinPadHalfX + 0.26
-  const courtyardStepOuterHalfY = pinPadHalfY + 0.35
+  const courtyardStepOuterHalfHeight = pinPadHalfY + 0.35
   const courtyardStepInnerMinX = courtyardStepOuterMinX
   const courtyardStepInnerMaxX = courtyardStepOuterMaxX
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -62,14 +62,14 @@ export const axial = (
       {
         minX: courtyardStepOuterMinX,
         maxX: courtyardStepOuterMaxX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight,
       },
       {
         minX: courtyardStepInnerMinX,
         maxX: courtyardStepInnerMaxX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight,
       },
     ]),
     layer: "top",
