@@ -8,6 +8,7 @@ import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createCapsuleOutline } from "src/helpers/capsule-outline"
 
 const generate_u_curve = (
   centerX: number,
@@ -77,37 +78,18 @@ export const hc49 = (
   const courtyardCapsuleRadius = roundToCourtyardGrid(
     Math.max(h / 2 + 0.25, w / 2 + 0.03),
   )
-  const courtyardCapsuleLeftCenterX = -courtyardCapsuleStraightHalfX
-  const courtyardCapsuleRightCenterX = courtyardCapsuleStraightHalfX
-  const arcSegmentCount = 9
-  const rightArc = Array.from({ length: arcSegmentCount + 1 }, (_, i) => {
-    const theta = (Math.PI / 2) * (1 - (2 * i) / arcSegmentCount)
-    return {
-      x:
-        courtyardCapsuleRightCenterX + Math.cos(theta) * courtyardCapsuleRadius,
-      y: Math.sin(theta) * courtyardCapsuleRadius,
-    }
-  })
-  const leftArc = Array.from({ length: arcSegmentCount + 1 }, (_, i) => {
-    const theta = (-Math.PI / 2) * (1 - (2 * i) / arcSegmentCount)
-    return {
-      x: courtyardCapsuleLeftCenterX - Math.cos(theta) * courtyardCapsuleRadius,
-      y: Math.sin(theta) * courtyardCapsuleRadius,
-    }
-  })
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    outline: [
-      { x: courtyardCapsuleLeftCenterX, y: courtyardCapsuleRadius },
-      { x: courtyardCapsuleRightCenterX, y: courtyardCapsuleRadius },
-      ...rightArc.slice(1, -1),
-      { x: courtyardCapsuleRightCenterX, y: -courtyardCapsuleRadius },
-      { x: courtyardCapsuleLeftCenterX, y: -courtyardCapsuleRadius },
-      ...leftArc.slice(1, -1),
-    ],
+    outline: createCapsuleOutline({
+      centerX: 0,
+      centerY: 0,
+      straightHalfLength: courtyardCapsuleStraightHalfX,
+      radius: courtyardCapsuleRadius,
+      arcSegmentCount: 9,
+    }),
     layer: "top",
   }
 
