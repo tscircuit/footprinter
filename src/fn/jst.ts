@@ -76,12 +76,12 @@ const modifyBoundsToIncludeRect = ({
   width: number
   height: number
 }) => {
-  const halfX = width / 2
-  const halfY = height / 2
-  bounds.minX = Math.min(bounds.minX, centerX - halfX)
-  bounds.maxX = Math.max(bounds.maxX, centerX + halfX)
-  bounds.minY = Math.min(bounds.minY, centerY - halfY)
-  bounds.maxY = Math.max(bounds.maxY, centerY + halfY)
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+  bounds.minX = Math.min(bounds.minX, centerX - halfWidth)
+  bounds.maxX = Math.max(bounds.maxX, centerX + halfWidth)
+  bounds.minY = Math.min(bounds.minY, centerY - halfHeight)
+  bounds.maxY = Math.max(bounds.maxY, centerY + halfHeight)
 }
 
 const variantDefaults: Record<JstVariant, any> = {
