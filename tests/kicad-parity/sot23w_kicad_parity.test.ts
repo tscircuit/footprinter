@@ -2,24 +2,24 @@ import { expect, test } from "bun:test"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
-test("parity/hc49", async () => {
+test("parity/sot23w", async () => {
   const {
     avgRelDiff,
     combinedFootprintElements,
     booleanDifferenceSvg,
     courtyardDiffPercent,
   } = await compareFootprinterVsKicad(
-    "hc49",
-    "Crystal.pretty/Crystal_HC49-4H_Vertical.circuit.json",
+    "sot23w",
+    "Package_TO_SOT_SMD.pretty/SOT-23W.circuit.json",
   )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
   expect(courtyardDiffPercent).toBeLessThan(0.5)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "hc49")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23w")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
-    "hc49_boolean_difference",
+    "sot23w_boolean_difference",
   )
 })

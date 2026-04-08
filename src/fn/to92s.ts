@@ -86,18 +86,32 @@ export const to92s = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
-  const od_v = Number.parseFloat(parameters.od)
-  const courtyardPadding = 0.25
-  const crtHalfX = Math.max(holeY, padSpacing + od_v / 2) + courtyardPadding
-  const crtMinY = -courtyardPadding
-  const crtMaxY = holeY + 0.5 + courtyardPadding
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const padOuterDiameter = Number.parseFloat(parameters.od)
+  const padCenterY = holeY - padSpacing
+  const padMinX = -padSpacing - padOuterDiameter / 2
+  const padMaxX = padSpacing + padOuterDiameter / 2
+  const padMinY = padCenterY - padOuterDiameter / 2
+  const padMaxY = padCenterY + padOuterDiameter / 2
+  const bodyMinX = -holeY
+  const bodyMaxX = holeY
+  const bodyMinY = 0
+  const bodyMaxY = holeY + 0.5
+  const courtyardMinX = roundToCourtyardGrid(Math.min(padMinX, bodyMinX) - 0.27)
+  const courtyardMaxX = roundToCourtyardGrid(Math.max(padMaxX, bodyMaxX) + 0.13)
+  const courtyardMinY = roundToCourtyardGrid(Math.min(padMinY, bodyMinY) - 0.42)
+  const courtyardMaxY = roundToCourtyardGrid(Math.max(padMaxY, bodyMaxY) + 0.08)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: (crtMinY + crtMaxY) / 2 },
-    width: 2 * crtHalfX,
-    height: crtMaxY - crtMinY,
+    center: {
+      x: (courtyardMinX + courtyardMaxX) / 2,
+      y: (courtyardMinY + courtyardMaxY) / 2,
+    },
+    width: courtyardMaxX - courtyardMinX,
+    height: courtyardMaxY - courtyardMinY,
     layer: "top",
   }
 

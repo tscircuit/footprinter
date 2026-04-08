@@ -1,7 +1,7 @@
 import {
   length,
   type AnyCircuitElement,
-  type PcbCourtyardRect,
+  type PcbCourtyardOutline,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -70,18 +70,44 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(w / 2 + radius + courtyardPadding)
-  const crtMaxX = w / 2 + radius + courtyardPadding
-  const crtMinY = -(radius + courtyardPadding)
-  const crtMaxY = radius + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const padRowHalfX = p / 2 + od / 2
+  const courtyardCapsuleStraightHalfX = roundToCourtyardGrid(padRowHalfX)
+  const courtyardCapsuleRadius = roundToCourtyardGrid(
+    Math.max(h / 2 + 0.25, w / 2 + 0.03),
+  )
+  const courtyardCapsuleLeftCenterX = -courtyardCapsuleStraightHalfX
+  const courtyardCapsuleRightCenterX = courtyardCapsuleStraightHalfX
+  const arcSegmentCount = 9
+  const rightArc = Array.from({ length: arcSegmentCount + 1 }, (_, i) => {
+    const theta = (Math.PI / 2) * (1 - (2 * i) / arcSegmentCount)
+    return {
+      x:
+        courtyardCapsuleRightCenterX + Math.cos(theta) * courtyardCapsuleRadius,
+      y: Math.sin(theta) * courtyardCapsuleRadius,
+    }
+  })
+  const leftArc = Array.from({ length: arcSegmentCount + 1 }, (_, i) => {
+    const theta = (-Math.PI / 2) * (1 - (2 * i) / arcSegmentCount)
+    return {
+      x: courtyardCapsuleLeftCenterX - Math.cos(theta) * courtyardCapsuleRadius,
+      y: Math.sin(theta) * courtyardCapsuleRadius,
+    }
+  })
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: [
+      { x: courtyardCapsuleLeftCenterX, y: courtyardCapsuleRadius },
+      { x: courtyardCapsuleRightCenterX, y: courtyardCapsuleRadius },
+      ...rightArc.slice(1, -1),
+      { x: courtyardCapsuleRightCenterX, y: -courtyardCapsuleRadius },
+      { x: courtyardCapsuleLeftCenterX, y: -courtyardCapsuleRadius },
+      ...leftArc.slice(1, -1),
+    ],
     layer: "top",
   }
 
