@@ -60,15 +60,20 @@ export const pushbutton = (
     0.5,
   )
 
-  const outerRadius = (holeDiameter * 1.5) / 2
-  const courtyardPadding = 0.25
+  const padOuterRadius = (holeDiameter * 1.5) / 2
+  const pinRowSpanX = width
+  const pinRowSpanY = height
+  const padOuterHalfWidth = pinRowSpanX / 2 + padOuterRadius
+  const padOuterHalfHeight = pinRowSpanY / 2 + padOuterRadius
+  const courtyardHalfWidth = padOuterHalfWidth + 0.5
+  const courtyardHalfHeight = padOuterHalfHeight + 0.5
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: width + 2 * outerRadius + 2 * courtyardPadding,
-    height: height + 2 * outerRadius + 2 * courtyardPadding,
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 

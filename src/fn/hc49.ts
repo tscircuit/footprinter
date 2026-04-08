@@ -1,13 +1,14 @@
 import {
   length,
   type AnyCircuitElement,
-  type PcbCourtyardRect,
+  type PcbCourtyardOutline,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createCapsuleOutline } from "src/helpers/capsule-outline"
 
 const generate_u_curve = (
   centerX: number,
@@ -70,18 +71,21 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(w / 2 + radius + courtyardPadding)
-  const crtMaxX = w / 2 + radius + courtyardPadding
-  const crtMinY = -(radius + courtyardPadding)
-  const crtMaxY = radius + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const padRowHalfWidth = p / 2 + od / 2
+  const courtyardCapsuleStraightHalfLength = padRowHalfWidth
+  const courtyardCapsuleRadius = Math.max(h / 2 + 0.25, w / 2 + 0.03)
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: createCapsuleOutline({
+      centerX: 0,
+      centerY: 0,
+      straightHalfLength: courtyardCapsuleStraightHalfLength,
+      radius: courtyardCapsuleRadius,
+      arcSegmentCount: 9,
+    }),
     layer: "top",
   }
 

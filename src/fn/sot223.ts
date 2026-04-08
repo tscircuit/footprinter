@@ -1,6 +1,5 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardOutline,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -9,7 +8,6 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sot223_def = base_def.extend({
   fn: z.string(),
@@ -89,6 +87,8 @@ export const get2CcwSot223Coords = (parameters: {
 
 export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
+  let padOuterHalfWidth = 0
+  let padOuterHalfHeight = 0
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = get2CcwSot223Coords({
@@ -101,8 +101,14 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
     })
 
     const pinWidth = i === 3 ? 3.8 : Number.parseFloat(parameters.pw)
+    const pinLength = Number.parseFloat(parameters.pl)
 
-    pads.push(rectpad(i + 1, x, y, Number.parseFloat(parameters.pl), pinWidth))
+    padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
+    padOuterHalfHeight = Math.max(
+      padOuterHalfHeight,
+      Math.abs(y) + pinWidth / 2,
+    )
+    pads.push(rectpad(i + 1, x, y, pinLength, pinWidth))
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
@@ -134,23 +140,23 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
     stroke_width: 0.1,
   }
 
-  const w = Number.parseFloat(parameters.w)
-  const pl = Number.parseFloat(parameters.pl)
-  const p = Number.parseFloat(parameters.p)
-  const pw = Number.parseFloat(parameters.pw)
-  const courtyardPadding = 0.25
-  const padCenterX = w / 2 - 1.1
-  const crtMinX = -(padCenterX + pl / 2 + courtyardPadding)
-  const crtMaxX = padCenterX + pl / 2 + courtyardPadding
-  const crtMinY = -(p + pw / 2 + courtyardPadding)
-  const crtMaxY = p + pw / 2 + courtyardPadding
+  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
+  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const courtyardHalfWidth = Math.max(
+    padOuterHalfWidth + 0.25,
+    bodyHalfWidth + 0.15,
+  )
+  const courtyardHalfHeight = Math.max(
+    padOuterHalfHeight + 0.25,
+    bodyHalfHeight + 0.15,
+  )
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 
@@ -196,8 +202,8 @@ export const get2CcwSot2235Coords = (parameters: {
 
 export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
-  let padOuterHalfX = 0
-  let padOuterHalfY = 0
+  let padOuterHalfWidth = 0
+  let padOuterHalfHeight = 0
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2235Coords({
       h: Number.parseFloat(parameters.h),
@@ -217,8 +223,11 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       pinLength = 2.2
     }
 
-    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + pinLength / 2)
-    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + pinWidth / 2)
+    padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
+    padOuterHalfHeight = Math.max(
+      padOuterHalfHeight,
+      Math.abs(y) + pinWidth / 2,
+    )
     pads.push(rectpad(i, x, y, pinLength, pinWidth))
   }
 
@@ -251,28 +260,23 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const courtyardStepOuterHalfWidth = padOuterHalfX + 0.25
-  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth
-  const courtyardStepOuterHalfHeight = padOuterHalfY + 0.85
-  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
+  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
+  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const courtyardHalfWidth = Math.max(
+    padOuterHalfWidth + 0.25,
+    bodyHalfWidth + 0.15,
+  )
+  const courtyardHalfHeight = Math.max(
+    padOuterHalfHeight + 0.25,
+    bodyHalfHeight + 0.15,
+  )
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    outline: createRectUnionOutline([
-      {
-        minX: -courtyardStepOuterHalfWidth,
-        maxX: courtyardStepOuterHalfWidth,
-        minY: -courtyardStepInnerHalfHeight,
-        maxY: courtyardStepInnerHalfHeight,
-      },
-      {
-        minX: -courtyardStepInnerHalfWidth,
-        maxX: courtyardStepInnerHalfWidth,
-        minY: -courtyardStepOuterHalfHeight,
-        maxY: courtyardStepOuterHalfHeight,
-      },
-    ]),
+    center: { x: 0, y: 0 },
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 
@@ -315,6 +319,8 @@ export const get2CcwSot2236Coords = (parameters: {
 
 export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
+  let padOuterHalfWidth = 0
+  let padOuterHalfHeight = 0
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2236Coords({
       h: Number.parseFloat(parameters.h),
@@ -334,6 +340,11 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       pinLength = 2.2
     }
 
+    padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
+    padOuterHalfHeight = Math.max(
+      padOuterHalfHeight,
+      Math.abs(y) + pinWidth / 2,
+    )
     pads.push(rectpad(i, x, y, pinLength, pinWidth))
   }
 
@@ -366,18 +377,23 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(4.25 + courtyardPadding)
-  const crtMaxX = 4.25 + courtyardPadding
-  const crtMinY = -(2.9 + courtyardPadding)
-  const crtMaxY = 2.9 + courtyardPadding
+  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
+  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const courtyardHalfWidth = Math.max(
+    padOuterHalfWidth + 0.25,
+    bodyHalfWidth + 0.15,
+  )
+  const courtyardHalfHeight = Math.max(
+    padOuterHalfHeight + 0.25,
+    bodyHalfHeight + 0.15,
+  )
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 

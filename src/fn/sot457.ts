@@ -1,5 +1,6 @@
 import type {
   AnyCircuitElement,
+  PcbCourtyardOutline,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -8,6 +9,7 @@ import { rectpad } from "../helpers/rectpad"
 import { pillpad } from "../helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "src/helpers/zod/base_def"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 // Common schema properties for both SOT-457 configurations
 const commonSchema = {
@@ -194,28 +196,58 @@ const generateSot457Elements = (
     stroke_width: 0.05,
   }
 
-  const courtyardPadding = 0.25
-  let crtMinX: number, crtMaxX: number, crtMinY: number, crtMaxY: number
+  let courtyard: PcbCourtyardRect | PcbCourtyardOutline
   if (params.wave) {
-    crtMinX = -(pitch + padWidth / 2 + courtyardPadding)
-    crtMaxX = pitch + padWidth / 2 + courtyardPadding
-    crtMinY = -(pitch + padLength / 2 + courtyardPadding)
-    crtMaxY = pitch + padLength / 2 + courtyardPadding
+    const pinRowSpanX = 2 * pitch
+    const pinRowSpanY = 2 * pitch
+    const padOuterHalfWidth = pinRowSpanX / 2 + padWidth / 2
+    const padOuterHalfHeight = pinRowSpanY / 2 + padLength / 2
+    const courtyardHalfWidth = padOuterHalfWidth + 0.25
+    const courtyardHalfHeight = padOuterHalfHeight + 0.25
+    courtyard = {
+      type: "pcb_courtyard_rect",
+      pcb_courtyard_rect_id: "",
+      pcb_component_id: "",
+      center: { x: 0, y: 0 },
+      width: 2 * courtyardHalfWidth,
+      height: 2 * courtyardHalfHeight,
+      layer: "top",
+    }
   } else {
     const padCenterX = width / 2 + 0.1
-    crtMinX = -(padCenterX + padLength / 2 + courtyardPadding)
-    crtMaxX = padCenterX + padLength / 2 + courtyardPadding
-    crtMinY = -(pitch + padWidth / 2 + courtyardPadding)
-    crtMaxY = pitch + padWidth / 2 + courtyardPadding
-  }
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
+    const padToeHalfWidth = padCenterX + padLength / 2
+    const pinRowHalfHeight = pitch + padWidth / 2
+    const bodyHalfWidth = width / 2
+    const bodyHalfHeight = height / 2
+
+    const courtyardStepOuterHalfWidth = padToeHalfWidth + 0.25
+    const courtyardStepInnerHalfWidth = bodyHalfWidth + 0.08
+    const courtyardStepOuterHalfHeight = pinRowHalfHeight + 0.25
+    const courtyardStepInnerHalfHeight = Math.max(
+      bodyHalfHeight + 0.45,
+      courtyardStepOuterHalfHeight,
+    )
+
+    courtyard = {
+      type: "pcb_courtyard_outline",
+      pcb_courtyard_outline_id: "",
+      pcb_component_id: "",
+      outline: createRectUnionOutline([
+        {
+          minX: -courtyardStepOuterHalfWidth,
+          maxX: courtyardStepOuterHalfWidth,
+          minY: -courtyardStepOuterHalfHeight,
+          maxY: courtyardStepOuterHalfHeight,
+        },
+        {
+          minX: -courtyardStepInnerHalfWidth,
+          maxX: courtyardStepInnerHalfWidth,
+          minY: -courtyardStepInnerHalfHeight,
+          maxY: courtyardStepInnerHalfHeight,
+        },
+      ]),
+      layer: "top",
+    }
   }
 
   return [
