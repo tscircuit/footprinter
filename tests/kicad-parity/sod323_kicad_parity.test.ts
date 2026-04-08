@@ -15,7 +15,7 @@ test("parity/sod323", async () => {
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
-  expect(courtyardDiffPercent).toBeLessThan(5)
+  expect(courtyardDiffPercent).toBeLessThan(0.5)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod323")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
