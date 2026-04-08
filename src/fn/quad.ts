@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { optional, z } from "zod"
@@ -12,6 +12,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -118,6 +119,8 @@ export const quad = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
+  let padOuterHalfX = 0
+  let padOuterHalfY = 0
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
@@ -136,22 +139,28 @@ export const quad = (
       legsoutside: parameters.legsoutside,
     })
 
-    let pw = parameters.pw
-    let pl = parameters.pl
+    let padWidth = parameters.pw
+    let padHeight = parameters.pl
     if (orientation === "vert") {
-      ;[pw, pl] = [pl, pw]
+      ;[padWidth, padHeight] = [padHeight, padWidth]
     }
 
     const pn = pin_map[i + 1]!
-    pads.push(rectpad(pn, x, y, pw, pl))
+    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
+    pads.push(rectpad(pn, x, y, padWidth, padHeight))
   }
 
   if (parameters.thermalpad) {
     if (typeof parameters.thermalpad === "boolean") {
       const ibw = parameters.p * (spc - 1) + parameters.pw
       const ibh = parameters.p * (spc - 1) + parameters.pw
+      padOuterHalfX = Math.max(padOuterHalfX, ibw / 2)
+      padOuterHalfY = Math.max(padOuterHalfY, ibh / 2)
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
     } else {
+      padOuterHalfX = Math.max(padOuterHalfX, parameters.thermalpad.x / 2)
+      padOuterHalfY = Math.max(padOuterHalfY, parameters.thermalpad.y / 2)
       pads.push(
         rectpad(
           ["thermalpad"],
@@ -308,25 +317,53 @@ export const quad = (
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
   )
-  const courtyardPadding = 0.25
-  const padExtentX = parameters.legsoutside
-    ? parameters.w / 2 + parameters.pl
-    : parameters.w / 2
-  const padExtentY = parameters.legsoutside
-    ? parameters.h / 2 + parameters.pl
-    : parameters.h / 2
-  const crtMinX = -padExtentX - courtyardPadding
-  const crtMaxX = padExtentX + courtyardPadding
-  const crtMinY = -padExtentY - courtyardPadding
-  const crtMaxY = padExtentY + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const roundUpToCourtyardOuterGrid = (value: number) =>
+    Math.ceil(value / 0.05) * 0.05
+
+  const pinRowSpanX = (spc - 1) * parameters.p + parameters.pw
+  const pinRowSpanY = (spc - 1) * parameters.p + parameters.pw
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25)
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25)
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(parameters.h / 2 + 0.25)
+
+  const courtyardOuterHalfX = Math.max(
+    courtyardStepOuterHalfX,
+    roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25),
+  )
+  const courtyardOuterHalfY = Math.max(
+    courtyardStepOuterHalfY,
+    roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25),
+  )
+
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
     layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardOuterHalfX,
+        maxX: courtyardOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardOuterHalfY,
+        maxY: courtyardOuterHalfY,
+      },
+    ]),
   }
 
   return {
