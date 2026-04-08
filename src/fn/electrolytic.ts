@@ -146,14 +146,11 @@ export const electrolytic = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5)
 
-  const roundCourtyardOuterRadius = (value: number) =>
-    Math.ceil(value / 0.05) * 0.05
   const bodyOuterRadius = d / 2
   const pinOuterRadius = p / 2 + od / 2
   const courtyardClearance = 0.25
-  const courtyardRadius = roundCourtyardOuterRadius(
-    Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance,
-  )
+  const courtyardRadius =
+    Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance
   const courtyard: PcbCourtyardCircle = {
     type: "pcb_courtyard_circle",
     pcb_courtyard_circle_id: "",
