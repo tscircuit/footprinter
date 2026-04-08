@@ -44,19 +44,13 @@ export const axial = (
     pcb_silkscreen_path_id: "",
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 1.5, 0.5)
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pin1CenterX = -p / 2
   const pin2CenterX = p / 2
   const pinPadHalfX = od / 2
   const pinPadHalfY = od / 2
-  const courtyardStepOuterMinX = roundToCourtyardGrid(
-    pin1CenterX - pinPadHalfX - 0.35,
-  )
-  const courtyardStepOuterMaxX = roundToCourtyardGrid(
-    pin2CenterX + pinPadHalfX + 0.26,
-  )
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinPadHalfY + 0.35)
+  const courtyardStepOuterMinX = pin1CenterX - pinPadHalfX - 0.35
+  const courtyardStepOuterMaxX = pin2CenterX + pinPadHalfX + 0.26
+  const courtyardStepOuterHalfY = pinPadHalfY + 0.35
   const courtyardStepInnerMinX = courtyardStepOuterMinX
   const courtyardStepInnerMaxX = courtyardStepOuterMaxX
   const courtyardStepInnerHalfY = courtyardStepOuterHalfY

@@ -59,8 +59,6 @@ export const sod923 = (
     pcb_silkscreen_path_id: "",
   }
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanX = p + pl
   const pinRowSpanY = pw
   const bodyHalfX = w / 2
@@ -71,16 +69,10 @@ export const sod923 = (
   const courtyardEnvelopeHalfY = Math.max(bodyHalfY, pinRowHalfY)
   const courtyardNarrowHalfX = Math.min(bodyHalfX, pinToeHalfX)
   const courtyardNarrowHalfY = Math.min(bodyHalfY, pinRowHalfY)
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardEnvelopeHalfX + 0.05,
-  )
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(
-    courtyardNarrowHalfX - 0.055,
-  )
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(courtyardEnvelopeHalfY)
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(
-    courtyardNarrowHalfY + 0.155,
-  )
+  const courtyardStepOuterHalfX = courtyardEnvelopeHalfX + 0.05
+  const courtyardStepInnerHalfX = courtyardNarrowHalfX - 0.055
+  const courtyardStepOuterHalfY = courtyardEnvelopeHalfY
+  const courtyardStepInnerHalfY = courtyardNarrowHalfY + 0.155
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",

@@ -251,11 +251,9 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(padOuterHalfX + 0.25)
+  const courtyardStepOuterHalfX = padOuterHalfX + 0.25
   const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(padOuterHalfY + 0.85)
+  const courtyardStepOuterHalfY = padOuterHalfY + 0.85
   const courtyardStepInnerHalfY = courtyardStepOuterHalfY
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",

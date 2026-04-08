@@ -226,8 +226,6 @@ export const bga = (
     stroke_width: 0.05,
   }
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const padSpanX = (grid.x - 1) * p + pad
   const padSpanY = (grid.y - 1) * p + pad
   const bodySpanX = w ?? padSpanX
@@ -236,13 +234,9 @@ export const bga = (
   const courtyardEnvelopeHalfY = Math.max(padSpanY / 2, bodySpanY / 2)
   const courtyardClearanceX = 1.715
   const courtyardClearanceY = 1.765
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(
-    courtyardEnvelopeHalfX + courtyardClearanceX,
-  )
+  const courtyardStepOuterHalfX = courtyardEnvelopeHalfX + courtyardClearanceX
   const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(
-    courtyardEnvelopeHalfY + courtyardClearanceY,
-  )
+  const courtyardStepOuterHalfY = courtyardEnvelopeHalfY + courtyardClearanceY
   const courtyardStepInnerHalfY = courtyardStepOuterHalfY
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
