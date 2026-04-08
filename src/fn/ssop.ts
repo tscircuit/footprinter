@@ -9,6 +9,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { u_curve } from "../helpers/u-curve"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 // TODO we should accept MS-012 or MS-013
 
@@ -117,33 +118,35 @@ export const ssop = (
 
   const roundToCourtyardGrid = (value: number) =>
     Math.round(value / 0.01) * 0.01
-  const pinOnePosition = getSsopCoords({
-    num_pins: parameters.num_pins,
-    pn: 1,
-    w: parameters.w,
-    p: parameters.p,
-    pl: parameters.pl,
-    legsoutside: parameters.legsoutside,
-  })
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const pinToeHalfSpanX = Math.abs(pinOnePosition.x) + parameters.pl / 2
-  const bodyHalfY = parameters.w / 2
-  const courtyardHalfX = roundToCourtyardGrid(pinToeHalfSpanX + 0.25)
-  const courtyardHalfY = roundToCourtyardGrid(
-    Math.max(pinRowSpanY / 2 + 0.25, bodyHalfY + 0.25),
-  )
+  const padToeHalfX = parameters.legsoutside
+    ? parameters.w / 2 + parameters.pl
+    : (parameters.w + 0.2) / 2 + parameters.pl / 2
+  const pinRowHalfY = pinRowSpanY / 2
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(padToeHalfX + 0.25)
+  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowHalfY + 0.445)
+  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
     layer: "top",
-    outline: [
-      { x: -courtyardHalfX, y: courtyardHalfY },
-      { x: -courtyardHalfX, y: -courtyardHalfY },
-      { x: courtyardHalfX, y: -courtyardHalfY },
-      { x: courtyardHalfX, y: courtyardHalfY },
-    ],
   }
 
   return {
