@@ -35878,29 +35878,28 @@ var dip = (raw_params) => {
     });
   }
   const silkscreenRefText = silkscreenRef(0, sh2 / 2 + 0.5, 0.4);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanX = parameters.w + parameters.od;
   const pinRowSpanY = padEdgeHeight;
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25);
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX;
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.72);
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth;
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.72;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -36708,35 +36707,34 @@ var bga = (raw_params) => {
     route: markerRoute,
     stroke_width: 0.05
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const padSpanX = (grid2.x - 1) * p + pad;
   const padSpanY = (grid2.y - 1) * p + pad;
   const bodySpanX = w2 ?? padSpanX;
   const bodySpanY = h ?? padSpanY;
-  const courtyardEnvelopeHalfX = Math.max(padSpanX / 2, bodySpanX / 2);
-  const courtyardEnvelopeHalfY = Math.max(padSpanY / 2, bodySpanY / 2);
+  const courtyardEnvelopeHalfWidth = Math.max(padSpanX / 2, bodySpanX / 2);
+  const courtyardEnvelopeHalfHeight = Math.max(padSpanY / 2, bodySpanY / 2);
   const courtyardClearanceX = 1.715;
   const courtyardClearanceY = 1.765;
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(courtyardEnvelopeHalfX + courtyardClearanceX);
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX;
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(courtyardEnvelopeHalfY + courtyardClearanceY);
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY;
+  const courtyardStepOuterHalfWidth = courtyardEnvelopeHalfWidth + courtyardClearanceX;
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth;
+  const courtyardStepOuterHalfHeight = courtyardEnvelopeHalfHeight + courtyardClearanceY;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -36852,12 +36850,11 @@ var soicWithoutParsing = (parameters) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(courtyardStepInnerHalfX + 1.93);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.27);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.63);
+  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.93;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.275;
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.635;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -36865,16 +36862,16 @@ var soicWithoutParsing = (parameters) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -37194,16 +37191,15 @@ var quad = (raw_params) => {
     }
   }
   const silkscreenRefText = silkscreenRef(0, parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5), 0.3);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const roundUpToCourtyardOuterGrid = (value) => Math.ceil(value / 0.05) * 0.05;
   const pinRowSpanX = (spc - 1) * parameters.p + parameters.pw;
   const pinRowSpanY = (spc - 1) * parameters.p + parameters.pw;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(parameters.h / 2 + 0.25);
-  const courtyardOuterHalfX = Math.max(courtyardStepOuterHalfX, roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25));
-  const courtyardOuterHalfY = Math.max(courtyardStepOuterHalfY, roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25));
+  const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = parameters.h / 2 + 0.25;
+  const courtyardOuterHalfWidth = Math.max(courtyardStepOuterHalfWidth, roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25));
+  const courtyardOuterHalfHeight = Math.max(courtyardStepOuterHalfHeight, roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25));
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -37211,22 +37207,22 @@ var quad = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardOuterHalfX,
-        maxX: courtyardOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardOuterHalfWidth,
+        maxX: courtyardOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardOuterHalfY,
-        maxY: courtyardOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardOuterHalfHeight,
+        maxY: courtyardOuterHalfHeight
       }
     ])
   };
@@ -37446,30 +37442,29 @@ var ssop = (raw_params) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
   const padToeHalfX = parameters.legsoutside ? parameters.w / 2 + parameters.pl : (parameters.w + 0.2) / 2 + parameters.pl / 2;
   const pinRowHalfY = pinRowSpanY / 2;
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(padToeHalfX + 0.25);
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX;
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowHalfY + 0.445);
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY;
+  const courtyardStepOuterHalfWidth = padToeHalfX + 0.25;
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth;
+  const courtyardStepOuterHalfHeight = pinRowHalfY + 0.445;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -37543,13 +37538,12 @@ var tssop = (raw_params) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
   const pinToeHalfSpanX = parameters.w / 2 + (parameters.legsoutside ? parameters.pl : 0);
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinToeHalfSpanX + 0.18);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(courtyardStepInnerHalfY + 0.35);
+  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.18;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.35;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -37557,16 +37551,16 @@ var tssop = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -38719,17 +38713,16 @@ var axial = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   const silkscreenRefText = silkscreenRef(0, 1.5, 0.5);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pin1CenterX = -p / 2;
   const pin2CenterX = p / 2;
   const pinPadHalfX = od2 / 2;
   const pinPadHalfY = od2 / 2;
-  const courtyardStepOuterMinX = roundToCourtyardGrid(pin1CenterX - pinPadHalfX - 0.35);
-  const courtyardStepOuterMaxX = roundToCourtyardGrid(pin2CenterX + pinPadHalfX + 0.26);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinPadHalfY + 0.35);
+  const courtyardStepOuterMinX = pin1CenterX - pinPadHalfX - 0.35;
+  const courtyardStepOuterMaxX = pin2CenterX + pinPadHalfX + 0.26;
+  const courtyardStepOuterHalfHeight = pinPadHalfY + 0.35;
   const courtyardStepInnerMinX = courtyardStepOuterMinX;
   const courtyardStepInnerMaxX = courtyardStepOuterMaxX;
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -38738,14 +38731,14 @@ var axial = (raw_params) => {
       {
         minX: courtyardStepOuterMinX,
         maxX: courtyardStepOuterMaxX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
         minX: courtyardStepInnerMinX,
         maxX: courtyardStepInnerMaxX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -39946,12 +39939,11 @@ var sop8 = (raw_params) => {
     ],
     stroke_width: 0.1
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(parameters.w / 2 - 1.395);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.255);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.5);
+  const courtyardStepInnerHalfWidth = parameters.w / 2 - 1.395;
+  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.255;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.5;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -39959,16 +39951,16 @@ var sop8 = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -40238,37 +40230,36 @@ var sod923 = (raw_params) => {
     stroke_width: 0.1,
     pcb_silkscreen_path_id: ""
   };
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanX = p + pl2;
   const pinRowSpanY = pw;
   const bodyHalfX = w2 / 2;
   const bodyHalfY = h / 2;
   const pinToeHalfX = pinRowSpanX / 2;
   const pinRowHalfY = pinRowSpanY / 2;
-  const courtyardEnvelopeHalfX = Math.max(bodyHalfX, pinToeHalfX);
-  const courtyardEnvelopeHalfY = Math.max(bodyHalfY, pinRowHalfY);
-  const courtyardNarrowHalfX = Math.min(bodyHalfX, pinToeHalfX);
-  const courtyardNarrowHalfY = Math.min(bodyHalfY, pinRowHalfY);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(courtyardEnvelopeHalfX + 0.05);
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(courtyardNarrowHalfX - 0.055);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(courtyardEnvelopeHalfY);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(courtyardNarrowHalfY + 0.155);
+  const courtyardEnvelopeHalfWidth = Math.max(bodyHalfX, pinToeHalfX);
+  const courtyardEnvelopeHalfHeight = Math.max(bodyHalfY, pinRowHalfY);
+  const courtyardNarrowHalfWidth = Math.min(bodyHalfX, pinToeHalfX);
+  const courtyardNarrowHalfHeight = Math.min(bodyHalfY, pinRowHalfY);
+  const courtyardStepOuterHalfWidth = courtyardEnvelopeHalfWidth + 0.05;
+  const courtyardStepInnerHalfWidth = courtyardNarrowHalfWidth - 0.055;
+  const courtyardStepOuterHalfHeight = courtyardEnvelopeHalfHeight;
+  const courtyardStepInnerHalfHeight = courtyardNarrowHalfHeight + 0.155;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -40952,11 +40943,16 @@ var to220 = (raw_params) => {
     }
   ];
   const silkscreenRefText = silkscreenRef(0, h / 2 + 0.6, 0.5);
-  const courtyardPadding = 0.25;
-  const crtMinX = -(halfWidth + courtyardPadding);
-  const crtMaxX = halfWidth + courtyardPadding;
-  const crtMinY = -(halfHeight + courtyardPadding);
-  const crtMaxY = halfHeight + courtyardPadding;
+  const pinToeHalfSpanX = Math.max(...plated_holes.map((hole) => Math.abs(hole.x))) + od2 / 2;
+  const pinToeTopY = holeY + od2 / 2;
+  const pinToeBottomY = holeY - od2 / 2;
+  const courtyardHalfWidth = Math.max(pinToeHalfSpanX + 0.25, halfWidth - od2 * 0.59);
+  const courtyardTopY = halfHeight - od2 * 0.63;
+  const courtyardBottomY = pinToeBottomY - (od2 / 2 + 0.01);
+  const crtMinX = -courtyardHalfWidth;
+  const crtMaxX = courtyardHalfWidth;
+  const crtMinY = Math.min(courtyardBottomY, pinToeBottomY - 0.25);
+  const crtMaxY = Math.max(courtyardTopY, pinToeTopY + 0.25);
   const courtyard = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -41802,27 +41798,26 @@ var sot223_5 = (parameters) => {
     stroke_width: 0.1
   };
   const silkscreenRefText = silkscreenRef(0, 0, 0.3);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(padOuterHalfX + 0.25);
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX;
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(padOuterHalfY + 0.85);
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY;
+  const courtyardStepOuterHalfWidth = padOuterHalfX + 0.25;
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth;
+  const courtyardStepOuterHalfHeight = padOuterHalfY + 0.85;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ]),
     layer: "top"
@@ -42130,6 +42125,26 @@ var jst_def = base_def.extend({
   zh: exports_external.boolean().optional().describe("JST ZH (Through-hole) connector family. 1.5mm pitch wire-to-board."),
   string: exports_external.string().optional()
 });
+var createEmptyBounds = () => ({
+  minX: Number.POSITIVE_INFINITY,
+  maxX: Number.NEGATIVE_INFINITY,
+  minY: Number.POSITIVE_INFINITY,
+  maxY: Number.NEGATIVE_INFINITY
+});
+var modifyBoundsToIncludeRect = ({
+  bounds,
+  centerX,
+  centerY,
+  width,
+  height
+}) => {
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  bounds.minX = Math.min(bounds.minX, centerX - halfWidth);
+  bounds.maxX = Math.max(bounds.maxX, centerX + halfWidth);
+  bounds.minY = Math.min(bounds.minY, centerY - halfHeight);
+  bounds.maxY = Math.max(bounds.maxY, centerY + halfHeight);
+};
 var variantDefaults = {
   ph: {
     p: length.parse("2.2mm"),
@@ -42164,8 +42179,17 @@ function getVariant(params) {
     return "zh";
   return "ph";
 }
-function generatePads(variant, numPins, p, id2, pw, pl2) {
+function generatePads({
+  variant,
+  numPins,
+  p,
+  id: id2,
+  pw,
+  pl: pl2
+}) {
   const pads = [];
+  const padBounds = createEmptyBounds();
+  let maxPadHalfY = 0;
   if (variant === "ph") {
     const startX = -((numPins - 1) / 2) * p;
     for (let i = 0;i < numPins; i++) {
@@ -42178,6 +42202,14 @@ function generatePads(variant, numPins, p, id2, pw, pl2) {
         rectPadWidth: pw,
         rectPadHeight: pl2
       }));
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 2,
+        width: pw,
+        height: pl2
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl2 / 2);
     }
   } else if (variant === "zh") {
     const startX = -((numPins - 1) / 2) * p;
@@ -42196,20 +42228,57 @@ function generatePads(variant, numPins, p, id2, pw, pl2) {
       } else {
         pads.push(platedHolePill(i + 1, x, 0, id2, pw, pl2));
       }
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 0,
+        width: pw,
+        height: pl2
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl2 / 2);
     }
   } else {
     const startX = -((numPins - 1) / 2) * p;
     for (let i = 0;i < numPins; i++) {
       const x = startX + i * p;
       pads.push(rectpad(i + 1, x, -1.325, pw, pl2));
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: -1.325,
+        width: pw,
+        height: pl2
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl2 / 2);
     }
     const sideOffset = (numPins - 1) / 2 * p + 1.3;
     pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8));
     pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8));
+    modifyBoundsToIncludeRect({
+      bounds: padBounds,
+      centerX: -sideOffset,
+      centerY: 1.22,
+      width: 1.2,
+      height: 1.8
+    });
+    modifyBoundsToIncludeRect({
+      bounds: padBounds,
+      centerX: sideOffset,
+      centerY: 1.22,
+      width: 1.2,
+      height: 1.8
+    });
+    maxPadHalfY = Math.max(maxPadHalfY, 0.9);
   }
-  return pads;
+  return { pads, padBounds, maxPadHalfY };
 }
-function generateSilkscreenBody(variant, w2, h, numPins, p) {
+function generateSilkscreenBody({
+  variant,
+  w: w2,
+  h,
+  numPins,
+  p
+}) {
   if (variant === "ph") {
     return {
       type: "pcb_silkscreen_path",
@@ -42289,34 +42358,37 @@ var jst = (raw_params) => {
   if (typeof numPins !== "number") {
     throw new Error(`JST requires an explicit pin count (e.g. jst6_sh or .jst(6))${params.string ? `, from string "${params.string}"` : ""}`);
   }
-  const pads = generatePads(variant, numPins, p, id2, pw, pl2);
-  const silkscreenBody = generateSilkscreenBody(variant, w2, h, numPins, p);
+  const padGeometry = generatePads({
+    variant,
+    numPins,
+    p,
+    id: id2,
+    pw,
+    pl: pl2
+  });
+  const { pads, padBounds, maxPadHalfY } = padGeometry;
+  const silkscreenBody = generateSilkscreenBody({
+    variant,
+    w: w2,
+    h,
+    numPins,
+    p
+  });
   const silkscreenRefText = silkscreenRef(0, h / 2 + 1, 0.5);
-  const courtyardPadding = 0.25;
-  let crtMinX;
-  let crtMaxX;
-  let crtMinY;
-  let crtMaxY;
-  if (variant === "ph") {
-    const pinHalfSpan = (numPins - 1) / 2 * p + pw / 2;
-    crtMinX = -Math.max(pinHalfSpan, 3) - courtyardPadding;
-    crtMaxX = Math.max(pinHalfSpan, 3) + courtyardPadding;
-    crtMinY = -2 - courtyardPadding;
-    crtMaxY = 3 + courtyardPadding;
-  } else if (variant === "sh") {
-    const sideOffset = (numPins - 1) / 2 * p + 1.3;
-    crtMinX = -(sideOffset + 0.6 + courtyardPadding);
-    crtMaxX = sideOffset + 0.6 + courtyardPadding;
-    crtMinY = -1.325 - pl2 / 2 - courtyardPadding;
-    crtMaxY = 1.22 + 0.9 + courtyardPadding;
-  } else {
-    const pinSpan = (numPins - 1) * p;
-    const bodyHalfW = pinSpan / 2 + 1.5;
-    crtMinX = -(bodyHalfW + courtyardPadding);
-    crtMaxX = bodyHalfW + courtyardPadding;
-    crtMinY = -h / 2 - courtyardPadding;
-    crtMaxY = h / 2 + courtyardPadding;
-  }
+  const silkscreenXs = silkscreenBody.route.map((point2) => point2.x);
+  const silkscreenYs = silkscreenBody.route.map((point2) => point2.y);
+  const hasSilkscreenGeometry = silkscreenXs.length > 0 && silkscreenYs.length > 0;
+  const featureMinX = hasSilkscreenGeometry ? Math.min(padBounds.minX, Math.min(...silkscreenXs)) : padBounds.minX;
+  const featureMaxX = hasSilkscreenGeometry ? Math.max(padBounds.maxX, Math.max(...silkscreenXs)) : padBounds.maxX;
+  const featureMinY = hasSilkscreenGeometry ? Math.min(padBounds.minY, Math.min(...silkscreenYs)) : padBounds.minY;
+  const featureMaxY = hasSilkscreenGeometry ? Math.max(padBounds.maxY, Math.max(...silkscreenYs)) : padBounds.maxY;
+  const courtyardSideClearanceX = 0.5;
+  const courtyardFrontClearanceY = 0.05;
+  const courtyardRearClearanceY = maxPadHalfY + 0.085;
+  const crtMinX = featureMinX - courtyardSideClearanceX;
+  const crtMaxX = featureMaxX + courtyardSideClearanceX;
+  const crtMinY = featureMinY - courtyardRearClearanceY;
+  const crtMaxY = featureMaxY + courtyardFrontClearanceY;
   const courtyard = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -42517,12 +42589,11 @@ var vssop = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(w2 / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(courtyardStepInnerHalfX + 1.43);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.255);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25);
+  const courtyardStepInnerHalfWidth = w2 / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.43;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.255;
+  const courtyardStepOuterHalfHeight = h / 2 + 0.25;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -42530,16 +42601,16 @@ var vssop = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -42678,12 +42749,11 @@ var msop = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(w2 / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(courtyardStepInnerHalfX + 1.43);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.255);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25);
+  const courtyardStepInnerHalfWidth = w2 / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.43;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.255;
+  const courtyardStepOuterHalfHeight = h / 2 + 0.25;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -42691,16 +42761,16 @@ var msop = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -42944,14 +43014,13 @@ var son = (raw_params) => {
     pcb_silkscreen_path_id: "pin_marker_1"
   };
   const silkscreenRefText = silkscreenRef(0, silkscreenBoxHeight / 2 + 0.5, 0.3);
-  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
   const pinColumnCenterX = Math.abs(getSonPadCoord(parameters.num_pins, 1, w2, p).x);
   const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw;
   const pinRowSpanX = pinColumnCenterX * 2 + pl2;
-  const courtyardStepInnerHalfX = roundToCourtyardGrid(w2 / 2 + 0.25);
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25);
-  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(h / 2 + 0.25);
+  const courtyardStepInnerHalfWidth = w2 / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = h / 2 + 0.25;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -42959,16 +43028,16 @@ var son = (raw_params) => {
     layer: "top",
     outline: createRectUnionOutline([
       {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
       },
       {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
       }
     ])
   };
@@ -43027,20 +43096,34 @@ var vson = (raw_params) => {
   }
   const silkscreenPaths = getSilkscreenPaths(grid2);
   const silkscreenRefText = silkscreenRef(0, grid2.y / 2 + p, grid2.y / 6);
-  const courtyardPadding = 0.25;
-  const centerY = (num_pins / 2 - 1) * p / 2;
-  const crtMinX = -(w2 / 2 + pinw / 2 + courtyardPadding);
-  const crtMaxX = w2 / 2 + pinw / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(grid2.y / 2, centerY + pinh / 2) + courtyardPadding);
-  const crtMaxY = Math.max(grid2.y / 2, centerY + pinh / 2) + courtyardPadding;
+  const pinRowSpanY = (num_pins / 2 - 1) * p + pinh;
+  const pinRowSpanX = w2 + pinw;
+  const courtyardStepInnerHalfWidth = grid2.x / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25;
+  const pinRowExtendedCourtyardHalfY = pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p);
+  const courtyardStepOuterHalfHeight = Math.min(grid2.y / 2 + 0.25, pinRowExtendedCourtyardHalfY);
+  const courtyardStepNotchDepthY = Math.max(0, 0.37 - Math.max(0, courtyardStepOuterHalfWidth - courtyardStepInnerHalfWidth - 0.38) * 1.4);
+  const courtyardStepInnerHalfHeight = Math.max(pinRowCourtyardHalfY, courtyardStepOuterHalfHeight - courtyardStepNotchDepthY);
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
+      },
+      {
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
+      }
+    ])
   };
   return {
     circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText, courtyard],
@@ -43674,20 +43757,16 @@ var electrolytic = (raw_params) => {
     pcb_silkscreen_path_id: ""
   };
   const silkscreenRefText = silkscreenRef(0, d / 2 + 1, 0.5);
-  const bodyR = d / 2 + 0.1;
-  const plusLeftExtent = Math.abs(X3) + Size;
-  const courtyardPadding = 0.25;
-  const crtMinX = -Math.max(bodyR, plusLeftExtent) - courtyardPadding;
-  const crtMaxX = bodyR + courtyardPadding;
-  const crtMinY = -(bodyR + courtyardPadding);
-  const crtMaxY = bodyR + courtyardPadding;
+  const bodyOuterRadius = d / 2;
+  const pinOuterRadius = p / 2 + od2 / 2;
+  const courtyardClearance = 0.25;
+  const courtyardRadius = Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_circle",
+    pcb_courtyard_circle_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    radius: courtyardRadius,
     layer: "top"
   };
   return {
@@ -44156,21 +44235,32 @@ var sotWithoutParsing = (parameters) => {
   const p_val = Number.parseFloat(parameters.p);
   const pl_val = Number.parseFloat(parameters.pl);
   const pw_val = Number.parseFloat(parameters.pw);
-  const courtyardPadding = 0.25;
-  const padCenterX = h_val / 2 + 0.5;
-  const silkscreenY = h_val / 2 + p_val / 1.3;
-  const crtMinX = -(padCenterX + pl_val / 2 + courtyardPadding);
-  const crtMaxX = padCenterX + pl_val / 2 + courtyardPadding;
-  const crtMinY = -(Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding);
-  const crtMaxY = Math.max(silkscreenY, p_val + pw_val / 2) + courtyardPadding;
+  const pinColumnCenterX = h_val / 2 + 0.5;
+  const pinRowSpanY = p_val * 2 + pw_val;
+  const pinToeHalfSpanX = pinColumnCenterX + pl_val / 2;
+  const courtyardStepInnerHalfWidth = h_val / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.25;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.2;
+  const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.2;
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfWidth,
+        maxX: courtyardStepOuterHalfWidth,
+        minY: -courtyardStepInnerHalfHeight,
+        maxY: courtyardStepInnerHalfHeight
+      },
+      {
+        minX: -courtyardStepInnerHalfWidth,
+        maxX: courtyardStepInnerHalfWidth,
+        minY: -courtyardStepOuterHalfHeight,
+        maxY: courtyardStepOuterHalfHeight
+      }
+    ])
   };
   return [
     ...pads,
@@ -46201,7 +46291,7 @@ var content_default = [
     title: "quad16_w4_l4_p0.4_pw0.25_pl0.4"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="145.80152671755724" y="45.80152671755724" width="508.39694656488547" height="508.39694656488547" data-type="pcb_boundary" data-pcb-layer="global"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 654.1984732824427 320.6106870229008 L 653.7375411443138 305.9435885679619 L 652.3565638184964 291.3343744498648 L 650.0609913915869 276.84070056241853 L 646.8598834392069 262.51976681492704 L 642.7658732719976 248.42809139027946 L 637.7951180777137 234.62128769350272 L 631.9672351561846 221.15384487105936 L 625.3052244987956 208.07891276708028 L 617.835378018028 195.44809216521148 L 609.5871757852931 183.3112311438956 L 600.5931696865584 171.7162283487794 L 590.8888549549251 160.70884395864223 L 580.5125300871593 150.33251909087642 L 569.5051456970222 140.62820435924314 L 557.9101429019059 131.6341982605085 L 545.77328188059 123.38599602777361 L 533.1424612787213 115.91614954700594 L 520.0675291747422 109.25413888961683 L 506.60008635229883 103.42625596808787 L 492.7932826555221 98.45550077380386 L 478.7016072308745 94.3614906065946 L 464.380673483383 91.16038265421474 L 449.88699959593674 88.86481022730521 L 435.27778547783964 87.48383290148774 L 420.6106870229008 87.02290076335882 L 405.9435885679619 87.48383290148774 L 391.3343744498648 88.86481022730521 L 376.8407005624185 91.16038265421474 L 362.5197668149271 94.3614906065946 L 348.4280913902795 98.45550077380383 L 334.6212876935027 103.42625596808787 L 321.1538448710594 109.25413888961685 L 308.0789127670802 115.91614954700597 L 295.44809216521145 123.38599602777364 L 283.3112311438956 131.6341982605085 L 271.7162283487794 140.62820435924314 L 260.7088439586422 150.33251909087645 L 250.33251909087647 160.70884395864218 L 240.62820435924317 171.71622834877934 L 231.63419826050853 183.31123114389558 L 223.38599602777364 195.44809216521142 L 215.91614954700597 208.07891276708017 L 209.25413888961685 221.15384487105933 L 203.42625596808787 234.62128769350267 L 198.45550077380386 248.42809139027946 L 194.3614906065946 262.51976681492704" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 194.3614906065946 378.7016072308744 L 198.45550077380383 392.79328265552203 L 203.42625596808787 406.60008635229883 L 209.25413888961685 420.06752917474216 L 215.91614954700594 433.1424612787212 L 223.38599602777356 445.77328188059 L 231.6341982605085 457.91014290190594 L 240.62820435924314 469.50514569702216 L 250.33251909087642 480.51253008715935 L 260.70884395864215 490.8888549549251 L 271.7162283487794 500.59316968655844 L 283.3112311438956 509.587175785293 L 295.4480921652114 517.8353780180279 L 308.0789127670803 525.3052244987956 L 321.1538448710593 531.9672351561846 L 334.6212876935028 537.7951180777137 L 348.42809139027946 542.7658732719976 L 362.5197668149269 546.8598834392069 L 376.84070056241853 550.0609913915869 L 391.33437444986475 552.3565638184964 L 405.94358856796197 553.7375411443138 L 420.6106870229007 554.1984732824427 L 435.2777854778395 553.7375411443138 L 449.88699959593674 552.3565638184964 L 464.38067348338313 550.0609913915869 L 478.7016072308745 546.8598834392069 L 492.79328265552203 542.7658732719977 L 506.6000863522987 537.7951180777137 L 520.0675291747422 531.9672351561848 L 533.1424612787214 525.3052244987956 L 545.77328188059 517.8353780180279 L 557.9101429019058 509.5871757852931 L 569.505145697022 500.5931696865585 L 580.5125300871593 490.88885495492514 L 590.8888549549251 480.5125300871594 L 600.5931696865584 469.50514569702216 L 609.5871757852931 457.910142901906 L 617.8353780180279 445.77328188059016 L 625.3052244987955 433.1424612787215 L 631.9672351561846 420.0675291747423 L 637.7951180777137 406.60008635229883 L 642.7658732719976 392.79328265552215 L 646.8598834392069 378.70160723087463 L 650.0609913915868 364.38067348338325 L 652.3565638184964 349.8869995959368 L 653.7375411443138 335.2777854778396 L 654.1984732824427 320.61068702290083" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 420.6106870229008 87.02290076335882 L 420.6106870229008 554.1984732824427" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 145.80152671755724 206.10687022900765 L 191.60305343511453 206.10687022900765" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 168.70229007633588 229.00763358778627 L 168.70229007633588 183.206106870229" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="22.900763358778626" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,420.6106870229008,45.80152671755724)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><rect x="134.35114503816794" y="75.5725190839695" width="531.2977099236641" height="490.07633587786256" class="pcb-courtyard-rect pcb-courtyard-top" data-pcb-courtyard-rect-id="" data-type="pcb_courtyard_rect" data-pcb-layer="top" fill="none" stroke="#FF00FF" stroke-width="2.290076335877863"/><g data-type="pcb_plated_hole" data-pcb-layer="through"><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="248.8549618320611" cy="320.6106870229008" r="45.80152671755725" data-type="pcb_plated_hole" data-pcb-layer="top"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="248.8549618320611" cy="320.6106870229008" r="22.900763358778626" data-type="pcb_plated_hole_drill" data-pcb-layer="drill"/></g><g data-type="pcb_plated_hole" data-pcb-layer="through"><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="592.3664122137404" cy="320.6106870229008" r="45.80152671755725" data-type="pcb_plated_hole" data-pcb-layer="top"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="592.3664122137404" cy="320.6106870229008" r="22.900763358778626" data-type="pcb_plated_hole_drill" data-pcb-layer="drill"/></g></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="145.80152671755724" y="45.80152671755724" width="508.39694656488547" height="508.39694656488547" data-type="pcb_boundary" data-pcb-layer="global"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 654.1984732824427 320.6106870229008 L 653.7375411443138 305.9435885679619 L 652.3565638184964 291.3343744498648 L 650.0609913915869 276.84070056241853 L 646.8598834392069 262.51976681492704 L 642.7658732719976 248.42809139027946 L 637.7951180777137 234.62128769350272 L 631.9672351561846 221.15384487105936 L 625.3052244987956 208.07891276708028 L 617.835378018028 195.44809216521148 L 609.5871757852931 183.3112311438956 L 600.5931696865584 171.7162283487794 L 590.8888549549251 160.70884395864223 L 580.5125300871593 150.33251909087642 L 569.5051456970222 140.62820435924314 L 557.9101429019059 131.6341982605085 L 545.77328188059 123.38599602777361 L 533.1424612787213 115.91614954700594 L 520.0675291747422 109.25413888961683 L 506.60008635229883 103.42625596808787 L 492.7932826555221 98.45550077380386 L 478.7016072308745 94.3614906065946 L 464.380673483383 91.16038265421474 L 449.88699959593674 88.86481022730521 L 435.27778547783964 87.48383290148774 L 420.6106870229008 87.02290076335882 L 405.9435885679619 87.48383290148774 L 391.3343744498648 88.86481022730521 L 376.8407005624185 91.16038265421474 L 362.5197668149271 94.3614906065946 L 348.4280913902795 98.45550077380383 L 334.6212876935027 103.42625596808787 L 321.1538448710594 109.25413888961685 L 308.0789127670802 115.91614954700597 L 295.44809216521145 123.38599602777364 L 283.3112311438956 131.6341982605085 L 271.7162283487794 140.62820435924314 L 260.7088439586422 150.33251909087645 L 250.33251909087647 160.70884395864218 L 240.62820435924317 171.71622834877934 L 231.63419826050853 183.31123114389558 L 223.38599602777364 195.44809216521142 L 215.91614954700597 208.07891276708017 L 209.25413888961685 221.15384487105933 L 203.42625596808787 234.62128769350267 L 198.45550077380386 248.42809139027946 L 194.3614906065946 262.51976681492704" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 194.3614906065946 378.7016072308744 L 198.45550077380383 392.79328265552203 L 203.42625596808787 406.60008635229883 L 209.25413888961685 420.06752917474216 L 215.91614954700594 433.1424612787212 L 223.38599602777356 445.77328188059 L 231.6341982605085 457.91014290190594 L 240.62820435924314 469.50514569702216 L 250.33251909087642 480.51253008715935 L 260.70884395864215 490.8888549549251 L 271.7162283487794 500.59316968655844 L 283.3112311438956 509.587175785293 L 295.4480921652114 517.8353780180279 L 308.0789127670803 525.3052244987956 L 321.1538448710593 531.9672351561846 L 334.6212876935028 537.7951180777137 L 348.42809139027946 542.7658732719976 L 362.5197668149269 546.8598834392069 L 376.84070056241853 550.0609913915869 L 391.33437444986475 552.3565638184964 L 405.94358856796197 553.7375411443138 L 420.6106870229007 554.1984732824427 L 435.2777854778395 553.7375411443138 L 449.88699959593674 552.3565638184964 L 464.38067348338313 550.0609913915869 L 478.7016072308745 546.8598834392069 L 492.79328265552203 542.7658732719977 L 506.6000863522987 537.7951180777137 L 520.0675291747422 531.9672351561848 L 533.1424612787214 525.3052244987956 L 545.77328188059 517.8353780180279 L 557.9101429019058 509.5871757852931 L 569.505145697022 500.5931696865585 L 580.5125300871593 490.88885495492514 L 590.8888549549251 480.5125300871594 L 600.5931696865584 469.50514569702216 L 609.5871757852931 457.910142901906 L 617.8353780180279 445.77328188059016 L 625.3052244987955 433.1424612787215 L 631.9672351561846 420.0675291747423 L 637.7951180777137 406.60008635229883 L 642.7658732719976 392.79328265552215 L 646.8598834392069 378.70160723087463 L 650.0609913915868 364.38067348338325 L 652.3565638184964 349.8869995959368 L 653.7375411443138 335.2777854778396 L 654.1984732824427 320.61068702290083" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 420.6106870229008 87.02290076335882 L 420.6106870229008 554.1984732824427" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 145.80152671755724 206.10687022900765 L 191.60305343511453 206.10687022900765" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 168.70229007633588 229.00763358778627 L 168.70229007633588 183.206106870229" fill="none" stroke="#f2eda1" stroke-width="4.580152671755726" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="22.900763358778626" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,420.6106870229008,45.80152671755724)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><circle cx="420.6106870229008" cy="320.6106870229008" r="240.45801526717557" class="pcb-courtyard-circle pcb-courtyard-top" data-pcb-courtyard-circle-id="" data-type="pcb_courtyard_circle" data-pcb-layer="top" fill="none" stroke="#FF00FF" stroke-width="2.290076335877863"/><g data-type="pcb_plated_hole" data-pcb-layer="through"><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="248.8549618320611" cy="320.6106870229008" r="45.80152671755725" data-type="pcb_plated_hole" data-pcb-layer="top"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="248.8549618320611" cy="320.6106870229008" r="22.900763358778626" data-type="pcb_plated_hole_drill" data-pcb-layer="drill"/></g><g data-type="pcb_plated_hole" data-pcb-layer="through"><circle class="pcb-hole-outer" fill="rgb(200, 52, 52)" cx="592.3664122137404" cy="320.6106870229008" r="45.80152671755725" data-type="pcb_plated_hole" data-pcb-layer="top"/><circle class="pcb-hole-inner" fill="#FF26E2" cx="592.3664122137404" cy="320.6106870229008" r="22.900763358778626" data-type="pcb_plated_hole_drill" data-pcb-layer="drill"/></g></svg>',
     title: "electrolytic_d10mm_p7.5mm"
   },
   {
