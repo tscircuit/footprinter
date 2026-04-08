@@ -11,7 +11,7 @@ import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
-import { createOuterAndInnerRectUnionOutline } from "src/helpers/stepped-courtyard-outline"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -177,16 +177,20 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: createOuterAndInnerRectUnionOutline({
-      outerRectBounds: {
-        halfX: courtyardStepOuterHalfX,
-        halfY: courtyardStepInnerHalfY,
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
       },
-      innerRectBounds: {
-        halfX: courtyardStepInnerHalfX,
-        halfY: courtyardStepOuterHalfY,
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
       },
-    }),
+    ]),
   }
 
   return [

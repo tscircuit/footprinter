@@ -12,7 +12,7 @@ import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
-import { createOuterAndInnerRectUnionOutline } from "src/helpers/stepped-courtyard-outline"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -344,20 +344,26 @@ export const quad = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: createOuterAndInnerRectUnionOutline({
-      outerRectBounds: {
-        halfX: courtyardOuterHalfX,
-        halfY: courtyardStepInnerHalfY,
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardOuterHalfX,
+        maxX: courtyardOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
       },
-      middleRectBounds: {
-        halfX: courtyardStepOuterHalfX,
-        halfY: courtyardStepOuterHalfY,
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
       },
-      innerRectBounds: {
-        halfX: courtyardStepInnerHalfX,
-        halfY: courtyardOuterHalfY,
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardOuterHalfY,
+        maxY: courtyardOuterHalfY,
       },
-    }),
+    ]),
   }
 
   return {
