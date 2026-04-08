@@ -1,7 +1,7 @@
 import {
   length,
   type AnyCircuitElement,
-  type PcbCourtyardRect,
+  type PcbCourtyardCircle,
   type PcbSilkscreenPath,
 } from "circuit-json"
 import { z } from "zod"
@@ -146,20 +146,20 @@ export const electrolytic = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5)
 
-  const bodyR = d / 2 + 0.1
-  const plusLeftExtent = Math.abs(X) + Size // d/2 + 1.0
-  const courtyardPadding = 0.25
-  const crtMinX = -Math.max(bodyR, plusLeftExtent) - courtyardPadding
-  const crtMaxX = bodyR + courtyardPadding
-  const crtMinY = -(bodyR + courtyardPadding)
-  const crtMaxY = bodyR + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundCourtyardOuterRadius = (value: number) =>
+    Math.ceil(value / 0.05) * 0.05
+  const bodyOuterRadius = d / 2
+  const pinOuterRadius = p / 2 + od / 2
+  const courtyardClearance = 0.25
+  const courtyardRadius = roundCourtyardOuterRadius(
+    Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance,
+  )
+  const courtyard: PcbCourtyardCircle = {
+    type: "pcb_courtyard_circle",
+    pcb_courtyard_circle_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: 0 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    center: { x: 0, y: 0 },
+    radius: courtyardRadius,
     layer: "top",
   }
 
