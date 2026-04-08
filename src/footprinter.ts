@@ -79,6 +79,7 @@ export type Footprinter = {
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  utdfn4ep: () => FootprinterParamsBuilder<"pw" | "ph" | "epw" | "eph">
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
