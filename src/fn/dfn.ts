@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardOutline,
+  PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
 import {
@@ -13,7 +13,6 @@ import { rectpad } from "src/helpers/rectpad"
 import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const dfn_def = extendSoicDef({})
 
@@ -101,34 +100,19 @@ export const dfn = (
     sh / 2 + 0.4,
     sh / 12,
   )
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
+  const roundUpToCourtyardGrid = (value: number) =>
+    Math.ceil(value / 0.05) * 0.05
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const pinToeHalfX = parameters.w / 2
-  const pinRowHalfY = pinRowSpanY / 2
-  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinToeHalfX + 0.275)
-  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
-  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowHalfY + 0.45)
-  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
-  const courtyard: PcbCourtyardOutline = {
-    type: "pcb_courtyard_outline",
-    pcb_courtyard_outline_id: "",
+  const courtyardHalfWidthMm = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
+  const courtyardHalfHeightMm = roundUpToCourtyardGrid(pinRowSpanY / 2 + 0.45)
+  const courtyard: PcbCourtyardRect = {
+    type: "pcb_courtyard_rect",
+    pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    outline: createRectUnionOutline([
-      {
-        minX: -courtyardStepOuterHalfX,
-        maxX: courtyardStepOuterHalfX,
-        minY: -courtyardStepInnerHalfY,
-        maxY: courtyardStepInnerHalfY,
-      },
-      {
-        minX: -courtyardStepInnerHalfX,
-        maxX: courtyardStepInnerHalfX,
-        minY: -courtyardStepOuterHalfY,
-        maxY: courtyardStepOuterHalfY,
-      },
-    ]),
+    center: { x: 0, y: 0 },
+    width: courtyardHalfWidthMm * 2,
+    height: courtyardHalfHeightMm * 2,
     layer: "top",
   }
 
