@@ -1,5 +1,6 @@
 import type {
   AnyCircuitElement,
+  PcbCourtyardOutline,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -8,6 +9,7 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sot223_def = base_def.extend({
   fn: z.string(),
@@ -194,6 +196,8 @@ export const get2CcwSot2235Coords = (parameters: {
 
 export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
+  let padOuterHalfX = 0
+  let padOuterHalfY = 0
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2235Coords({
       h: Number.parseFloat(parameters.h),
@@ -213,6 +217,8 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       pinLength = 2.2
     }
 
+    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + pinLength / 2)
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + pinWidth / 2)
     pads.push(rectpad(i, x, y, pinLength, pinWidth))
   }
 
@@ -245,21 +251,30 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const w = Number.parseFloat(parameters.w)
-  const courtyardPadding = 0.25
-  const padOuterX = w / 2 - 1.2 + 2.2 / 2
-  const crtMinX = -(padOuterX + courtyardPadding)
-  const crtMaxX = padOuterX + courtyardPadding
-  const h5 = Number.parseFloat(parameters.h)
-  const crtMinY = -(Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding)
-  const crtMaxY = Math.max(h5 / 2, 2.25 + 0.5) + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(padOuterHalfX + 0.25)
+  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(padOuterHalfY + 0.85)
+  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
     layer: "top",
   }
 

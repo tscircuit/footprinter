@@ -1,6 +1,6 @@
 import type {
   AnyCircuitElement,
-  PcbCourtyardRect,
+  PcbCourtyardOutline,
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
@@ -13,6 +13,7 @@ import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 function convertMilToMm(value: string | number): number {
   if (typeof value === "string") {
@@ -200,18 +201,32 @@ export const dip = (raw_params: {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
-  const courtyardPadding = 0.25
-  const crtMinX = -(parameters.w / 2 + parameters.od / 2) - courtyardPadding
-  const crtMaxX = parameters.w / 2 + parameters.od / 2 + courtyardPadding
-  const crtMinY = -sh / 2 - courtyardPadding
-  const crtMaxY = sh / 2 + courtyardPadding
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+  const roundToCourtyardGrid = (value: number) =>
+    Math.round(value / 0.01) * 0.01
+  const pinRowSpanX = parameters.w + parameters.od
+  const pinRowSpanY = padEdgeHeight
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25)
+  const courtyardStepInnerHalfX = courtyardStepOuterHalfX
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.72)
+  const courtyardStepInnerHalfY = courtyardStepOuterHalfY
+  const courtyard: PcbCourtyardOutline = {
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
     layer: "top",
   }
 
