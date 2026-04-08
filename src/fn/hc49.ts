@@ -71,13 +71,9 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const padRowHalfX = p / 2 + od / 2
-  const courtyardCapsuleStraightHalfX = roundToCourtyardGrid(padRowHalfX)
-  const courtyardCapsuleRadius = roundToCourtyardGrid(
-    Math.max(h / 2 + 0.25, w / 2 + 0.03),
-  )
+  const courtyardCapsuleStraightHalfX = padRowHalfX
+  const courtyardCapsuleRadius = Math.max(h / 2 + 0.25, w / 2 + 0.03)
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",

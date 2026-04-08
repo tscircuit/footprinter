@@ -353,20 +353,14 @@ export const pinrow = (
 
   const padHalfX = parameters.smd ? parameters.pw / 2 : od / 2
   const padHalfY = parameters.smd ? parameters.pl / 2 : od / 2
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanX = (numPinsPerRow - 1) * p
   const pinRowSpanY = (rows - 1) * p
   const padOuterHalfX = pinRowSpanX / 2 + padHalfX
   const padOuterHalfY = pinRowSpanY / 2 + padHalfY
   const bodyHalfX = pinRowSpanX / 2 + p / 2
   const bodyHalfY = pinRowSpanY / 2 + p / 2
-  const courtyardHalfX = roundToCourtyardGrid(
-    Math.max(padOuterHalfX + 0.25, bodyHalfX + 0.5),
-  )
-  const courtyardHalfY = roundToCourtyardGrid(
-    Math.max(padOuterHalfY + 0.25, bodyHalfY + 0.5),
-  )
+  const courtyardHalfX = Math.max(padOuterHalfX + 0.25, bodyHalfX + 0.5)
+  const courtyardHalfY = Math.max(padOuterHalfY + 0.25, bodyHalfY + 0.5)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

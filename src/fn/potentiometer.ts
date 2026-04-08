@@ -85,14 +85,12 @@ export const potentiometer = (
   const W = Number.parseFloat(parameters.w) / 2
   const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5)
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const padRadius = Number.parseFloat(parameters.od) / 2
   const pinRowSpanX = Number.parseFloat(parameters.h)
   const pinRowSpanY = Number.parseFloat(parameters.ca) / 2
-  const courtyardMinX = roundToCourtyardGrid(-(padRadius + 0.25))
-  const courtyardMaxX = roundToCourtyardGrid(pinRowSpanX + padRadius + 0.25)
-  const courtyardHalfY = roundToCourtyardGrid(pinRowSpanY + 0.25)
+  const courtyardMinX = -(padRadius + 0.25)
+  const courtyardMaxX = pinRowSpanX + padRadius + 0.25
+  const courtyardHalfY = pinRowSpanY + 0.25
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

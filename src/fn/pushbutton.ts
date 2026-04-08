@@ -60,15 +60,13 @@ export const pushbutton = (
     0.5,
   )
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const padOuterRadius = (holeDiameter * 1.5) / 2
   const pinRowSpanX = width
   const pinRowSpanY = height
   const padOuterHalfX = pinRowSpanX / 2 + padOuterRadius
   const padOuterHalfY = pinRowSpanY / 2 + padOuterRadius
-  const courtyardHalfX = roundToCourtyardGrid(padOuterHalfX + 0.5)
-  const courtyardHalfY = roundToCourtyardGrid(padOuterHalfY + 0.5)
+  const courtyardHalfX = padOuterHalfX + 0.5
+  const courtyardHalfY = padOuterHalfY + 0.5
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

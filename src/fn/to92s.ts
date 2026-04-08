@@ -86,8 +86,6 @@ export const to92s = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const padOuterDiameter = Number.parseFloat(parameters.od)
   const padCenterY = holeY - padSpacing
   const padMinX = -padSpacing - padOuterDiameter / 2
@@ -98,10 +96,10 @@ export const to92s = (
   const bodyMaxX = holeY
   const bodyMinY = 0
   const bodyMaxY = holeY + 0.5
-  const courtyardMinX = roundToCourtyardGrid(Math.min(padMinX, bodyMinX) - 0.27)
-  const courtyardMaxX = roundToCourtyardGrid(Math.max(padMaxX, bodyMaxX) + 0.13)
-  const courtyardMinY = roundToCourtyardGrid(Math.min(padMinY, bodyMinY) - 0.42)
-  const courtyardMaxY = roundToCourtyardGrid(Math.max(padMaxY, bodyMaxY) + 0.08)
+  const courtyardMinX = Math.min(padMinX, bodyMinX) - 0.27
+  const courtyardMaxX = Math.max(padMaxX, bodyMaxX) + 0.13
+  const courtyardMinY = Math.min(padMinY, bodyMinY) - 0.42
+  const courtyardMaxY = Math.max(padMaxY, bodyMaxY) + 0.08
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

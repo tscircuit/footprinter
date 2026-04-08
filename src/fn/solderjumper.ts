@@ -121,13 +121,11 @@ export const solderjumper = (params: {
   const refY = outlineCenterY + outlineHeight / 2 + refOffset
   const silk = silkscreenRef(outlineCenterX, refY, 0.4)
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   const pinRowSpanX = (num_pins - 1) * padSpacing
   const padOuterHalfX = pinRowSpanX / 2 + padWidth / 2
   const padOuterHalfY = padHeight / 2
-  const courtyardHalfX = roundToCourtyardGrid(padOuterHalfX + 0.5)
-  const courtyardHalfY = roundToCourtyardGrid(padOuterHalfY + 0.5)
+  const courtyardHalfX = padOuterHalfX + 0.5
+  const courtyardHalfY = padOuterHalfY + 0.5
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

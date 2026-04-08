@@ -9,7 +9,7 @@ test("parity/pushbutton", async () => {
     booleanDifferenceSvg,
     courtyardDiffPercent,
   } = await compareFootprinterVsKicad(
-    "pushbutton_w6.5_h4.5_id1.333333",
+    "pushbutton_w6.5_h4.5_id1.3333333333333333",
     "Button_Switch_THT.pretty/SW_PUSH_6mm_H5mm.circuit.json",
   )
 

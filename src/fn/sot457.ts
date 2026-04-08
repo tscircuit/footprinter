@@ -196,16 +196,14 @@ const generateSot457Elements = (
     stroke_width: 0.05,
   }
 
-  const roundToCourtyardGrid = (value: number) =>
-    Math.round(value / 0.01) * 0.01
   let courtyard: PcbCourtyardRect | PcbCourtyardOutline
   if (params.wave) {
     const pinRowSpanX = 2 * pitch
     const pinRowSpanY = 2 * pitch
     const padOuterHalfX = pinRowSpanX / 2 + padWidth / 2
     const padOuterHalfY = pinRowSpanY / 2 + padLength / 2
-    const courtyardHalfX = roundToCourtyardGrid(padOuterHalfX + 0.25)
-    const courtyardHalfY = roundToCourtyardGrid(padOuterHalfY + 0.25)
+    const courtyardHalfX = padOuterHalfX + 0.25
+    const courtyardHalfY = padOuterHalfY + 0.25
     courtyard = {
       type: "pcb_courtyard_rect",
       pcb_courtyard_rect_id: "",
@@ -222,11 +220,12 @@ const generateSot457Elements = (
     const bodyHalfX = width / 2
     const bodyHalfY = height / 2
 
-    const courtyardStepOuterHalfX = roundToCourtyardGrid(padToeHalfX + 0.25)
-    const courtyardStepInnerHalfX = roundToCourtyardGrid(bodyHalfX + 0.08)
-    const courtyardStepOuterHalfY = roundToCourtyardGrid(pinRowHalfY + 0.25)
-    const courtyardStepInnerHalfY = roundToCourtyardGrid(
-      Math.max(bodyHalfY + 0.45, courtyardStepOuterHalfY),
+    const courtyardStepOuterHalfX = padToeHalfX + 0.25
+    const courtyardStepInnerHalfX = bodyHalfX + 0.08
+    const courtyardStepOuterHalfY = pinRowHalfY + 0.25
+    const courtyardStepInnerHalfY = Math.max(
+      bodyHalfY + 0.45,
+      courtyardStepOuterHalfY,
     )
 
     courtyard = {
