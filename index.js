@@ -36638,6 +36638,99 @@ var pillpad = (pn2, x, y, w2, h) => {
   };
 };
 
+// src/helpers/rect-union-outline.ts
+var createRectUnionOutline = (rectBoundsFromOuterToInner) => {
+  if (rectBoundsFromOuterToInner.length < 2) {
+    throw new Error("Rect union outline requires at least two bounds");
+  }
+  for (const bounds of rectBoundsFromOuterToInner) {
+    if (bounds.minX >= bounds.maxX || bounds.minY >= bounds.maxY) {
+      throw new Error("Each rectangle bound must have min < max on both axes");
+    }
+  }
+  for (let i = 1;i < rectBoundsFromOuterToInner.length; i++) {
+    const previous = rectBoundsFromOuterToInner[i - 1];
+    const current2 = rectBoundsFromOuterToInner[i];
+    if (current2.minX < previous.minX || current2.maxX > previous.maxX || current2.minY > previous.minY || current2.maxY < previous.maxY) {
+      throw new Error("Bounds must be ordered outer-to-inner with tighter X and larger Y span");
+    }
+  }
+  const buildTopLeftRouteFromInnerToOuter = () => {
+    const route = [];
+    let index = rectBoundsFromOuterToInner.length - 1;
+    route.push({
+      x: rectBoundsFromOuterToInner[index].minX,
+      y: rectBoundsFromOuterToInner[index].maxY
+    });
+    while (index > 0) {
+      const current2 = rectBoundsFromOuterToInner[index];
+      const previous = rectBoundsFromOuterToInner[index - 1];
+      route.push({ x: current2.minX, y: previous.maxY });
+      route.push({ x: previous.minX, y: previous.maxY });
+      index -= 1;
+    }
+    return route;
+  };
+  const buildTopRightRouteFromInnerToOuter = () => {
+    const route = [];
+    let index = rectBoundsFromOuterToInner.length - 1;
+    route.push({
+      x: rectBoundsFromOuterToInner[index].maxX,
+      y: rectBoundsFromOuterToInner[index].maxY
+    });
+    while (index > 0) {
+      const current2 = rectBoundsFromOuterToInner[index];
+      const previous = rectBoundsFromOuterToInner[index - 1];
+      route.push({ x: current2.maxX, y: previous.maxY });
+      route.push({ x: previous.maxX, y: previous.maxY });
+      index -= 1;
+    }
+    return route;
+  };
+  const buildBottomRightRouteFromInnerToOuter = () => {
+    const route = [];
+    let index = rectBoundsFromOuterToInner.length - 1;
+    route.push({
+      x: rectBoundsFromOuterToInner[index].maxX,
+      y: rectBoundsFromOuterToInner[index].minY
+    });
+    while (index > 0) {
+      const current2 = rectBoundsFromOuterToInner[index];
+      const previous = rectBoundsFromOuterToInner[index - 1];
+      route.push({ x: current2.maxX, y: previous.minY });
+      route.push({ x: previous.maxX, y: previous.minY });
+      index -= 1;
+    }
+    return route;
+  };
+  const buildBottomLeftRouteFromInnerToOuter = () => {
+    const route = [];
+    let index = rectBoundsFromOuterToInner.length - 1;
+    route.push({
+      x: rectBoundsFromOuterToInner[index].minX,
+      y: rectBoundsFromOuterToInner[index].minY
+    });
+    while (index > 0) {
+      const current2 = rectBoundsFromOuterToInner[index];
+      const previous = rectBoundsFromOuterToInner[index - 1];
+      route.push({ x: current2.minX, y: previous.minY });
+      route.push({ x: previous.minX, y: previous.minY });
+      index -= 1;
+    }
+    return route;
+  };
+  const topLeftInnerToOuter = buildTopLeftRouteFromInnerToOuter();
+  const topRightInnerToOuter = buildTopRightRouteFromInnerToOuter();
+  const bottomRightInnerToOuter = buildBottomRightRouteFromInnerToOuter();
+  const bottomLeftInnerToOuter = buildBottomLeftRouteFromInnerToOuter();
+  return [
+    ...topLeftInnerToOuter.reverse(),
+    ...topRightInnerToOuter,
+    ...bottomRightInnerToOuter.reverse(),
+    ...bottomLeftInnerToOuter
+  ];
+};
+
 // src/fn/soic.ts
 var extendSoicDef = (newDefaults) => base_def.extend({
   fn: exports_external.string(),
@@ -36734,20 +36827,20 @@ var soicWithoutParsing = (parameters) => {
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY }
-    ]
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY
+      }
+    ])
   };
   return [
     ...pads,
@@ -36900,6 +36993,8 @@ var getQuadCoords = (params) => {
 var quad = (raw_params) => {
   const parameters = quad_def.parse(raw_params);
   const pads = [];
+  let padOuterHalfX = 0;
+  let padOuterHalfY = 0;
   const pin_map = getQuadPinMap(parameters);
   const spc = parameters.num_pins / 4;
   for (let i = 0;i < parameters.num_pins; i++) {
@@ -36916,20 +37011,26 @@ var quad = (raw_params) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside
     });
-    let pw = parameters.pw;
-    let pl2 = parameters.pl;
+    let padWidth = parameters.pw;
+    let padHeight = parameters.pl;
     if (orientation2 === "vert") {
-      [pw, pl2] = [pl2, pw];
+      [padWidth, padHeight] = [padHeight, padWidth];
     }
     const pn2 = pin_map[i + 1];
-    pads.push(rectpad(pn2, x, y, pw, pl2));
+    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2);
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2);
+    pads.push(rectpad(pn2, x, y, padWidth, padHeight));
   }
   if (parameters.thermalpad) {
     if (typeof parameters.thermalpad === "boolean") {
       const ibw = parameters.p * (spc - 1) + parameters.pw;
       const ibh = parameters.p * (spc - 1) + parameters.pw;
+      padOuterHalfX = Math.max(padOuterHalfX, ibw / 2);
+      padOuterHalfY = Math.max(padOuterHalfY, ibh / 2);
       pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh));
     } else {
+      padOuterHalfX = Math.max(padOuterHalfX, parameters.thermalpad.x / 2);
+      padOuterHalfY = Math.max(padOuterHalfY, parameters.thermalpad.y / 2);
       pads.push(rectpad(["thermalpad"], 0, 0, parameters.thermalpad.x, parameters.thermalpad.y));
     }
   }
@@ -37057,21 +37158,41 @@ var quad = (raw_params) => {
     }
   }
   const silkscreenRefText = silkscreenRef(0, parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5), 0.3);
-  const courtyardPadding = 0.25;
-  const padExtentX = parameters.legsoutside ? parameters.w / 2 + parameters.pl : parameters.w / 2;
-  const padExtentY = parameters.legsoutside ? parameters.h / 2 + parameters.pl : parameters.h / 2;
-  const crtMinX = -padExtentX - courtyardPadding;
-  const crtMaxX = padExtentX + courtyardPadding;
-  const crtMinY = -padExtentY - courtyardPadding;
-  const crtMaxY = padExtentY + courtyardPadding;
+  const roundToCourtyardGrid = (value) => Math.round(value / 0.01) * 0.01;
+  const roundUpToCourtyardOuterGrid = (value) => Math.ceil(value / 0.05) * 0.05;
+  const pinRowSpanX = (spc - 1) * parameters.p + parameters.pw;
+  const pinRowSpanY = (spc - 1) * parameters.p + parameters.pw;
+  const courtyardStepInnerHalfX = roundToCourtyardGrid(pinRowSpanX / 2 + 0.25);
+  const courtyardStepInnerHalfY = roundToCourtyardGrid(pinRowSpanY / 2 + 0.25);
+  const courtyardStepOuterHalfX = roundToCourtyardGrid(parameters.w / 2 + 0.25);
+  const courtyardStepOuterHalfY = roundToCourtyardGrid(parameters.h / 2 + 0.25);
+  const courtyardOuterHalfX = Math.max(courtyardStepOuterHalfX, roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25));
+  const courtyardOuterHalfY = Math.max(courtyardStepOuterHalfY, roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25));
   const courtyard = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
+    type: "pcb_courtyard_outline",
+    pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top"
+    layer: "top",
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardOuterHalfX,
+        maxX: courtyardOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY
+      },
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardOuterHalfY,
+        maxY: courtyardOuterHalfY
+      }
+    ])
   };
   return {
     circuitJson: [
@@ -42430,20 +42551,20 @@ var msop = (raw_params) => {
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY }
-    ]
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY
+      }
+    ])
   };
   return {
     circuitJson: [
