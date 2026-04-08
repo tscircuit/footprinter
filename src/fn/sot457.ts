@@ -200,32 +200,32 @@ const generateSot457Elements = (
   if (params.wave) {
     const pinRowSpanX = 2 * pitch
     const pinRowSpanY = 2 * pitch
-    const padOuterHalfX = pinRowSpanX / 2 + padWidth / 2
-    const padOuterHalfY = pinRowSpanY / 2 + padLength / 2
-    const courtyardHalfX = padOuterHalfX + 0.25
-    const courtyardHalfY = padOuterHalfY + 0.25
+    const padOuterHalfWidth = pinRowSpanX / 2 + padWidth / 2
+    const padOuterHalfHeight = pinRowSpanY / 2 + padLength / 2
+    const courtyardHalfWidth = padOuterHalfWidth + 0.25
+    const courtyardHalfHeight = padOuterHalfHeight + 0.25
     courtyard = {
       type: "pcb_courtyard_rect",
       pcb_courtyard_rect_id: "",
       pcb_component_id: "",
       center: { x: 0, y: 0 },
-      width: 2 * courtyardHalfX,
-      height: 2 * courtyardHalfY,
+      width: 2 * courtyardHalfWidth,
+      height: 2 * courtyardHalfHeight,
       layer: "top",
     }
   } else {
     const padCenterX = width / 2 + 0.1
-    const padToeHalfX = padCenterX + padLength / 2
-    const pinRowHalfY = pitch + padWidth / 2
-    const bodyHalfX = width / 2
-    const bodyHalfY = height / 2
+    const padToeHalfWidth = padCenterX + padLength / 2
+    const pinRowHalfHeight = pitch + padWidth / 2
+    const bodyHalfWidth = width / 2
+    const bodyHalfHeight = height / 2
 
-    const courtyardStepOuterHalfX = padToeHalfX + 0.25
-    const courtyardStepInnerHalfX = bodyHalfX + 0.08
-    const courtyardStepOuterHalfY = pinRowHalfY + 0.25
-    const courtyardStepInnerHalfY = Math.max(
-      bodyHalfY + 0.45,
-      courtyardStepOuterHalfY,
+    const courtyardStepOuterHalfWidth = padToeHalfWidth + 0.25
+    const courtyardStepInnerHalfWidth = bodyHalfWidth + 0.08
+    const courtyardStepOuterHalfHeight = pinRowHalfHeight + 0.25
+    const courtyardStepInnerHalfHeight = Math.max(
+      bodyHalfHeight + 0.45,
+      courtyardStepOuterHalfHeight,
     )
 
     courtyard = {
@@ -234,16 +234,16 @@ const generateSot457Elements = (
       pcb_component_id: "",
       outline: createRectUnionOutline([
         {
-          minX: -courtyardStepOuterHalfX,
-          maxX: courtyardStepOuterHalfX,
-          minY: -courtyardStepOuterHalfY,
-          maxY: courtyardStepOuterHalfY,
+          minX: -courtyardStepOuterHalfWidth,
+          maxX: courtyardStepOuterHalfWidth,
+          minY: -courtyardStepOuterHalfHeight,
+          maxY: courtyardStepOuterHalfHeight,
         },
         {
-          minX: -courtyardStepInnerHalfX,
-          maxX: courtyardStepInnerHalfX,
-          minY: -courtyardStepInnerHalfY,
-          maxY: courtyardStepInnerHalfY,
+          minX: -courtyardStepInnerHalfWidth,
+          maxX: courtyardStepInnerHalfWidth,
+          minY: -courtyardStepInnerHalfHeight,
+          maxY: courtyardStepInnerHalfHeight,
         },
       ]),
       layer: "top",

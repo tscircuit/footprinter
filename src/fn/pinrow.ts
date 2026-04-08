@@ -351,23 +351,29 @@ export const pinrow = (
   // Add centered silkscreen reference text
   const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
 
-  const padHalfX = parameters.smd ? parameters.pw / 2 : od / 2
-  const padHalfY = parameters.smd ? parameters.pl / 2 : od / 2
+  const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
+  const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
   const pinRowSpanX = (numPinsPerRow - 1) * p
   const pinRowSpanY = (rows - 1) * p
-  const padOuterHalfX = pinRowSpanX / 2 + padHalfX
-  const padOuterHalfY = pinRowSpanY / 2 + padHalfY
-  const bodyHalfX = pinRowSpanX / 2 + p / 2
-  const bodyHalfY = pinRowSpanY / 2 + p / 2
-  const courtyardHalfX = Math.max(padOuterHalfX + 0.25, bodyHalfX + 0.5)
-  const courtyardHalfY = Math.max(padOuterHalfY + 0.25, bodyHalfY + 0.5)
+  const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth
+  const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
+  const bodyHalfWidth = pinRowSpanX / 2 + p / 2
+  const bodyHalfHeight = pinRowSpanY / 2 + p / 2
+  const courtyardHalfWidth = Math.max(
+    padOuterHalfWidth + 0.25,
+    bodyHalfWidth + 0.5,
+  )
+  const courtyardHalfHeight = Math.max(
+    padOuterHalfHeight + 0.25,
+    bodyHalfHeight + 0.5,
+  )
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: -((rows - 1) * p) / 2 },
-    width: 2 * courtyardHalfX,
-    height: 2 * courtyardHalfY,
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 

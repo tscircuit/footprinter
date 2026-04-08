@@ -71,8 +71,8 @@ export const hc49 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
 
-  const padRowHalfX = p / 2 + od / 2
-  const courtyardCapsuleStraightHalfX = padRowHalfX
+  const padRowHalfWidth = p / 2 + od / 2
+  const courtyardCapsuleStraightHalfLength = padRowHalfWidth
   const courtyardCapsuleRadius = Math.max(h / 2 + 0.25, w / 2 + 0.03)
 
   const courtyard: PcbCourtyardOutline = {
@@ -82,7 +82,7 @@ export const hc49 = (
     outline: createCapsuleOutline({
       centerX: 0,
       centerY: 0,
-      straightHalfLength: courtyardCapsuleStraightHalfX,
+      straightHalfLength: courtyardCapsuleStraightHalfLength,
       radius: courtyardCapsuleRadius,
       arcSegmentCount: 9,
     }),

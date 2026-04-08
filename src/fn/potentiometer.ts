@@ -90,14 +90,14 @@ export const potentiometer = (
   const pinRowSpanY = Number.parseFloat(parameters.ca) / 2
   const courtyardMinX = -(padRadius + 0.25)
   const courtyardMaxX = pinRowSpanX + padRadius + 0.25
-  const courtyardHalfY = pinRowSpanY + 0.25
+  const courtyardHalfHeight = pinRowSpanY + 0.25
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: (courtyardMinX + courtyardMaxX) / 2, y: 0 },
     width: courtyardMaxX - courtyardMinX,
-    height: 2 * courtyardHalfY,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 

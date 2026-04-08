@@ -120,18 +120,21 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const h = Number.parseFloat(parameters.h)
-  const padToeHalfX = p + pl / 2
-  const pinRowHalfY = 0.95 + pw / 2
-  const bodyHalfY = h / 2
-  const courtyardHalfX = padToeHalfX + 0.25
-  const courtyardHalfY = Math.max(pinRowHalfY + 0.25, bodyHalfY + 0.09)
+  const padToeHalfWidth = p + pl / 2
+  const pinRowHalfHeight = 0.95 + pw / 2
+  const bodyHalfHeight = h / 2
+  const courtyardHalfWidth = padToeHalfWidth + 0.25
+  const courtyardHalfHeight = Math.max(
+    pinRowHalfHeight + 0.25,
+    bodyHalfHeight + 0.09,
+  )
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: 2 * courtyardHalfX,
-    height: 2 * courtyardHalfY,
+    width: 2 * courtyardHalfWidth,
+    height: 2 * courtyardHalfHeight,
     layer: "top",
   }
 
