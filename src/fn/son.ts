@@ -8,6 +8,7 @@ import { length } from "circuit-json"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const son_def = base_def.extend({
   fn: z.string(),
@@ -134,20 +135,20 @@ export const son = (
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: [
-      { x: -courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: -courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepOuterHalfY },
-      { x: courtyardStepInnerHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: courtyardStepInnerHalfY },
-      { x: courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepOuterHalfY },
-      { x: -courtyardStepInnerHalfX, y: -courtyardStepInnerHalfY },
-      { x: -courtyardStepOuterHalfX, y: -courtyardStepInnerHalfY },
-    ],
+    outline: createRectUnionOutline([
+      {
+        minX: -courtyardStepOuterHalfX,
+        maxX: courtyardStepOuterHalfX,
+        minY: -courtyardStepInnerHalfY,
+        maxY: courtyardStepInnerHalfY,
+      },
+      {
+        minX: -courtyardStepInnerHalfX,
+        maxX: courtyardStepInnerHalfX,
+        minY: -courtyardStepOuterHalfY,
+        maxY: courtyardStepOuterHalfY,
+      },
+    ]),
   }
 
   return {
