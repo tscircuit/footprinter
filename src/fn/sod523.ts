@@ -13,9 +13,9 @@ export const sod_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("2.15mm"),
-  h: z.string().default("1.20mm"),
-  pl: z.string().default("0.5mm"),
-  pw: z.string().default("0.6mm"),
+  h: z.string().default("0.7mm"),
+  pl: z.string().default("0.6mm"),
+  pw: z.string().default("0.7mm"),
   p: z.string().default("1.4mm"),
 })
 
@@ -39,19 +39,19 @@ export const sod523 = (
     route: [
       {
         x: length.parse(parameters.p) / 2,
-        y: length.parse(parameters.h) / 2,
+        y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: length.parse(parameters.h) / 2,
+        y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: -length.parse(parameters.h) / 2,
+        y: -length.parse(parameters.h) / 2 - 0.2,
       },
       {
         x: length.parse(parameters.p) / 2,
-        y: -length.parse(parameters.h) / 2,
+        y: -length.parse(parameters.h) / 2 - 0.2,
       },
     ],
     stroke_width: 0.1,

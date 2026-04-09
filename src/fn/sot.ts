@@ -12,9 +12,9 @@ import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 export const sot_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(6).default(6),
-  h: z.string().default("1.6mm"),
-  pl: z.string().default("1mm"),
-  pw: z.string().default("0.7mm"),
+  h: z.string().default("1.3mm"),
+  pl: z.string().default("1.325mm"),
+  pw: z.string().default("0.6mm"),
   p: z.string().default("0.95mm"),
 })
 
@@ -35,22 +35,22 @@ export const getCcwSotCoords = (parameters: {
 }) => {
   const { p, h, pn } = parameters
   if (pn === 1) {
-    return { x: -h / 2 - 0.5, y: p }
+    return { x: -h / 2 - 0.4875, y: p }
   }
   if (pn === 2) {
-    return { x: -h / 2 - 0.5, y: 0 }
+    return { x: -h / 2 - 0.4875, y: 0 }
   }
   if (pn === 3) {
-    return { x: -h / 2 - 0.5, y: -p }
+    return { x: -h / 2 - 0.4875, y: -p }
   }
   if (pn === 4) {
-    return { x: h / 2 + 0.5, y: -p }
+    return { x: h / 2 + 0.4875, y: -p }
   }
   if (pn === 5) {
-    return { x: h / 2 + 0.5, y: 0 }
+    return { x: h / 2 + 0.4875, y: 0 }
   }
   if (pn === 6) {
-    return { x: h / 2 + 0.5, y: p }
+    return { x: h / 2 + 0.4875, y: p }
   }
   throw new Error("Invalid pin number")
 }
@@ -114,7 +114,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
     pcb_silkscreen_path_id: "pin1_indicator",
     route: [
       {
-        x: pin1Position.x + triangleHeight / 2,
+        x: pin1Position.x + triangleHeight / 2 - 0.2,
         y: pin1Position.y,
       },
       {
@@ -126,7 +126,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
         y: pin1Position.y - triangleWidth / 2,
       },
       {
-        x: pin1Position.x + triangleHeight / 2,
+        x: pin1Position.x + triangleHeight / 2 - 0.2,
         y: pin1Position.y,
       },
     ],
@@ -137,12 +137,12 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
   const p_val = Number.parseFloat(parameters.p)
   const pl_val = Number.parseFloat(parameters.pl)
   const pw_val = Number.parseFloat(parameters.pw)
-  const pinColumnCenterX = h_val / 2 + 0.5
+  const pinColumnCenterX = h_val / 2 + 0.4875
   const pinRowSpanY = p_val * 2 + pw_val
   const pinToeHalfSpanX = pinColumnCenterX + pl_val / 2
-  const courtyardStepInnerHalfWidth = h_val / 2 + 0.25
+  const courtyardStepInnerHalfWidth = h_val / 2 + 0.4
   const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.25
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.2
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
   const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.2
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
