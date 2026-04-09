@@ -13,9 +13,9 @@ export const sod_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
   w: z.string().default("3.05mm"),
-  h: z.string().default("1.65mm"),
-  pl: z.string().default("0.6mm"),
-  pw: z.string().default("0.6mm"),
+  h: z.string().default("1.4mm"),
+  pl: z.string().default("0.5mm"),
+  pw: z.string().default("0.5mm"),
   pad_spacing: z.string().default("2.2mm"),
 })
 
