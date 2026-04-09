@@ -39,19 +39,19 @@ export const sod523 = (
     route: [
       {
         x: length.parse(parameters.p) / 2,
-        y: length.parse(parameters.h) / 2,
+        y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: length.parse(parameters.h) / 2,
+        y: length.parse(parameters.h) / 2 + 0.2,
       },
       {
         x: -length.parse(parameters.w) / 2 - 0.2,
-        y: -length.parse(parameters.h) / 2,
+        y: -length.parse(parameters.h) / 2 - 0.2,
       },
       {
         x: length.parse(parameters.p) / 2,
-        y: -length.parse(parameters.h) / 2,
+        y: -length.parse(parameters.h) / 2 - 0.2,
       },
     ],
     stroke_width: 0.1,

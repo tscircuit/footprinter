@@ -114,7 +114,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
     pcb_silkscreen_path_id: "pin1_indicator",
     route: [
       {
-        x: pin1Position.x + triangleHeight / 2,
+        x: pin1Position.x + triangleHeight / 2 - 0.2,
         y: pin1Position.y,
       },
       {
@@ -126,7 +126,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
         y: pin1Position.y - triangleWidth / 2,
       },
       {
-        x: pin1Position.x + triangleHeight / 2,
+        x: pin1Position.x + triangleHeight / 2 - 0.2,
         y: pin1Position.y,
       },
     ],
