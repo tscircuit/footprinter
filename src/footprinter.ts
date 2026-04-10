@@ -273,6 +273,10 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^pdip(\d+)(?=_|$)/i, "dip$1")
+    .replace(/^spdip(\d+)(?=_|$)/i, "spdip$1")
+    .replace(/^utdfn-4-ep\(1x1\)(?=$|_)/i, "utdfn4_EP_w1.0_h0.6_p0.5_thermalpadx0.6_thermalpady0.4")
+    .replace(/^utdfn(\d+)(?=_|$)/i, "utdfn$1")
 }
 
 export const string = (def: string): Footprinter => {
