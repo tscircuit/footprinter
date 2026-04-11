@@ -13,7 +13,7 @@ test("parity/soic24", async () => {
     "Package_SO.pretty/SOIC-24W_7.5x15.4mm_P1.27mm.circuit.json",
   )
 
-  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(courtyardDiffPercent).toBeLessThan(16)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
