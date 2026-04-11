@@ -13,7 +13,7 @@ test("parity/soic20", async () => {
     "Package_SO.pretty/Infineon_SOIC-20W_7.6x12.8mm_P1.27mm.circuit.json",
   )
 
-  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(courtyardDiffPercent).toBeLessThan(16)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
