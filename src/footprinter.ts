@@ -76,6 +76,7 @@ export type Footprinter = {
     "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads"
   >
   mlp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  lpcc: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
