@@ -36941,6 +36941,8 @@ var soic = (raw_params) => {
 };
 var soicWithoutParsing = (parameters) => {
   const pads = [];
+  let maxPadExtentX = 0;
+  let maxPadExtentY = 0;
   for (let i = 0;i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -36950,6 +36952,8 @@ var soicWithoutParsing = (parameters) => {
       pl: parameters.pl,
       legsoutside: parameters.legsoutside
     });
+    maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + parameters.pl / 2);
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2);
     if (parameters.pillpads) {
       pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw));
     } else {
@@ -36978,11 +36982,12 @@ var soicWithoutParsing = (parameters) => {
       { x: -sw / 2, y: -sh2 / 2 }
     ]
   };
-  const pinRowSpanY = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
-  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25;
-  const courtyardStepOuterHalfWidth = courtyardStepInnerHalfWidth + 1.93;
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.275;
-  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.635;
+  const bodyHalfWidth = parameters.w / 2;
+  const bodyHalfHeight = sh2 / 2;
+  const courtyardStepOuterHalfWidth = Math.max(maxPadExtentX, bodyHalfWidth) + 0.25;
+  const courtyardStepInnerHalfHeight = Math.min(maxPadExtentY, bodyHalfHeight) + 0.25;
+  const courtyardStepInnerHalfWidth = Math.min(maxPadExtentX, bodyHalfWidth) + 0.25;
+  const courtyardStepOuterHalfHeight = Math.max(maxPadExtentY, bodyHalfHeight) + 0.25;
   const courtyard = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
