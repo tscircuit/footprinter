@@ -18406,6 +18406,7 @@ __export(exports_dist, {
   source_no_ground_pin_defined_warning: () => source_no_ground_pin_defined_warning,
   source_net: () => source_net,
   source_missing_property_error: () => source_missing_property_error,
+  source_missing_manufacturer_part_number_warning: () => source_missing_manufacturer_part_number_warning,
   source_manually_placed_via: () => source_manually_placed_via,
   source_invalid_component_property_error: () => source_invalid_component_property_error,
   source_interconnect: () => source_interconnect,
@@ -18470,6 +18471,7 @@ __export(exports_dist, {
   point: () => point,
   pcb_via_clearance_error: () => pcb_via_clearance_error,
   pcb_via: () => pcb_via,
+  pcb_trace_warning: () => pcb_trace_warning,
   pcb_trace_route_point_wire: () => pcb_trace_route_point_wire,
   pcb_trace_route_point_via: () => pcb_trace_route_point_via,
   pcb_trace_route_point: () => pcb_trace_route_point,
@@ -23130,6 +23132,7 @@ expectTypesMatch(true);
 var source_simple_inductor = source_component_base.extend({
   ftype: exports_external.literal("simple_inductor"),
   inductance,
+  display_inductance: exports_external.string().optional(),
   max_current_rating: exports_external.number().optional()
 });
 expectTypesMatch(true);
@@ -23277,6 +23280,16 @@ var source_pin_missing_trace_warning = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 }).describe("Warning emitted when a source component pin is missing a trace connection");
 expectTypesMatch(true);
+var source_missing_manufacturer_part_number_warning = exports_external.object({
+  type: exports_external.literal("source_missing_manufacturer_part_number_warning"),
+  source_missing_manufacturer_part_number_warning_id: getZodPrefixedIdWithDefault("source_missing_manufacturer_part_number_warning"),
+  warning_type: exports_external.literal("source_missing_manufacturer_part_number_warning").default("source_missing_manufacturer_part_number_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  standard: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a standard connector is missing manufacturer part number");
+expectTypesMatch(true);
 var source_simple_voltage_probe = source_component_base.extend({
   ftype: exports_external.literal("simple_voltage_probe")
 });
@@ -23337,6 +23350,7 @@ var any_source_component = exports_external.union([
   source_trace_not_connected_error,
   source_property_ignored_warning,
   source_pin_missing_trace_warning,
+  source_missing_manufacturer_part_number_warning,
   source_i2c_misconfigured_error
 ]);
 expectTypesMatch(true);
@@ -23915,6 +23929,13 @@ var pcb_component = exports_external.object({
   positioned_relative_to_pcb_group_id: exports_external.string().optional(),
   positioned_relative_to_pcb_board_id: exports_external.string().optional(),
   cable_insertion_center: point.optional(),
+  insertion_direction: exports_external.enum([
+    "from_above",
+    "from_left",
+    "from_right",
+    "from_front",
+    "from_back"
+  ]).optional(),
   metadata: exports_external.object({
     kicad_footprint: kicadFootprintMetadata.optional()
   }).optional(),
@@ -24448,6 +24469,19 @@ var pcb_trace = exports_external.object({
 }).describe("Defines a trace on the PCB");
 expectTypesMatch(true);
 expectTypesMatch(true);
+var pcb_trace_warning = exports_external.object({
+  type: exports_external.literal("pcb_trace_warning"),
+  pcb_trace_warning_id: getZodPrefixedIdWithDefault("pcb_trace_warning"),
+  warning_type: exports_external.literal("pcb_trace_warning").default("pcb_trace_warning"),
+  message: exports_external.string(),
+  center: point.optional(),
+  pcb_trace_id: exports_external.string(),
+  source_trace_id: exports_external.string(),
+  pcb_component_ids: exports_external.array(exports_external.string()),
+  pcb_port_ids: exports_external.array(exports_external.string()),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Defines a trace warning on the PCB");
+expectTypesMatch(true);
 var pcb_trace_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_trace_error"),
   pcb_trace_error_id: getZodPrefixedIdWithDefault("pcb_trace_error"),
@@ -24789,6 +24823,7 @@ var pcb_note_text = exports_external.object({
   text: exports_external.string().optional(),
   anchor_position: point.default({ x: 0, y: 0 }),
   anchor_alignment: exports_external.enum(["center", "top_left", "top_right", "bottom_left", "bottom_right"]).default("center"),
+  layer: visible_layer.default("top"),
   color: exports_external.string().optional()
 }).describe("Defines a documentation note in text on the PCB");
 expectTypesMatch(true);
@@ -24803,6 +24838,7 @@ var pcb_note_rect = exports_external.object({
   center: point,
   width: length,
   height: length,
+  layer: visible_layer.default("top"),
   stroke_width: length.default("0.1mm"),
   corner_radius: length.optional(),
   is_filled: exports_external.boolean().optional(),
@@ -24820,6 +24856,7 @@ var pcb_note_path = exports_external.object({
   name: exports_external.string().optional(),
   text: exports_external.string().optional(),
   route: exports_external.array(point),
+  layer: visible_layer.default("top"),
   stroke_width: length.default("0.1mm"),
   color: exports_external.string().optional()
 }).describe("Defines a polyline documentation note on the PCB");
@@ -24836,6 +24873,7 @@ var pcb_note_line = exports_external.object({
   y1: distance,
   x2: distance,
   y2: distance,
+  layer: visible_layer.default("top"),
   stroke_width: distance.default("0.1mm"),
   color: exports_external.string().optional(),
   is_dashed: exports_external.boolean().optional()
@@ -24859,6 +24897,7 @@ var pcb_note_dimension = exports_external.object({
   }).optional(),
   font: exports_external.literal("tscircuit2024").default("tscircuit2024"),
   font_size: length.default("1mm"),
+  layer: visible_layer.default("top"),
   color: exports_external.string().optional(),
   arrow_size: length.default("1mm")
 }).describe("Defines a measurement annotation within PCB documentation notes");
@@ -25490,6 +25529,7 @@ var any_circuit_element = exports_external.union([
   source_invalid_component_property_error,
   source_trace_not_connected_error,
   source_pin_missing_trace_warning,
+  source_missing_manufacturer_part_number_warning,
   source_no_power_pin_defined_warning,
   source_no_ground_pin_defined_warning,
   source_component_pins_underspecified_warning,
@@ -25510,6 +25550,7 @@ var any_circuit_element = exports_external.union([
   pcb_net,
   pcb_text,
   pcb_trace,
+  pcb_trace_warning,
   pcb_via,
   pcb_smtpad,
   pcb_solder_paste,
@@ -38371,6 +38412,8 @@ var pinrow = (raw_params) => {
     pinlabelTextAlign = "right";
   const holes = [];
   const numPinsPerRow = Math.ceil(num_pins / rows);
+  const pinRowSpanY = (rows - 1) * p;
+  const yStart = pinRowSpanY / 2;
   const ySpacing = -p;
   const calculateAnchorPosition = ({
     xoff,
@@ -38504,7 +38547,7 @@ var pinrow = (raw_params) => {
     for (let row = 0;row < rows && currentPin <= num_pins; row++) {
       for (let col = 0;col < numPinsPerRow && currentPin <= num_pins; col++) {
         const xoff = xStart + col * p;
-        const yoff = row * ySpacing;
+        const yoff = yStart + row * ySpacing;
         const posKey = `${xoff},${yoff}`;
         if (usedPositions.has(posKey))
           throw new Error(`Overlap at ${posKey}`);
@@ -38522,7 +38565,7 @@ var pinrow = (raw_params) => {
     while (currentPin <= num_pins && top <= bottom && left <= right) {
       for (let row = top;row <= bottom && currentPin <= num_pins; row++) {
         const xoff = xStart + left * p;
-        const yoff = row * ySpacing;
+        const yoff = yStart + row * ySpacing;
         const posKey = `${xoff},${yoff}`;
         if (usedPositions.has(posKey))
           throw new Error(`Overlap at ${posKey}`);
@@ -38532,7 +38575,7 @@ var pinrow = (raw_params) => {
       left++;
       for (let col = left;col <= right && currentPin <= num_pins; col++) {
         const xoff = xStart + col * p;
-        const yoff = bottom * ySpacing;
+        const yoff = yStart + bottom * ySpacing;
         const posKey = `${xoff},${yoff}`;
         if (usedPositions.has(posKey))
           throw new Error(`Overlap at ${posKey}`);
@@ -38543,7 +38586,7 @@ var pinrow = (raw_params) => {
       if (left <= right) {
         for (let row = bottom;row >= top && currentPin <= num_pins; row--) {
           const xoff = xStart + right * p;
-          const yoff = row * ySpacing;
+          const yoff = yStart + row * ySpacing;
           const posKey = `${xoff},${yoff}`;
           if (usedPositions.has(posKey))
             throw new Error(`Overlap at ${posKey}`);
@@ -38555,7 +38598,7 @@ var pinrow = (raw_params) => {
       if (top <= bottom) {
         for (let col = right;col >= left && currentPin <= num_pins; col--) {
           const xoff = xStart + col * p;
-          const yoff = top * ySpacing;
+          const yoff = yStart + top * ySpacing;
           const posKey = `${xoff},${yoff}`;
           if (usedPositions.has(posKey))
             throw new Error(`Overlap at ${posKey}`);
@@ -38569,11 +38612,10 @@ var pinrow = (raw_params) => {
       throw new Error(`Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`);
     }
   }
-  const refText = silkscreenRef(0, p, 0.5);
+  const refText = silkscreenRef(0, pinRowSpanY / 2 + p, 0.5);
   const padHalfWidth = parameters.smd ? parameters.pw / 2 : od2 / 2;
   const padHalfHeight = parameters.smd ? parameters.pl / 2 : od2 / 2;
   const pinRowSpanX = (numPinsPerRow - 1) * p;
-  const pinRowSpanY = (rows - 1) * p;
   const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth;
   const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight;
   const bodyHalfWidth = pinRowSpanX / 2 + p / 2;
@@ -38584,7 +38626,7 @@ var pinrow = (raw_params) => {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: -((rows - 1) * p) / 2 },
+    center: { x: 0, y: 0 },
     width: 2 * courtyardHalfWidth,
     height: 2 * courtyardHalfHeight,
     layer: "top"
