@@ -30,6 +30,20 @@ test("pinrow4_rows2", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow4_rows2_1")
 })
 
+test("pinheader alias", () => {
+  const aliasJson = fp.string("pinheader4_rows2").json()
+  const canonicalJson = fp.string("pinrow4_rows2").json()
+  const aliasSvg = convertCircuitJsonToPcbSvg(
+    fp.string("pinheader4_rows2").circuitJson(),
+  )
+  const canonicalSvg = convertCircuitJsonToPcbSvg(
+    fp.string("pinrow4_rows2").circuitJson(),
+  )
+
+  expect(aliasJson).toEqual(canonicalJson)
+  expect(aliasSvg).toEqual(canonicalSvg)
+})
+
 test("pinrow8_rows4", () => {
   const circuitJson = fp.string("pinrow8_rows4").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
