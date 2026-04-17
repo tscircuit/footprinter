@@ -6,7 +6,7 @@ export const plcc_def = quad_def
 
 /**
  * PLCC (Plastic Leaded Chip Carrier)
- * 
+ *
  * Standard PLCC footprints have Pin 1 at the top center.
  * This function uses the quad footprint generator but shifts the pin mapping.
  */
@@ -27,18 +27,25 @@ export const plcc = (
   }
 
   const { circuitJson, parameters } = quad(raw_params)
-  
+
   const spc = parameters.num_pins / 4
   // quad's top side is pins 3*spc + 1 to 4*spc.
   // The center pin of the top side is the one at index 3*spc + Math.ceil(spc / 2).
   const quadIndexAtTopCenter = 3 * spc + Math.ceil(spc / 2)
 
   const shiftedCircuitJson = circuitJson.map((element) => {
-    if (element.type === "pcb_pad" && typeof element.pcb_pad_number === "string" && !isNaN(parseInt(element.pcb_pad_number))) {
+    if (
+      element.type === "pcb_pad" &&
+      typeof element.pcb_pad_number === "string" &&
+      !isNaN(parseInt(element.pcb_pad_number))
+    ) {
       const quadPn = parseInt(element.pcb_pad_number)
       // PLCC Pin 1 corresponds to quadIndexAtTopCenter.
       // quadPn corresponds to PLCC Pin:
-      const plccPn = ((quadPn - quadIndexAtTopCenter + parameters.num_pins) % parameters.num_pins) + 1
+      const plccPn =
+        ((quadPn - quadIndexAtTopCenter + parameters.num_pins) %
+          parameters.num_pins) +
+        1
       return {
         ...element,
         pcb_pad_number: plccPn.toString(),
@@ -50,8 +57,8 @@ export const plcc = (
   return {
     circuitJson: shiftedCircuitJson,
     parameters: {
-        ...parameters,
-        fn: "plcc"
+      ...parameters,
+      fn: "plcc",
     },
   }
 }
