@@ -112,6 +112,8 @@ export const pinrow = (
 
   const holes: AnyCircuitElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
+  const pinRowSpanY = (rows - 1) * p
+  const yStart = pinRowSpanY / 2
   const ySpacing = -p
 
   const calculateAnchorPosition = ({
@@ -274,7 +276,7 @@ export const pinrow = (
     for (let row = 0; row < rows && currentPin <= num_pins; row++) {
       for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
         const xoff = xStart + col * p
-        const yoff = row * ySpacing
+        const yoff = yStart + row * ySpacing
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
@@ -294,7 +296,7 @@ export const pinrow = (
       // Left column: top to bottom
       for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
         const xoff = xStart + left * p
-        const yoff = row * ySpacing
+        const yoff = yStart + row * ySpacing
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
@@ -305,7 +307,7 @@ export const pinrow = (
       // Bottom row: left to right
       for (let col = left; col <= right && currentPin <= num_pins; col++) {
         const xoff = xStart + col * p
-        const yoff = bottom * ySpacing
+        const yoff = yStart + bottom * ySpacing
         const posKey = `${xoff},${yoff}`
         if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
         usedPositions.add(posKey)
@@ -317,7 +319,7 @@ export const pinrow = (
         // Right column: bottom to top
         for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
           const xoff = xStart + right * p
-          const yoff = row * ySpacing
+          const yoff = yStart + row * ySpacing
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
@@ -330,7 +332,7 @@ export const pinrow = (
         // Top row: right to left
         for (let col = right; col >= left && currentPin <= num_pins; col--) {
           const xoff = xStart + col * p
-          const yoff = top * ySpacing
+          const yoff = yStart + top * ySpacing
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
@@ -349,12 +351,11 @@ export const pinrow = (
   }
 
   // Add centered silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, p, 0.5)
+  const refText: SilkscreenRef = silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
 
   const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
   const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
   const pinRowSpanX = (numPinsPerRow - 1) * p
-  const pinRowSpanY = (rows - 1) * p
   const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth
   const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
   const bodyHalfWidth = pinRowSpanX / 2 + p / 2
@@ -371,7 +372,7 @@ export const pinrow = (
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
-    center: { x: 0, y: -((rows - 1) * p) / 2 },
+    center: { x: 0, y: 0 },
     width: 2 * courtyardHalfWidth,
     height: 2 * courtyardHalfHeight,
     layer: "top",
