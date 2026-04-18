@@ -44,6 +44,23 @@ test("pinheader alias", () => {
   expect(aliasSvg).toEqual(canonicalSvg)
 })
 
+test("pinrow4_rows2 geometry is centered on origin", () => {
+  const circuitJson = fp.string("pinrow4_rows2").circuitJson()
+  const padYs = circuitJson
+    .filter((el) => el.type === "pcb_plated_hole" || el.type === "pcb_smtpad")
+    .map((el) => el.y)
+    .filter((y): y is number => typeof y === "number")
+    .sort((a, b) => a - b)
+  const courtyard = circuitJson.find((el) => el.type === "pcb_courtyard_rect")
+  const refText = circuitJson.find(
+    (el) => el.type === "pcb_silkscreen_text" && el.text === "{REF}",
+  )
+
+  expect(padYs).toEqual([-1.27, -1.27, 1.27, 1.27])
+  expect(courtyard?.center).toEqual({ x: 0, y: 0 })
+  expect(refText?.anchor_position).toEqual({ x: 0, y: 3.81 })
+})
+
 test("pinrow8_rows4", () => {
   const circuitJson = fp.string("pinrow8_rows4").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
