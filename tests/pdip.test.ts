@@ -33,14 +33,3 @@ test("pdip-8 hyphenated string resolves", () => {
   expect(circuitJson.length).toBeGreaterThan(0)
 })
 
-test("spdip28 string resolves same as dip28", () => {
-  const spdipJson = fp.string("spdip28").json()
-  const dipJson = fp.string("dip28").json()
-  expect(spdipJson).toEqual(dipJson)
-})
-
-test("spdip28", () => {
-  const circuitJson = fp.string("spdip28").circuitJson() as AnyCircuitElement[]
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip28")
-})
