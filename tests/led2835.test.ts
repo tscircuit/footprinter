@@ -13,17 +13,13 @@ test("led2835 default", () => {
 
 test("led2835 has courtyard", () => {
   const circuitJson = fp.string("led2835").circuitJson()
-  const courtyard = circuitJson.filter(
-    (e) => e.type === "pcb_courtyard_rect",
-  )
+  const courtyard = circuitJson.filter((e) => e.type === "pcb_courtyard_rect")
   expect(courtyard.length).toBeGreaterThan(0)
 })
 
 test("led2835 has polarity silkscreen", () => {
   const circuitJson = fp.string("led2835").circuitJson()
-  const silkscreen = circuitJson.filter(
-    (e) => e.type === "pcb_silkscreen_path",
-  )
+  const silkscreen = circuitJson.filter((e) => e.type === "pcb_silkscreen_path")
   expect(silkscreen.length).toBeGreaterThan(0)
 })
 

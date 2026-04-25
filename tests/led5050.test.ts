@@ -13,9 +13,7 @@ test("led5050 default", () => {
 
 test("led5050 has courtyard", () => {
   const circuitJson = fp.string("led5050").circuitJson()
-  const courtyard = circuitJson.filter(
-    (e) => e.type === "pcb_courtyard_rect",
-  )
+  const courtyard = circuitJson.filter((e) => e.type === "pcb_courtyard_rect")
   expect(courtyard.length).toBeGreaterThan(0)
 })
 
