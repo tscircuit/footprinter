@@ -267,13 +267,19 @@ export type Footprinter = {
 }
 
 const normalizeDefinition = (def: string): string => {
-  return def
-    .trim()
-    .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
-    .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
-    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
-    .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
-    .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+  return (
+    def
+      .trim()
+      .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+      .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
+      .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+      .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+      .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+      // PDIP is DIP with standard 300mil (7.62mm) row spacing
+      .replace(/^pdip(?=[\d_]|$)/i, "dip")
+      // SPDIP is DIP with standard 300mil row spacing (same as PDIP)
+      .replace(/^spdip(?=[\d_]|$)/i, "dip")
+  )
 }
 
 export const string = (def: string): Footprinter => {
