@@ -279,6 +279,8 @@ const normalizeDefinition = (def: string): string => {
       .replace(/^pdip(?=[\d_]|$)/i, "dip")
       // SPDIP is DIP with standard 300mil row spacing (same as PDIP)
       .replace(/^spdip(?=[\d_]|$)/i, "dip")
+      // UTDFN-4-EP(1x1) -> utdfn4ep1x1 (normalize hyphenated/parenthesized form)
+      .replace(/^utdfn-?(\d+)-?ep\(?(\d+)x(\d+)\)?(?=_|$)/i, "utdfn$1ep$2x$3")
   )
 }
 
