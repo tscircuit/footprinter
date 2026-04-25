@@ -183,7 +183,9 @@ export type Footprinter = {
   >
   led5050: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   led2835: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  lpcc: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  lpcc: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   vson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
