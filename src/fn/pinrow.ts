@@ -47,6 +47,14 @@ export const pinrow_def = base_def
       .optional()
       .default(false)
       .describe("do not use rectangular pad for pin 1"),
+    startingpin: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional()
+      .default(1)
+      .describe(
+        "starting pin number (default 1, use to offset numbering for multi-row connectors)",
+      ),
     nopinlabels: z
       .boolean()
       .optional()
@@ -97,6 +105,7 @@ export const pinrow = (
     od,
     rows,
     num_pins,
+    startingpin,
     pinlabelAnchorSide,
     pinlabelverticallyinverted,
     pinlabelorthogonal,
@@ -178,7 +187,7 @@ export const pinrow = (
       holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
     } else {
       // Through-hole
-      if (pinNumber === 1 && !parameters.nosquareplating) {
+      if (pinNumber === startingpin && !parameters.nosquareplating) {
         // Always use square plating for pin 1 (no need to check nosquareplating anymore)
         holes.push(
           platedHoleWithRectPad({
@@ -262,7 +271,7 @@ export const pinrow = (
     // Single row: left to right, pin 1 to num_pins
     const xStart = -((num_pins - 1) / 2) * p
     for (let i = 0; i < num_pins; i++) {
-      const pinNumber = i + 1
+      const pinNumber = startingpin + i
       const xoff = xStart + i * p
       const posKey = `${xoff},${0}`
       if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
@@ -272,9 +281,10 @@ export const pinrow = (
   } else if (useBGAStyle) {
     // BGA-style: row-major numbering (left to right, top to bottom)
     const xStart = -((numPinsPerRow - 1) / 2) * p
-    let currentPin = 1
-    for (let row = 0; row < rows && currentPin <= num_pins; row++) {
-      for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
+    let currentPin = startingpin
+    const maxPinBGA = startingpin + num_pins - 1
+    for (let row = 0; row < rows && currentPin <= maxPinBGA; row++) {
+      for (let col = 0; col < numPinsPerRow && currentPin <= maxPinBGA; col++) {
         const xoff = xStart + col * p
         const yoff = yStart + row * ySpacing
         const posKey = `${xoff},${yoff}`
@@ -286,15 +296,16 @@ export const pinrow = (
   } else {
     // Multi-row: counterclockwise spiral traversal
     const xStart = -((numPinsPerRow - 1) / 2) * p
-    let currentPin = 1
+    let currentPin = startingpin
+    const maxPin = startingpin + num_pins - 1
     let top = 0
     let bottom = rows - 1
     let left = 0
     let right = numPinsPerRow - 1
 
-    while (currentPin <= num_pins && top <= bottom && left <= right) {
+    while (currentPin <= maxPin && top <= bottom && left <= right) {
       // Left column: top to bottom
-      for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
+      for (let row = top; row <= bottom && currentPin <= maxPin; row++) {
         const xoff = xStart + left * p
         const yoff = yStart + row * ySpacing
         const posKey = `${xoff},${yoff}`
@@ -305,7 +316,7 @@ export const pinrow = (
       left++
 
       // Bottom row: left to right
-      for (let col = left; col <= right && currentPin <= num_pins; col++) {
+      for (let col = left; col <= right && currentPin <= maxPin; col++) {
         const xoff = xStart + col * p
         const yoff = yStart + bottom * ySpacing
         const posKey = `${xoff},${yoff}`
@@ -317,7 +328,7 @@ export const pinrow = (
 
       if (left <= right) {
         // Right column: bottom to top
-        for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
+        for (let row = bottom; row >= top && currentPin <= maxPin; row--) {
           const xoff = xStart + right * p
           const yoff = yStart + row * ySpacing
           const posKey = `${xoff},${yoff}`
@@ -330,7 +341,7 @@ export const pinrow = (
 
       if (top <= bottom) {
         // Top row: right to left
-        for (let col = right; col >= left && currentPin <= num_pins; col--) {
+        for (let col = right; col >= left && currentPin <= maxPin; col--) {
           const xoff = xStart + col * p
           const yoff = yStart + top * ySpacing
           const posKey = `${xoff},${yoff}`
@@ -343,9 +354,9 @@ export const pinrow = (
     }
 
     // Verify all pins were assigned
-    if (currentPin - 1 < num_pins) {
+    if (currentPin - 1 < maxPin) {
       throw new Error(
-        `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
+        `Missing pins: assigned ${currentPin - startingpin}, expected ${num_pins}`,
       )
     }
   }
