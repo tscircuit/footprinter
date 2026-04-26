@@ -99,6 +99,7 @@ export type Footprinter = {
     | "pinlabelverticallyinverted"
     | "pinlabelorthogonal"
     | "nosquareplating"
+    | "startingpin"
     | "nopinlabels"
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
