@@ -315,9 +315,16 @@ export const jst = (
 
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+  const shMatch = str.match(/(?:^|_)sh(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (shMatch && shMatch[1]) {
+    const parsed = Number.parseInt(shMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
