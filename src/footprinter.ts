@@ -39,6 +39,7 @@ export type Footprinter = {
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  spdip28: () => FootprinterParamsBuilder<never>
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
