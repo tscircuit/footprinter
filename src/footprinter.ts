@@ -407,12 +407,17 @@ export const footprinter = (): Footprinter & {
             } else {
               target[prop] = true
               target.fn = prop
-              if (prop === "res" || prop === "cap") {
+              if (
+                prop === "res" ||
+                prop === "cap" ||
+                prop === "led" ||
+                prop === "diode"
+              ) {
                 if (v) {
                   if (typeof v === "string" && v.includes("_metric")) {
                     target.metric = v.split("_metric")[0]
                   } else {
-                    target.imperial = v // e.g., res0402, cap0603 etc.
+                    target.imperial = v // e.g., res0402, cap0603, led0805 etc.
                   }
                 }
               } else {
