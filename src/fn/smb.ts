@@ -80,10 +80,7 @@ export const smb = (
 }
 
 // Get coordinates for smb pads
-export const getSmbCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSmbCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
