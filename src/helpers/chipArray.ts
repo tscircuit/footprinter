@@ -114,10 +114,7 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
   }
 
   // Reference text
-  const maxPadY = Math.max(...yPositions)
-  const textY = textbottom
-    ? -maxPadY - padHeight / 2 - 0.9
-    : maxPadY + padHeight / 2 + 0.9
+  const textY = textbottom ? bottom - 0.9 : top + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
   const courtyard: PcbCourtyardOutline | null = courtyardOutline
     ? {
