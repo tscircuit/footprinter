@@ -62,10 +62,10 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     })
 
   // Calculate silkscreen boundaries - match KiCad style (two horizontal lines)
-  const top = Math.max(...yPositions) + padHeight / 2 + 0.4
-  const bottom = Math.min(...yPositions) - padHeight / 2 - 0.4
-  const left = -padSpacing / 2 - padWidth / 2 - 0.4
-  const right = padSpacing / 2 + padWidth / 2 + 0.4
+  const padGap = padSpacing - padWidth
+  const maxPadY = Math.max(...yPositions)
+  const silkscreenY = maxPadY + padHeight / 2 + 0.22
+  const silkscreenWidth = padGap
 
   // Silkscreen: two horizontal lines (matching KiCad style)
   const silkscreenTop: PcbSilkscreenPath = {
@@ -73,8 +73,8 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: right * 0.5, y: top },
-      { x: left * 0.5, y: top },
+      { x: silkscreenWidth / 2, y: silkscreenY },
+      { x: -silkscreenWidth / 2, y: silkscreenY },
     ],
     stroke_width: 0.12,
     pcb_silkscreen_path_id: "silkscreen_top",
@@ -85,36 +85,17 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     layer: "top",
     pcb_component_id: "",
     route: [
-      { x: right * 0.5, y: bottom },
-      { x: left * 0.5, y: bottom },
+      { x: silkscreenWidth / 2, y: -silkscreenY },
+      { x: -silkscreenWidth / 2, y: -silkscreenY },
     ],
     stroke_width: 0.12,
     pcb_silkscreen_path_id: "silkscreen_bottom",
   }
 
-  // Pin 1 marker: corner indicator at top-left (where pin1 pad is located)
-  // Match KiCad style - small L-shaped corner marker
-  const pin1X = -padSpacing / 2
-  const pin1Y = Math.max(...yPositions)
-  const pin1MarkerSize = 0.2
-  const pin1Left = pin1X - padWidth / 2 - 0.1
-  const pin1Top = pin1Y + padHeight / 2 + 0.1
-  const pin1Marker: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    pcb_silkscreen_path_id: "pin1_marker",
-    route: [
-      { x: pin1Left, y: pin1Top },
-      { x: pin1Left - pin1MarkerSize, y: pin1Top },
-      { x: pin1Left, y: pin1Top + pin1MarkerSize },
-      { x: pin1Left, y: pin1Top },
-    ],
-    stroke_width: 0.1,
-  }
-
   // Reference text
-  const textY = textbottom ? bottom - 0.9 : top + 0.9
+  const textY = textbottom
+    ? -maxPadY - padHeight / 2 - 0.9
+    : maxPadY + padHeight / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
   const courtyard: PcbCourtyardOutline | null = courtyardOutline
     ? {
@@ -130,7 +111,6 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     ...pads,
     silkscreenTop,
     silkscreenBottom,
-    pin1Marker,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),
   ]

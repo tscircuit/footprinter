@@ -382,7 +382,8 @@ export async function compareFootprinterVsKicad(
       e.type === "pcb_courtyard_outline" ||
       e.type === "pcb_courtyard_rect" ||
       e.type === "pcb_courtyard_circle" ||
-      e.type === "pcb_courtyard_polygon",
+      e.type === "pcb_courtyard_polygon" ||
+      e.type === "pcb_silkscreen_path",
   )
 
   // Figure out how far to shift KiCad elements
