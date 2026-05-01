@@ -176,6 +176,9 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
   >
+  lpcc: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   vson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -274,6 +277,7 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^lpcc-(\d+)(?=_|$)/i, "lpcc$1")
 }
 
 export const string = (def: string): Footprinter => {
