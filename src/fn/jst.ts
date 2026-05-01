@@ -316,6 +316,8 @@ export const jst = (
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
+  // Match pin count from variant-specific patterns with underscore separator: jst_ph_4, jst_sh_6, etc.
+  const variantPinMatch = str.match(/(?:^|_)(?:ph|sh|zh)_(\d+)(?:_|$)/)
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
     if (!Number.isNaN(parsed)) {
@@ -324,6 +326,12 @@ export const jst = (
   }
   if (zhMatch && zhMatch[1]) {
     const parsed = Number.parseInt(zhMatch[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (!numPins && variantPinMatch && variantPinMatch[1]) {
+    const parsed = Number.parseInt(variantPinMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
