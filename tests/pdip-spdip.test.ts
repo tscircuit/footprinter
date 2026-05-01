@@ -54,3 +54,41 @@ test("spdip-28 hyphen format also works", () => {
   const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
   expect(holes.length).toBe(28)
 })
+
+// SIP (Single In-line Package) — maps to pinrow
+test("sip5 generates 5 plated holes", () => {
+  const circuitJson = fp.string("sip5").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(5)
+})
+
+test("sip10 generates 10 plated holes", () => {
+  const circuitJson = fp.string("sip10").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(10)
+})
+
+test("sip-5 hyphen format works", () => {
+  const circuitJson = fp.string("sip-5").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(5)
+})
+
+test("sip_5 underscore format works", () => {
+  const circuitJson = fp.string("sip_5").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(5)
+})
+
+// DIL (Dual In-line) — same as DIP
+test("dil8 generates 8 plated holes", () => {
+  const circuitJson = fp.string("dil8").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(8)
+})
+
+test("dil14 generates 14 plated holes", () => {
+  const circuitJson = fp.string("dil14").circuitJson()
+  const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
+  expect(holes.length).toBe(14)
+})

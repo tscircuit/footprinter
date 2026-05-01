@@ -276,6 +276,8 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
     .replace(/^pdip[\-_]?(\d+)(?=_|$)/i, "dip$1")
     .replace(/^spdip[\-_]?(\d+)(?=_|$)/i, "dip$1")
+    .replace(/^sip[\-_]?(\d+)(?=_|$)/i, "pinrow$1")
+    .replace(/^dil[\-_]?(\d+)(?=_|$)/i, "dip$1")
 }
 
 export const string = (def: string): Footprinter => {
