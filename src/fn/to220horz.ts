@@ -49,9 +49,7 @@ export const to220horz = (
 
   const numPins =
     parameters.num_pins ??
-    Number.parseInt(
-      string?.match(/^to220horz(?:_|-)(\d+)/i)?.[1] ?? "3",
-    )
+    Number.parseInt(string?.match(/^to220horz(?:_|-)(\d+)/i)?.[1] ?? "3")
 
   // ----- Pin / hole geometry -----
   // Holes sit at y = 0.  The body extends in the –y direction (upward on
@@ -68,7 +66,7 @@ export const to220horz = (
 
   // ----- Silkscreen body outline -----
   // The body rectangle extends from y = -(body depth) to y = -(pin toe gap)
-  const bodyTopY = -(h)
+  const bodyTopY = -h
   const bodyBottomY = -(od / 2 + 0.3) // small gap above the pad annular ring
   const halfW = w / 2
 
