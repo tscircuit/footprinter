@@ -80,10 +80,7 @@ export const smf = (
 }
 
 // Get coordinates for smf pads
-export const getSmfCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSmfCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
