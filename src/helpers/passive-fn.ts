@@ -166,6 +166,7 @@ const createCourtyardRect = (
 
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
+  string: z.string().optional(),
   tht: z.boolean(),
   p: length.optional(),
   pw: length.optional(),
@@ -180,7 +181,19 @@ export const passive_def = base_def.extend({
 export type PassiveDef = z.input<typeof passive_def>
 
 export const passive = (params: PassiveDef): AnyCircuitElement[] => {
-  let { fn, tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
+  let {
+    fn,
+    tht,
+    p,
+    pw,
+    ph,
+    metric,
+    imperial,
+    w,
+    h,
+    textbottom,
+    string: footprintString,
+  } = params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -214,7 +227,12 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const lineY = ph / 2 + 0.06
   let silkscreenLines: PcbSilkscreenPath[] = []
 
-  if (fn === "res" && (imperial === "0402" || sz?.imperial === "0402")) {
+  const usesDedicatedRes0402Silkscreen =
+    fn === "res" &&
+    typeof footprintString === "string" &&
+    /^res0402(?:_|$)/i.test(footprintString)
+
+  if (usesDedicatedRes0402Silkscreen) {
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
