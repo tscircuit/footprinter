@@ -227,12 +227,14 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const lineY = ph / 2 + 0.06
   let silkscreenLines: PcbSilkscreenPath[] = []
 
-  const usesDedicatedRes0402Silkscreen =
+  // `res0402` uses the nonpolarized silkscreen style: two symmetric lines
+  // instead of the polarized-style 3-sided outline used to show orientation.
+  const usesNonPolarized0402ResistorSilkscreen =
     fn === "res" &&
     typeof footprintString === "string" &&
     /^res0402(?:_|$)/i.test(footprintString)
 
-  if (usesDedicatedRes0402Silkscreen) {
+  if (usesNonPolarized0402ResistorSilkscreen) {
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
@@ -258,7 +260,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
       },
     ]
   } else {
-    // Default 3-sided box (indicating polarity/pin 1)
+    // Polarized-style 3-sided outline to indicate orientation/polarity.
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
