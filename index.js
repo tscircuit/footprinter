@@ -45606,7 +45606,7 @@ var footprinter = () => {
           } else {
             target[prop] = true;
             target.fn = prop;
-            if (prop === "res" || prop === "cap") {
+            if (prop === "res" || prop === "cap" || prop === "led" || prop === "diode") {
               if (v2) {
                 if (typeof v2 === "string" && v2.includes("_metric")) {
                   target.metric = v2.split("_metric")[0];
