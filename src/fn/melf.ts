@@ -79,10 +79,7 @@ export const melf = (
   }
 }
 
-export const getMelfCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getMelfCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
