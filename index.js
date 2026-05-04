@@ -36130,7 +36130,12 @@ var footprintSizes = [
     w_mm_min: 5.4,
     h_mm_min: 3.4,
     courtyard_width_mm: 5.9,
-    courtyard_height_mm: 3.9
+    courtyard_height_mm: 3.9,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 1.386252,
+      line_y_mm: 1.71,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "0201",
@@ -36152,7 +36157,12 @@ var footprintSizes = [
     w_mm_min: 1.56,
     h_mm_min: 0.64,
     courtyard_width_mm: 1.86,
-    courtyard_height_mm: 0.94
+    courtyard_height_mm: 0.94,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.153641,
+      line_y_mm: 0.38,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "0603",
@@ -36163,7 +36173,12 @@ var footprintSizes = [
     w_mm_min: 2.45,
     h_mm_min: 0.95,
     courtyard_width_mm: 2.96,
-    courtyard_height_mm: 1.46
+    courtyard_height_mm: 1.46,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.237258,
+      line_y_mm: 0.5225,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "0805",
@@ -36174,7 +36189,12 @@ var footprintSizes = [
     w_mm_min: 2.8499999999999996,
     h_mm_min: 1.4,
     courtyard_width_mm: 3.36,
-    courtyard_height_mm: 1.9
+    courtyard_height_mm: 1.9,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.227064,
+      line_y_mm: 0.735,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "1206",
@@ -36185,7 +36205,12 @@ var footprintSizes = [
     w_mm_min: 4.05,
     h_mm_min: 1.75,
     courtyard_width_mm: 4.56,
-    courtyard_height_mm: 2.26
+    courtyard_height_mm: 2.26,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.727064,
+      line_y_mm: 0.91,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "1210",
@@ -36196,7 +36221,12 @@ var footprintSizes = [
     w_mm_min: 4.05,
     h_mm_min: 2.65,
     courtyard_width_mm: 4.56,
-    courtyard_height_mm: 3.16
+    courtyard_height_mm: 3.16,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.723737,
+      line_y_mm: 1.355,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "2010",
@@ -36207,7 +36237,12 @@ var footprintSizes = [
     w_mm_min: 5.85,
     h_mm_min: 2.65,
     courtyard_width_mm: 6.36,
-    courtyard_height_mm: 3.16
+    courtyard_height_mm: 3.16,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 1.527064,
+      line_y_mm: 1.36,
+      stroke_width_mm: 0.12
+    }
   },
   {
     imperial: "2512",
@@ -36218,7 +36253,12 @@ var footprintSizes = [
     w_mm_min: 7.15,
     h_mm_min: 3.35,
     courtyard_width_mm: 7.66,
-    courtyard_height_mm: 3.86
+    courtyard_height_mm: 3.86,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 2.177064,
+      line_y_mm: 1.71,
+      stroke_width_mm: 0.12
+    }
   }
 ];
 var metricMap = Object.fromEntries(footprintSizes.map((s2) => [s2.metric, s2]));
@@ -36243,6 +36283,7 @@ var passive_def = base_def.extend({
   imperial: distance.optional(),
   w: length.optional(),
   h: length.optional(),
+  nonpolarized: exports_external.boolean().optional(),
   textbottom: exports_external.boolean().optional()
 });
 var passive = (params) => {
@@ -36256,6 +36297,7 @@ var passive = (params) => {
     imperial,
     w: w2,
     h,
+    nonpolarized,
     textbottom,
     string: footprintString
   } = params;
@@ -36287,21 +36329,24 @@ var passive = (params) => {
   if (p === undefined || pw === undefined || ph2 === undefined) {
     throw new Error("Could not determine required pad dimensions (p, pw, ph)");
   }
-  const lineLength = (p - pw) * 0.6;
-  const lineY = ph2 / 2 + 0.06;
   let silkscreenLines = [];
-  const usesNonPolarized0402ResistorSilkscreen = fn2 === "res" && typeof footprintString === "string" && /^res0402(?:_|$)/i.test(footprintString);
-  if (usesNonPolarized0402ResistorSilkscreen) {
+  const nonpolarizedSilkscreen = fn2 === "res" && (nonpolarized === true || typeof footprintString !== "string" || /^res(?:\d{4}|\d{5})(?:_|$)/i.test(footprintString)) ? sz?.nonpolarizedSilkscreen : undefined;
+  if (nonpolarizedSilkscreen?.stroke_width_mm) {
+    const {
+      line_half_length_mm = 0,
+      line_y_mm = 0,
+      stroke_width_mm
+    } = nonpolarizedSilkscreen;
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: -lineLength / 2, y: lineY },
-          { x: lineLength / 2, y: lineY }
+          { x: -line_half_length_mm, y: line_y_mm },
+          { x: line_half_length_mm, y: line_y_mm }
         ],
-        stroke_width: 0.12,
+        stroke_width: stroke_width_mm,
         pcb_silkscreen_path_id: ""
       },
       {
@@ -36309,10 +36354,10 @@ var passive = (params) => {
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: -lineLength / 2, y: -lineY },
-          { x: lineLength / 2, y: -lineY }
+          { x: -line_half_length_mm, y: -line_y_mm },
+          { x: line_half_length_mm, y: -line_y_mm }
         ],
-        stroke_width: 0.12,
+        stroke_width: stroke_width_mm,
         pcb_silkscreen_path_id: ""
       }
     ];
@@ -45720,7 +45765,7 @@ var content_default = [
     title: "led_0402"
   },
   {
-    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="212.94117647058826" y="141.17647058823525" width="374.1176470588234" height="317.64705882352945" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="241.17647058823533" y="268.235294117647" width="112.94117647058825" height="134.11764705882354" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="474.11764705882354" y="268.235294117647" width="112.94117647058825" height="134.11764705882354" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 530.5882352941177 211.76470588235287 L 212.94117647058826 211.76470588235287 L 212.94117647058826 458.8235294117647 L 530.5882352941177 458.8235294117647" fill="none" stroke="#f2eda1" stroke-width="14.11764705882353" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="28.23529411764706" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,414.11764705882354,141.17647058823525)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="211.41757536882622" y="153.94483643361133" width="377.1648492623476" height="292.11032713277746" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="211.4175753688262" y="292.49518922386153" width="123.15586914688905" height="146.24759461193074" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="465.4265554842848" y="292.49518922386153" width="123.15586914688905" height="146.24759461193074" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 363.4753559974343 285.182809493265 L 436.52464400256576 285.182809493265" fill="none" stroke="#f2eda1" stroke-width="18.473380372033354" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 363.4753559974343 446.0551635663888 L 436.52464400256576 446.0551635663888" fill="none" stroke="#f2eda1" stroke-width="18.473380372033354" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="30.78896728672226" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400.00000000000006,153.94483643361133)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="pcb_component_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
     title: "0603_bottomleft_origin"
   },
   {
