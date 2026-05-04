@@ -33,6 +33,7 @@ type CommonPassiveOptionKey =
   | "ph"
   | "w"
   | "h"
+  | "nonpolarized"
   | "textbottom"
 
 export type Footprinter = {
