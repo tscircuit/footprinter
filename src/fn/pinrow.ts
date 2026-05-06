@@ -25,8 +25,11 @@ export const pinrow_def = base_def
       .default(1)
       .describe("number of rows"),
     p: length.default("0.1in").describe("pitch"),
-    id: length.default("1.0mm").describe("inner diameter"),
-    od: length.default("1.5mm").describe("outer diameter"),
+    // id/od defaults are computed from pitch in the transform below so
+    // small-pitch headers (e.g. p=1.27mm for ARM Cortex Debug) don't
+    // produce overlapping holes. Explicit user values are honoured.
+    id: length.optional().describe("inner diameter (drill)"),
+    od: length.optional().describe("outer diameter (annular pad)"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
     smd: z.boolean().optional().describe("surface mount device"),
@@ -67,8 +70,20 @@ export const pinrow_def = base_def
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
+    // Pitch-aware id/od defaults. At the standard 2.54 mm pitch this
+    // gives id=1.0 mm / od=1.5 mm (the previous hardcoded defaults);
+    // at smaller pitches the values scale down so the pads don't
+    // overlap.
+    //   od_default = min(1.5 mm, pitch − 0.27 mm)
+    //                → ≥ 0.27 mm copper-to-copper between adjacent pads
+    //   id_default = min(1.0 mm, od_default − 0.4 mm)
+    //                → ~0.5 mm annular ring (>= IPC class 2 minimum)
+    const od = data.od ?? Math.min(1.5, data.p - 0.27)
+    const id = data.id ?? Math.min(1.0, od - 0.4)
     return {
       ...data,
+      id,
+      od,
       pinlabelAnchorSide,
       male: data.male ?? !data.female,
       female: data.female ?? false,
