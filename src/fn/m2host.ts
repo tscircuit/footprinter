@@ -77,8 +77,6 @@ export const m2host = (
     pcb_silkscreen_path_id: "pin_marker_1",
   }
 
-  // const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
-
   // --- center footprint around (0,0) ---
   let minX = Infinity
   let maxX = -Infinity
@@ -123,13 +121,14 @@ export const m2host = (
   translate(cutout)
   translate(pin1Marker)
 
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    -(maxY - centerY) - 1,
+    0.5,
+  )
+
   return {
-    circuitJson: [
-      ...pads,
-      cutout,
-      // silkscreenRefText,
-      pin1Marker,
-    ],
+    circuitJson: [...pads, cutout, silkscreenRefText, pin1Marker],
     parameters,
   }
 }
