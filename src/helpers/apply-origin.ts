@@ -15,9 +15,18 @@ import type { AnyCircuitElement } from "circuit-json"
 
 export const applyOrigin = (
   elements: AnyCircuitElement[],
-  origin: OriginMode | undefined,
+  origin: OriginMode | string | undefined,
 ): AnyCircuitElement[] => {
   if (!origin) return elements
+
+  // Strip parentheses from string-parser values like "(pin1)" → "pin1"
+  const normalizedOrigin = (
+    typeof origin === "string" && origin.startsWith("(") && origin.endsWith(")")
+      ? origin.slice(1, -1)
+      : origin
+  ) as OriginMode
+
+  origin = normalizedOrigin
 
   const pads = elements.filter(
     (el) => el.type === "pcb_smtpad" || el.type === "pcb_plated_hole",
