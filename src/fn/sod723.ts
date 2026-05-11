@@ -80,10 +80,7 @@ export const sod723 = (
 }
 
 // Get coordinates for SOD pads
-export const getSodCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSodCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {

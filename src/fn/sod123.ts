@@ -46,10 +46,7 @@ export const sod123 = (
   }
 }
 
-export const getSodCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSodCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {

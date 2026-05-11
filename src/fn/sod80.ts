@@ -79,10 +79,7 @@ export const sod80 = (
   }
 }
 
-export const getsod80Coords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getsod80Coords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   return pn === 1 ? { x: -p / 2, y: 0 } : { x: p / 2, y: 0 }
