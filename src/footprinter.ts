@@ -418,7 +418,7 @@ export const footprinter = (): Footprinter & {
                   if (typeof v === "string" && v.includes("_metric")) {
                     target.metric = v.split("_metric")[0]
                   } else {
-                    target.imperial = v // e.g., res0402, cap0603 etc.
+                    target.imperial = v // e.g., res0402, cap0603, led0805 etc.
                   }
                 }
               } else {
