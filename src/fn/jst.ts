@@ -244,17 +244,23 @@ function generateSilkscreenBody({
   numPins?: number
   p?: number
 }): PcbSilkscreenPath {
-  if (variant === "ph") {
+  if (variant === "ph" && numPins && p) {
+    const pinSpan = (numPins - 1) * p
+    const bodyLeft = -pinSpan / 2 - 1.95
+    const bodyRight = pinSpan / 2 + 1.95
+    const bodyTop = 3.5
+    const bodyBottom = -1.5
+
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
       pcb_component_id: "",
       route: [
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: bodyLeft, y: bodyTop },
+        { x: bodyRight, y: bodyTop },
+        { x: bodyRight, y: bodyBottom },
+        { x: bodyLeft, y: bodyBottom },
+        { x: bodyLeft, y: bodyTop },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
@@ -315,9 +321,23 @@ export const jst = (
 
   const str = typeof raw_params.string === "string" ? raw_params.string : ""
   const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
+  const phMatch = str.match(/(?:^|_)jst_ph_(\d+)(?:_|$)/)
+  const shMatch = str.match(/(?:^|_)jst_sh_(\d+)(?:_|$)/)
   const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
   if (match && match[1]) {
     const parsed = Number.parseInt(match[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (phMatch && phMatch[1]) {
+    const parsed = Number.parseInt(phMatch[1], 10)
+    if (!Number.isNaN(parsed)) {
+      numPins = parsed
+    }
+  }
+  if (shMatch && shMatch[1]) {
+    const parsed = Number.parseInt(shMatch[1], 10)
     if (!Number.isNaN(parsed)) {
       numPins = parsed
     }
