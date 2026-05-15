@@ -244,17 +244,20 @@ function generateSilkscreenBody({
   numPins?: number
   p?: number
 }): PcbSilkscreenPath {
-  if (variant === "ph") {
+  if (variant === "ph" && numPins && p) {
+    const pinSpan = (numPins - 1) * p
+    const bodyLeft = -pinSpan / 2 - 1.5
+    const bodyRight = pinSpan / 2 + 1.5
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
       pcb_component_id: "",
       route: [
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: bodyLeft, y: 3 },
+        { x: bodyRight, y: 3 },
+        { x: bodyRight, y: -2 },
+        { x: bodyLeft, y: -2 },
+        { x: bodyLeft, y: 3 },
       ],
       stroke_width: 0.1,
       pcb_silkscreen_path_id: "",
