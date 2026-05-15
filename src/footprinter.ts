@@ -271,6 +271,7 @@ const normalizeDefinition = (def: string): string => {
   return def
     .trim()
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+    .replace(/^pdip-?(\d+)(?=_|$)/i, "dip$1")
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
