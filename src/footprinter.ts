@@ -33,6 +33,7 @@ type CommonPassiveOptionKey =
   | "ph"
   | "w"
   | "h"
+  | "nonpolarized"
   | "textbottom"
 
 export type Footprinter = {
@@ -407,7 +408,12 @@ export const footprinter = (): Footprinter & {
             } else {
               target[prop] = true
               target.fn = prop
-              if (prop === "res" || prop === "cap" || prop === "led" || prop === "diode") {
+              if (
+                prop === "res" ||
+                prop === "cap" ||
+                prop === "led" ||
+                prop === "diode"
+              ) {
                 if (v) {
                   if (typeof v === "string" && v.includes("_metric")) {
                     target.metric = v.split("_metric")[0]

@@ -21,6 +21,11 @@ type StandardSize = {
   w_mm_min: number // body width
   courtyard_width_mm?: number
   courtyard_height_mm?: number
+  nonpolarizedSilkscreen?: {
+    line_half_length_mm?: number
+    line_y_mm?: number
+    stroke_width_mm?: number
+  }
 }
 
 // Updated footprint sizes
@@ -55,6 +60,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 3.4,
     courtyard_width_mm: 5.9,
     courtyard_height_mm: 3.9,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 1.386252,
+      line_y_mm: 1.71,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "0201",
@@ -77,6 +87,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 0.64,
     courtyard_width_mm: 1.86,
     courtyard_height_mm: 0.94,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.153641,
+      line_y_mm: 0.38,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "0603",
@@ -88,6 +103,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 0.95,
     courtyard_width_mm: 2.96,
     courtyard_height_mm: 1.46,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.237258,
+      line_y_mm: 0.5225,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "0805",
@@ -99,6 +119,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 1.4,
     courtyard_width_mm: 3.36,
     courtyard_height_mm: 1.9,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.227064,
+      line_y_mm: 0.735,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "1206",
@@ -110,6 +135,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 1.75,
     courtyard_width_mm: 4.56,
     courtyard_height_mm: 2.26,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.727064,
+      line_y_mm: 0.91,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "1210",
@@ -121,6 +151,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 2.65,
     courtyard_width_mm: 4.56,
     courtyard_height_mm: 3.16,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 0.723737,
+      line_y_mm: 1.355,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "2010",
@@ -132,6 +167,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 2.65,
     courtyard_width_mm: 6.36,
     courtyard_height_mm: 3.16,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 1.527064,
+      line_y_mm: 1.36,
+      stroke_width_mm: 0.12,
+    },
   },
   {
     imperial: "2512",
@@ -143,6 +183,11 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 3.35,
     courtyard_width_mm: 7.66,
     courtyard_height_mm: 3.86,
+    nonpolarizedSilkscreen: {
+      line_half_length_mm: 2.177064,
+      line_y_mm: 1.71,
+      stroke_width_mm: 0.12,
+    },
   },
 ]
 
@@ -165,6 +210,8 @@ const createCourtyardRect = (
 })
 
 export const passive_def = base_def.extend({
+  fn: z.string().optional(),
+  string: z.string().optional(),
   tht: z.boolean(),
   p: length.optional(),
   pw: length.optional(),
@@ -173,13 +220,27 @@ export const passive_def = base_def.extend({
   imperial: distance.optional(),
   w: length.optional(),
   h: length.optional(),
+  nonpolarized: z.boolean().optional(),
   textbottom: z.boolean().optional(),
 })
 
 export type PassiveDef = z.input<typeof passive_def>
 
 export const passive = (params: PassiveDef): AnyCircuitElement[] => {
-  let { tht, p, pw, ph, metric, imperial, w, h, textbottom } = params
+  let {
+    fn,
+    tht,
+    p,
+    pw,
+    ph,
+    metric,
+    imperial,
+    w,
+    h,
+    nonpolarized,
+    textbottom,
+    string: footprintString,
+  } = params
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
@@ -209,18 +270,62 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     throw new Error("Could not determine required pad dimensions (p, pw, ph)")
   }
 
-  const silkscreenLine: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
-    pcb_component_id: "",
-    route: [
-      { x: p / 2, y: ph / 2 + 0.4 },
-      { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
-      { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
-      { x: p / 2, y: -ph / 2 - 0.4 },
-    ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
+  let silkscreenLines: PcbSilkscreenPath[] = []
+  const nonpolarizedSilkscreen =
+    fn === "res" &&
+    (nonpolarized === true ||
+      typeof footprintString !== "string" ||
+      /^res(?:\d{4}|\d{5})(?:_|$)/i.test(footprintString))
+      ? sz?.nonpolarizedSilkscreen
+      : undefined
+
+  if (nonpolarizedSilkscreen?.stroke_width_mm) {
+    const {
+      line_half_length_mm = 0,
+      line_y_mm = 0,
+      stroke_width_mm,
+    } = nonpolarizedSilkscreen
+    silkscreenLines = [
+      {
+        type: "pcb_silkscreen_path",
+        layer: "top",
+        pcb_component_id: "",
+        route: [
+          { x: -line_half_length_mm, y: line_y_mm },
+          { x: line_half_length_mm, y: line_y_mm },
+        ],
+        stroke_width: stroke_width_mm,
+        pcb_silkscreen_path_id: "",
+      },
+      {
+        type: "pcb_silkscreen_path",
+        layer: "top",
+        pcb_component_id: "",
+        route: [
+          { x: -line_half_length_mm, y: -line_y_mm },
+          { x: line_half_length_mm, y: -line_y_mm },
+        ],
+        stroke_width: stroke_width_mm,
+        pcb_silkscreen_path_id: "",
+      },
+    ]
+  } else {
+    // Polarized-style 3-sided outline to indicate orientation/polarity.
+    silkscreenLines = [
+      {
+        type: "pcb_silkscreen_path",
+        layer: "top",
+        pcb_component_id: "",
+        route: [
+          { x: p / 2, y: ph / 2 + 0.4 },
+          { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
+          { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
+          { x: p / 2, y: -ph / 2 - 0.4 },
+        ],
+        stroke_width: 0.1,
+        pcb_silkscreen_path_id: "",
+      },
+    ]
   }
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
@@ -234,7 +339,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
-      silkscreenLine,
+      ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
     ]
@@ -242,7 +347,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   return [
     rectpad(["1", "left"], -p / 2, 0, pw, ph),
     rectpad(["2", "right"], p / 2, 0, pw, ph),
-    silkscreenLine,
+    ...silkscreenLines,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),
   ]
