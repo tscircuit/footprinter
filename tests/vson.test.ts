@@ -64,3 +64,16 @@ test("VSON8_grid3.3x3.3mm_P0.65mm_ep1.9x2.45mm_epx0.385mm_w2.88mm_pinw0.63mm_pin
     "VSON-8_3.3x3.3mm_P0.65mm_NexFET",
   )
 })
+
+test("UTDFN-4-EP(1x1) aliases to a compact VSON footprint", () => {
+  const circuitJson = fp.string("UTDFN-4-EP(1x1)").circuitJson()
+  const params = fp.string("UTDFN-4-EP(1x1)").json() as any
+  const smtPads = circuitJson.filter((el) => el.type === "pcb_smtpad")
+
+  expect(params.fn).toBe("vson")
+  expect(params.num_pins).toBe(4)
+  expect(params.grid).toEqual({ x: 1, y: 1 })
+  expect(params.p).toBe(0.5)
+  expect(params.ep).toEqual({ x: 0.35, y: 0.6 })
+  expect(smtPads).toHaveLength(5)
+})
