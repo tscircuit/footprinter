@@ -271,7 +271,7 @@ const normalizeDefinition = (def: string): string => {
   return def
     .trim()
     .replace(
-      /^(?:utdfn|udfn)-?(\d+)-ep\((\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)(?:mm)?\)$/i,
+      /^(?:utdfn|udfn)-?(\d+)-ep\((\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)(?:mm)?\)(?=_|$)/i,
       "vson$1-1EP_grid$2x$3mm_P0.5mm_EP0.35x0.6mm_w1.15mm_pinw0.25mm_pinh0.3mm",
     )
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")

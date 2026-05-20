@@ -77,3 +77,14 @@ test("UTDFN-4-EP(1x1) aliases to a compact VSON footprint", () => {
   expect(params.ep).toEqual({ x: 0.35, y: 0.6 })
   expect(smtPads).toHaveLength(5)
 })
+
+test("UTDFN-4-EP(1x1) alias preserves trailing options", () => {
+  const params = fp
+    .string("UTDFN-4-EP(1x1)_norefdes_nosilkscreen")
+    .json() as any
+
+  expect(params.fn).toBe("vson")
+  expect(params.num_pins).toBe(4)
+  expect(params.norefdes).toBe(true)
+  expect(params.nosilkscreen).toBe(true)
+})
