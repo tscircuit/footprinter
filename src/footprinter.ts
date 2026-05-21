@@ -182,6 +182,11 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
   >
+  utdfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "ep" | "epw" | "eph"
+  >
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -273,6 +278,10 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+    .replace(
+      /^utdfn-(\d+)-ep\(([\d.]+)x([\d.]+)\)(?=_|$)/i,
+      "utdfn$1_w$2mm_h$3mm_ep",
+    )
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }

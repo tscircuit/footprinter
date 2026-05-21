@@ -1,4 +1,3 @@
-import { z } from "zod"
 import { axial_def } from "src/fn/axial"
 import { bga_def } from "src/fn/bga"
 import { dfn_def } from "src/fn/dfn"
@@ -9,20 +8,22 @@ import { ms013_def } from "src/fn/ms013"
 import { pinrow_def } from "src/fn/pinrow"
 import { qfn_def } from "src/fn/qfn"
 import { qfp_def } from "src/fn/qfp"
-import { tqfp_def } from "src/fn/tqfp"
 import { quad_def } from "src/fn/quad"
 import { sod_def } from "src/fn/sod123"
 import { soic_def } from "src/fn/soic"
 import { sot23_def } from "src/fn/sot23"
 import { sot363_def } from "src/fn/sot363"
-import { sot886_def } from "src/fn/sot886"
 import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
+import { sot886_def } from "src/fn/sot886"
 import { ssop_def } from "src/fn/ssop"
+import { tqfp_def } from "src/fn/tqfp"
 import { tssop_def } from "src/fn/tssop"
-import { passive_def } from "../passive-fn"
+import { z } from "zod"
 import { pad_def } from "../../fn/pad"
 import { smtpad_def } from "../../fn/smtpad"
+import { utdfn_def } from "../../fn/utdfn"
+import { passive_def } from "../passive-fn"
 
 export const any_footprinter_def = z.union([
   axial_def,
@@ -49,6 +50,7 @@ export const any_footprinter_def = z.union([
   passive_def,
   pad_def,
   smtpad_def,
+  utdfn_def,
 ])
 
 export type AnyFootprinterDefinitionOutput = z.infer<typeof any_footprinter_def>
