@@ -40,6 +40,9 @@ export type Footprinter = {
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  utdfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "epw" | "eph">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
@@ -275,6 +278,8 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^utdfn-4-ep\(1x1\)(?=_|$)/i, "utdfn4")
+    .replace(/^utdfn-4-ep(?=_|$)/i, "utdfn4")
 }
 
 export const string = (def: string): Footprinter => {
