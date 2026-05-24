@@ -4,7 +4,7 @@ import { fp } from "../src/footprinter"
 
 test("spdip28", () => {
   const circuitJson = fp.string("spdip28").circuitJson()
-  
+
   // Exclude silkscreen path and courtyard to find only plated holes
   const holes = circuitJson.filter((e: any) => e.type === "pcb_plated_hole")
   expect(holes.length).toBe(28)
