@@ -1,4 +1,8 @@
-import type { AnyCircuitElement, PcbCourtyardRect, PcbSilkscreenPath } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbCourtyardRect,
+  PcbSilkscreenPath,
+} from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "src/helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
@@ -79,11 +83,7 @@ export const utdfn = (
     stroke_width: 0.08,
   })
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    sh / 2 + 0.3,
-    0.2,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.3, 0.2)
 
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",

@@ -4,7 +4,7 @@ import { fp } from "../src/footprinter"
 
 test("utdfn-4-ep(1x1)", () => {
   const circuitJson = fp.string("utdfn-4-ep(1x1)").circuitJson()
-  
+
   // Find all SMD pads
   const pads = circuitJson.filter((e: any) => e.type === "pcb_smtpad")
   expect(pads.length).toBe(5)
