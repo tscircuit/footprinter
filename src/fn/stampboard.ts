@@ -1,6 +1,7 @@
 import {
   length,
   type AnyCircuitElement,
+  type PcbCourtyardOutline,
   type PcbPlatedHole,
   type PcbSilkscreenPath,
   type PcbSilkscreenText,
@@ -140,7 +141,7 @@ export const stampboard = (
   const pinLabels: PcbSilkscreenText[] = []
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
-  const outerDiameter = innerDiameter
+  const outerDiameter = 1.5
   const totalPadsNumber =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
   const maxLabelLength = `pin${totalPadsNumber}`.length
@@ -452,8 +453,21 @@ export const stampboard = (
       ...holes,
       ...pinLabels,
       silkscreenPath,
-      ...(params.silkscreenlabels ? [] : [silkscreenTriangle]),
+      ...(params.silkscreenlabels || routes.length === 0 ? [] : [silkscreenTriangle]),
       silkscreenRefText,
+      {
+        type: "pcb_courtyard_outline",
+        pcb_courtyard_outline_id: "pcb_courtyard_outline_1",
+        pcb_component_id: "1",
+        layer: "top",
+        outline: [
+          { x: -params.w / 2 - outerDiameter / 2, y: height / 2 + params.p / 2 },
+          { x: params.w / 2 + outerDiameter / 2, y: height / 2 + params.p / 2 },
+          { x: params.w / 2 + outerDiameter / 2, y: -height / 2 - params.p / 2 },
+          { x: -params.w / 2 - outerDiameter / 2, y: -height / 2 - params.p / 2 },
+          { x: -params.w / 2 - outerDiameter / 2, y: height / 2 + params.p / 2 },
+        ],
+      } as PcbCourtyardOutline,
     ],
     parameters: params,
   }

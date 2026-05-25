@@ -102,13 +102,13 @@ export const getQuadCoords = (params: {
 
   switch (side) {
     case "left":
-      return { x: -w / 2 - pcdfe + 0.1, y: ibh / 2 - pos * p, o: "vert" }
+      return { x: -w / 2 - pcdfe, y: ibh / 2 - pos * p, o: "vert" }
     case "bottom":
-      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe + 0.1, o: "horz" }
+      return { x: -ibw / 2 + pos * p, y: -h / 2 - pcdfe, o: "horz" }
     case "right":
-      return { x: w / 2 + pcdfe - 0.1, y: -ibh / 2 + pos * p, o: "vert" }
+      return { x: w / 2 + pcdfe, y: -ibh / 2 + pos * p, o: "vert" }
     case "top":
-      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe - 0.1, o: "horz" }
+      return { x: ibw / 2 - pos * p, y: h / 2 + pcdfe, o: "horz" }
     default:
       throw new Error("Invalid pin number")
   }
@@ -263,7 +263,7 @@ export const quad = (
             },
           ],
           type: "pcb_silkscreen_path",
-          stroke_width: 0,
+          stroke_width: 0.1,
         },
         {
           layer: "top",

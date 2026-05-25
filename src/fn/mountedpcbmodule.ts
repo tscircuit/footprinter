@@ -1,7 +1,7 @@
 import { type AnyCircuitElement, length } from "circuit-json"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
 import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+
 import { z } from "zod"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { platedhole } from "../helpers/platedhole"
@@ -512,7 +512,8 @@ export const mountedpcbmodule = (
 
   // Add mounting holes
   if (holes) {
-    for (const pos of holes) {
+    const holesArray = Array.isArray(holes) ? holes : [holes]
+    holesArray.forEach((pos, i) => {
       let hx = 0
       let hy = 0
       if (pos === "topleft") {
@@ -535,9 +536,9 @@ export const mountedpcbmodule = (
       if (holeXDist !== undefined) hx += holeXDist
       if (holeYDist !== undefined) hy += holeYDist
       elements.push(
-        platedhole(numPins + holes.indexOf(pos) + 1, hx, hy, id, od),
+        platedhole(numPins + i + 1, hx, hy, id, od),
       )
-    }
+    })
   }
 
   // Add silkscreen outline
@@ -552,9 +553,6 @@ export const mountedpcbmodule = (
     elements.push(silkscreenpath(outline, { stroke_width: 0.1, layer: "top" }))
   }
 
-  // Add silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, height / 2 + 1, 0.5)
-  elements.push(refText)
 
   // Add USB silkscreen rectangle if USB is configured
   if (usbposition && usbtype) {

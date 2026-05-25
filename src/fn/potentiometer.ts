@@ -1,4 +1,4 @@
-import { string, z } from "zod"
+import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
 import type {
   AnyCircuitElement,

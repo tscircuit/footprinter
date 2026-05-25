@@ -337,8 +337,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   if (tht) {
     return [
-      platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
-      platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      platedhole(1, -p / 2, 0, pw, pw + 0.3),
+      platedhole(2, p / 2, 0, pw, pw + 0.3),
       ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
