@@ -6,6 +6,7 @@ import { to220 } from "./to220"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { platedHolePill } from "../helpers/platedHolePill"
 import { base_def } from "../helpers/zod/base_def"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 // TO-220F uses 2.54mm standard pitch to match KiCad
 const TO220F_PITCH_MM = 2.54
@@ -79,11 +80,13 @@ export const to220f = (
 
   // Replace plated holes in base result with our corrected ones
   const nonHoleElements = baseResult.circuitJson.filter(
-    (e: any) => e.type !== "pcb_plated_hole",
+    (e: any) => e.type !== "pcb_plated_hole" && e.type !== "pcb_silkscreen_text",
   )
 
+  const refText = silkscreenRef(0, mm(parameters.h) / 2 + 1.2, 0.5)
+
   return {
-    circuitJson: [...newHoles, ...nonHoleElements],
+    circuitJson: [...newHoles, ...nonHoleElements, refText as AnyCircuitElement],
     parameters: { ...parameters, p: TO220F_PITCH_MM, num_pins: numPins },
   }
 }

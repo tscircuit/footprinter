@@ -164,11 +164,23 @@ export const to92 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
+  const minX = -Math.max(2.73, radius + 0.48)
+  const maxX = Math.max(2.73, radius + 0.48)
+  const minY = Math.min(-1.03, holeY - padSpacing - padHeight / 2 - 0.5)
+  const maxY = Math.max(3.71, holeY + radius - 0.79)
+
+  const dynamicCourtyardOutline = [
+    { x: minX, y: maxY },
+    { x: minX, y: minY },
+    { x: maxX, y: minY },
+    { x: maxX, y: maxY },
+  ]
+
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    outline: to92CourtyardOutline,
+    outline: dynamicCourtyardOutline,
     layer: "top",
   }
 

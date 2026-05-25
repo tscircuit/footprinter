@@ -10,18 +10,31 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { platedhole } from "src/helpers/platedhole"
 import { base_def } from "../helpers/zod/base_def"
 
-export const breakoutheaders_def = base_def.extend({
-  fn: z.string(),
-  w: length.default("10mm"),
-  h: length.optional(),
-  left: length.optional().default(20),
-  right: length.optional().default(20),
-  top: length.optional().default(0),
-  bottom: length.optional().default(0),
-  p: length.default(length.parse("2.54mm")),
-  id: length.optional().default(length.parse("1mm")),
-  od: length.optional().default(length.parse("1.5mm")),
-})
+export const breakoutheaders_def = base_def
+  .extend({
+    fn: z.string(),
+    w: length.default("10mm"),
+    h: length.optional(),
+    left: z.coerce.number().int().nonnegative().default(20),
+    right: z.coerce.number().int().nonnegative().default(20),
+    top: z.coerce.number().int().nonnegative().default(0),
+    bottom: z.coerce.number().int().nonnegative().default(0),
+    p: length.default(length.parse("2.54mm")),
+    id: length.optional().default(length.parse("1mm")),
+    od: length.optional().default(length.parse("1.5mm")),
+  })
+  .refine(
+    (data) => {
+      const left = data.left ?? 0
+      const right = data.right ?? 0
+      const top = data.top ?? 0
+      const bottom = data.bottom ?? 0
+      return left + right + top + bottom > 0
+    },
+    {
+      message: "At least one of left, right, top, or bottom pins must be greater than 0",
+    }
+  )
 
 export type breakoutheaders_def = z.input<typeof breakoutheaders_def>
 
@@ -119,7 +132,7 @@ export const breakoutheaders = (
   if (params.left) {
     const yoff = -((params.left - 1) / 2) * params.p
     for (let i = 0; i < params.left; i++) {
-      if (i === params.left - 1) {
+      if (i === 0) {
         silkscreenTriangleRoutes = getTrianglePath(
           -params.w / 2 - outerDiameter * 1.4,
           yoff + i * params.p,
