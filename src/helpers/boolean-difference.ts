@@ -292,7 +292,9 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 /**
  * Convert circuit-json footprint elements to polygons
  */
-function footprintToPolygons(elements: FootprintElement[]): (Flatten.Polygon | null)[] {
+function footprintToPolygons(
+  elements: FootprintElement[],
+): (Flatten.Polygon | null)[] {
   const polygons: (Flatten.Polygon | null)[] = []
 
   for (const element of elements) {
@@ -482,10 +484,7 @@ export function createBooleanDifferenceVisualization(
         let result = validPolysA[0]!
         for (let i = 1; i < validPolysA.length; i++) {
           try {
-            result = Flatten.BooleanOperations.unify(
-              result,
-              validPolysA[i]!,
-            )
+            result = Flatten.BooleanOperations.unify(result, validPolysA[i]!)
           } catch (error) {
             console.warn("Boolean unify failed:", error)
           }
@@ -519,10 +518,7 @@ export function createBooleanDifferenceVisualization(
         const polyB = centeredPolygonsB[i]
         if (!polyA || !polyB) continue
         try {
-          const intersection = Flatten.BooleanOperations.intersect(
-            polyA,
-            polyB,
-          )
+          const intersection = Flatten.BooleanOperations.intersect(polyA, polyB)
           if (!intersection.isEmpty()) {
             resultPolygons.push(intersection)
           }
@@ -535,7 +531,9 @@ export function createBooleanDifferenceVisualization(
     // Generate SVG paths for all centered polygons
     const pathsA = centeredPolygonsA.map((p) => (p ? polygonToSvgPath(p) : ""))
     const pathsB = centeredPolygonsB.map((p) => (p ? polygonToSvgPath(p) : ""))
-    const resultPaths = resultPolygons.map((p) => (p ? polygonToSvgPath(p) : ""))
+    const resultPaths = resultPolygons.map((p) =>
+      p ? polygonToSvgPath(p) : "",
+    )
 
     // Create SVG with proper dimensions for overlay visibility
     let svg = `<svg width="800" height="600" viewBox="${viewBoxX} ${viewBoxY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
@@ -577,7 +575,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     svg += `<g id="footprint-b" opacity="0.85">`
 
@@ -607,7 +605,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     const centerX = viewBoxX + width / 2
     const centerY = viewBoxY + height / 2
@@ -616,7 +614,7 @@ export function createBooleanDifferenceVisualization(
     svg += `<g id="alignment-guides" opacity="0.3">`
     svg += `<line x1="${centerX}" y1="${viewBoxY}" x2="${centerX}" y2="${viewBoxY + height}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
     svg += `<line x1="${viewBoxX}" y1="${centerY}" x2="${viewBoxX + width}" y2="${centerY}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
-    svg += `</g>`
+    svg += "</g>"
 
     // Add compact legend for overlay visualization (sized to fit within bounds)
     if (showLegend) {
@@ -648,7 +646,7 @@ export function createBooleanDifferenceVisualization(
       // Compact instructions
       svg += `<text x="${viewBoxX + width / 2}" y="${legendY + legendHeight - 0.1}" text-anchor="middle" fill="#6c757d" font-size="${fontSize * 0.8}">Perfect alignment = complete overlap</text>`
 
-      svg += `</g>`
+      svg += "</g>"
     }
 
     svg += "</svg>"

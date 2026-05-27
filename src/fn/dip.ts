@@ -9,12 +9,12 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
 
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 const lengthInMm = length
 

@@ -535,9 +535,7 @@ export const mountedpcbmodule = (
       // If hole_x_dist/hole_y_dist provided, use as offsets
       if (holeXDist !== undefined) hx += holeXDist
       if (holeYDist !== undefined) hy += holeYDist
-      elements.push(
-        platedhole(numPins + i + 1, hx, hy, id, od),
-      )
+      elements.push(platedhole(numPins + i + 1, hx, hy, id, od))
     })
   }
 
@@ -552,7 +550,6 @@ export const mountedpcbmodule = (
     ]
     elements.push(silkscreenpath(outline, { stroke_width: 0.1, layer: "top" }))
   }
-
 
   // Add USB silkscreen rectangle if USB is configured
   if (usbposition && usbtype) {
