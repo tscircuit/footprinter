@@ -300,8 +300,15 @@ export const string = (def: string): Footprinter => {
     })
     .filter(isNotNull)
 
-  for (const { fn, v } of def_parts) {
-    fp = fp[fn](v)
+  try {
+    for (const { fn, v } of def_parts) {
+      fp = fp[fn](v)
+    }
+  } catch (err: any) {
+    if (err.message?.startsWith("Invalid footprint function")) {
+      throw new Error(`${err.message}, from string "${normalizedDef}"`)
+    }
+    throw err
   }
 
   fp.setString(normalizedDef)
