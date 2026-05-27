@@ -284,11 +284,11 @@ export const string = (def: string): Footprinter => {
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
   const modifiedDef = normalizedDef
-    .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
-    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
+    .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/i, "res$1")
+    .replace(/^zh(\d+)(?:$|_)/i, "jst$1_zh")
 
   const def_parts = modifiedDef
-    .split(/_(?!metric)/) // split on '_' not followed by 'metric'
+    .split(/_(?!metric)/i) // split on '_' not followed by 'metric'
     .map((s) => {
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
@@ -300,8 +300,15 @@ export const string = (def: string): Footprinter => {
     })
     .filter(isNotNull)
 
-  for (const { fn, v } of def_parts) {
-    fp = fp[fn](v)
+  try {
+    for (const { fn, v } of def_parts) {
+      fp = fp[fn](v)
+    }
+  } catch (err: any) {
+    if (err.message?.startsWith("Invalid footprint function")) {
+      throw new Error(`${err.message}, from string "${normalizedDef}"`)
+    }
+    throw err
   }
 
   fp.setString(normalizedDef)
@@ -405,7 +412,7 @@ export const footprinter = (): Footprinter & {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
               target.fn = `${prop}${v}`
-            } else {
+            } else if (prop in FOOTPRINT_FN) {
               target[prop] = true
               target.fn = prop
               if (
@@ -426,6 +433,8 @@ export const footprinter = (): Footprinter & {
                   ? undefined
                   : Number.parseFloat(v)
               }
+            } else {
+              throw new Error(`Invalid footprint function, got "${prop}"`)
             }
           } else {
             // handle dip_w or other invalid booleans

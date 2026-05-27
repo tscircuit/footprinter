@@ -4,12 +4,12 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { pillpad } from "../helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "src/helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { base_def } from "src/helpers/zod/base_def"
+import { z } from "zod"
+import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 // Common schema properties for both SOT-457 configurations
 const commonSchema = {
@@ -65,12 +65,14 @@ const getCcwSot457Coords = ({
   pitch,
   width,
   pinNumber,
+  padLength = 0.8,
 }: {
   pitch: number
   width: number
   pinNumber: number
+  padLength?: number
 }): { x: number; y: number } => {
-  const offset = 0.1
+  const offset = padLength / 2 - 0.3
   const coords: Record<number, { x: number; y: number }> = {
     1: { x: -width / 2 - offset, y: pitch },
     2: { x: -width / 2 - offset, y: 0 },
@@ -137,7 +139,12 @@ const generateSot457Elements = (
     }
   } else {
     for (let i = 1; i <= params.num_pins; i++) {
-      const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i })
+      const { x, y } = getCcwSot457Coords({
+        pitch,
+        width,
+        pinNumber: i,
+        padLength,
+      })
       pads.push(rectpad(i, x, y, padLength, padWidth))
     }
   }
@@ -171,7 +178,12 @@ const generateSot457Elements = (
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.5, 0.3)
 
   // Pin 1 indicator triangle
-  const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 })
+  const pin1Position = getCcwSot457Coords({
+    pitch,
+    width,
+    pinNumber: 1,
+    padLength,
+  })
   const triangleHeight = params.wave ? 1 : 0.5
   const triangleWidth = params.wave ? 0.7 : 0.3
   pin1Position.x -= params.wave ? padWidth : padWidth * 1.7

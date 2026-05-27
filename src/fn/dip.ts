@@ -4,30 +4,19 @@ import type {
   PcbFabricationNoteText,
   PcbSilkscreenPath,
 } from "circuit-json"
+import { length } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
 
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
-function convertMilToMm(value: string | number): number {
-  if (typeof value === "string") {
-    if (value.trim().toLowerCase().endsWith("mil")) {
-      return parseFloat(value) * 0.0254
-    }
-    return parseFloat(value)
-  }
-  return Number(value)
-}
-
-const lengthInMm = z
-  .union([z.string(), z.number()])
-  .transform((val) => convertMilToMm(val))
+const lengthInMm = length
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   base_def
@@ -49,11 +38,11 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
     .transform((v) => {
       if (!v.id && !v.od) {
         if (Math.abs(v.p - 1.27) < 0.01) {
-          v.id = convertMilToMm("0.55mm")
-          v.od = convertMilToMm("0.95mm")
+          v.id = length.parse("0.55mm")
+          v.od = length.parse("0.95mm")
         } else {
-          v.id = convertMilToMm("0.8mm")
-          v.od = convertMilToMm("1.6mm")
+          v.id = length.parse("0.8mm")
+          v.od = length.parse("1.6mm")
         }
       } else if (!v.id) {
         v.id = v.od! * (1.0 / 1.5)
@@ -63,11 +52,11 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
 
       if (!v.w) {
         if (v.wide) {
-          v.w = convertMilToMm("600mil")
+          v.w = length.parse("600mil")
         } else if (v.narrow) {
-          v.w = convertMilToMm("300mil")
+          v.w = length.parse("300mil")
         } else {
-          v.w = convertMilToMm(newDefaults.w ?? "300mil")
+          v.w = length.parse(newDefaults.w ?? "300mil")
         }
       }
       return v as NowDefined<typeof v, "w" | "p" | "id" | "od">

@@ -1,14 +1,14 @@
-import { z } from "zod"
 import { mm } from "@tscircuit/mm"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedhole } from "src/helpers/platedhole"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const to92CourtyardOutline = [
@@ -164,11 +164,23 @@ export const to92 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
+  const minX = -Math.max(2.73, radius + 0.48)
+  const maxX = Math.max(2.73, radius + 0.48)
+  const minY = Math.min(-1.03, holeY - padSpacing - padHeight / 2 - 0.5)
+  const maxY = Math.max(3.71, holeY + radius - 0.79)
+
+  const dynamicCourtyardOutline = [
+    { x: minX, y: maxY },
+    { x: minX, y: minY },
+    { x: maxX, y: minY },
+    { x: maxX, y: maxY },
+  ]
+
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    outline: to92CourtyardOutline,
+    outline: dynamicCourtyardOutline,
     layer: "top",
   }
 

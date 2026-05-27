@@ -292,14 +292,14 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
 /**
  * Convert circuit-json footprint elements to polygons
  */
-function footprintToPolygons(elements: FootprintElement[]): Flatten.Polygon[] {
-  const polygons: Flatten.Polygon[] = []
+function footprintToPolygons(
+  elements: FootprintElement[],
+): (Flatten.Polygon | null)[] {
+  const polygons: (Flatten.Polygon | null)[] = []
 
   for (const element of elements) {
     const poly = elementToPolygon(element)
-    if (poly) {
-      polygons.push(poly)
-    }
+    polygons.push(poly)
   }
 
   return polygons
@@ -362,7 +362,7 @@ function polygonToSvgPath(polygon: Flatten.Polygon): string {
 /**
  * Calculate bounding box for multiple polygons
  */
-function calculateBoundingBox(polygons: Flatten.Polygon[]): {
+function calculateBoundingBox(polygons: (Flatten.Polygon | null)[]): {
   minX: number
   minY: number
   maxX: number
@@ -427,12 +427,12 @@ export function createBooleanDifferenceVisualization(
     // Translate polygons to center them at origin for overlay
     const translationA = new Flatten.Vector(-centerAX, -centerAY)
     const centeredPolygonsA = polygonsA.map((poly) =>
-      poly.translate(translationA),
+      poly ? poly.translate(translationA) : null,
     )
 
     const translationB = new Flatten.Vector(-centerBX, -centerBY)
     const centeredPolygonsB = polygonsB.map((poly) =>
-      poly.translate(translationB),
+      poly ? poly.translate(translationB) : null,
     )
 
     // Footprints are now centered and ready for boolean operations
@@ -458,8 +458,10 @@ export function createBooleanDifferenceVisualization(
     ) {
       // Boolean difference: A - B
       for (const polyA of centeredPolygonsA) {
+        if (!polyA) continue
         let result = polyA
         for (const polyB of centeredPolygonsB) {
+          if (!polyB) continue
           try {
             result = Flatten.BooleanOperations.subtract(result, polyB)
           } catch (error) {
@@ -476,26 +478,27 @@ export function createBooleanDifferenceVisualization(
       centeredPolygonsB.length > 0
     ) {
       // Boolean union: A ∪ B
-      let result = centeredPolygonsA[0]!
-      for (let i = 1; i < centeredPolygonsA.length; i++) {
-        try {
-          result = Flatten.BooleanOperations.unify(
-            result,
-            centeredPolygonsA[i]!,
-          )
-        } catch (error) {
-          console.warn("Boolean unify failed:", error)
+      const validPolysA = centeredPolygonsA.filter(Boolean) as Flatten.Polygon[]
+      const validPolysB = centeredPolygonsB.filter(Boolean) as Flatten.Polygon[]
+      if (validPolysA.length > 0) {
+        let result = validPolysA[0]!
+        for (let i = 1; i < validPolysA.length; i++) {
+          try {
+            result = Flatten.BooleanOperations.unify(result, validPolysA[i]!)
+          } catch (error) {
+            console.warn("Boolean unify failed:", error)
+          }
         }
-      }
-      for (const polyB of centeredPolygonsB) {
-        try {
-          result = Flatten.BooleanOperations.unify(result, polyB)
-        } catch (error) {
-          console.warn("Boolean unify failed:", error)
+        for (const polyB of validPolysB) {
+          try {
+            result = Flatten.BooleanOperations.unify(result, polyB)
+          } catch (error) {
+            console.warn("Boolean unify failed:", error)
+          }
         }
-      }
-      if (!result.isEmpty()) {
-        resultPolygons.push(result)
+        if (!result.isEmpty()) {
+          resultPolygons.push(result)
+        }
       }
     } else if (
       options?.operation === "intersection" &&
@@ -511,11 +514,11 @@ export function createBooleanDifferenceVisualization(
       )
 
       for (let i = 0; i < minLength; i++) {
+        const polyA = centeredPolygonsA[i]
+        const polyB = centeredPolygonsB[i]
+        if (!polyA || !polyB) continue
         try {
-          const intersection = Flatten.BooleanOperations.intersect(
-            centeredPolygonsA[i]!,
-            centeredPolygonsB[i]!,
-          )
+          const intersection = Flatten.BooleanOperations.intersect(polyA, polyB)
           if (!intersection.isEmpty()) {
             resultPolygons.push(intersection)
           }
@@ -526,15 +529,11 @@ export function createBooleanDifferenceVisualization(
     }
 
     // Generate SVG paths for all centered polygons
-    const pathsA = centeredPolygonsA
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
-    const pathsB = centeredPolygonsB
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
-    const resultPaths = resultPolygons
-      .map((p) => polygonToSvgPath(p))
-      .filter((p) => p)
+    const pathsA = centeredPolygonsA.map((p) => (p ? polygonToSvgPath(p) : ""))
+    const pathsB = centeredPolygonsB.map((p) => (p ? polygonToSvgPath(p) : ""))
+    const resultPaths = resultPolygons.map((p) =>
+      p ? polygonToSvgPath(p) : "",
+    )
 
     // Create SVG with proper dimensions for overlay visibility
     let svg = `<svg width="800" height="600" viewBox="${viewBoxX} ${viewBoxY} ${width} ${height}" xmlns="http://www.w3.org/2000/svg">`
@@ -576,7 +575,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorA}" stroke="${colorA}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     svg += `<g id="footprint-b" opacity="0.85">`
 
@@ -606,7 +605,7 @@ export function createBooleanDifferenceVisualization(
         svg += `<path d="${path}" fill="${colorB}" stroke="${colorB}" stroke-width="0.02" fill-opacity="0.6" fill-rule="evenodd"/>`
       }
     }
-    svg += `</g>`
+    svg += "</g>"
 
     const centerX = viewBoxX + width / 2
     const centerY = viewBoxY + height / 2
@@ -615,7 +614,7 @@ export function createBooleanDifferenceVisualization(
     svg += `<g id="alignment-guides" opacity="0.3">`
     svg += `<line x1="${centerX}" y1="${viewBoxY}" x2="${centerX}" y2="${viewBoxY + height}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
     svg += `<line x1="${viewBoxX}" y1="${centerY}" x2="${viewBoxX + width}" y2="${centerY}" stroke="#6c757d" stroke-width="0.02" stroke-dasharray="0.1,0.1"/>`
-    svg += `</g>`
+    svg += "</g>"
 
     // Add compact legend for overlay visualization (sized to fit within bounds)
     if (showLegend) {
@@ -647,7 +646,7 @@ export function createBooleanDifferenceVisualization(
       // Compact instructions
       svg += `<text x="${viewBoxX + width / 2}" y="${legendY + legendHeight - 0.1}" text-anchor="middle" fill="#6c757d" font-size="${fontSize * 0.8}">Perfect alignment = complete overlap</text>`
 
-      svg += `</g>`
+      svg += "</g>"
     }
 
     svg += "</svg>"

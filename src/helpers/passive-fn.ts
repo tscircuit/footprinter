@@ -1,13 +1,13 @@
+import mm from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
+import { distance, length } from "circuit-json"
 import { z } from "zod"
-import { length, distance } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
@@ -337,8 +337,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   if (tht) {
     return [
-      platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
-      platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      platedhole(1, -p / 2, 0, pw, pw + 0.3),
+      platedhole(2, p / 2, 0, pw, pw + 0.3),
       ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
