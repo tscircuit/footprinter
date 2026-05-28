@@ -90,8 +90,8 @@ export const utdfn = (
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: w + pl + 0.3,
-    height: p + pw + 0.5,
+    width: w + pl + 0.5,
+    height: p + pw + 0.6,
     layer: "top",
   }
 
