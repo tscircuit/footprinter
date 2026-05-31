@@ -452,4 +452,3 @@ footprinter.string = string
 footprinter.getFootprintNames = getFootprintNames
 
 export const fp = footprinter
-

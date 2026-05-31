@@ -16,8 +16,9 @@ test("SPDIP-28 string resolves to dip28", () => {
 })
 
 test("spdip28_w10mm SVG snapshot", () => {
-  const circuitJson = fp.string("spdip28_w10mm").circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp
+    .string("spdip28_w10mm")
+    .circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip28_w10mm")
 })
-

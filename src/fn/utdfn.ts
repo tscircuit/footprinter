@@ -27,7 +27,9 @@ export const utdfn = (
   raw_params: z.input<typeof utdfn_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^utdfn_?(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : raw_params.num_pins || 4
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : raw_params.num_pins || 4
 
   const parameters = utdfn_def.parse({
     ...raw_params,
@@ -135,4 +137,3 @@ export const utdfn = (
     parameters,
   }
 }
-

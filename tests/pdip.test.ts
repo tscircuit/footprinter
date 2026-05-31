@@ -20,4 +20,3 @@ test("pdip8 SVG snapshot", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pdip8")
 })
-
