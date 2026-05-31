@@ -20,3 +20,4 @@ test("spdip28_w10mm SVG snapshot", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip28_w10mm")
 })
+
