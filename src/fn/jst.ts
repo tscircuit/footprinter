@@ -395,10 +395,21 @@ export const jst = (
   const courtyardSideClearanceX = 0.5
   const courtyardFrontClearanceY = 0.05
   const courtyardRearClearanceY = maxPadHalfY + 0.085
-  const crtMinX = featureMinX - courtyardSideClearanceX
-  const crtMaxX = featureMaxX + courtyardSideClearanceX
-  const crtMinY = featureMinY - courtyardRearClearanceY
-  const crtMaxY = featureMaxY + courtyardFrontClearanceY
+  let crtMinX = featureMinX - courtyardSideClearanceX
+  let crtMaxX = featureMaxX + courtyardSideClearanceX
+  let crtMinY = featureMinY - courtyardRearClearanceY
+  let crtMaxY = featureMaxY + courtyardFrontClearanceY
+
+  if (variant === "ph") {
+    const width = (numPins - 1) * p + 4.9
+    const height = 5.5
+    const centerX = 0
+    const centerY = 2 - 0.55
+    crtMinX = centerX - width / 2
+    crtMaxX = centerX + width / 2
+    crtMinY = centerY - height / 2
+    crtMaxY = centerY + height / 2
+  }
 
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
