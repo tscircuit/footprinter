@@ -14,9 +14,7 @@ test("UTDFN-4-EP(1x1) footprint normalization & rendering", () => {
   expect(pads.length).toBe(5) // 4 pins + 1 exposed pad
 
   // Verify exposed pad (pin 5) is at 0, 0
-  const epPad: any = pads.find(
-    (x: any) => x.port_hints?.includes("5")
-  )
+  const epPad: any = pads.find((x: any) => x.port_hints?.includes("5"))
   expect(epPad).toBeDefined()
   expect(epPad.x).toBe(0)
   expect(epPad.y).toBe(0)
