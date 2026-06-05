@@ -10,12 +10,12 @@ test("dfn8_w5.3mm_p1.27mm", () => {
 
 test("UTDFN-4-EP(1x1) footprint normalization & rendering", () => {
   const circuitJson = fp.string("UTDFN-4-EP(1x1)").circuitJson()
-  const pads = circuitJson.filter((x: any) => x.type === "pcb_pad")
+  const pads = circuitJson.filter((x: any) => x.type === "pcb_smtpad")
   expect(pads.length).toBe(5) // 4 pins + 1 exposed pad
 
   // Verify exposed pad (pin 5) is at 0, 0
   const epPad: any = pads.find(
-    (x: any) => x.pcb_pad_id === "5" || x.name === "5",
+    (x: any) => x.port_hints?.includes("5")
   )
   expect(epPad).toBeDefined()
   expect(epPad.x).toBe(0)
