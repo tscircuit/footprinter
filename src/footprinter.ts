@@ -112,7 +112,9 @@ export type Footprinter = {
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
   >
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
-  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "horizontal"
+  >
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
