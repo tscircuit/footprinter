@@ -103,3 +103,27 @@ test("dip_0.1in", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip_0.1in")
 })
+
+test("pdip8 string resolves to dip8 footprint", () => {
+  const pdipJson = fp.string("pdip8").json()
+  const dipJson = fp.string("dip8").json()
+  expect(pdipJson).toEqual(dipJson)
+})
+
+test("spdip16 string resolves to dip16 footprint", () => {
+  const spdipJson = fp.string("spdip16").json()
+  const dipJson = fp.string("dip16").json()
+  expect(spdipJson).toEqual(dipJson)
+})
+
+test("PDIP8 uppercase string resolves to dip8 footprint", () => {
+  const uppercaseJson = fp.string("PDIP8").json()
+  const lowercaseJson = fp.string("dip8").json()
+  expect(uppercaseJson).toEqual(lowercaseJson)
+})
+
+test("pdip8_p1.27mm string resolves to dip8_p1.27mm footprint", () => {
+  const pdipJson = fp.string("pdip8_p1.27mm").json()
+  const dipJson = fp.string("dip8_p1.27mm").json()
+  expect(pdipJson).toEqual(dipJson)
+})
