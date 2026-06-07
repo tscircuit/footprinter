@@ -1,13 +1,13 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardCircle,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
+import { platedhole } from "src/helpers/platedhole"
 import { z } from "zod"
 import { generateCircleArcs } from "../helpers/generateCircleArcs"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const radial_def = base_def.extend({

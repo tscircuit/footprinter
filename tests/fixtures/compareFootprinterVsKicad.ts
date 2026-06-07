@@ -1,8 +1,8 @@
 import Flatten from "@flatten-js/core"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
-import { translate } from "transformation-matrix"
-import { fp } from "src/footprinter"
 import type { PcbPlatedHole, PcbSilkscreenText } from "circuit-json"
+import { fp } from "src/footprinter"
+import { translate } from "transformation-matrix"
 import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-difference"
 
 type PcbSmtPad = {
@@ -425,10 +425,10 @@ export async function compareFootprinterVsKicad(
   )
 
   // Bounding box for both sets
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (const elm of [...fpCircuitJson, ...transformedKiCad]) {
     if (

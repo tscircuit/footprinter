@@ -1,13 +1,13 @@
 import type {
   AnyCircuitElement,
+  PcbCutout,
   PcbSilkscreenPath,
   PcbSmtPad,
   PcbSmtPadRect,
-  PcbCutout,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const m2host_def = base_def.extend({
@@ -80,10 +80,10 @@ export const m2host = (
   // const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
   // --- center footprint around (0,0) ---
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   const updateBounds = (x: number, y: number, w = 0, h = 0) => {
     minX = Math.min(minX, x - w / 2)

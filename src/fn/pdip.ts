@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { extendDipDef, dip, type getCcwDipCoords } from "./dip"
-import { z } from "zod"
+import type { z } from "zod"
+import { dip, extendDipDef, type getCcwDipCoords } from "./dip"
 
 export const pdip_def = extendDipDef({
   w: "7.62mm", // 300mil wide

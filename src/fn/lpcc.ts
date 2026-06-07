@@ -1,7 +1,7 @@
 import type { AnySoupElement } from "circuit-json"
+import type { z } from "zod"
 import { qfn_def } from "./qfn"
 import { quad } from "./quad"
-import type { z } from "zod"
 
 export const lpcc_def = qfn_def
 

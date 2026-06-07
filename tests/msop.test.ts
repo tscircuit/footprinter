@@ -1,7 +1,7 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
+import type { AnyCircuitElement } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
-import type { AnyCircuitElement } from "circuit-json"
 
 test("msop8", () => {
   const circuitJson = fp.string("msop8").circuitJson()

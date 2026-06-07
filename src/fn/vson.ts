@@ -1,16 +1,16 @@
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
-  PcbSmtPad,
   PcbSilkscreenPath,
+  PcbSmtPad,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { z } from "zod"
-import { base_def } from "../helpers/zod/base_def"
-import { length, distance } from "circuit-json"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { distance, length } from "circuit-json"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { base_def } from "../helpers/zod/base_def"
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({

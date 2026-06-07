@@ -1,8 +1,8 @@
+import fs from "node:fs"
+import path from "node:path"
 import { logSoup } from "@tscircuit/log-soup"
 import type { AnyCircuitElement } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import fs from "node:fs"
-import path from "node:path"
 import { fp } from "../../src/footprinter"
 
 export const getTestFixture = async (testName: string) => {

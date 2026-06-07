@@ -3,18 +3,18 @@ import type {
   PcbCourtyardOutline,
   PcbSmtPad,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { circlepad } from "../helpers/circlepad"
-import { ALPHABET } from "../helpers/zod/ALPHABET"
-import { z } from "zod"
-import { base_def } from "../helpers/zod/base_def"
-import { length, distance } from "circuit-json"
+import { distance, length } from "circuit-json"
+import type { PcbSilkscreenPath } from "circuit-json"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { function_call } from "src/helpers/zod/function-call"
 import type { NowDefined } from "src/helpers/zod/now-defined"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { type PcbSilkscreenPath } from "circuit-json"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { z } from "zod"
+import { circlepad } from "../helpers/circlepad"
+import { rectpad } from "../helpers/rectpad"
+import { ALPHABET } from "../helpers/zod/ALPHABET"
+import { base_def } from "../helpers/zod/base_def"
 
 export const bga_def = base_def
   .extend({

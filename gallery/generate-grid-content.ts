@@ -1,5 +1,5 @@
-import path from "path"
 import fs from "fs"
+import path from "path"
 
 const snapshotsDir = path.join(__dirname, "..", "tests", "__snapshots__")
 const outputFile = path.join(__dirname, "content.ts")

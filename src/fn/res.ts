@@ -1,5 +1,5 @@
 import type { AnySoupElement } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
+import { type PassiveDef, passive } from "../helpers/passive-fn"
 import { res0402Array2 } from "../helpers/res0402-array2"
 import { res0402Array4 } from "../helpers/res0402-array4"
 import { res0603Array2 } from "../helpers/res0603-array2"

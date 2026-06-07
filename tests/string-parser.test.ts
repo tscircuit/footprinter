@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { fp } from "../src/footprinter"
 
 test("string builder ignores empty segments", () => {

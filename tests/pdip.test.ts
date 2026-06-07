@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { pdip } from "../src/fn/pdip"
 
 test("pdip (default 8 pins)", () => {

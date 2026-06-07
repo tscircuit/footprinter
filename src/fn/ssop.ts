@@ -4,12 +4,12 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { length } from "circuit-json"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { u_curve } from "../helpers/u-curve"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { base_def } from "../helpers/zod/base_def"
 
 // TODO we should accept MS-012 or MS-013
 

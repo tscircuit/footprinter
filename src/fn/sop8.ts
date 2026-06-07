@@ -3,10 +3,10 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SoicInput, extendSoicDef, getCcwSoicCoords } from "./soic"
 
 export const sop8_def = extendSoicDef({
   w: "7.05mm",

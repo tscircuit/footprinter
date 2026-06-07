@@ -1,5 +1,5 @@
-import type { PcbPlatedHole } from "circuit-json"
 import { mm } from "@tscircuit/mm"
+import type { PcbPlatedHole } from "circuit-json"
 
 export const platedhole = (
   pn: number,

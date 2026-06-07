@@ -6,8 +6,8 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"

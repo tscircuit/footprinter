@@ -1,11 +1,11 @@
-import type { AnyCircuitElement } from "circuit-json"
 import { mm } from "@tscircuit/mm"
+import type { AnyCircuitElement } from "circuit-json"
 import { length } from "circuit-json"
 import { z } from "zod"
-import { to220 } from "./to220"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { platedHolePill } from "../helpers/platedHolePill"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { base_def } from "../helpers/zod/base_def"
+import { to220 } from "./to220"
 
 // TO-220F uses 2.54mm standard pitch to match KiCad
 const TO220F_PITCH_MM = 2.54

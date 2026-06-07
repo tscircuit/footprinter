@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { z } from "zod"
-import { son_def, son } from "./son"
+import type { z } from "zod"
+import { son, son_def } from "./son"
 
 export const wson_def = son_def
 

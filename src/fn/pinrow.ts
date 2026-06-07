@@ -1,17 +1,17 @@
-import { z } from "zod"
+import { mm } from "@tscircuit/mm"
 import {
-  length,
-  rotation,
   type AnyCircuitElement,
   type PcbCourtyardRect,
+  length,
+  rotation,
 } from "circuit-json"
-import { platedhole } from "../helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { mm } from "@tscircuit/mm"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
+import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
 export const pinrow_def = base_def

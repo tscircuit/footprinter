@@ -3,12 +3,12 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
+import { length } from "circuit-json"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sod_def = base_def.extend({
   fn: z.string(),

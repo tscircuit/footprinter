@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 
 test("parity/sop-8", async () => {
   const {

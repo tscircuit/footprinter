@@ -1,7 +1,7 @@
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { length } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef } from "../helpers/silkscreenRef"
 
 /**
  * Solderjumper footprint generator
@@ -35,7 +35,7 @@ export const solderjumper = (params: {
   for (let i = 0; i < num_pins; i++) {
     pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight))
   }
-  let traces: AnyCircuitElement[] = []
+  const traces: AnyCircuitElement[] = []
   if (bridged) {
     const pins = bridged.split("").map(Number)
     if (pins.length > 1) {

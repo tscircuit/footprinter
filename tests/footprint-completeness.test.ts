@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test"
-import { getFootprintNames } from "../src/footprinter"
 import fs from "fs"
 import path from "path"
+import { getFootprintNames } from "../src/footprinter"
 
 describe("footprint completeness", () => {
   it("should expose all footprint functions from src/fn/", () => {

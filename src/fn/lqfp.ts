@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { quad, quad_def } from "./quad"
 import type { z } from "zod"
+import { quad, quad_def } from "./quad"
 
 export const lqfp_def = quad_def
 
