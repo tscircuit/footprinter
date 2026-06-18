@@ -1,12 +1,12 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardCircle,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const electrolytic_def = base_def.extend({

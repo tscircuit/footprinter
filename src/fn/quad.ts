@@ -3,16 +3,16 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { optional, z } from "zod"
 import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { rectpad } from "../helpers/rectpad"
-import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
+import { optional, z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { base_def } from "../helpers/zod/base_def"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),

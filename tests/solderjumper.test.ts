@@ -1,7 +1,7 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { solderjumper } from "../src/fn/solderjumper"
 import { fp } from "src"
+import { solderjumper } from "../src/fn/solderjumper"
 
 test("solderjumper 2-pin no bridge", () => {
   const result = solderjumper({ num_pins: 2 })

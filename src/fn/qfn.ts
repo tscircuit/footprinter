@@ -1,6 +1,6 @@
 import type { AnySoupElement } from "circuit-json"
-import { base_quad_def, quad, quad_def, quadTransform } from "./quad"
 import type { z } from "zod"
+import { base_quad_def, quad, quadTransform, quad_def } from "./quad"
 
 export const qfn_def = base_quad_def.extend({}).transform(quadTransform)
 

@@ -8,19 +8,19 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
 
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { u_curve } from "../helpers/u-curve"
 import type { NowDefined } from "../helpers/zod/now-defined"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 function convertMilToMm(value: string | number): number {
   if (typeof value === "string") {
     if (value.trim().toLowerCase().endsWith("mil")) {
-      return parseFloat(value) * 0.0254
+      return Number.parseFloat(value) * 0.0254
     }
-    return parseFloat(value)
+    return Number.parseFloat(value)
   }
   return Number(value)
 }

@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -175,7 +175,7 @@ for (const textAlign of textAlignments) {
       }
 
       // Construct snapshot name similar to the definition string but more readable for file names
-      let snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
+      const snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
 
       test(`Test: ${def} (Snapshot: ${snapshotName})`, () => {
         const soup = fp.string(def).circuitJson()

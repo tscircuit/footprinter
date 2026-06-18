@@ -1,10 +1,10 @@
-import { z } from "zod"
+import { mm } from "@tscircuit/mm"
 import { length } from "circuit-json"
 import type { AnyCircuitElement } from "circuit-json"
-import { platedhole as makePlatedHole } from "../helpers/platedhole"
+import { z } from "zod"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole as makePlatedHole } from "../helpers/platedhole"
 import { silkscreenRef } from "../helpers/silkscreenRef"
-import { mm } from "@tscircuit/mm"
 import { base_def } from "../helpers/zod/base_def"
 
 export const platedhole_def = base_def

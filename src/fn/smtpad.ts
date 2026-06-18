@@ -1,11 +1,11 @@
-import { z } from "zod"
+import { mm } from "@tscircuit/mm"
 import { length } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
+import type { AnyCircuitElement } from "circuit-json"
+import { z } from "zod"
 import { circlepad } from "../helpers/circlepad"
 import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
-import type { AnyCircuitElement } from "circuit-json"
-import { mm } from "@tscircuit/mm"
 import { base_def } from "../helpers/zod/base_def"
 
 export const smtpad_def = base_def

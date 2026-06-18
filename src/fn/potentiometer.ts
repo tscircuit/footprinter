@@ -1,11 +1,11 @@
-import { string, z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedhole } from "src/helpers/platedhole"
+import { string, z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const potentiometer_def = base_def.extend({

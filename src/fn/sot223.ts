@@ -6,8 +6,8 @@ import type {
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 export const sot223_def = base_def.extend({
   fn: z.string(),

@@ -1,14 +1,14 @@
-import { z } from "zod"
 import { mm } from "@tscircuit/mm"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedhole } from "src/helpers/platedhole"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const to92CourtyardOutline = [

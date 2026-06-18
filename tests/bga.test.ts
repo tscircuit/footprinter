@@ -1,7 +1,7 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
+import type { AnySoupElement, PcbSmtPad } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
-import type { AnySoupElement, PcbSmtPad } from "circuit-json"
 
 test("bga footprint", () => {
   const soup = fp()

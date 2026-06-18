@@ -1,9 +1,9 @@
+import mm from "@tscircuit/mm"
 import type { AnyCircuitElement } from "circuit-json"
 import { length } from "circuit-json"
-import { chipArray } from "./chipArray"
 import { z } from "zod"
+import { chipArray } from "./chipArray"
 import { base_def } from "./zod/base_def"
-import mm from "@tscircuit/mm"
 
 export const res0603Array2_def = base_def.extend({
   pw: length.default("0.9mm"),

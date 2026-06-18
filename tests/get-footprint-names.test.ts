@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { getFootprintNames, getFootprintNamesByType } from "../src/footprinter"
 
 test("getFootprintNames returns all footprint names", () => {

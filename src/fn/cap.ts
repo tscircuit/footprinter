@@ -1,6 +1,6 @@
 import type { AnySoupElement } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
 import { type PassiveDef, passive } from "../helpers/passive-fn"
+import { rectpad } from "../helpers/rectpad"
 
 export const cap = (
   parameters: PassiveDef,

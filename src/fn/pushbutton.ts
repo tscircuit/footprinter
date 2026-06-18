@@ -1,12 +1,12 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardRect,
+  length,
 } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const pushbutton_def = base_def.extend({

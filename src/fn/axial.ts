@@ -1,16 +1,16 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardOutline,
   type PcbSilkscreenLine,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
-import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { z } from "zod"
+import { type PassiveDef, passive } from "../helpers/passive-fn"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
 export const axial_def = base_def.extend({
   fn: z.string(),

@@ -3,15 +3,15 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { z } from "zod"
 import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { u_curve } from "../helpers/u-curve"
-import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { rectpad } from "src/helpers/rectpad"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { u_curve } from "../helpers/u-curve"
+import { base_def } from "../helpers/zod/base_def"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const extendSoicDef = (newDefaults: {
   w?: string

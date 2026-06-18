@@ -1,11 +1,11 @@
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
 const sot89_3CourtyardOutline = [

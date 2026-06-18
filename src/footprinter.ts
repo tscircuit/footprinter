@@ -44,6 +44,8 @@ export type Footprinter = {
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  led5050: (num_pins?: number) => FootprinterParamsBuilder<never>
+  led2835: () => FootprinterParamsBuilder<never>
   lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
     num_pins?: number,
@@ -77,6 +79,7 @@ export type Footprinter = {
     "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads"
   >
   mlp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  lpcc: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
@@ -109,7 +112,9 @@ export type Footprinter = {
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
   >
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
-  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "horizontal"
+  >
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -173,6 +178,11 @@ export type Footprinter = {
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
   son: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
+  >
+  wson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"

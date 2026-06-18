@@ -3,16 +3,16 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import {
-  extendSoicDef,
-  soicWithoutParsing,
-  type SoicInput,
-  getCcwSoicCoords,
-} from "./soic"
-import { rectpad } from "src/helpers/rectpad"
-import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
+import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import {
+  type SoicInput,
+  extendSoicDef,
+  getCcwSoicCoords,
+  soicWithoutParsing,
+} from "./soic"
 
 export const dfn_def = extendSoicDef({})
 

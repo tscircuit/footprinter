@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 
 test("parity/VSON10-1EP_grid3x3mm_P0.5mm_EP1.2x2mm_w2.875mm_pinw0.875mm_pinh0.25mm", async () => {
   const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =

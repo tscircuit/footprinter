@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { z } from "zod"
-import { sot23_def, sot23_5 } from "./sot23"
+import type { z } from "zod"
+import { sot23_5, sot23_def } from "./sot23"
 
 export const sot25_def = sot23_def.extend({})
 

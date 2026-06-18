@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { extendSoicDef, soicWithoutParsing } from "./soic"
 import type { z } from "zod"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 export const ms012_def = extendSoicDef({
   p: "1.27mm",

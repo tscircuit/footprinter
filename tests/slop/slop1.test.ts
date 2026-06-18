@@ -1,6 +1,6 @@
-import { describe, it, expect } from "bun:test" // Bun's test utilities
-import { getTestFixture } from "../fixtures" // Adjust path based on your structure
+import { describe, expect, it } from "bun:test" // Bun's test utilities
 import type { AnyCircuitElement } from "circuit-json"
+import { getTestFixture } from "../fixtures" // Adjust path based on your structure
 
 // biome-ignore lint/suspicious/noExportsInTest: <explanation>
 export const SLOP_LIST = [
