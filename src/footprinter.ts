@@ -277,6 +277,20 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
 
+const createInvalidFootprintFunctionError = (target: any): Error => {
+  if (target.fn) {
+    return new Error(
+      `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.${
+        target.string ? ` From string "${target.string}".` : ""
+      }`,
+    )
+  }
+
+  return new Error(
+    "No footprint function selected. Specify a valid function like .dip, .lr, .p etc.",
+  )
+}
+
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
   const normalizedDef = normalizeDefinition(def)
@@ -363,27 +377,16 @@ export const footprinter = (): Footprinter & {
           }
 
           if (!FOOTPRINT_FN[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
+            throw createInvalidFootprintFunctionError(target)
           }
 
           return () => {
-            // TODO improve error
-            throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
-            )
+            throw createInvalidFootprintFunctionError(target)
           }
         }
         if (prop === "json") {
           if (!FOOTPRINT_FN[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
+            throw createInvalidFootprintFunctionError(target)
           }
           return () => FOOTPRINT_FN[target.fn](target).parameters
         }
