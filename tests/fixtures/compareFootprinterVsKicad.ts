@@ -7,12 +7,13 @@ import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-
 
 type PcbSmtPad = {
   type: "pcb_smtpad"
-  x: number
-  y: number
-  width: number
-  height: number
+  x?: number
+  y?: number
+  width?: number
+  height?: number
   port_hints?: string[]
   shape?: string
+  points?: Point[]
 }
 
 type Point = {
@@ -33,6 +34,20 @@ type CourtyardElement = {
   diameter?: number
   outline?: Point[]
   points?: Point[]
+}
+
+type CourtyardSegment = {
+  start: Point
+  end: Point
+}
+
+const POINT_TOLERANCE = 1e-6
+
+function pointsEqual(a: Point, b: Point): boolean {
+  return (
+    Math.abs(a.x - b.x) <= POINT_TOLERANCE &&
+    Math.abs(a.y - b.y) <= POINT_TOLERANCE
+  )
 }
 
 function signedPolygonArea(points: Point[]): number {
@@ -108,6 +123,100 @@ function courtyardElementToPolygon(
   return null
 }
 
+function pointsToBoundingBoxPolygon(points: Point[]): Flatten.Polygon | null {
+  if (points.length === 0) return null
+
+  const minX = Math.min(...points.map((point) => point.x))
+  const maxX = Math.max(...points.map((point) => point.x))
+  const minY = Math.min(...points.map((point) => point.y))
+  const maxY = Math.max(...points.map((point) => point.y))
+
+  if (minX === maxX || minY === maxY) return null
+
+  return new Flatten.Polygon([
+    [minX, minY],
+    [maxX, minY],
+    [maxX, maxY],
+    [minX, maxY],
+  ])
+}
+
+function segmentElementsToPolygons(
+  segments: CourtyardSegment[],
+): Flatten.Polygon[] {
+  const remaining = [...segments]
+  const polygons: Flatten.Polygon[] = []
+
+  while (remaining.length > 0) {
+    const first = remaining.shift()!
+    const route = [first.start, first.end]
+
+    while (!pointsEqual(route[route.length - 1]!, route[0]!)) {
+      const routeEnd = route[route.length - 1]!
+      const nextSegmentIndex = remaining.findIndex(
+        (segment) =>
+          pointsEqual(segment.start, routeEnd) ||
+          pointsEqual(segment.end, routeEnd),
+      )
+
+      if (nextSegmentIndex === -1) break
+
+      const [nextSegment] = remaining.splice(nextSegmentIndex, 1)
+      route.push(
+        pointsEqual(nextSegment!.start, routeEnd)
+          ? nextSegment!.end
+          : nextSegment!.start,
+      )
+    }
+
+    if (route.length >= 4 && pointsEqual(route[route.length - 1]!, route[0]!)) {
+      const closedRoute = route.slice(0, -1)
+      const normalizedPoints = normalizePolygonWinding(closedRoute)
+      polygons.push(
+        new Flatten.Polygon(
+          normalizedPoints.map((point) => [point.x, point.y]),
+        ),
+      )
+    }
+  }
+
+  if (polygons.length === 0) {
+    const boundingBoxPolygon = pointsToBoundingBoxPolygon(
+      segments.flatMap((segment) => [segment.start, segment.end]),
+    )
+    if (boundingBoxPolygon) polygons.push(boundingBoxPolygon)
+  }
+
+  return polygons
+}
+
+function courtyardElementsToPolygons(
+  elements: CourtyardElement[],
+): Flatten.Polygon[] {
+  const polygons: Flatten.Polygon[] = []
+  const segments: CourtyardSegment[] = []
+
+  for (const element of elements) {
+    const polygon = courtyardElementToPolygon(element)
+    if (polygon) {
+      polygons.push(polygon)
+      continue
+    }
+
+    if (
+      element.type === "pcb_courtyard_outline" &&
+      element.outline?.length === 2
+    ) {
+      segments.push({
+        start: element.outline[0]!,
+        end: element.outline[1]!,
+      })
+    }
+  }
+
+  return [...polygons, ...segmentElementsToPolygons(segments)]
+}
+
 function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
   if (polygons.length === 0) return null
 
@@ -131,14 +240,10 @@ function getCourtyardMetrics(
   }
 
   const fpPolygon = unionPolygons(
-    footprinterCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
+    courtyardElementsToPolygons(footprinterCourtyards),
   )
   const kicadPolygon = unionPolygons(
-    kicadCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
+    courtyardElementsToPolygons(kicadCourtyards),
   )
 
   if (!fpPolygon || !kicadPolygon) {
@@ -170,20 +275,35 @@ function getCourtyardMetrics(
 
 // --- Helpers to handle both pads & holes safely ---
 function getWidth(elm: PcbSmtPad | PcbPlatedHole): number {
-  if ("width" in elm) return elm.width
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
+    return (
+      Math.max(...elm.points.map((point) => point.x)) -
+      Math.min(...elm.points.map((point) => point.x))
+    )
+  }
+  if ("width" in elm && elm.width !== undefined) return elm.width
   if (elm.shape === "circle") return elm.outer_diameter
   if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_width
 
   return 0
 }
 function getHeight(elm: PcbSmtPad | PcbPlatedHole): number {
-  if ("height" in elm) return elm.height
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
+    return (
+      Math.max(...elm.points.map((point) => point.y)) -
+      Math.min(...elm.points.map((point) => point.y))
+    )
+  }
+  if ("height" in elm && elm.height !== undefined) return elm.height
   if (elm.shape === "circle") return elm.outer_diameter
   if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_height
 
   return 0
 }
 function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
+    return Math.abs(signedPolygonArea(elm.points))
+  }
   if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
     const outerRadius = elm.outer_diameter / 2
     const innerRadius = elm.hole_diameter / 2
@@ -202,11 +322,49 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
   return getWidth(elm) * getHeight(elm)
 }
 
+function getElementCenter(element: PcbSmtPad | PcbPlatedHole): Point {
+  if (
+    element.type === "pcb_smtpad" &&
+    element.shape === "polygon" &&
+    element.points &&
+    element.points.length > 0
+  ) {
+    const maxX = Math.max(...element.points.map((point) => point.x))
+    const minX = Math.min(...element.points.map((point) => point.x))
+    const maxY = Math.max(...element.points.map((point) => point.y))
+    const minY = Math.min(...element.points.map((point) => point.y))
+
+    return {
+      x: (minX + maxX) / 2,
+      y: (minY + maxY) / 2,
+    }
+  }
+
+  return {
+    x: element.x ?? 0,
+    y: element.y ?? 0,
+  }
+}
+
+function getElementBounds(element: PcbSmtPad | PcbPlatedHole) {
+  const center = getElementCenter(element)
+  const halfWidth = getWidth(element) / 2
+  const halfHeight = getHeight(element) / 2
+
+  return {
+    minX: center.x - halfWidth,
+    maxX: center.x + halfWidth,
+    minY: center.y - halfHeight,
+    maxY: center.y + halfHeight,
+  }
+}
+
 function getPadsAndHolesCenter(elements: (PcbSmtPad | PcbPlatedHole)[]): Point {
-  const maxX = Math.max(...elements.map((e) => e.x))
-  const minX = Math.min(...elements.map((e) => e.x))
-  const maxY = Math.max(...elements.map((e) => e.y))
-  const minY = Math.min(...elements.map((e) => e.y))
+  const bounds = elements.map(getElementBounds)
+  const maxX = Math.max(...bounds.map((bound) => bound.maxX))
+  const minX = Math.min(...bounds.map((bound) => bound.minX))
+  const maxY = Math.max(...bounds.map((bound) => bound.maxY))
+  const minY = Math.min(...bounds.map((bound) => bound.minY))
 
   return {
     x: (minX + maxX) / 2,
@@ -316,17 +474,20 @@ export async function compareFootprinterVsKicad(
   // Pitch detection
   if (diffPercent > 0 && kicadPadsAndHoles.length >= 2) {
     const horizontal = kicadPadsAndHoles.every(
-      (item) => item.y === kicadPadsAndHoles[0]!.y,
+      (item) =>
+        getElementCenter(item).y === getElementCenter(kicadPadsAndHoles[0]!).y,
     )
     const sorted = [...kicadPadsAndHoles].sort((a, b) =>
-      horizontal ? a.x - b.x : a.y - b.y,
+      horizontal
+        ? getElementCenter(a).x - getElementCenter(b).x
+        : getElementCenter(a).y - getElementCenter(b).y,
     )
     const pitches: number[] = []
     for (let i = 1; i < sorted.length; i++) {
       pitches.push(
         horizontal
-          ? sorted[i]!.x - sorted[i - 1]!.x
-          : sorted[i]!.y - sorted[i - 1]!.y,
+          ? getElementCenter(sorted[i]!).x - getElementCenter(sorted[i - 1]!).x
+          : getElementCenter(sorted[i]!).y - getElementCenter(sorted[i - 1]!).y,
       )
     }
     const avgPitch = pitches.reduce((a, b) => a + b, 0) / pitches.length
@@ -335,17 +496,17 @@ export async function compareFootprinterVsKicad(
     )
     // Consolidate pad dimension logs: if all pads share same size, log once
     if (kicadPads.length > 0) {
-      const padDimKey = (p: PcbSmtPad) => `${p.width}x${p.height}`
+      const padDimKey = (p: PcbSmtPad) => `${getWidth(p)}x${getHeight(p)}`
       const uniquePadDims = new Set(kicadPads.map(padDimKey))
       if (uniquePadDims.size === 1) {
         const p = kicadPads[0]!
         console.log(
-          `🔹 KiCad Pads - width: ${p.width}, height: ${p.height} (all ${kicadPads.length})`,
+          `🔹 KiCad Pads - width: ${getWidth(p)}, height: ${getHeight(p)} (all ${kicadPads.length})`,
         )
       } else {
         for (const pad of kicadPads) {
           console.log(
-            `🔹 KiCad Pad - width: ${pad.width}, height: ${pad.height}`,
+            `🔹 KiCad Pad - width: ${getWidth(pad)}, height: ${getHeight(pad)}`,
           )
         }
       }
@@ -391,32 +552,23 @@ export async function compareFootprinterVsKicad(
   )
 
   // Figure out how far to shift KiCad elements
-  const refMaxX = Math.max(
-    ...referencePadsAndHoles.map((e) => e.x + getWidth(e) / 2),
-  )
-  const refMinX = Math.min(
-    ...referencePadsAndHoles.map((e) => e.x - getWidth(e) / 2),
-  )
+  const referenceBounds = referencePadsAndHoles.map(getElementBounds)
+  const refMaxX = Math.max(...referenceBounds.map((bound) => bound.maxX))
+  const refMinX = Math.min(...referenceBounds.map((bound) => bound.minX))
   const refWidth = refMaxX - refMinX
 
   // Calculate vertical center positions for alignment
-  const refMaxY = Math.max(
-    ...referencePadsAndHoles.map((e) => e.y + getHeight(e) / 2),
-  )
-  const refMinY = Math.min(
-    ...referencePadsAndHoles.map((e) => e.y - getHeight(e) / 2),
-  )
+  const refMaxY = Math.max(...referenceBounds.map((bound) => bound.maxY))
+  const refMinY = Math.min(...referenceBounds.map((bound) => bound.minY))
   const refCenterY = (refMaxY + refMinY) / 2
 
   const kicadPadsAndHolesForAlignment = kicadElements.filter(
     (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
   )
-  const kicadMaxY = Math.max(
-    ...kicadPadsAndHolesForAlignment.map((e) => e.y + getHeight(e) / 2),
-  )
-  const kicadMinY = Math.min(
-    ...kicadPadsAndHolesForAlignment.map((e) => e.y - getHeight(e) / 2),
-  )
+  const kicadAlignmentBounds =
+    kicadPadsAndHolesForAlignment.map(getElementBounds)
+  const kicadMaxY = Math.max(...kicadAlignmentBounds.map((bound) => bound.maxY))
+  const kicadMinY = Math.min(...kicadAlignmentBounds.map((bound) => bound.minY))
   const kicadCenterY = (kicadMaxY + kicadMinY) / 2
 
   const areaGapFactor = 1
