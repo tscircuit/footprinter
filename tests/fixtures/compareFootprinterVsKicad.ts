@@ -7,12 +7,13 @@ import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-
 
 type PcbSmtPad = {
   type: "pcb_smtpad"
-  x: number
-  y: number
-  width: number
-  height: number
+  x?: number
+  y?: number
+  width?: number
+  height?: number
   port_hints?: string[]
   shape?: string
+  points?: Point[]
 }
 
 type Point = {
@@ -180,14 +181,7 @@ function courtyardsToPolygon(
 
   if (segments.length > 0) {
     const assembled = assembleSegmentsToPolygon(segments)
-    if (assembled) {
-      polygons.push(assembled)
-    } else {
-      console.warn(
-        `assembleSegmentsToPolygon returned null for ${segments.length} segments:`,
-        JSON.stringify(segments),
-      )
-    }
+    if (assembled) polygons.push(assembled)
   }
 
   return unionPolygons(polygons)
@@ -208,15 +202,7 @@ function getCourtyardMetrics(
   const kicadPolygon = courtyardsToPolygon(kicadCourtyards)
 
   if (!fpPolygon || !kicadPolygon) {
-    const fpDesc = footprinterCourtyards
-      .map((e) => `${e.type}(ol=${e.outline?.length ?? "n/a"})`)
-      .join(", ")
-    const kdDesc = kicadCourtyards
-      .map((e) => `${e.type}(ol=${e.outline?.length ?? "n/a"})`)
-      .join(", ")
-    throw new Error(
-      `Could not convert courtyard geometry into polygons. fp=${fpPolygon ? "ok" : "null"} [${fpDesc}] kicad=${kicadPolygon ? "ok" : "null"} [${kdDesc}]`,
-    )
+    throw new Error("Could not convert courtyard geometry into polygons")
   }
 
   const intersection = Flatten.BooleanOperations.intersect(
@@ -276,11 +262,30 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
   return getWidth(elm) * getHeight(elm)
 }
 
+function getPadCenter(e: PcbSmtPad | PcbPlatedHole): Point | null {
+  if (typeof e.x === "number" && typeof e.y === "number")
+    return { x: e.x, y: e.y }
+  const pts = (e as PcbSmtPad).points
+  if (pts && pts.length > 0) {
+    const xs = pts.map((p) => p.x)
+    const ys = pts.map((p) => p.y)
+    return {
+      x: (Math.min(...xs) + Math.max(...xs)) / 2,
+      y: (Math.min(...ys) + Math.max(...ys)) / 2,
+    }
+  }
+  return null
+}
+
 function getPadsAndHolesCenter(elements: (PcbSmtPad | PcbPlatedHole)[]): Point {
-  const maxX = Math.max(...elements.map((e) => e.x))
-  const minX = Math.min(...elements.map((e) => e.x))
-  const maxY = Math.max(...elements.map((e) => e.y))
-  const minY = Math.min(...elements.map((e) => e.y))
+  const centers = elements
+    .map(getPadCenter)
+    .filter((c): c is Point => c !== null)
+  if (centers.length === 0) return { x: 0, y: 0 }
+  const maxX = Math.max(...centers.map((c) => c.x))
+  const minX = Math.min(...centers.map((c) => c.x))
+  const maxY = Math.max(...centers.map((c) => c.y))
+  const minY = Math.min(...centers.map((c) => c.y))
 
   return {
     x: (minX + maxX) / 2,
