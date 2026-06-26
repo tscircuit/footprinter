@@ -180,7 +180,14 @@ function courtyardsToPolygon(
 
   if (segments.length > 0) {
     const assembled = assembleSegmentsToPolygon(segments)
-    if (assembled) polygons.push(assembled)
+    if (assembled) {
+      polygons.push(assembled)
+    } else {
+      console.warn(
+        `assembleSegmentsToPolygon returned null for ${segments.length} segments:`,
+        JSON.stringify(segments),
+      )
+    }
   }
 
   return unionPolygons(polygons)
