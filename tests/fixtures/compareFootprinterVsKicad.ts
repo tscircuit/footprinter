@@ -201,7 +201,15 @@ function getCourtyardMetrics(
   const kicadPolygon = courtyardsToPolygon(kicadCourtyards)
 
   if (!fpPolygon || !kicadPolygon) {
-    throw new Error("Could not convert courtyard geometry into polygons")
+    const fpDesc = footprinterCourtyards
+      .map((e) => `${e.type}(ol=${e.outline?.length ?? "n/a"})`)
+      .join(", ")
+    const kdDesc = kicadCourtyards
+      .map((e) => `${e.type}(ol=${e.outline?.length ?? "n/a"})`)
+      .join(", ")
+    throw new Error(
+      `Could not convert courtyard geometry into polygons. fp=${fpPolygon ? "ok" : "null"} [${fpDesc}] kicad=${kicadPolygon ? "ok" : "null"} [${kdDesc}]`,
+    )
   }
 
   const intersection = Flatten.BooleanOperations.intersect(
