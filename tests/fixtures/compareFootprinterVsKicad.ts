@@ -119,6 +119,67 @@ function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
   return union
 }
 
+// The kicad-mod-cache may return pcb_courtyard_outline as individual 2-point line segments
+// (one per edge) rather than a single closed polygon. This function chains those segments
+// into a closed polygon.
+function assembleSegmentsToPolygon(segments: Point[][]): Flatten.Polygon | null {
+  if (segments.length === 0) return null
+  const used = new Set<number>()
+  const points: Point[] = [segments[0]![0]!, segments[0]![1]!]
+  used.add(0)
+
+  for (let _iter = 0; _iter < segments.length; _iter++) {
+    const lastPt = points[points.length - 1]!
+    let extended = false
+    for (let j = 0; j < segments.length; j++) {
+      if (used.has(j)) continue
+      const [a, b] = [segments[j]![0]!, segments[j]![1]!]
+      if (Math.abs(a.x - lastPt.x) < 1e-6 && Math.abs(a.y - lastPt.y) < 1e-6) {
+        points.push(b)
+        used.add(j)
+        extended = true
+        break
+      }
+      if (Math.abs(b.x - lastPt.x) < 1e-6 && Math.abs(b.y - lastPt.y) < 1e-6) {
+        points.push(a)
+        used.add(j)
+        extended = true
+        break
+      }
+    }
+    if (!extended) break
+  }
+
+  // Remove closing point if it duplicates the first
+  const last = points[points.length - 1]!
+  const first = points[0]!
+  if (Math.abs(last.x - first.x) < 1e-6 && Math.abs(last.y - first.y) < 1e-6) {
+    points.pop()
+  }
+
+  if (points.length < 3) return null
+  const normalized = normalizePolygonWinding(points)
+  return new Flatten.Polygon(normalized.map((p) => [p.x, p.y]))
+}
+
+function courtyardsToPolygon(courtyards: CourtyardElement[]): Flatten.Polygon | null {
+  const polygons = courtyards
+    .map(courtyardElementToPolygon)
+    .filter((p): p is Flatten.Polygon => p !== null)
+
+  // Collect 2-point outlines (line segments from newer kicad-mod-cache format)
+  const segments = courtyards
+    .filter((e) => e.type === "pcb_courtyard_outline" && e.outline?.length === 2)
+    .map((e) => e.outline!)
+
+  if (segments.length > 0) {
+    const assembled = assembleSegmentsToPolygon(segments)
+    if (assembled) polygons.push(assembled)
+  }
+
+  return unionPolygons(polygons)
+}
+
 function getCourtyardMetrics(
   footprinterCourtyards: CourtyardElement[],
   kicadCourtyards: CourtyardElement[],
@@ -130,16 +191,8 @@ function getCourtyardMetrics(
     throw new Error("KiCad footprint is missing a courtyard")
   }
 
-  const fpPolygon = unionPolygons(
-    footprinterCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
-  )
-  const kicadPolygon = unionPolygons(
-    kicadCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
-  )
+  const fpPolygon = courtyardsToPolygon(footprinterCourtyards)
+  const kicadPolygon = courtyardsToPolygon(kicadCourtyards)
 
   if (!fpPolygon || !kicadPolygon) {
     throw new Error("Could not convert courtyard geometry into polygons")
