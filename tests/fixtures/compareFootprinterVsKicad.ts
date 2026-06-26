@@ -265,15 +265,6 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
 function getPadCenter(e: PcbSmtPad | PcbPlatedHole): Point | null {
   if (typeof e.x === "number" && typeof e.y === "number")
     return { x: e.x, y: e.y }
-  const pts = (e as PcbSmtPad).points
-  if (pts && pts.length > 0) {
-    const xs = pts.map((p) => p.x)
-    const ys = pts.map((p) => p.y)
-    return {
-      x: (Math.min(...xs) + Math.max(...xs)) / 2,
-      y: (Math.min(...ys) + Math.max(...ys)) / 2,
-    }
-  }
   return null
 }
 
@@ -458,7 +449,8 @@ export async function compareFootprinterVsKicad(
 
   const kicadElements = kicadCircuitJson.filter(
     (e) =>
-      e.type === "pcb_smtpad" ||
+      // Exclude polygon pads (no top-level x/y) — they'd produce NaN after translation
+      (e.type === "pcb_smtpad" && typeof e.x === "number") ||
       e.type === "pcb_component" ||
       e.type === "pcb_plated_hole" ||
       e.type === "pcb_courtyard_outline" ||
