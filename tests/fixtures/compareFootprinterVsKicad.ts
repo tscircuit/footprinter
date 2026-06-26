@@ -120,15 +120,15 @@ function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
   return union
 }
 
-// The kicad-mod-cache may return pcb_courtyard_outline as individual 2-point line segments
-// (one per edge) rather than a single closed polygon. This function chains those segments
-// into a closed polygon.
+// kicad-mod-cache returns pcb_courtyard_outline as individual segments (2-point straight
+// edges or multi-point arcs). Chains them into a single closed polygon by matching endpoints.
 function assembleSegmentsToPolygon(
   segments: Point[][],
 ): Flatten.Polygon | null {
   if (segments.length === 0) return null
   const used = new Set<number>()
-  const points: Point[] = [segments[0]![0]!, segments[0]![1]!]
+  // Start with all points of the first segment
+  const points: Point[] = [...segments[0]!]
   used.add(0)
 
   for (let _iter = 0; _iter < segments.length; _iter++) {
@@ -136,15 +136,19 @@ function assembleSegmentsToPolygon(
     let extended = false
     for (let j = 0; j < segments.length; j++) {
       if (used.has(j)) continue
-      const [a, b] = [segments[j]![0]!, segments[j]![1]!]
+      const seg = segments[j]!
+      const a = seg[0]!
+      const b = seg[seg.length - 1]!
       if (Math.abs(a.x - lastPt.x) < 1e-6 && Math.abs(a.y - lastPt.y) < 1e-6) {
-        points.push(b)
+        // Forward: append all points except first (already in chain)
+        points.push(...seg.slice(1))
         used.add(j)
         extended = true
         break
       }
       if (Math.abs(b.x - lastPt.x) < 1e-6 && Math.abs(b.y - lastPt.y) < 1e-6) {
-        points.push(a)
+        // Reversed: append reversed points except last (already in chain)
+        points.push(...[...seg].reverse().slice(1))
         used.add(j)
         extended = true
         break
@@ -168,23 +172,26 @@ function assembleSegmentsToPolygon(
 function courtyardsToPolygon(
   courtyards: CourtyardElement[],
 ): Flatten.Polygon | null {
-  const polygons = courtyards
-    .map(courtyardElementToPolygon)
-    .filter((p): p is Flatten.Polygon => p !== null)
-
-  // Collect 2-point outlines (line segments from newer kicad-mod-cache format)
-  const segments = courtyards
+  // Try to assemble all outline segments (straight edges AND arcs) into a closed polygon
+  const outlineSegments = courtyards
     .filter(
-      (e) => e.type === "pcb_courtyard_outline" && e.outline?.length === 2,
+      (e) =>
+        e.type === "pcb_courtyard_outline" && (e.outline?.length ?? 0) >= 2,
     )
     .map((e) => e.outline!)
 
-  if (segments.length > 0) {
-    const assembled = assembleSegmentsToPolygon(segments)
-    if (assembled) polygons.push(assembled)
-  }
+  const assembled =
+    outlineSegments.length > 0
+      ? assembleSegmentsToPolygon(outlineSegments)
+      : null
 
-  return unionPolygons(polygons)
+  // Process non-outline elements (rects, circles, polygons) separately
+  const otherPolygons = courtyards
+    .filter((e) => e.type !== "pcb_courtyard_outline")
+    .map(courtyardElementToPolygon)
+    .filter((p): p is Flatten.Polygon => p !== null)
+
+  return unionPolygons([...(assembled ? [assembled] : []), ...otherPolygons])
 }
 
 function getCourtyardMetrics(
