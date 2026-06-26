@@ -7,12 +7,13 @@ import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-
 
 type PcbSmtPad = {
   type: "pcb_smtpad"
-  x: number
-  y: number
-  width: number
-  height: number
+  x?: number
+  y?: number
+  width?: number
+  height?: number
   port_hints?: string[]
   shape?: string
+  points?: Point[]
 }
 
 type Point = {
@@ -119,6 +120,80 @@ function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
   return union
 }
 
+// kicad-mod-cache returns pcb_courtyard_outline as individual segments (2-point straight
+// edges or multi-point arcs). Chains them into a single closed polygon by matching endpoints.
+function assembleSegmentsToPolygon(
+  segments: Point[][],
+): Flatten.Polygon | null {
+  if (segments.length === 0) return null
+  const used = new Set<number>()
+  // Start with all points of the first segment
+  const points: Point[] = [...segments[0]!]
+  used.add(0)
+
+  for (let _iter = 0; _iter < segments.length; _iter++) {
+    const lastPt = points[points.length - 1]!
+    let extended = false
+    for (let j = 0; j < segments.length; j++) {
+      if (used.has(j)) continue
+      const seg = segments[j]!
+      const a = seg[0]!
+      const b = seg[seg.length - 1]!
+      if (Math.abs(a.x - lastPt.x) < 1e-6 && Math.abs(a.y - lastPt.y) < 1e-6) {
+        // Forward: append all points except first (already in chain)
+        points.push(...seg.slice(1))
+        used.add(j)
+        extended = true
+        break
+      }
+      if (Math.abs(b.x - lastPt.x) < 1e-6 && Math.abs(b.y - lastPt.y) < 1e-6) {
+        // Reversed: append reversed points except last (already in chain)
+        points.push(...[...seg].reverse().slice(1))
+        used.add(j)
+        extended = true
+        break
+      }
+    }
+    if (!extended) break
+  }
+
+  // Remove closing point if it duplicates the first
+  const last = points[points.length - 1]!
+  const first = points[0]!
+  if (Math.abs(last.x - first.x) < 1e-6 && Math.abs(last.y - first.y) < 1e-6) {
+    points.pop()
+  }
+
+  if (points.length < 3) return null
+  const normalized = normalizePolygonWinding(points)
+  return new Flatten.Polygon(normalized.map((p) => [p.x, p.y]))
+}
+
+function courtyardsToPolygon(
+  courtyards: CourtyardElement[],
+): Flatten.Polygon | null {
+  // Try to assemble all outline segments (straight edges AND arcs) into a closed polygon
+  const outlineSegments = courtyards
+    .filter(
+      (e) =>
+        e.type === "pcb_courtyard_outline" && (e.outline?.length ?? 0) >= 2,
+    )
+    .map((e) => e.outline!)
+
+  const assembled =
+    outlineSegments.length > 0
+      ? assembleSegmentsToPolygon(outlineSegments)
+      : null
+
+  // Process non-outline elements (rects, circles, polygons) separately
+  const otherPolygons = courtyards
+    .filter((e) => e.type !== "pcb_courtyard_outline")
+    .map(courtyardElementToPolygon)
+    .filter((p): p is Flatten.Polygon => p !== null)
+
+  return unionPolygons([...(assembled ? [assembled] : []), ...otherPolygons])
+}
+
 function getCourtyardMetrics(
   footprinterCourtyards: CourtyardElement[],
   kicadCourtyards: CourtyardElement[],
@@ -130,16 +205,8 @@ function getCourtyardMetrics(
     throw new Error("KiCad footprint is missing a courtyard")
   }
 
-  const fpPolygon = unionPolygons(
-    footprinterCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
-  )
-  const kicadPolygon = unionPolygons(
-    kicadCourtyards
-      .map(courtyardElementToPolygon)
-      .filter((polygon): polygon is Flatten.Polygon => polygon !== null),
-  )
+  const fpPolygon = courtyardsToPolygon(footprinterCourtyards)
+  const kicadPolygon = courtyardsToPolygon(kicadCourtyards)
 
   if (!fpPolygon || !kicadPolygon) {
     throw new Error("Could not convert courtyard geometry into polygons")
@@ -202,11 +269,21 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
   return getWidth(elm) * getHeight(elm)
 }
 
+function getPadCenter(e: PcbSmtPad | PcbPlatedHole): Point | null {
+  if (typeof e.x === "number" && typeof e.y === "number")
+    return { x: e.x, y: e.y }
+  return null
+}
+
 function getPadsAndHolesCenter(elements: (PcbSmtPad | PcbPlatedHole)[]): Point {
-  const maxX = Math.max(...elements.map((e) => e.x))
-  const minX = Math.min(...elements.map((e) => e.x))
-  const maxY = Math.max(...elements.map((e) => e.y))
-  const minY = Math.min(...elements.map((e) => e.y))
+  const centers = elements
+    .map(getPadCenter)
+    .filter((c): c is Point => c !== null)
+  if (centers.length === 0) return { x: 0, y: 0 }
+  const maxX = Math.max(...centers.map((c) => c.x))
+  const minX = Math.min(...centers.map((c) => c.x))
+  const maxY = Math.max(...centers.map((c) => c.y))
+  const minY = Math.min(...centers.map((c) => c.y))
 
   return {
     x: (minX + maxX) / 2,
@@ -379,7 +456,8 @@ export async function compareFootprinterVsKicad(
 
   const kicadElements = kicadCircuitJson.filter(
     (e) =>
-      e.type === "pcb_smtpad" ||
+      // Exclude polygon pads (no top-level x/y) — they'd produce NaN after translation
+      (e.type === "pcb_smtpad" && typeof e.x === "number") ||
       e.type === "pcb_component" ||
       e.type === "pcb_plated_hole" ||
       e.type === "pcb_courtyard_outline" ||
