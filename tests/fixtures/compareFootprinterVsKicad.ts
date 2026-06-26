@@ -122,7 +122,9 @@ function unionPolygons(polygons: Flatten.Polygon[]): Flatten.Polygon | null {
 // The kicad-mod-cache may return pcb_courtyard_outline as individual 2-point line segments
 // (one per edge) rather than a single closed polygon. This function chains those segments
 // into a closed polygon.
-function assembleSegmentsToPolygon(segments: Point[][]): Flatten.Polygon | null {
+function assembleSegmentsToPolygon(
+  segments: Point[][],
+): Flatten.Polygon | null {
   if (segments.length === 0) return null
   const used = new Set<number>()
   const points: Point[] = [segments[0]![0]!, segments[0]![1]!]
@@ -162,14 +164,18 @@ function assembleSegmentsToPolygon(segments: Point[][]): Flatten.Polygon | null 
   return new Flatten.Polygon(normalized.map((p) => [p.x, p.y]))
 }
 
-function courtyardsToPolygon(courtyards: CourtyardElement[]): Flatten.Polygon | null {
+function courtyardsToPolygon(
+  courtyards: CourtyardElement[],
+): Flatten.Polygon | null {
   const polygons = courtyards
     .map(courtyardElementToPolygon)
     .filter((p): p is Flatten.Polygon => p !== null)
 
   // Collect 2-point outlines (line segments from newer kicad-mod-cache format)
   const segments = courtyards
-    .filter((e) => e.type === "pcb_courtyard_outline" && e.outline?.length === 2)
+    .filter(
+      (e) => e.type === "pcb_courtyard_outline" && e.outline?.length === 2,
+    )
     .map((e) => e.outline!)
 
   if (segments.length > 0) {
