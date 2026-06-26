@@ -1,45 +1,33 @@
 import Flatten from "@flatten-js/core"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
+import { getBoundingBox } from "@tscircuit/math-utils"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
-import type { PcbPlatedHole, PcbSilkscreenText } from "circuit-json"
+import type {
+  PcbCourtyardCircle,
+  PcbCourtyardOutline,
+  PcbCourtyardPolygon,
+  PcbCourtyardRect,
+  PcbPlatedHole,
+  PcbSilkscreenText,
+  PcbSmtPad,
+  Point,
+} from "circuit-json"
 import { createBooleanDifferenceVisualization } from "../../src/helpers/boolean-difference"
 
-type PcbSmtPad = {
-  type: "pcb_smtpad"
-  x?: number
-  y?: number
-  width?: number
-  height?: number
-  port_hints?: string[]
-  shape?: string
-  points?: Point[]
-}
-
-type Point = {
-  x: number
-  y: number
-}
-
-type CourtyardElement = {
-  type:
-    | "pcb_courtyard_rect"
-    | "pcb_courtyard_outline"
-    | "pcb_courtyard_circle"
-    | "pcb_courtyard_polygon"
-  center?: Point
-  width?: number
-  height?: number
-  radius?: number
-  diameter?: number
-  outline?: Point[]
-  points?: Point[]
-}
+type CourtyardElement =
+  | PcbCourtyardRect
+  | PcbCourtyardOutline
+  | PcbCourtyardCircle
+  | PcbCourtyardPolygon
+  | (Omit<PcbCourtyardCircle, "radius"> & { radius?: number; diameter: number })
 
 type CourtyardSegment = {
   start: Point
   end: Point
 }
+
+type PcbAlignmentElement = PcbSmtPad | PcbPlatedHole
 
 const POINT_TOLERANCE = 1e-6
 
@@ -83,12 +71,7 @@ function courtyardElementToPolygon(
     ])
   }
 
-  if (
-    (element.type === "pcb_courtyard_outline" ||
-      element.type === "pcb_courtyard_polygon") &&
-    element.outline &&
-    element.outline.length >= 3
-  ) {
+  if (element.type === "pcb_courtyard_outline" && element.outline.length >= 3) {
     const normalizedPoints = normalizePolygonWinding(element.outline)
     return new Flatten.Polygon(
       normalizedPoints.map((point) => [point.x, point.y]),
@@ -109,7 +92,9 @@ function courtyardElementToPolygon(
   if (element.type === "pcb_courtyard_circle" && element.center) {
     const radius =
       element.radius ??
-      (element.diameter !== undefined ? element.diameter / 2 : undefined)
+      ("diameter" in element && element.diameter !== undefined
+        ? element.diameter / 2
+        : undefined)
     if (radius !== undefined) {
       return new Flatten.Polygon(
         new Flatten.Circle(
@@ -273,36 +258,54 @@ function getCourtyardMetrics(
   }
 }
 
-// --- Helpers to handle both pads & holes safely ---
-function getWidth(elm: PcbSmtPad | PcbPlatedHole): number {
-  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
-    return (
-      Math.max(...elm.points.map((point) => point.x)) -
-      Math.min(...elm.points.map((point) => point.x))
-    )
+function getPointBounds(points: Point[]) {
+  return {
+    minX: Math.min(...points.map((point) => point.x)),
+    maxX: Math.max(...points.map((point) => point.x)),
+    minY: Math.min(...points.map((point) => point.y)),
+    maxY: Math.max(...points.map((point) => point.y)),
   }
-  if ("width" in elm && elm.width !== undefined) return elm.width
-  if (elm.shape === "circle") return elm.outer_diameter
+}
+
+// --- Helpers to handle both pads & holes safely ---
+function getWidth(elm: PcbAlignmentElement): number {
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon") {
+    const bounds = getPointBounds(elm.points)
+    return bounds.maxX - bounds.minX
+  }
+  if ("width" in elm) return elm.width
+  if (elm.type === "pcb_smtpad" && elm.shape === "circle") {
+    return elm.radius * 2
+  }
+  if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
+    return elm.outer_diameter
+  }
   if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_width
 
   return 0
 }
-function getHeight(elm: PcbSmtPad | PcbPlatedHole): number {
-  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
-    return (
-      Math.max(...elm.points.map((point) => point.y)) -
-      Math.min(...elm.points.map((point) => point.y))
-    )
+function getHeight(elm: PcbAlignmentElement): number {
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon") {
+    const bounds = getPointBounds(elm.points)
+    return bounds.maxY - bounds.minY
   }
-  if ("height" in elm && elm.height !== undefined) return elm.height
-  if (elm.shape === "circle") return elm.outer_diameter
+  if ("height" in elm) return elm.height
+  if (elm.type === "pcb_smtpad" && elm.shape === "circle") {
+    return elm.radius * 2
+  }
+  if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
+    return elm.outer_diameter
+  }
   if (elm.shape === "circular_hole_with_rect_pad") return elm.rect_pad_height
 
   return 0
 }
-function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
-  if (elm.type === "pcb_smtpad" && elm.shape === "polygon" && elm.points) {
+function getArea(elm: PcbAlignmentElement): number {
+  if (elm.type === "pcb_smtpad" && elm.shape === "polygon") {
     return Math.abs(signedPolygonArea(elm.points))
+  }
+  if (elm.type === "pcb_smtpad" && elm.shape === "circle") {
+    return Math.PI * elm.radius * elm.radius
   }
   if (elm.type === "pcb_plated_hole" && elm.shape === "circle") {
     const outerRadius = elm.outer_diameter / 2
@@ -322,44 +325,38 @@ function getArea(elm: PcbSmtPad | PcbPlatedHole): number {
   return getWidth(elm) * getHeight(elm)
 }
 
-function getElementCenter(element: PcbSmtPad | PcbPlatedHole): Point {
-  if (
-    element.type === "pcb_smtpad" &&
-    element.shape === "polygon" &&
-    element.points &&
-    element.points.length > 0
-  ) {
-    const maxX = Math.max(...element.points.map((point) => point.x))
-    const minX = Math.min(...element.points.map((point) => point.x))
-    const maxY = Math.max(...element.points.map((point) => point.y))
-    const minY = Math.min(...element.points.map((point) => point.y))
+function getElementCenter(element: PcbAlignmentElement): Point {
+  if (element.type === "pcb_smtpad" && element.shape === "polygon") {
+    const bounds = getPointBounds(element.points)
 
     return {
-      x: (minX + maxX) / 2,
-      y: (minY + maxY) / 2,
+      x: (bounds.minX + bounds.maxX) / 2,
+      y: (bounds.minY + bounds.maxY) / 2,
+    }
+  }
+
+  if ("x" in element && "y" in element) {
+    return {
+      x: Number(element.x),
+      y: Number(element.y),
     }
   }
 
   return {
-    x: element.x ?? 0,
-    y: element.y ?? 0,
+    x: 0,
+    y: 0,
   }
 }
 
-function getElementBounds(element: PcbSmtPad | PcbPlatedHole) {
-  const center = getElementCenter(element)
-  const halfWidth = getWidth(element) / 2
-  const halfHeight = getHeight(element) / 2
-
-  return {
-    minX: center.x - halfWidth,
-    maxX: center.x + halfWidth,
-    minY: center.y - halfHeight,
-    maxY: center.y + halfHeight,
-  }
+function getElementBounds(element: PcbAlignmentElement) {
+  return getBoundingBox({
+    center: getElementCenter(element),
+    width: getWidth(element),
+    height: getHeight(element),
+  })
 }
 
-function getPadsAndHolesCenter(elements: (PcbSmtPad | PcbPlatedHole)[]): Point {
+function getPadsAndHolesCenter(elements: PcbAlignmentElement[]): Point {
   const bounds = elements.map(getElementBounds)
   const maxX = Math.max(...bounds.map((bound) => bound.maxX))
   const minX = Math.min(...bounds.map((bound) => bound.minX))
@@ -377,14 +374,32 @@ function translateCourtyardElements(
   dx: number,
   dy: number,
 ): CourtyardElement[] {
-  return courtyards.map((courtyard) => ({
-    ...courtyard,
-    center: courtyard.center
-      ? { x: courtyard.center.x + dx, y: courtyard.center.y + dy }
-      : courtyard.center,
-    outline: courtyard.outline?.map((p) => ({ x: p.x + dx, y: p.y + dy })),
-    points: courtyard.points?.map((p) => ({ x: p.x + dx, y: p.y + dy })),
-  }))
+  return courtyards.map((courtyard) => {
+    if (
+      courtyard.type === "pcb_courtyard_rect" ||
+      courtyard.type === "pcb_courtyard_circle"
+    ) {
+      return {
+        ...courtyard,
+        center: {
+          x: courtyard.center.x + dx,
+          y: courtyard.center.y + dy,
+        },
+      }
+    }
+
+    if (courtyard.type === "pcb_courtyard_outline") {
+      return {
+        ...courtyard,
+        outline: courtyard.outline.map((p) => ({ x: p.x + dx, y: p.y + dy })),
+      }
+    }
+
+    return {
+      ...courtyard,
+      points: courtyard.points.map((p) => ({ x: p.x + dx, y: p.y + dy })),
+    }
+  })
 }
 
 export async function compareFootprinterVsKicad(
