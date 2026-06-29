@@ -22,6 +22,7 @@
     "@flatten-js/core": "^1.6.2",
     "@tscircuit/circuit-json-util": "^0.0.89",
     "@tscircuit/log-soup": "^1.0.2",
+    "@tscircuit/math-utils": "^0.0.9",
     "@tscircuit/soup-util": "^0.0.41",
     "@types/bun": "^1.2.2",
     "@types/node": "^20.12.13",
