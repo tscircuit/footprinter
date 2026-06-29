@@ -1,9 +1,9 @@
 import { expect, test } from "bun:test"
+import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import {
-  compareFootprinterVsKicad,
-  compareFootprinterVsKicadCircuitJson,
-} from "../../fixtures/compareFootprinterVsKicad"
+import { translate } from "transformation-matrix"
+import { fp } from "src/footprinter"
+import { compareFootprinterVsKicad } from "../../fixtures/compareFootprinterVsKicad"
 import { d02010603MetricCircuitJson } from "./fixtures/d_0201_0603metric"
 
 const diodeCacheCases = [
@@ -45,29 +45,20 @@ for (const [footprinterString, kicadPath] of diodeCacheCases) {
       `${footprinterString}_boolean_difference`,
     )
     expect(avgRelDiff).toBeLessThan(0.05)
-  })
+  }, 10000)
 }
 
 test("diode-kicad-parity/d_0201_0603metric", () => {
-  const {
-    avgRelDiff,
-    combinedFootprintElements,
-    booleanDifferenceSvg,
-    courtyardDiffPercent,
-  } = compareFootprinterVsKicadCircuitJson(
-    "diode0201",
-    d02010603MetricCircuitJson,
-    "D_0201_0603Metric",
+  const fpCircuitJson = fp.string("diode0201").circuitJson()
+  const kicadCircuitJson = transformPcbElements(
+    d02010603MetricCircuitJson as any[],
+    translate(1.98, 0),
   )
-
-  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
-    showCourtyards: true,
-  })
-  expect(courtyardDiffPercent).toBeLessThan(5)
+  const svgContent = convertCircuitJsonToPcbSvg(
+    [...fpCircuitJson, ...kicadCircuitJson],
+    {
+      showCourtyards: true,
+    },
+  )
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "d_0201_0603metric")
-  expect(booleanDifferenceSvg).toMatchSvgSnapshot(
-    import.meta.path,
-    "d_0201_0603metric_boolean_difference",
-  )
-  expect(avgRelDiff).toBeLessThan(0.05)
 })

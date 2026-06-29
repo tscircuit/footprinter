@@ -27,17 +27,6 @@ type CourtyardElement =
   | (Omit<PcbCourtyardCircle, "radius"> & { radius?: number; diameter: number })
 
 type PcbAlignmentElement = PcbSmtPad | PcbPlatedHole
-type CompareFootprinterVsKicadOptions = {
-  includeSilkscreen?: boolean
-}
-type CompareFootprinterVsKicadResult = {
-  avgRelDiff: number
-  combinedFootprintElements: any[]
-  booleanDifferenceSvg: string
-  courtyardDiffPercent: number
-  courtyardIntersectionOverUnionPercent: number
-  fpSilkscreenElements: any[]
-}
 
 function signedPolygonArea(points: Point[]): number {
   let area = 0
@@ -339,8 +328,17 @@ function translateCourtyardElements(
 export async function compareFootprinterVsKicad(
   footprinterString: string,
   kicadPath: string,
-  options: CompareFootprinterVsKicadOptions = { includeSilkscreen: true },
-): Promise<CompareFootprinterVsKicadResult> {
+  options: {
+    includeSilkscreen?: boolean
+  } = { includeSilkscreen: true },
+): Promise<{
+  avgRelDiff: number
+  combinedFootprintElements: any[]
+  booleanDifferenceSvg: string
+  courtyardDiffPercent: number
+  courtyardIntersectionOverUnionPercent: number
+  fpSilkscreenElements: any[]
+}> {
   const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
   const kicadUrl = BASE_URL + kicadPath
   const normalizedFootprintName =
@@ -352,20 +350,6 @@ export async function compareFootprinterVsKicad(
 
   const kicadCircuitJson = (await res.json()) as any[]
 
-  return compareFootprinterVsKicadCircuitJson(
-    footprinterString,
-    kicadCircuitJson,
-    normalizedFootprintName,
-    options,
-  )
-}
-
-export function compareFootprinterVsKicadCircuitJson(
-  footprinterString: string,
-  kicadCircuitJson: any[],
-  normalizedFootprintName: string,
-  options: CompareFootprinterVsKicadOptions = { includeSilkscreen: true },
-): CompareFootprinterVsKicadResult {
   const kicadPads = kicadCircuitJson.filter(
     (e) => e.type === "pcb_smtpad",
   ) as PcbSmtPad[]
