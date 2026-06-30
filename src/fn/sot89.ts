@@ -9,10 +9,10 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const sot89_3CourtyardOutline = [
-  { x: -3.0875, y: -2.5 },
-  { x: -3.0875, y: 2.5 },
-  { x: 2.0125, y: 2.5 },
-  { x: 2.0125, y: -2.5 },
+  { x: -2.85, y: -2.5 },
+  { x: -2.85, y: 2.5 },
+  { x: 2.25, y: 2.5 },
+  { x: 2.25, y: -2.5 },
 ]
 
 const sot89_5CourtyardOutline = [
@@ -38,15 +38,14 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
 
   const padGap = Number.parseFloat(parameters.p)
   const padWidth = Number.parseFloat(parameters.pw)
-  const length = Number.parseFloat(parameters.w)
   const padHeight = Number.parseFloat(parameters.pl)
-  const centerExtra = 0.175
-  const outerPadXShift = (padHeight - (padHeight + centerExtra)) / 2
 
+  // Two lead pads on the left and the large collector tab (pin 2) on the
+  // right, matching the KiCad SOT-89-3 land pattern.
   pads.push(
-    rectpad(1, -length / 2 + outerPadXShift, padGap, padHeight, padWidth),
-    rectpad(2, -length / 2, 0, padHeight + centerExtra, padWidth),
-    rectpad(3, -length / 2 + outerPadXShift, -padGap, padHeight, padWidth),
+    rectpad(1, -1.95, padGap, padHeight, padWidth),
+    rectpad(2, 0.435, 0, 3.13, 1.74),
+    rectpad(3, -1.95, -padGap, padHeight, padWidth),
   )
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
