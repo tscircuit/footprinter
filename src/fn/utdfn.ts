@@ -29,7 +29,9 @@ export const utdfn = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   if (raw_params.string?.includes("_ep")) {
     raw_params.ep = true
-    const epMatch = raw_params.string.match(/_ep(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)/)
+    const epMatch = raw_params.string.match(
+      /_ep(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)/,
+    )
     if (epMatch) {
       raw_params.epw = `${epMatch[1]}mm`
       raw_params.eph = `${epMatch[2]}mm`
@@ -111,8 +113,7 @@ export const utdfn = (
 
   const roundUpToCourtyardGrid = (value: number) =>
     Math.ceil(value / 0.05) * 0.05
-  const pinRowSpanY =
-    (parameters.num_pins / 2 - 1) * p + pw
+  const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw
   const courtyardHalfWidthMm = roundUpToCourtyardGrid(w / 2 + 0.25)
   const courtyardHalfHeightMm = roundUpToCourtyardGrid(pinRowSpanY / 2 + 0.45)
   const courtyard: PcbCourtyardRect = {

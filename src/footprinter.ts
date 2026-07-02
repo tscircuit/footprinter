@@ -283,7 +283,6 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^spdip-?(\d*)/i, "spdip$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
     .replace(/^pdip-?(\d*)/i, "dip$1")
-
 }
 
 export const string = (def: string): Footprinter => {

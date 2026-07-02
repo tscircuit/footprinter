@@ -19,9 +19,7 @@ test("utdfn4_ep1x1 enables exposed pad with 1x1mm", () => {
 })
 
 test("utdfn4 svg snapshot", () => {
-  const circuitJson = fp
-    .string("utdfn4")
-    .circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp.string("utdfn4").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "utdfn4")
 })

@@ -41,25 +41,19 @@ test("spdip8_w300mil respects custom width", () => {
 })
 
 test("spdip8 svg snapshot", () => {
-  const circuitJson = fp
-    .string("spdip8")
-    .circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp.string("spdip8").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip8")
 })
 
 test("spdip4 svg snapshot", () => {
-  const circuitJson = fp
-    .string("spdip4")
-    .circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp.string("spdip4").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip4")
 })
 
 test("spdip28 svg snapshot", () => {
-  const circuitJson = fp
-    .string("spdip28")
-    .circuitJson() as AnyCircuitElement[]
+  const circuitJson = fp.string("spdip28").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "spdip28")
 })
