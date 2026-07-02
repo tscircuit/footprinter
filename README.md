@@ -21,6 +21,8 @@ cap0402
 res0805
 soic8_p1.27mm
 dip16
+pdip8
+spdip8
 pinrow10
 tssop20_p0.5mm
 sot23
