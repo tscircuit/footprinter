@@ -99,3 +99,33 @@ test("led0201", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
 })
+
+test("led2835 via string", () => {
+  const params = fp.string("led2835").json()
+  expect(params.fn).toBe("led")
+  expect(params.imperial).toBe("2835")
+})
+
+test("led2835 svg snapshot", () => {
+  const soup = fp.string("led2835").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_2835")
+})
+
+test("led5050 via string", () => {
+  const params = fp.string("led5050").json()
+  expect(params.fn).toBe("led")
+  expect(params.imperial).toBe("5050")
+})
+
+test("led5050 svg snapshot", () => {
+  const soup = fp.string("led5050").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_5050")
+})
+
+test("led5050 via chained api", () => {
+  const soup = fp().led().imperial("5050").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_5050_chained")
+})

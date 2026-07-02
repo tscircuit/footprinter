@@ -189,6 +189,28 @@ export const footprintSizes: StandardSize[] = [
       stroke_width_mm: 0.12,
     },
   },
+  {
+    imperial: "2835",
+    metric: "2835",
+    p_mm_min: 2.4,
+    pw_mm_min: 1.2,
+    ph_mm_min: 1.5,
+    w_mm_min: 2.8,
+    h_mm_min: 3.5,
+    courtyard_width_mm: 3.3,
+    courtyard_height_mm: 4.0,
+  },
+  {
+    imperial: "5050",
+    metric: "5050",
+    p_mm_min: 4.0,
+    pw_mm_min: 1.5,
+    ph_mm_min: 2.0,
+    w_mm_min: 5.0,
+    h_mm_min: 5.0,
+    courtyard_width_mm: 5.5,
+    courtyard_height_mm: 5.5,
+  },
 ]
 
 const metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]))
