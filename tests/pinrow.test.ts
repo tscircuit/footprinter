@@ -283,28 +283,30 @@ test("pinrow3_smd_rightangle_male", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd_ra_male")
 })
 
-test("pinrow5_flippinlabels", () => {
-  const def = "pinrow5_flippinlabels"
+test("pinrow5_pinlabelbottom", () => {
+  const def = "pinrow5_pinlabelbottom"
   const soup = fp.string(def).circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
 
   const pinrowJson = fp.string(def).json() as any
-  expect(pinrowJson.flippinlabels).toBe(true)
+  // the `pinlabelbottom` string flag resolves to the canonical pinLabelSide enum
+  expect(pinrowJson.pinLabelSide).toBe("bottom")
 
-  // flippinlabels puts the ref-des on the opposite side of the pin row: its
-  // silkscreen Y sits on the far side vs the default pinrow5.
-  const refOf = (cj: any[]) =>
-    cj.find(
-      (el) => el.type === "pcb_silkscreen_text" && el.text === "{REF}",
-    ) as any
-  const defaultRef = refOf(fp.string("pinrow5").circuitJson())
-  const flippedRef = refOf(soup)
-  expect(Math.sign(flippedRef.anchor_position.y)).toBe(
-    -Math.sign(defaultRef.anchor_position.y),
+  // pinLabelSide:"bottom" anchors the pin labels below the row — the opposite
+  // side from the default ("top"): a {PIN..} label's y sits on the far side.
+  const pinLabelY = (cj: any[]) =>
+    (
+      cj.find(
+        (el) =>
+          el.type === "pcb_silkscreen_text" && el.text?.startsWith("{PIN"),
+      ) as any
+    ).anchor_position.y
+  expect(Math.sign(pinLabelY(soup))).toBe(
+    -Math.sign(pinLabelY(fp.string("pinrow5").circuitJson())),
   )
 
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "pinrow5_flippinlabels",
+    "pinrow5_pinlabelbottom",
   )
 })

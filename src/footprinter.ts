@@ -103,6 +103,11 @@ export type Footprinter = {
     | "nopinlabels"
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
+    | "pinLabelSide"
+    | "pinlabeltop"
+    | "pinlabelbottom"
+    | "pinlabelleft"
+    | "pinlabelright"
   >
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   radial: () => FootprinterParamsBuilder<

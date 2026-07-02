@@ -64,19 +64,36 @@ export const pinrow_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
-    flippinlabels: z
-      .boolean()
+    pinLabelSide: z
+      .enum(["top", "bottom", "left", "right"])
       .optional()
-      .default(false)
       .describe(
-        "place pin labels and the ref-des on the opposite side of the pin row",
+        "side of the pin row the pin labels sit on; overrides the side derived from text alignment",
       ),
+    // string-form flags for pinLabelSide (e.g. `pinrow5_pinlabelbottom`), mirroring
+    // mountedpcbmodule's pinRowSide / pinrow<side> convention
+    pinlabeltop: z.boolean().optional().default(false),
+    pinlabelbottom: z.boolean().optional().default(false),
+    pinlabelleft: z.boolean().optional().default(false),
+    pinlabelright: z.boolean().optional().default(false),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
+    const pinLabelSide =
+      data.pinLabelSide ??
+      (data.pinlabeltop
+        ? "top"
+        : data.pinlabelbottom
+          ? "bottom"
+          : data.pinlabelleft
+            ? "left"
+            : data.pinlabelright
+              ? "right"
+              : undefined)
     return {
       ...data,
       pinlabelAnchorSide,
+      pinLabelSide,
       male: data.male ?? !data.female,
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
@@ -112,23 +129,15 @@ export const pinrow = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
-    flippinlabels,
+    pinLabelSide,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
-  // When flippinlabels is set, place the pin labels and ref-des on the opposite
-  // side of the pin row (e.g. below a row whose labels default to above).
-  const oppositeAnchorSide = {
-    top: "bottom",
-    bottom: "top",
-    left: "right",
-    right: "left",
-  } as const
-  const effectiveAnchorSide = flippinlabels
-    ? oppositeAnchorSide[pinlabelAnchorSide]
-    : pinlabelAnchorSide
+  // pinLabelSide names the side of the pin row the labels anchor to directly;
+  // when unset it falls back to the side derived from text alignment / orthogonal.
+  const effectiveAnchorSide = pinLabelSide ?? pinlabelAnchorSide
 
   const holes: AnyCircuitElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
@@ -370,13 +379,8 @@ export const pinrow = (
     }
   }
 
-  // Add centered silkscreen reference text (flipped to the opposite side of the
-  // pin row when flippinlabels is set, matching the pin labels).
-  const refText: SilkscreenRef = silkscreenRef(
-    0,
-    (flippinlabels ? -1 : 1) * (pinRowSpanY / 2 + p),
-    0.5,
-  )
+  // Add centered silkscreen reference text
+  const refText: SilkscreenRef = silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
 
   const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
   const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
