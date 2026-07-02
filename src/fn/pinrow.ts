@@ -64,6 +64,13 @@ export const pinrow_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
+    flippinlabels: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe(
+        "place pin labels and the ref-des on the opposite side of the pin row",
+      ),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -105,10 +112,23 @@ export const pinrow = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
+    flippinlabels,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
+
+  // When flippinlabels is set, place the pin labels and ref-des on the opposite
+  // side of the pin row (e.g. below a row whose labels default to above).
+  const oppositeAnchorSide = {
+    top: "bottom",
+    bottom: "top",
+    left: "right",
+    right: "left",
+  } as const
+  const effectiveAnchorSide = flippinlabels
+    ? oppositeAnchorSide[pinlabelAnchorSide]
+    : pinlabelAnchorSide
 
   const holes: AnyCircuitElement[] = []
   const numPinsPerRow = Math.ceil(num_pins / rows)
@@ -199,7 +219,7 @@ export const pinrow = (
       xoff,
       yoff,
       od,
-      anchorSide: pinlabelAnchorSide,
+      anchorSide: effectiveAnchorSide,
       smd: parameters.smd,
       pw: parameters.pw,
       pl: parameters.pl,
@@ -212,7 +232,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
@@ -226,7 +246,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
@@ -241,7 +261,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
@@ -350,8 +370,13 @@ export const pinrow = (
     }
   }
 
-  // Add centered silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
+  // Add centered silkscreen reference text (flipped to the opposite side of the
+  // pin row when flippinlabels is set, matching the pin labels).
+  const refText: SilkscreenRef = silkscreenRef(
+    0,
+    (flippinlabels ? -1 : 1) * (pinRowSpanY / 2 + p),
+    0.5,
+  )
 
   const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
   const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
