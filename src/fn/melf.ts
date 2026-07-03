@@ -7,6 +7,10 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
+import {
+  createManualDiodeFabricationNotes,
+  diodeFabricationTuningPresets,
+} from "../helpers/manual-diode-fabrication"
 import { base_def } from "../helpers/zod/base_def"
 
 export const melf_def = base_def.extend({
@@ -23,6 +27,16 @@ export const melf = (
   raw_params: z.input<typeof melf_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = melf_def.parse(raw_params)
+
+  const fabricationNotes = createManualDiodeFabricationNotes({
+    pin1PadX: -length.parse(parameters.p) / 2,
+    pin2PadX: length.parse(parameters.p) / 2,
+    padWidth: length.parse(parameters.pl),
+    padHeight: length.parse(parameters.pw),
+    bodyWidth: length.parse(parameters.w),
+    bodyHeight: length.parse(parameters.h),
+    tuning: diodeFabricationTuningPresets.wideThickStroke,
+  })
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -71,6 +85,7 @@ export const melf = (
 
   return {
     circuitJson: melfWithoutParsing(parameters).concat(
+      fabricationNotes as AnyCircuitElement[],
       silkscreenLine as AnyCircuitElement,
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,

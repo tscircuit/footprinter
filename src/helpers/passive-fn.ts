@@ -9,7 +9,71 @@ import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
+import {
+  createManualDiodeFabricationNotes,
+  type ManualDiodeFabricationNoteTuning,
+} from "./manual-diode-fabrication"
 import { base_def } from "./zod/base_def"
+
+const getPassiveDiodeFabricationTuning = (
+  footprintSize?: string,
+): ManualDiodeFabricationNoteTuning | undefined => {
+  if (footprintSize === "2512") {
+    return {
+      arrowBaseRatio: {
+        base: 0.3,
+        tightPitchFactor: 0.03,
+        min: 0.27,
+        max: 0.3,
+      },
+      cathodeBarRatio: {
+        base: 0.22,
+        tightPitchFactor: 0.02,
+        min: 0.2,
+        max: 0.22,
+      },
+    }
+  }
+
+  if (footprintSize === "0201") {
+    return {
+      arrowBaseRatio: {
+        base: 0.18,
+        tightPitchFactor: 0.055,
+        min: 0.12,
+        max: 0.18,
+      },
+      cathodeBarRatio: {
+        base: 0.11,
+        tightPitchFactor: 0.03,
+        min: 0.07,
+        max: 0.11,
+      },
+      leadLineExtension: {
+        scale: 0.18,
+        min: 0.04,
+        max: 0.06,
+      },
+    }
+  }
+
+  if (footprintSize === "0402") {
+    return {
+      arrowBaseRatio: {
+        base: 0.16,
+        tightPitchFactor: 0.06,
+        min: 0.1,
+        max: 0.16,
+      },
+      cathodeBarRatio: {
+        base: 0.1,
+        tightPitchFactor: 0.03,
+        min: 0.06,
+        max: 0.1,
+      },
+    }
+  }
+}
 
 type StandardSize = {
   imperial: string
@@ -334,11 +398,24 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
       : null
+  const fabricationNotes =
+    fn === "diode" && sz?.imperial !== "01005"
+      ? createManualDiodeFabricationNotes({
+          pin1PadX: -p / 2,
+          pin2PadX: p / 2,
+          padWidth: pw,
+          padHeight: ph,
+          bodyWidth: w,
+          bodyHeight: h,
+          tuning: getPassiveDiodeFabricationTuning(sz?.imperial),
+        })
+      : []
 
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      ...fabricationNotes,
       ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
@@ -347,6 +424,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   return [
     rectpad(["1", "left"], -p / 2, 0, pw, ph),
     rectpad(["2", "right"], p / 2, 0, pw, ph),
+    ...fabricationNotes,
     ...silkscreenLines,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),

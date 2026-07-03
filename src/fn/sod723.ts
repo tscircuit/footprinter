@@ -24,6 +24,8 @@ export const sod723 = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
 
+  const fabricationNotes: AnyCircuitElement[] = []
+
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
@@ -71,6 +73,7 @@ export const sod723 = (
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      fabricationNotes as AnyCircuitElement[],
       silkscreenLine as AnyCircuitElement,
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,

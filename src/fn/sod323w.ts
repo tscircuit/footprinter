@@ -7,6 +7,10 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
+import {
+  createManualDiodeFabricationNotes,
+  diodeFabricationTuningPresets,
+} from "../helpers/manual-diode-fabrication"
 import { base_def } from "../helpers/zod/base_def"
 
 export const sod323w_def = base_def.extend({
@@ -23,6 +27,16 @@ export const sod323w = (
   raw_params: z.input<typeof sod323w_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod323w_def.parse(raw_params)
+
+  const fabricationNotes = createManualDiodeFabricationNotes({
+    pin1PadX: -length.parse(parameters.pad_spacing) / 2,
+    pin2PadX: length.parse(parameters.pad_spacing) / 2,
+    padWidth: length.parse(parameters.pl),
+    padHeight: length.parse(parameters.pw),
+    bodyWidth: length.parse(parameters.w),
+    bodyHeight: length.parse(parameters.h),
+    tuning: diodeFabricationTuningPresets.sod323Compact,
+  })
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -72,6 +86,7 @@ export const sod323w = (
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      fabricationNotes as AnyCircuitElement[],
       silkscreenLine as AnyCircuitElement,
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,
