@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { polygonpad } from "../helpers/polygonpad"
 import { rectpad } from "../helpers/rectpad"
 import type {
   AnyCircuitElement,
@@ -20,6 +21,21 @@ const sot89_5CourtyardOutline = [
   { x: -2.85, y: 2.5 },
   { x: 2.85, y: 2.5 },
   { x: 2.85, y: -2.5 },
+]
+
+const sot89_5CenterPadPoints = [
+  { x: 0.9, y: 0.5 },
+  { x: 2.6, y: 0.5 },
+  { x: 2.6, y: -0.5 },
+  { x: 0.9, y: -0.5 },
+  { x: 0.4, y: -1 },
+  { x: -0.4, y: -1 },
+  { x: -0.9, y: -0.5 },
+  { x: -2.6, y: -0.5 },
+  { x: -2.6, y: 0.5 },
+  { x: -0.9, y: 0.5 },
+  { x: -0.4, y: 1 },
+  { x: 0.4, y: 1 },
 ]
 
 export const sot89_def = base_def.extend({
@@ -98,14 +114,10 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
 export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   const pads: AnyCircuitElement[] = []
 
-  const padGap = Number.parseFloat(parameters.p)
-  const padWidth = Number.parseFloat(parameters.pw)
-  const length = Number.parseFloat(parameters.w)
-
   pads.push(
     rectpad(1, -1.85, -1.5, 1.5, 0.7),
     rectpad(2, -1.85, 1.5, 1.5, 0.7),
-    rectpad(3, 0, 0, 0.8, 2),
+    polygonpad(3, sot89_5CenterPadPoints),
     rectpad(4, 1.85, -1.5, 1.5, 0.7),
     rectpad(5, 1.85, 1.5, 1.5, 0.7),
   )
