@@ -1,19 +1,19 @@
-import { z } from "zod"
-import { polygonpad } from "../helpers/polygonpad"
-import { rectpad } from "../helpers/rectpad"
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import { polygonpad } from "../helpers/polygonpad"
+import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
 const sot89_3CourtyardOutline = [
-  { x: -3.0875, y: -2.5 },
-  { x: -3.0875, y: 2.5 },
-  { x: 2.0125, y: 2.5 },
-  { x: 2.0125, y: -2.5 },
+  { x: -2.85, y: -2.5 },
+  { x: -2.85, y: 2.5 },
+  { x: 2.25, y: 2.5 },
+  { x: 2.25, y: -2.5 },
 ]
 
 const sot89_5CourtyardOutline = [
@@ -38,6 +38,13 @@ const sot89_5CenterPadPoints = [
   { x: 0.4, y: 1 },
 ]
 
+const sot89_3CenterPadPoints = [
+  { x: 2, y: -0.8665 },
+  { x: -1.125, y: -0.8665 },
+  { x: -1.125, y: 0.8665 },
+  { x: 2, y: 0.8665 },
+]
+
 export const sot89_def = base_def.extend({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(5)]).default(3),
@@ -50,25 +57,21 @@ export const sot89_def = base_def.extend({
 })
 
 export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
-  const pads: AnyCircuitElement[] = []
-
   const padGap = Number.parseFloat(parameters.p)
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
   const padHeight = Number.parseFloat(parameters.pl)
-  const centerExtra = 0.175
-  const outerPadXShift = (padHeight - (padHeight + centerExtra)) / 2
-
-  pads.push(
-    rectpad(1, -length / 2 + outerPadXShift, padGap, padHeight, padWidth),
-    rectpad(2, -length / 2, 0, padHeight + centerExtra, padWidth),
-    rectpad(3, -length / 2 + outerPadXShift, -padGap, padHeight, padWidth),
-  )
-
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
-
-  const width = Number.parseFloat(parameters.w) / 2 - 1
+  const outerPadX = -length / 2 + 0.15
+  const width = length / 2 - 1
   const height = Number.parseFloat(parameters.h) / 2
+  const pads: AnyCircuitElement[] = [
+    rectpad(1, outerPadX, padGap, padHeight, padWidth),
+    polygonpad(2, sot89_3CenterPadPoints),
+    rectpad(3, outerPadX, -padGap, padHeight, padWidth),
+  ]
+
+  const silkscreenRefText = silkscreenRef(0, height + 0.5, 0.3)
+
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -106,30 +109,23 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
     ...pads,
     silkscreenPath1,
     silkscreenPath2,
-    silkscreenRefText as AnyCircuitElement,
+    silkscreenRefText,
     courtyard,
   ]
 }
 
 export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
-  const pads: AnyCircuitElement[] = []
-
-  pads.push(
+  const pads: AnyCircuitElement[] = [
     rectpad(1, -1.85, -1.5, 1.5, 0.7),
     rectpad(2, -1.85, 1.5, 1.5, 0.7),
     polygonpad(3, sot89_5CenterPadPoints),
     rectpad(4, 1.85, -1.5, 1.5, 0.7),
     rectpad(5, 1.85, 1.5, 1.5, 0.7),
-  )
-
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    Number.parseFloat(parameters.h) / 2 + 0.5,
-    0.3,
-  )
+  ]
 
   const width = Number.parseFloat(parameters.w) / 2 - 1
   const height = Number.parseFloat(parameters.h) / 2
+  const silkscreenRefText = silkscreenRef(0, height + 0.5, 0.3)
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -165,7 +161,7 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
     ...pads,
     silkscreenPath1,
     silkscreenPath2,
-    silkscreenRefText as AnyCircuitElement,
+    silkscreenRefText,
     courtyard,
   ]
 }
@@ -184,14 +180,14 @@ export const sot89 = (
   if (parameters.num_pins === 3) {
     return {
       circuitJson: sot89_3(parameters),
-      parameters: parameters,
+      parameters,
     }
   }
 
   if (parameters.num_pins === 5) {
     return {
       circuitJson: sot89_5(parameters),
-      parameters: parameters,
+      parameters,
     }
   }
 
