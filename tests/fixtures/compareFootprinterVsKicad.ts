@@ -328,9 +328,10 @@ function translateCourtyardElements(
 export async function compareFootprinterVsKicad(
   footprinterString: string,
   kicadPath: string,
-  options: {
+  rawOptions: {
     includeSilkscreen?: boolean
-  } = { includeSilkscreen: true },
+    includeFabricationNotes?: boolean
+  } = { includeSilkscreen: true, includeFabricationNotes: false },
 ): Promise<{
   avgRelDiff: number
   combinedFootprintElements: any[]
@@ -339,6 +340,12 @@ export async function compareFootprinterVsKicad(
   courtyardIntersectionOverUnionPercent: number
   fpSilkscreenElements: any[]
 }> {
+  const options = {
+    includeSilkscreen: true,
+    includeFabricationNotes: false,
+    ...rawOptions,
+  }
+
   const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
   const kicadUrl = BASE_URL + kicadPath
   const normalizedFootprintName =
@@ -485,6 +492,9 @@ export async function compareFootprinterVsKicad(
       e.type === "pcb_courtyard_rect" ||
       e.type === "pcb_courtyard_circle" ||
       e.type === "pcb_courtyard_polygon" ||
+      (options.includeFabricationNotes === true &&
+        (e.type === "pcb_fabrication_note_path" ||
+          e.type === "pcb_fabrication_note_text")) ||
       (options.includeSilkscreen === true &&
         (e.type === "pcb_silkscreen_path" || e.type === "pcb_silkscreen_text")),
   )

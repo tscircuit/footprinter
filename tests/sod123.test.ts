@@ -7,3 +7,80 @@ test("sod123", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod123")
 })
+
+test("sod123 includes KiCad fabrication geometry", () => {
+  const circuitJson = fp.string("sod123").circuitJson()
+  const fabricationPaths = circuitJson.filter(
+    (element) => element.type === "pcb_fabrication_note_path",
+  )
+  const fabricationTexts = circuitJson.filter(
+    (element) => element.type === "pcb_fabrication_note_text",
+  )
+
+  expect(fabricationPaths).toHaveLength(11)
+  expect(fabricationPaths.map((path) => path.route)).toEqual([
+    [
+      { x: 0.25, y: 0 },
+      { x: 0.75, y: 0 },
+    ],
+    [
+      { x: 0.25, y: 0.4 },
+      { x: -0.35, y: 0 },
+    ],
+    [
+      { x: 0.25, y: -0.4 },
+      { x: 0.25, y: 0.4 },
+    ],
+    [
+      { x: -0.35, y: 0 },
+      { x: 0.25, y: -0.4 },
+    ],
+    [
+      { x: -0.35, y: 0 },
+      { x: -0.35, y: 0.55 },
+    ],
+    [
+      { x: -0.35, y: 0 },
+      { x: -0.35, y: -0.55 },
+    ],
+    [
+      { x: -0.75, y: 0 },
+      { x: -0.35, y: 0 },
+    ],
+    [
+      { x: -1.4, y: 0.9 },
+      { x: -1.4, y: -0.9 },
+    ],
+    [
+      { x: 1.4, y: 0.9 },
+      { x: -1.4, y: 0.9 },
+    ],
+    [
+      { x: 1.4, y: -0.9 },
+      { x: 1.4, y: 0.9 },
+    ],
+    [
+      { x: -1.4, y: -0.9 },
+      { x: 1.4, y: -0.9 },
+    ],
+  ])
+  expect(fabricationTexts).toHaveLength(2)
+  expect(fabricationTexts).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({
+        type: "pcb_fabrication_note_text",
+        text: "${REFERENCE}",
+        font_size: 1,
+        anchor_position: { x: 0, y: -2 },
+        anchor_alignment: "center",
+      }),
+      expect.objectContaining({
+        type: "pcb_fabrication_note_text",
+        text: "D_SOD-123",
+        font_size: 1,
+        anchor_position: { x: 0, y: 2.1 },
+        anchor_alignment: "center",
+      }),
+    ]),
+  )
+})
