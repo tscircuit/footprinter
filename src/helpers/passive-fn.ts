@@ -9,6 +9,7 @@ import { platedhole } from "./platedhole"
 import { z } from "zod"
 import { length, distance } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
+import { createDiodeFabricationNotes } from "./diode-fabrication-notes"
 import { base_def } from "./zod/base_def"
 
 type StandardSize = {
@@ -334,11 +335,21 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
       : null
+  const fabricationNotes =
+    fn === "diode" && sz?.imperial !== "01005"
+      ? createDiodeFabricationNotes({
+          pin1PadX: -p / 2,
+          pin2PadX: p / 2,
+          padWidth: pw,
+          padHeight: ph,
+        })
+      : []
 
   if (tht) {
     return [
       platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
       platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      ...fabricationNotes,
       ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
@@ -347,6 +358,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   return [
     rectpad(["1", "left"], -p / 2, 0, pw, ph),
     rectpad(["2", "right"], p / 2, 0, pw, ph),
+    ...fabricationNotes,
     ...silkscreenLines,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),

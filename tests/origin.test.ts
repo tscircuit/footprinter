@@ -131,3 +131,55 @@ test("res origin bottomleft snapshot", () => {
     "0603_bottomleft_origin",
   )
 })
+
+test("diode origin bottomleft shifts fabrication notes and symbol", () => {
+  const baseCircuit = fp().diode().imperial("0603").circuitJson()
+  const shiftedCircuit = fp()
+    .diode()
+    .imperial("0603")
+    .origin("bottomleft")
+    .circuitJson()
+  const basePad1 = baseCircuit.find(
+    (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === "1",
+  )!
+  const shiftedPad1 = shiftedCircuit.find(
+    (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === "1",
+  )!
+  const baseOutline = baseCircuit.find(
+    (el) =>
+      el.type === "pcb_fabrication_note_path" &&
+      el.pcb_fabrication_note_path_id === "diode_symbol_outline",
+  )!
+  const shiftedOutline = shiftedCircuit.find(
+    (el) =>
+      el.type === "pcb_fabrication_note_path" &&
+      el.pcb_fabrication_note_path_id === "diode_symbol_outline",
+  )!
+  const baseCathodeBar = baseCircuit.find(
+    (el) =>
+      el.type === "pcb_fabrication_note_path" &&
+      el.pcb_fabrication_note_path_id === "diode_symbol_cathode_bar",
+  )!
+  const shiftedCathodeBar = shiftedCircuit.find(
+    (el) =>
+      el.type === "pcb_fabrication_note_path" &&
+      el.pcb_fabrication_note_path_id === "diode_symbol_cathode_bar",
+  )!
+  const dx = basePad1.x - shiftedPad1.x
+  const dy = basePad1.y - shiftedPad1.y
+
+  expect(shiftedOutline.route[0].x).toBeCloseTo(baseOutline.route[0].x - dx)
+  expect(shiftedOutline.route[0].y).toBeCloseTo(baseOutline.route[0].y - dy)
+  expect(shiftedCathodeBar.route[0].x).toBeCloseTo(
+    baseCathodeBar.route[0].x - dx,
+  )
+  expect(shiftedCathodeBar.route[0].y).toBeCloseTo(
+    baseCathodeBar.route[0].y - dy,
+  )
+  expect(shiftedCathodeBar.route[1].x).toBeCloseTo(
+    baseCathodeBar.route[1].x - dx,
+  )
+  expect(shiftedCathodeBar.route[1].y).toBeCloseTo(
+    baseCathodeBar.route[1].y - dy,
+  )
+})

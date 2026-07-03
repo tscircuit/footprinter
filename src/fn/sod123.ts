@@ -2,6 +2,7 @@ import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { createDiodeFabricationNotes } from "../helpers/diode-fabrication-notes"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -19,6 +20,13 @@ export const sod123 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
+
+  const fabricationNotes = createDiodeFabricationNotes({
+    pin1PadX: -length.parse(parameters.p) / 2,
+    pin2PadX: length.parse(parameters.p) / 2,
+    padWidth: length.parse(parameters.pl),
+    padHeight: length.parse(parameters.pw),
+  })
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h) / 4 + 0.4,
@@ -39,6 +47,7 @@ export const sod123 = (
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      fabricationNotes as AnyCircuitElement[],
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,
     ),
