@@ -59,8 +59,8 @@ const createManualDiodeFabricationNotes = (params: {
   )
   const provisionalBodyHeight = Math.max(padHeight + verticalMargin * 2, 0.18)
   const usableSymbolWidth = Math.max(0.2, Math.abs(leadRightX - leadLeftX))
-  const arrowBaseRatio = clamp(0.29 - tightPitchBoost * 0.02, 0.26, 0.3)
-  const cathodeBarRatio = clamp(0.23 - tightPitchBoost * 0.02, 0.2, 0.24)
+  const arrowBaseRatio = clamp(0.31 - tightPitchBoost * 0.02, 0.28, 0.31)
+  const cathodeBarRatio = clamp(0.25 - tightPitchBoost * 0.02, 0.22, 0.25)
   const arrowBaseX = leadLeftX + direction * usableSymbolWidth * arrowBaseRatio
   const cathodeBarX =
     leadRightX - direction * usableSymbolWidth * cathodeBarRatio

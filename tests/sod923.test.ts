@@ -50,5 +50,5 @@ test("sod923 fabrication keeps full outline width but uses a narrower symbol", (
   expect(outlineWidth).toBeCloseTo(padCenterSpan)
   expect(Math.min(...outlineXs)).toBeLessThanOrEqual(leadInPath.route[0]!.x)
   expect(Math.max(...outlineXs)).toBeGreaterThanOrEqual(leadOutPath.route[1]!.x)
-  expect(arrowWidth).toBeLessThan(outlineWidth * 0.42)
+  expect(arrowWidth).toBeLessThan(outlineWidth * 0.36)
 })
