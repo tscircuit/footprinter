@@ -58,8 +58,8 @@ const createManualDiodeFabricationNotes = (params: {
   )
   const provisionalBodyHeight = Math.max(padHeight + verticalMargin * 2, 0.18)
   const usableSymbolWidth = Math.max(0.2, Math.abs(leadRightX - leadLeftX))
-  const arrowBaseRatio = clamp(0.2 - tightPitchBoost * 0.04, 0.17, 0.2)
-  const cathodeBarRatio = clamp(0.12 - tightPitchBoost * 0.02, 0.1, 0.12)
+  const arrowBaseRatio = clamp(0.22 - tightPitchBoost * 0.04, 0.19, 0.22)
+  const cathodeBarRatio = clamp(0.14 - tightPitchBoost * 0.02, 0.12, 0.14)
   const arrowBaseX = leadLeftX + direction * usableSymbolWidth * arrowBaseRatio
   const cathodeBarX =
     leadRightX - direction * usableSymbolWidth * cathodeBarRatio
@@ -69,16 +69,17 @@ const createManualDiodeFabricationNotes = (params: {
 
   const symbolHalfHeight = clamp(
     Math.min(
-      provisionalBodyHeight * (0.27 + tightPitchBoost * 0.05),
-      usableSymbolWidth * (0.34 + tightPitchBoost * 0.08),
+      provisionalBodyHeight * (0.28 + tightPitchBoost * 0.05),
+      usableSymbolWidth * (0.38 + tightPitchBoost * 0.08),
     ),
-    0.12,
-    provisionalBodyHeight * (0.36 + tightPitchBoost * 0.04),
+    0.13,
+    provisionalBodyHeight * (0.38 + tightPitchBoost * 0.04),
   )
-  const finalBodyHeight = Math.max(
+  const baseBodyHeight = Math.max(
     provisionalBodyHeight,
     symbolHalfHeight * 2 + verticalMargin * 2,
   )
+  const finalBodyHeight = baseBodyHeight * (2 / 3)
   const topY = y + finalBodyHeight / 2
   const bottomY = y - finalBodyHeight / 2
 

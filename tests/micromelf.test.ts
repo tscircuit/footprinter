@@ -9,7 +9,7 @@ test("micromelf", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "micromelf")
 })
 
-test("micromelf fabrication uses a slightly taller symbol with longer leads", () => {
+test("micromelf fabrication uses a taller symbol with longer leads and a shorter outline", () => {
   const circuitJson = fp.string("micromelf").circuitJson()
   const outlinePath = circuitJson.find(
     (element): element is PcbFabricationNotePath =>
@@ -40,12 +40,13 @@ test("micromelf fabrication uses a slightly taller symbol with longer leads", ()
     (Math.max(...outlineXs) - Math.min(...outlineXs)) * 0.34,
   )
   expect(Math.max(...arrowYs) - Math.min(...arrowYs)).toBeGreaterThan(
-    (Math.max(...outlineYs) - Math.min(...outlineYs)) * 0.3,
+    (Math.max(...outlineYs) - Math.min(...outlineYs)) * 0.5,
   )
   expect(
     Math.abs(leadInPath.route[1]!.x - leadInPath.route[0]!.x),
-  ).toBeGreaterThan(0.14)
+  ).toBeGreaterThan(0.15)
   expect(
     Math.abs(leadOutPath.route[1]!.x - leadOutPath.route[0]!.x),
-  ).toBeGreaterThan(0.08)
+  ).toBeGreaterThan(0.09)
+  expect(Math.max(...outlineYs) - Math.min(...outlineYs)).toBeCloseTo(1.0667, 3)
 })
