@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 export const potentiometer_def = base_def.extend({
   fn: z.string(),
   num_pins: z.union([z.literal(3), z.literal(2)]).default(3),
-  p: z.string().default("3.8mm"),
+  p: z.string().default("5mm"),
   id: z.string().default("1.25mm"),
   od: z.string().default("2.35mm"),
   ca: z
@@ -28,13 +28,13 @@ export const potentiometer_def = base_def.extend({
 export const potentiometer_acp = (
   parameters: z.infer<typeof potentiometer_def>,
 ) => {
-  const { p, id, od, h, ca } = parameters
-  const y = Number.parseFloat(h)
-  const caliper = Number.parseFloat(ca)
+  const { p, id, od, h } = parameters
+  const x = Number.parseFloat(h)
+  const y = Number.parseFloat(p)
   return [
-    platedhole(1, 0, caliper / 4 + 0.3, id, od),
-    platedhole(2, y, 0, id, od),
-    platedhole(3, 0, -caliper / 4 - 0.3, id, od),
+    platedhole(1, 0, y, id, od),
+    platedhole(2, x, 0, id, od),
+    platedhole(3, 0, -y, id, od),
   ]
 }
 export const potentiometer = (
