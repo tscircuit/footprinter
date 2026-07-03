@@ -11,6 +11,7 @@ test("parity/sod123", async () => {
   } = await compareFootprinterVsKicad(
     "sod123",
     "Diode_SMD.pretty/D_SOD-123.circuit.json",
+    { includeFabricationNotes: true },
   )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
