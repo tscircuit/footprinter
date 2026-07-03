@@ -37,6 +37,12 @@ type StrokeWidthTuning = {
   max: number
 }
 
+type LeadLineExtensionTuning = {
+  scale: number
+  min: number
+  max: number
+}
+
 type RoutePoint = {
   x: number
   y: number
@@ -48,6 +54,7 @@ type ResolvedManualDiodeFabricationNoteTuning = {
     ManualDiodeFabricationNoteTuning["leadInsetFromCenter"]
   >
   symbolLeadInset: ManualDiodeFabricationNoteTuning["symbolLeadInset"]
+  leadLineExtension: LeadLineExtensionTuning
   usableSymbolWidthMin: number
   arrowBaseRatio: RatioTuning
   cathodeBarRatio: RatioTuning
@@ -68,6 +75,11 @@ export type ManualDiodeFabricationNoteTuning = {
     maxScale: number
   }
   symbolLeadInset?: {
+    scale: number
+    min: number
+    max: number
+  }
+  leadLineExtension?: {
     scale: number
     min: number
     max: number
@@ -102,6 +114,11 @@ const defaultTuning = {
     scale: 0.16,
     min: 0.04,
     maxScale: 0.32,
+  },
+  leadLineExtension: {
+    scale: 0,
+    min: 0,
+    max: 0,
   },
   usableSymbolWidthMin: 0.2,
   arrowBaseRatio: {
@@ -143,6 +160,10 @@ const resolveTuning = (
     ...tuning?.leadInsetFromCenter,
   },
   symbolLeadInset: tuning?.symbolLeadInset,
+  leadLineExtension: {
+    ...defaultTuning.leadLineExtension,
+    ...tuning?.leadLineExtension,
+  },
   usableSymbolWidthMin:
     tuning?.usableSymbolWidthMin ?? defaultTuning.usableSymbolWidthMin,
   arrowBaseRatio: {
@@ -221,6 +242,15 @@ const thickStroke = {
     max: 0.075,
   },
 } satisfies Pick<ManualDiodeFabricationNoteTuning, "strokeWidth">
+
+const extendLeadLines = (scaleFactor: number, min: number, max: number) =>
+  ({
+    leadLineExtension: {
+      scale: scaleFactor,
+      min,
+      max,
+    },
+  }) satisfies Pick<ManualDiodeFabricationNoteTuning, "leadLineExtension">
 
 const centeredOutlineTemplate: RoutePoint[] = [
   { x: -0.5, y: 0.5 },
@@ -319,6 +349,7 @@ export const diodeFabricationTuningPresets = {
     arrowBaseRatio: ratioTuning(0.24, 0.03, 0.2, 0.24),
     cathodeBarRatio: ratioTuning(0.16, 0.02, 0.12, 0.16),
     ...smaLikeSymbolHalfHeight,
+    ...extendLeadLines(0.12, 0.22, 0.3),
     ...thickStroke,
   },
   sod323Compact: {
@@ -346,11 +377,15 @@ export const diodeFabricationTuningPresets = {
     arrowBaseRatio: ratioTuning(0.31, 0.02, 0.28, 0.31),
     cathodeBarRatio: ratioTuning(0.25, 0.02, 0.22, 0.25),
   },
-  sod882Compact: compactOutline,
+  sod882Compact: {
+    ...compactOutline,
+    ...extendLeadLines(0.18, 0.05, 0.07),
+  },
   sod882dCompact: {
     arrowBaseRatio: ratioTuning(0.17, 0.05, 0.12, 0.17),
     cathodeBarRatio: ratioTuning(0.1, 0.02, 0.07, 0.1),
     ...compactOutline,
+    ...extendLeadLines(0.18, 0.04, 0.06),
   },
   micromelfCompact: {
     arrowBaseRatio: ratioTuning(0.22, 0.04, 0.19, 0.22),
@@ -365,6 +400,7 @@ export const diodeFabricationTuningPresets = {
       0.04,
     ),
     ...compactOutline,
+    ...extendLeadLines(0.12, 0.05, 0.08),
   },
 } satisfies Record<string, ManualDiodeFabricationNoteTuning>
 
@@ -416,6 +452,14 @@ export const createManualDiodeFabricationNotes = (
     symbolLeadRightX = leadRightX - direction * symbolLeadInsetX
   }
 
+  const leadLineExtensionX = clamp(
+    padWidth * resolvedTuning.leadLineExtension.scale,
+    resolvedTuning.leadLineExtension.min,
+    resolvedTuning.leadLineExtension.max,
+  )
+  const leadLineLeftX = symbolLeadLeftX - direction * leadLineExtensionX
+  const leadLineRightX = symbolLeadRightX + direction * leadLineExtensionX
+
   const computedBodyHeight = Math.max(padHeight * 1.35, 0.9)
   const verticalMargin = clamp(
     Math.min(
@@ -446,8 +490,8 @@ export const createManualDiodeFabricationNotes = (
     symbolLeadLeftX + direction * usableSymbolWidth * arrowBaseRatio
   const cathodeBarX =
     symbolLeadRightX - direction * usableSymbolWidth * cathodeBarRatio
-  const leftX = Math.min(pin1PadX, pin2PadX)
-  const rightX = Math.max(pin1PadX, pin2PadX)
+  const leftX = Math.min(pin1PadX, pin2PadX) - leadLineExtensionX
+  const rightX = Math.max(pin1PadX, pin2PadX) + leadLineExtensionX
   const finalBodyWidth = rightX - leftX
 
   const symbolHalfHeight = clamp(
@@ -493,9 +537,9 @@ export const createManualDiodeFabricationNotes = (
     createScaledFabPath(
       "diode_symbol_lead_in",
       normalizedLeadTemplate,
-      symbolLeadLeftX,
+      leadLineLeftX,
       y,
-      arrowBaseX - symbolLeadLeftX,
+      arrowBaseX - leadLineLeftX,
       1,
       strokeWidth,
       layer,
@@ -526,7 +570,7 @@ export const createManualDiodeFabricationNotes = (
       normalizedLeadTemplate,
       cathodeBarX,
       y,
-      symbolLeadRightX - cathodeBarX,
+      leadLineRightX - cathodeBarX,
       1,
       strokeWidth,
       layer,

@@ -49,6 +49,11 @@ const getPassiveDiodeFabricationTuning = (
         min: 0.07,
         max: 0.11,
       },
+      leadLineExtension: {
+        scale: 0.18,
+        min: 0.04,
+        max: 0.06,
+      },
     }
   }
 
