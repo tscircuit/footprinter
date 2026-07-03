@@ -1,5 +1,7 @@
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
@@ -36,10 +38,27 @@ export const to92s_2 = (parameters: z.infer<typeof to92s_def>) => {
   const { p, id, od, h } = parameters
   const holeY = Number.parseFloat(h) / 2
   const padSpacing = Number.parseFloat(p)
+  const holeDiameter = Number.parseFloat(id)
+  const padWidth = Number.parseFloat(od)
+  const padHeight = padWidth * (1.5 / 1.05)
 
   return [
-    platedhole(1, -padSpacing, holeY - padSpacing, id, od),
-    platedhole(2, padSpacing, holeY - padSpacing, id, od),
+    platedHoleWithRectPad({
+      pn: 1,
+      x: -padSpacing,
+      y: holeY - padSpacing,
+      holeDiameter,
+      rectPadWidth: padWidth,
+      rectPadHeight: padHeight,
+    }),
+    platedHolePill(
+      2,
+      padSpacing,
+      holeY - padSpacing,
+      holeDiameter,
+      padWidth,
+      padHeight,
+    ),
   ]
 }
 
