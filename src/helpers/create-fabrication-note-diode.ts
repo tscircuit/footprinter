@@ -1,9 +1,44 @@
-import type {
-  AnyCircuitElement,
-  PcbFabricationNotePath,
-  PcbFabricationNoteText,
+import {
+  length,
+  type AnyCircuitElement,
+  type PcbFabricationNotePath,
+  type PcbFabricationNoteText,
 } from "circuit-json"
 import type { RectBounds } from "./rect-union-outline"
+
+type DiodeCopperPadBoundsParams = {
+  p?: string | number
+  pad_spacing?: string | number
+  pl?: string | number
+  pw?: string | number
+}
+
+export const createFabricationNoteDiodeFromCopperPads = (
+  parameters: DiodeCopperPadBoundsParams,
+): AnyCircuitElement[] => {
+  const pitch = parameters.p ?? parameters.pad_spacing
+
+  if (
+    pitch === undefined ||
+    parameters.pl === undefined ||
+    parameters.pw === undefined
+  ) {
+    throw new Error(
+      "Diode fabrication note requires p or pad_spacing, pl, and pw",
+    )
+  }
+
+  const padPitch = length.parse(pitch)
+  const padLength = length.parse(parameters.pl)
+  const padWidth = length.parse(parameters.pw)
+
+  return createFabricationNoteDiode({
+    minX: -padPitch / 2 - padLength / 2,
+    maxX: padPitch / 2 + padLength / 2,
+    minY: -padWidth / 2,
+    maxY: padWidth / 2,
+  })
+}
 
 export const createFabricationNoteDiode = (
   bounds: RectBounds,

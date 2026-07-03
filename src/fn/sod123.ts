@@ -4,7 +4,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
 
 export const sod_def = base_def.extend({
   fn: z.string(),
@@ -21,20 +21,11 @@ export const sod123 = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
   const bodyHeight = length.parse(parameters.h)
-  const padPitch = length.parse(parameters.p)
-  const padLength = length.parse(parameters.pl)
-  const padWidth = length.parse(parameters.pw)
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     bodyHeight / 4 + 0.4,
     0.3,
   )
-  const fabricationNoteDiode = createFabricationNoteDiode({
-    minX: -padPitch / 2 - padLength / 2,
-    maxX: padPitch / 2 + padLength / 2,
-    minY: -padWidth / 2,
-    maxY: padWidth / 2,
-  })
 
   const courtyardWidthMm = 4.7
   const courtyardHeightMm = 2.3
@@ -50,7 +41,7 @@ export const sod123 = (
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
-      ...fabricationNoteDiode,
+      ...createFabricationNoteDiodeFromCopperPads(parameters),
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,
     ),
