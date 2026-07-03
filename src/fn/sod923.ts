@@ -6,7 +6,7 @@ import type {
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length, PcbFabricationNotePath } from "circuit-json"
+import { length, type PcbFabricationNotePath } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 

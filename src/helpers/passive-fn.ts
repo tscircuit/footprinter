@@ -7,7 +7,7 @@ import { rectpad } from "../helpers/rectpad"
 import mm from "@tscircuit/mm"
 import { platedhole } from "./platedhole"
 import { z } from "zod"
-import { length, distance, PcbFabricationNotePath } from "circuit-json"
+import { length, distance, type PcbFabricationNotePath } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
