@@ -107,6 +107,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
         y,
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
+        0.1,
       ),
     )
   }

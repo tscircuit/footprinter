@@ -222,6 +222,7 @@ export const passive_def = base_def.extend({
   h: length.optional(),
   nonpolarized: z.boolean().optional(),
   textbottom: z.boolean().optional(),
+  roundedPads: z.boolean().optional(),
 })
 
 export type PassiveDef = z.input<typeof passive_def>
@@ -239,6 +240,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     h,
     nonpolarized,
     textbottom,
+    roundedPads,
     string: footprintString,
   } = params
 
@@ -334,6 +336,9 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
       : null
+  const cornerRadius = roundedPads
+    ? Math.min(0.125, Math.min(pw, ph) / 8)
+    : undefined
 
   if (tht) {
     return [
@@ -345,8 +350,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     ]
   }
   return [
-    rectpad(["1", "left"], -p / 2, 0, pw, ph),
-    rectpad(["2", "right"], p / 2, 0, pw, ph),
+    rectpad(["1", "left"], -p / 2, 0, pw, ph, cornerRadius),
+    rectpad(["2", "right"], p / 2, 0, pw, ph, cornerRadius),
     ...silkscreenLines,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),

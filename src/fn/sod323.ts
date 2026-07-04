@@ -97,21 +97,17 @@ export const getSodCoords = (parameters: {
 // Function to generate SOD pads
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   const pads: AnyCircuitElement[] = []
+  const p = length.parse(parameters.p)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const cornerRadius = 0.05625
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      p: Number.parseFloat(parameters.p),
+      p,
     })
-    pads.push(
-      rectpad(
-        i,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i, x, y, pl, pw, cornerRadius))
   }
   return pads
 }
