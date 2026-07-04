@@ -144,11 +144,12 @@ export const quad = (
     if (orientation === "vert") {
       ;[padWidth, padHeight] = [padHeight, padWidth]
     }
+    const cornerRadius = Math.min(padWidth, padHeight) / 8
 
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
     padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
-    pads.push(rectpad(pn, x, y, padWidth, padHeight))
+    pads.push(rectpad(pn, x, y, padWidth, padHeight, cornerRadius))
   }
 
   if (parameters.thermalpad) {

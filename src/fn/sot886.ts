@@ -37,11 +37,12 @@ export const sot886 = (
   const p = length.parse(parameters.p)
   const pl = length.parse(parameters.pl)
   const pw = length.parse(parameters.pw)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < 6; i++) {
     const { x, y } = getSot886PadCoord(i + 1, w, p, pl)
-    pads.push(rectpad(i + 1, x, y, pl, pw))
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
 
   const silkscreenTopLine: PcbSilkscreenPath = {

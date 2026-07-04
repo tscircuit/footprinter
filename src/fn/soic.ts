@@ -116,6 +116,7 @@ export const soic = (raw_params: {
 
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
   let maxPadExtentX = 0
   let maxPadExtentY = 0
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -132,7 +133,9 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     if (parameters.pillpads) {
       pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw))
     } else {
-      pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+      pads.push(
+        rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius),
+      )
     }
   }
 

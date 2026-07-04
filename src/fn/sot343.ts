@@ -79,6 +79,7 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   let minX = Infinity
   let maxX = -Infinity
@@ -94,7 +95,7 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       pl,
       p,
     })
-    pads.push(rectpad(i + 1, x, y, pl, pw))
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
 
     if (x < minX) minX = x
     if (x > maxX) maxX = x

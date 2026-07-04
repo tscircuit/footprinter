@@ -21,6 +21,7 @@ type StandardSize = {
   w_mm_min: number // body width
   courtyard_width_mm?: number
   courtyard_height_mm?: number
+  rounded_pads?: boolean
   nonpolarizedSilkscreen?: {
     line_half_length_mm?: number
     line_y_mm?: number
@@ -60,6 +61,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 3.4,
     courtyard_width_mm: 5.9,
     courtyard_height_mm: 3.9,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 1.386252,
       line_y_mm: 1.71,
@@ -76,6 +78,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 0.3,
     courtyard_width_mm: 1.4,
     courtyard_height_mm: 0.7,
+    rounded_pads: true,
   },
   {
     imperial: "0402",
@@ -87,6 +90,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 0.64,
     courtyard_width_mm: 1.86,
     courtyard_height_mm: 0.94,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 0.153641,
       line_y_mm: 0.38,
@@ -103,6 +107,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 0.95,
     courtyard_width_mm: 2.96,
     courtyard_height_mm: 1.46,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 0.237258,
       line_y_mm: 0.5225,
@@ -119,6 +124,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 1.4,
     courtyard_width_mm: 3.36,
     courtyard_height_mm: 1.9,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 0.227064,
       line_y_mm: 0.735,
@@ -135,6 +141,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 1.75,
     courtyard_width_mm: 4.56,
     courtyard_height_mm: 2.26,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 0.727064,
       line_y_mm: 0.91,
@@ -151,6 +158,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 2.65,
     courtyard_width_mm: 4.56,
     courtyard_height_mm: 3.16,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 0.723737,
       line_y_mm: 1.355,
@@ -167,6 +175,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 2.65,
     courtyard_width_mm: 6.36,
     courtyard_height_mm: 3.16,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 1.527064,
       line_y_mm: 1.36,
@@ -183,6 +192,7 @@ export const footprintSizes: StandardSize[] = [
     h_mm_min: 3.35,
     courtyard_width_mm: 7.66,
     courtyard_height_mm: 3.86,
+    rounded_pads: true,
     nonpolarizedSilkscreen: {
       line_half_length_mm: 2.177064,
       line_y_mm: 1.71,
@@ -336,7 +346,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
       : null
-  const cornerRadius = roundedPads
+  const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
+  const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
     : undefined
 

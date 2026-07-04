@@ -73,25 +73,23 @@ export const sot723WithoutParsing = (
   parameters: z.infer<typeof sot723_def>,
 ) => {
   const pads: AnyCircuitElement[] = []
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const p = Number.parseFloat(parameters.p)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 0; i < 3; i++) {
     const { x, y } = getCcwSot723Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(parameters.w),
-      h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl),
-      p: Number.parseFloat(parameters.p),
+      w,
+      h,
+      pl,
+      p,
     })
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
 
   return pads

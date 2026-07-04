@@ -20,6 +20,7 @@ export const sop8 = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sop8_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
@@ -30,9 +31,7 @@ export const sop8 = (
       pl: parameters.pl,
       widthincludeslegs: true,
     })
-    pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1.5mm", parameters.pw ?? "0.6mm"),
-    )
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }
 
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw

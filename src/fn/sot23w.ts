@@ -62,25 +62,23 @@ export const getCcwSot23wCoords = (parameters: {
 
 export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
   const pads: AnyCircuitElement[] = []
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const p = Number.parseFloat(parameters.p)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23wCoords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(parameters.w),
-      h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl),
-      p: Number.parseFloat(parameters.p),
+      w,
+      h,
+      pl,
+      p,
     })
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -89,8 +87,8 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
     0.3,
   )
 
-  const width = Number.parseFloat(parameters.w) / 2 - 1
-  const height = Number.parseFloat(parameters.h) / 2
+  const width = w / 2 - 1
+  const height = h / 2
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -116,10 +114,6 @@ export const sot23w_3 = (parameters: z.infer<typeof sot23w_def>) => {
     stroke_width: 0.1,
   }
 
-  const p = Number.parseFloat(parameters.p)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const h = Number.parseFloat(parameters.h)
   const padToeHalfWidth = p + pl / 2
   const pinRowHalfHeight = 0.95 + pw / 2
   const bodyHalfHeight = h / 2

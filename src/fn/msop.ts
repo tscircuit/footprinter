@@ -90,12 +90,13 @@ export const msop = (
   const p = length.parse(parameters.p || defaults.p)
   const pl = length.parse(parameters.pl || defaults.pl)
   const pw = length.parse(parameters.pw || defaults.pw)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p, pl)
-    pads.push(rectpad(i + 1, x, y, pl, pw))
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
 
   const silkscreenBoxWidth = w

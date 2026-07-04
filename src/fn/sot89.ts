@@ -65,13 +65,14 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
   const padWidth = Number.parseFloat(parameters.pw)
   const length = Number.parseFloat(parameters.w)
   const padHeight = Number.parseFloat(parameters.pl)
+  const outerPadCornerRadius = Math.min(padHeight, padWidth) / 8
   const outerPadX = -length / 2 + 0.15
   const width = length / 2 - 1
   const height = Number.parseFloat(parameters.h) / 2
   const pads: AnyCircuitElement[] = [
-    rectpad(1, outerPadX, padGap, padHeight, padWidth),
+    rectpad(1, outerPadX, padGap, padHeight, padWidth, outerPadCornerRadius),
     polygonpad(2, sot89_3CenterPadPoints),
-    rectpad(3, outerPadX, -padGap, padHeight, padWidth),
+    rectpad(3, outerPadX, -padGap, padHeight, padWidth, outerPadCornerRadius),
   ]
 
   const silkscreenRefText = silkscreenRef(0, height + 0.5, 0.3)
@@ -119,12 +120,13 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
 }
 
 export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
+  const outerPadCornerRadius = Math.min(1.5, 0.7) / 8
   const pads: AnyCircuitElement[] = [
-    rectpad(1, -1.85, -1.5, 1.5, 0.7),
-    rectpad(2, -1.85, 1.5, 1.5, 0.7),
+    rectpad(1, -1.85, -1.5, 1.5, 0.7, outerPadCornerRadius),
+    rectpad(2, -1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
     polygonpad(3, sot89_5CenterPadPoints),
-    rectpad(4, 1.85, -1.5, 1.5, 0.7),
-    rectpad(5, 1.85, 1.5, 1.5, 0.7),
+    rectpad(4, 1.85, -1.5, 1.5, 0.7, outerPadCornerRadius),
+    rectpad(5, 1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
   ]
 
   const width = Number.parseFloat(parameters.w) / 2 - 1

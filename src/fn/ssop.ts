@@ -76,6 +76,7 @@ export const ssop = (
 ): { circuitJson: AnyCircuitElement[]; parameters: SsopInput } => {
   const parameters = ssop_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getSsopCoords({
@@ -86,7 +87,7 @@ export const ssop = (
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }
 
   const m = Math.min(1, parameters.p / 2)

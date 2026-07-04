@@ -26,6 +26,7 @@ export const dfn = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = dfn_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -35,9 +36,7 @@ export const dfn = (
       pl: parameters.pl,
       widthincludeslegs: true,
     })
-    pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
-    )
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1

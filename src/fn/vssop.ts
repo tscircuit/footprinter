@@ -61,6 +61,7 @@ export const vssop = (
   const p = length.parse(parameters.p || defaults.p)
   const pl = length.parse(parameters.pl || defaults.pl)
   const pw = length.parse(parameters.pw || defaults.pw)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   const pads: AnyCircuitElement[] = []
   const half = parameters.num_pins / 2
@@ -68,7 +69,7 @@ export const vssop = (
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getVssopPadCoord(parameters.num_pins, i + 1, w, p)
     const logical_pn = i < half ? i + 1 : parameters.num_pins - (i - half)
-    pads.push(rectpad(logical_pn, x, y, pl, pw))
+    pads.push(rectpad(logical_pn, x, y, pl, pw, cornerRadius))
   }
 
   const silkscreenBoxWidth = w
