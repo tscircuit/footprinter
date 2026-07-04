@@ -38,7 +38,6 @@ const sot89_5CenterPadPoints = [
   { x: 0.4, y: 1 },
 ]
 
-// KiCad pad 2 is the union of its anchor rectangle and polygon primitive.
 const sot89_3CenterPadPoints = [
   { x: 2, y: -0.8665 },
   { x: -1.125, y: -0.8665 },
