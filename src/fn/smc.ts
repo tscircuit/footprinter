@@ -104,6 +104,7 @@ export const smcWithoutParsing = (parameters: z.infer<typeof smc_def>) => {
         y,
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
+        0.125,
       ),
     )
   }

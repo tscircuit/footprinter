@@ -108,6 +108,7 @@ export const smaWithoutParsing = (parameters: z.infer<typeof sma_def>) => {
         y,
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
+        0.125,
       ),
     )
   }
