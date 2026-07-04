@@ -30,6 +30,79 @@ interface FootprintElement {
   route?: Array<{ x: number; y: number }>
   points?: Array<{ x: number; y: number }>
   shape?: string
+  corner_radius?: number | null
+  radius?: number
+}
+
+function createRoundedRectPolygon(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  cornerRadius: number,
+): Flatten.Polygon {
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+  const radius = Math.min(Math.max(cornerRadius, 0), halfWidth, halfHeight)
+
+  if (radius === 0) {
+    return new Flatten.Polygon([
+      [x - halfWidth, y - halfHeight],
+      [x + halfWidth, y - halfHeight],
+      [x + halfWidth, y + halfHeight],
+      [x - halfWidth, y + halfHeight],
+    ])
+  }
+
+  const left = x - halfWidth
+  const right = x + halfWidth
+  const bottom = y - halfHeight
+  const top = y + halfHeight
+  const point = (px: number, py: number) => new Flatten.Point(px, py)
+
+  return new Flatten.Polygon([
+    new Flatten.Segment(
+      point(left + radius, bottom),
+      point(right - radius, bottom),
+    ),
+    new Flatten.Arc(
+      point(right - radius, bottom + radius),
+      radius,
+      -Math.PI / 2,
+      0,
+      true,
+    ),
+    new Flatten.Segment(
+      point(right, bottom + radius),
+      point(right, top - radius),
+    ),
+    new Flatten.Arc(
+      point(right - radius, top - radius),
+      radius,
+      0,
+      Math.PI / 2,
+      true,
+    ),
+    new Flatten.Segment(point(right - radius, top), point(left + radius, top)),
+    new Flatten.Arc(
+      point(left + radius, top - radius),
+      radius,
+      Math.PI / 2,
+      Math.PI,
+      true,
+    ),
+    new Flatten.Segment(
+      point(left, top - radius),
+      point(left, bottom + radius),
+    ),
+    new Flatten.Arc(
+      point(left + radius, bottom + radius),
+      radius,
+      Math.PI,
+      (3 * Math.PI) / 2,
+      true,
+    ),
+  ])
 }
 
 /**
@@ -39,31 +112,45 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
   try {
     if (
       element.type === "pcb_smtpad" &&
-      element.width &&
-      element.height &&
+      element.shape === "circle" &&
       element.x !== undefined &&
       element.y !== undefined
     ) {
-      // Create rectangular pad polygon
-      const halfWidth = element.width / 2
-      const halfHeight = element.height / 2
-      const points = [
-        new Flatten.Point(element.x - halfWidth, element.y - halfHeight),
-        new Flatten.Point(element.x + halfWidth, element.y - halfHeight),
-        new Flatten.Point(element.x + halfWidth, element.y + halfHeight),
-        new Flatten.Point(element.x - halfWidth, element.y + halfHeight),
-      ]
+      const radius =
+        element.radius ?? Math.min(element.width ?? 0, element.height ?? 0) / 2
+
+      return radius > 0
+        ? new Flatten.Polygon(
+            new Flatten.Circle(new Flatten.Point(element.x, element.y), radius),
+          )
+        : null
+    }
+
+    if (
+      element.type === "pcb_smtpad" &&
+      element.shape === "polygon" &&
+      element.points &&
+      element.points.length > 0
+    ) {
+      const points = element.points.map((p) => new Flatten.Point(p.x, p.y))
       return new Flatten.Polygon(points)
     }
 
     if (
       element.type === "pcb_smtpad" &&
-      element.points &&
-      element.points.length > 0
+      (element.shape === "rect" || element.shape === undefined) &&
+      element.width &&
+      element.height &&
+      element.x !== undefined &&
+      element.y !== undefined
     ) {
-      // Handle polygon-shaped SMT pads
-      const points = element.points.map((p) => new Flatten.Point(p.x, p.y))
-      return new Flatten.Polygon(points)
+      return createRoundedRectPolygon(
+        element.x,
+        element.y,
+        element.width,
+        element.height,
+        element.corner_radius ?? 0,
+      )
     }
 
     if (
