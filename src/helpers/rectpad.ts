@@ -6,7 +6,7 @@ export const rectpad = (
   y: number,
   w: number,
   h: number,
-  cornerRadius?: number
+  cornerRadius?: number,
 ): PcbSmtPad => {
   return {
     type: "pcb_smtpad",
