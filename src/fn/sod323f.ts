@@ -8,6 +8,7 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
 
 export const sod_def = base_def.extend({
   fn: z.string(),
@@ -72,6 +73,7 @@ export const sod323f = (
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
+      ...createFabricationNoteDiodeFromCopperPads(parameters),
       silkscreenLine as AnyCircuitElement,
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,
@@ -111,6 +113,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
         y,
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
+        0.0625,
       ),
     )
   }

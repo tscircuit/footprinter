@@ -95,21 +95,17 @@ export const getSmbfCoords = (parameters: {
 // Function to generate smbf pads
 export const smbfWithoutParsing = (parameters: z.infer<typeof smbf_def>) => {
   const pads: AnyCircuitElement[] = []
+  const p = length.parse(parameters.p)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const cornerRadius = 0.125
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSmbfCoords({
       pn: i,
-      p: Number.parseFloat(parameters.p),
+      p,
     })
-    pads.push(
-      rectpad(
-        i,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i, x, y, pl, pw, cornerRadius))
   }
   return pads
 }

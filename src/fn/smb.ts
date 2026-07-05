@@ -110,6 +110,7 @@ export const smbWithoutParsing = (parameters: z.infer<typeof smb_def>) => {
         y,
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
+        0.125,
       ),
     )
   }

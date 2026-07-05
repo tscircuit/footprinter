@@ -5,5 +5,8 @@ export const diode = (parameters: {
   tht: boolean
   p: number
 }): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  return { circuitJson: passive(parameters), parameters }
+  return {
+    circuitJson: passive({ ...parameters, roundedPads: true }),
+    parameters,
+  }
 }
