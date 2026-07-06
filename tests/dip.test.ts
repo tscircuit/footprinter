@@ -103,3 +103,16 @@ test("dip_0.1in", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip_0.1in")
 })
+
+test("PDIP-8 string resolves to dip8", () => {
+  const json = fp.string("PDIP-8").json()
+  expect(json.fn).toBe("dip")
+  expect(json.num_pins).toBe(8)
+})
+
+test("SPDIP-28 string resolves to dip28 with shrink pitch", () => {
+  const json = fp.string("SPDIP-28").json()
+  expect(json.fn).toBe("dip")
+  expect(json.num_pins).toBe(28)
+  expect(json.p).toBe(1.778)
+})
