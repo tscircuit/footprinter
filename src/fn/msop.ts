@@ -64,7 +64,8 @@ const getMsopCoords = (pinCount: number, pn: number, w: number, p: number) => {
   const half = pinCount / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
-  const row = (half - 1) / 2 - rowIndex
+  const rowIndexInCol = pn <= half ? rowIndex : (half - 1 - rowIndex)
+  const row = (half - 1) / 2 - rowIndexInCol
 
   return {
     x: col * length.parse("2mm"),
