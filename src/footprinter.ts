@@ -170,6 +170,9 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  utdfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "epw" | "eph">
   sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   m2host: () => FootprinterParamsBuilder<never>
   son: (
@@ -275,6 +278,9 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^pdip-?(?=[\d_]|$)/i, "dip")
+    .replace(/^spdip-?(?=[\d_]|$)/i, "dip")
+    .replace(/^utdfn-?(?=[\d_]|$)/i, "utdfn")
 }
 
 export const string = (def: string): Footprinter => {
