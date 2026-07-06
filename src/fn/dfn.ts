@@ -3,18 +3,38 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import {
-  extendSoicDef,
-  soicWithoutParsing,
-  type SoicInput,
-  getCcwSoicCoords,
-} from "./soic"
+import { getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
 import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
+import { length } from "circuit-json"
 
-export const dfn_def = extendSoicDef({})
+export const dfn_def = base_def
+  .extend({
+    fn: z.string(),
+    num_pins: z.number().optional().default(8),
+    w: length.default("5.3mm"),
+    p: length.default("1.27mm"),
+    pw: length.default("0.6mm"),
+    pl: length.default("1.0mm"),
+    ep: z.boolean().optional().default(false),
+    epw: length.optional(),
+    eph: length.optional(),
+    silkscreen_stroke_width: z.number().optional().default(0.1),
+  })
+  .transform((v) => {
+    if (!v.pw && !v.pl) {
+      v.pw = 0.6
+      v.pl = 1.0
+    } else if (!v.pw) {
+      v.pw = v.pl! * (0.6 / 1.0)
+    } else if (!v.pl) {
+      v.pl = v.pw! * (1.0 / 0.6)
+    }
+    return v
+  })
 
 /**
  * Dual Flat No-lead
@@ -22,8 +42,12 @@ export const dfn_def = extendSoicDef({})
  * Similar to SOIC but different silkscreen
  */
 export const dfn = (
-  raw_params: SoicInput,
+  raw_params: any,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  if (raw_params.string && raw_params.string.includes("_ep")) {
+    raw_params.ep = true
+  }
+
   const parameters = dfn_def.parse(raw_params)
   const pads: AnyCircuitElement[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -35,9 +59,15 @@ export const dfn = (
       pl: parameters.pl,
       widthincludeslegs: true,
     })
-    pads.push(
-      rectpad(i + 1, x, y, parameters.pl ?? "1mm", parameters.pw ?? "0.6mm"),
-    )
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+  }
+
+  if (parameters.ep) {
+    const epw = parameters.epw ?? parameters.w * 0.5
+    const eph =
+      parameters.eph ??
+      ((parameters.num_pins / 2 - 1) * parameters.p + parameters.pw) * 0.5
+    pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1

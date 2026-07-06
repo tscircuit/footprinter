@@ -271,10 +271,17 @@ const normalizeDefinition = (def: string): string => {
   return def
     .trim()
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+    .replace(/^pdip[-_]?(\d+)/i, "dip$1")
+    .replace(/^spdip[-_]?(\d+)/i, "dip$1_p1.778mm")
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(
+      /^utdfn[-_]?4[-_]?ep(?:\(1x1\))?/i,
+      "dfn4_w1.00mm_h1.00mm_p0.65mm_pl0.30mm_pw0.25mm_ep_epw0.50mm_eph0.50mm",
+    )
+    .replace(/^utdfn(?=[\d_]|$)/i, "dfn")
 }
 
 export const string = (def: string): Footprinter => {
