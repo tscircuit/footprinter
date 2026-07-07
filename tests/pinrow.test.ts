@@ -282,3 +282,31 @@ test("pinrow3_smd_rightangle_male", () => {
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd_ra_male")
 })
+
+test("pinrow5_pinlabelbottom", () => {
+  const def = "pinrow5_pinlabelbottom"
+  const soup = fp.string(def).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
+
+  const pinrowJson = fp.string(def).json() as any
+  // the `pinlabelbottom` string flag resolves to the canonical pinLabelSide enum
+  expect(pinrowJson.pinLabelSide).toBe("bottom")
+
+  // pinLabelSide:"bottom" anchors the pin labels below the row — the opposite
+  // side from the default ("top"): a {PIN..} label's y sits on the far side.
+  const pinLabelY = (cj: any[]) =>
+    (
+      cj.find(
+        (el) =>
+          el.type === "pcb_silkscreen_text" && el.text?.startsWith("{PIN"),
+      ) as any
+    ).anchor_position.y
+  expect(Math.sign(pinLabelY(soup))).toBe(
+    -Math.sign(pinLabelY(fp.string("pinrow5").circuitJson())),
+  )
+
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow5_pinlabelbottom",
+  )
+})
