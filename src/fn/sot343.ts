@@ -12,12 +12,12 @@ const sot343CourtyardOutline = [
   { x: -1.703, y: 0.98 },
   { x: -0.983, y: 0.98 },
   { x: -0.983, y: 1.1 },
-  { x: 0.477, y: 1.1 },
-  { x: 0.477, y: 0.98 },
-  { x: 1.197, y: 0.98 },
-  { x: 1.197, y: -0.98 },
-  { x: 0.477, y: -0.98 },
-  { x: 0.477, y: -1.1 },
+  { x: 0.983, y: 1.1 },
+  { x: 0.983, y: 0.98 },
+  { x: 1.703, y: 0.98 },
+  { x: 1.703, y: -0.98 },
+  { x: 0.983, y: -0.98 },
+  { x: 0.983, y: -1.1 },
   { x: -0.983, y: -1.1 },
   { x: -0.983, y: -0.98 },
   { x: -1.703, y: -0.98 },
@@ -66,8 +66,8 @@ export const getCcwSot343Coords = (parameters: {
   const { pn, p } = parameters
   if (pn === 1) return { x: -p * 1.92, y: -0.65 }
   if (pn === 2) return { x: -p * 1.92, y: 0.65 }
-  if (pn === 3) return { x: p, y: 0.65 }
-  if (pn === 4) return { x: p, y: -0.65 }
+  if (pn === 3) return { x: p * 1.92, y: 0.65 }
+  if (pn === 4) return { x: p * 1.92, y: -0.65 }
   return { x: 0, y: 0 }
 }
 
