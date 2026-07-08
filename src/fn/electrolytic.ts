@@ -6,6 +6,7 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -74,7 +75,14 @@ export const electrolytic = (
   const { p, id, od, d } = parameters
 
   const plated_holes = [
-    platedhole(1, -p / 2, 0, id, od),
+    platedHoleWithRectPad({
+      pn: 1,
+      x: -p / 2,
+      y: 0,
+      holeDiameter: id,
+      rectPadWidth: od,
+      rectPadHeight: od,
+    }),
     platedhole(2, p / 2, 0, id, od),
   ]
 

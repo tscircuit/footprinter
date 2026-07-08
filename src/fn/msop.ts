@@ -60,15 +60,22 @@ export const msop_def = base_def.extend({
   string: z.string().optional(),
 })
 
-const getMsopCoords = (pinCount: number, pn: number, w: number, p: number) => {
+const getMsopCoords = (
+  pinCount: number,
+  pn: number,
+  w: number,
+  p: number,
+  pl: number,
+) => {
   const half = pinCount / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
   const rowIndexInCol = pn <= half ? rowIndex : (half - 1 - rowIndex)
   const row = (half - 1) / 2 - rowIndexInCol
+  const padBodyOverlap = length.parse("0.2mm")
 
   return {
-    x: col * length.parse("2mm"),
+    x: col * (w / 2 + pl / 2 - padBodyOverlap),
     y: row * p,
   }
 }
@@ -88,7 +95,7 @@ export const msop = (
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p)
+    const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p, pl)
     pads.push(rectpad(i + 1, x, y, pl, pw))
   }
 
@@ -124,6 +131,7 @@ export const msop = (
     1,
     silkscreenBoxWidth,
     p,
+    pl,
   )
 
   const pin1MarkerPosition = {
