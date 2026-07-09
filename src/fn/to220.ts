@@ -18,6 +18,7 @@ export const to220_def = base_def.extend({
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
   string: z.string().optional(),
+  horizontal: z.boolean().optional(),
 })
 
 export type To220Def = z.input<typeof to220_def>
@@ -45,8 +46,81 @@ export const to220 = (
       numPins % 2 === 0
         ? (i - numPins / 2 + 0.5) * computedPitch
         : (i - Math.floor(numPins / 2)) * computedPitch
-    return platedhole(i + 1, x, holeY, id, od)
+    return platedhole(i + 1, x, parameters.horizontal ? 0 : holeY, id, od)
   })
+
+  if (parameters.horizontal) {
+    const hw = 10.4 / 2 // typical TO-220 body width
+    const plasticTopY = -13.06
+    const plasticBottomY = -3.81
+    const metalTopY = -19.46
+
+    const silkscreenPlasticBody: PcbSilkscreenPath = {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: -hw, y: plasticBottomY },
+        { x: hw, y: plasticBottomY },
+        { x: hw, y: plasticTopY },
+        { x: -hw, y: plasticTopY },
+        { x: -hw, y: plasticBottomY },
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+    }
+
+    const silkscreenMetalTab: PcbSilkscreenPath = {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: -hw, y: plasticTopY },
+        { x: hw, y: plasticTopY },
+        { x: hw, y: metalTopY },
+        { x: -hw, y: metalTopY },
+        { x: -hw, y: plasticTopY },
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+    }
+
+    const mountingHole = {
+      type: "pcb_hole",
+      hole_shape: "circle",
+      x: 0,
+      y: -16.66,
+      hole_diameter: 3.5,
+      pcb_hole_id: "",
+    } as AnyCircuitElement
+
+    const crtMinX = -hw - 0.25
+    const crtMaxX = hw + 0.25
+    const crtMinY = metalTopY - 0.25
+    const crtMaxY = od / 2 + 0.25
+
+    const courtyard: PcbCourtyardRect = {
+      type: "pcb_courtyard_rect",
+      pcb_courtyard_rect_id: "",
+      pcb_component_id: "",
+      center: { x: 0, y: (crtMinY + crtMaxY) / 2 },
+      width: crtMaxX - crtMinX,
+      height: crtMaxY - crtMinY,
+      layer: "top",
+    }
+
+    return {
+      circuitJson: [
+        ...plated_holes,
+        silkscreenPlasticBody,
+        silkscreenMetalTab,
+        mountingHole,
+        silkscreenRef(0, 1.5, 0.5) as AnyCircuitElement,
+        courtyard,
+      ],
+      parameters: { ...parameters, p: computedPitch },
+    }
+  }
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
