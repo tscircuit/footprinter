@@ -25,12 +25,13 @@ export const pushbutton = (
   const width = parameters.w
   const height = parameters.h
   const holeDiameter = parameters.id
+  const outerDiameter = parameters.od
 
   const holes: AnyCircuitElement[] = [
-    platedhole(1, -width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(2, -width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(3, width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(4, width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
+    platedhole(1, -width / 2, height / 2, holeDiameter, outerDiameter),
+    platedhole(2, -width / 2, -height / 2, holeDiameter, outerDiameter),
+    platedhole(3, width / 2, -height / 2, holeDiameter, outerDiameter),
+    platedhole(4, width / 2, height / 2, holeDiameter, outerDiameter),
   ]
 
   const silkscreenLines: AnyCircuitElement[] = [
@@ -60,7 +61,7 @@ export const pushbutton = (
     0.5,
   )
 
-  const padOuterRadius = (holeDiameter * 1.5) / 2
+  const padOuterRadius = outerDiameter / 2
   const pinRowSpanX = width
   const pinRowSpanY = height
   const padOuterHalfWidth = pinRowSpanX / 2 + padOuterRadius
