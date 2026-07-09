@@ -17,8 +17,7 @@ test("UTDFN-4-EP(1x1) pretransform alias", () => {
   expect(params.num_pins).toBe(4)
   expect(params.ep).toBe(true)
   const pads = circuitJson.filter(
-    (el: any) =>
-      el.type === "pcb_smtpad" || el.type === "pcb_plated_hole",
+    (el: any) => el.type === "pcb_smtpad" || el.type === "pcb_plated_hole",
   )
   expect(pads.length).toBe(5)
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
