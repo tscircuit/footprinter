@@ -337,6 +337,17 @@ export const getFootprintNamesByType = (): {
   }
 }
 
+const createFootprintFunctionNotFoundError = (target: any) => {
+  const fn = target.fn
+  const source = target.string ? `, from string "${target.string}"` : ""
+  const received =
+    typeof fn === "string" && fn.length > 0 ? `"${fn}"` : "no function"
+
+  return new Error(
+    `Function not found for footprinter ${received}${source}. Specify a valid function like .dip, .lr, .p, etc.`,
+  )
+}
+
 export const footprinter = (): Footprinter & {
   string: typeof string
   getFootprintNames: string[]
@@ -363,27 +374,16 @@ export const footprinter = (): Footprinter & {
           }
 
           if (!FOOTPRINT_FN[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
+            throw createFootprintFunctionNotFoundError(target)
           }
 
           return () => {
-            // TODO improve error
-            throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
-            )
+            throw createFootprintFunctionNotFoundError(target)
           }
         }
         if (prop === "json") {
           if (!FOOTPRINT_FN[target.fn]) {
-            throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
+            throw createFootprintFunctionNotFoundError(target)
           }
           return () => FOOTPRINT_FN[target.fn](target).parameters
         }
