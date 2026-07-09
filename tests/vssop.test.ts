@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -123,7 +123,7 @@ test("invalid_vssop6", () => {
   } catch (error) {
     const e = error as Error
     expect(e).toBeInstanceOf(Error)
-    expect(e.message).toContain("Invalid footprint function")
+    expect(e.message).toContain('Function not found for footprinter "invalid"')
   }
 })
 
