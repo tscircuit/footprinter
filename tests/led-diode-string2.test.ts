@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { fp } from "../src/footprinter"
 
 // Regression test for issue #562:
