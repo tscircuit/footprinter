@@ -17,6 +17,7 @@ interface FootprintElement {
   y?: number
   width?: number
   height?: number
+  radius?: number
   outer_diameter?: number
   hole_diameter?: number
   outer_height?: number
@@ -30,6 +31,145 @@ interface FootprintElement {
   route?: Array<{ x: number; y: number }>
   points?: Array<{ x: number; y: number }>
   shape?: string
+  corner_radius?: number
+}
+
+const EPSILON = 1e-9
+
+function createRectanglePolygon(
+  centerX: number,
+  centerY: number,
+  width: number,
+  height: number,
+): Flatten.Polygon {
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+
+  return new Flatten.Polygon([
+    [centerX - halfWidth, centerY - halfHeight],
+    [centerX + halfWidth, centerY - halfHeight],
+    [centerX + halfWidth, centerY + halfHeight],
+    [centerX - halfWidth, centerY + halfHeight],
+  ])
+}
+
+function createRoundedRectanglePolygon(
+  centerX: number,
+  centerY: number,
+  width: number,
+  height: number,
+  cornerRadius: number,
+): Flatten.Polygon {
+  const halfWidth = width / 2
+  const halfHeight = height / 2
+  const radius = Math.max(0, Math.min(cornerRadius, halfWidth, halfHeight))
+
+  if (radius <= EPSILON) {
+    return createRectanglePolygon(centerX, centerY, width, height)
+  }
+
+  const shapes: Array<Flatten.Segment | Flatten.Arc> = []
+  const addSegment = (
+    startX: number,
+    startY: number,
+    endX: number,
+    endY: number,
+  ) => {
+    if (Math.hypot(endX - startX, endY - startY) <= EPSILON) return
+    shapes.push(
+      new Flatten.Segment(
+        new Flatten.Point(startX, startY),
+        new Flatten.Point(endX, endY),
+      ),
+    )
+  }
+
+  addSegment(
+    centerX - halfWidth + radius,
+    centerY - halfHeight,
+    centerX + halfWidth - radius,
+    centerY - halfHeight,
+  )
+  shapes.push(
+    new Flatten.Arc(
+      new Flatten.Point(
+        centerX + halfWidth - radius,
+        centerY - halfHeight + radius,
+      ),
+      radius,
+      -Math.PI / 2,
+      0,
+      true,
+    ),
+  )
+  addSegment(
+    centerX + halfWidth,
+    centerY - halfHeight + radius,
+    centerX + halfWidth,
+    centerY + halfHeight - radius,
+  )
+  shapes.push(
+    new Flatten.Arc(
+      new Flatten.Point(
+        centerX + halfWidth - radius,
+        centerY + halfHeight - radius,
+      ),
+      radius,
+      0,
+      Math.PI / 2,
+      true,
+    ),
+  )
+  addSegment(
+    centerX + halfWidth - radius,
+    centerY + halfHeight,
+    centerX - halfWidth + radius,
+    centerY + halfHeight,
+  )
+  shapes.push(
+    new Flatten.Arc(
+      new Flatten.Point(
+        centerX - halfWidth + radius,
+        centerY + halfHeight - radius,
+      ),
+      radius,
+      Math.PI / 2,
+      Math.PI,
+      true,
+    ),
+  )
+  addSegment(
+    centerX - halfWidth,
+    centerY + halfHeight - radius,
+    centerX - halfWidth,
+    centerY - halfHeight + radius,
+  )
+  shapes.push(
+    new Flatten.Arc(
+      new Flatten.Point(
+        centerX - halfWidth + radius,
+        centerY - halfHeight + radius,
+      ),
+      radius,
+      Math.PI,
+      (3 * Math.PI) / 2,
+      true,
+    ),
+  )
+
+  return new Flatten.Polygon(shapes)
+}
+
+function getSmtPadCornerRadius(element: FootprintElement): number {
+  if (typeof element.corner_radius === "number") {
+    return element.corner_radius
+  }
+
+  if (element.shape === "pill") {
+    return Math.min(element.width ?? 0, element.height ?? 0) / 2
+  }
+
+  return 0
 }
 
 /**
@@ -39,21 +179,17 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
   try {
     if (
       element.type === "pcb_smtpad" &&
-      element.width &&
-      element.height &&
+      element.shape === "circle" &&
+      typeof element.radius === "number" &&
       element.x !== undefined &&
       element.y !== undefined
     ) {
-      // Create rectangular pad polygon
-      const halfWidth = element.width / 2
-      const halfHeight = element.height / 2
-      const points = [
-        new Flatten.Point(element.x - halfWidth, element.y - halfHeight),
-        new Flatten.Point(element.x + halfWidth, element.y - halfHeight),
-        new Flatten.Point(element.x + halfWidth, element.y + halfHeight),
-        new Flatten.Point(element.x - halfWidth, element.y + halfHeight),
-      ]
-      return new Flatten.Polygon(points)
+      return new Flatten.Polygon(
+        new Flatten.Circle(
+          new Flatten.Point(element.x, element.y),
+          element.radius,
+        ),
+      )
     }
 
     if (
@@ -64,6 +200,32 @@ function elementToPolygon(element: FootprintElement): Flatten.Polygon | null {
       // Handle polygon-shaped SMT pads
       const points = element.points.map((p) => new Flatten.Point(p.x, p.y))
       return new Flatten.Polygon(points)
+    }
+
+    if (
+      element.type === "pcb_smtpad" &&
+      element.width &&
+      element.height &&
+      element.x !== undefined &&
+      element.y !== undefined
+    ) {
+      const cornerRadius = getSmtPadCornerRadius(element)
+      if (cornerRadius > EPSILON) {
+        return createRoundedRectanglePolygon(
+          element.x,
+          element.y,
+          element.width,
+          element.height,
+          cornerRadius,
+        )
+      }
+
+      return createRectanglePolygon(
+        element.x,
+        element.y,
+        element.width,
+        element.height,
+      )
     }
 
     if (
