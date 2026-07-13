@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("usbcmidmount16 creates the mid-mount shell and signal pattern", () => {
@@ -39,4 +40,7 @@ test("usbcmidmount16 creates the mid-mount shell and signal pattern", () => {
     { x: 2.4, y: 2.125, width: 0.55, height: 1.1 },
     { x: 3.2, y: 2.125, width: 0.55, height: 1.1 },
   ])
+
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "usbcmidmount16")
 })
