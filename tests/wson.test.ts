@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("wson8_ep creates counter-clockwise pads and exposed pad 9", () => {
@@ -27,4 +28,7 @@ test("wson8_ep creates counter-clockwise pads and exposed pad 9", () => {
     { x: 0.75, y: 1.5075, width: 0.28, height: 0.6, port_hints: ["5"] },
     { x: 0, y: 0, width: 1.7, height: 0.3, port_hints: ["9"] },
   ])
+
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "wson8_ep")
 })
