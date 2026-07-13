@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("smdpushbutton4 creates row-numbered switch pads", () => {
@@ -22,4 +23,7 @@ test("smdpushbutton4 creates row-numbered switch pads", () => {
     { x: -2.1, y: -1.075, width: 1.05, height: 0.7, port_hints: ["3"] },
     { x: 2.1, y: -1.075, width: 1.05, height: 0.7, port_hints: ["4"] },
   ])
+
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "smdpushbutton4")
 })
