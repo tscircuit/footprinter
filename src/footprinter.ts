@@ -258,7 +258,32 @@ export type Footprinter = {
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
-  usbcmidmount: (num_pins?: number) => FootprinterParamsBuilder<"pinstart">
+  usbcmidmount: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "pinstart"
+    | "split"
+    | "reverse"
+    | "noholes"
+    | "rowy"
+    | "ph"
+    | "pw"
+    | "powerpw"
+    | "powerx"
+    | "shellx"
+    | "topy"
+    | "bottomy"
+    | "tophw"
+    | "tophh"
+    | "topring"
+    | "bottomhw"
+    | "bottomhh"
+    | "bottomring"
+    | "holex"
+    | "holey"
+    | "holed"
+    | "bodybottom"
+  >
 
   params: () => any
   /** @deprecated use circuitJson() instead */
