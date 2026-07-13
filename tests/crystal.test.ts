@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("crystal4 creates a counter-clockwise 2x2 pad layout", () => {
@@ -22,4 +23,7 @@ test("crystal4 creates a counter-clockwise 2x2 pad layout", () => {
     { x: 1.1, y: 0.85, width: 1.4, height: 1.2, port_hints: ["3"] },
     { x: -1.1, y: 0.85, width: 1.4, height: 1.2, port_hints: ["4"] },
   ])
+
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "crystal4")
 })
