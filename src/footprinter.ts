@@ -185,6 +185,11 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
   >
+  wson: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "rowspan" | "pl" | "pw" | "ep" | "epw" | "eph" | "w" | "h"
+  >
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
