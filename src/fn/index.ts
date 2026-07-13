@@ -1,6 +1,7 @@
 export { dip } from "./dip"
 export { diode } from "./diode"
 export { cap } from "./cap"
+export { crystal } from "./crystal"
 export { led } from "./led"
 export { res } from "./res"
 export { bga } from "./bga"

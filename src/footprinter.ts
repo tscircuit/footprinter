@@ -41,6 +41,9 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  crystal: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
