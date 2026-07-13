@@ -192,6 +192,9 @@ export type Footprinter = {
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
+  smdpushbutton: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
   stampboard: () => FootprinterParamsBuilder<
     | "w"
     | "h"
