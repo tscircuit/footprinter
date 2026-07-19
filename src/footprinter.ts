@@ -85,6 +85,45 @@ export type Footprinter = {
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "pw" | "pl" | "missing">
+  usbc: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "padcount"
+    | "p"
+    | "pady"
+    | "pw"
+    | "ph"
+    | "pillpads"
+    | "outerpads"
+    | "outerpw"
+    | "outerph"
+    | "outerp"
+    | "outergap"
+    | "outerpillpads"
+    | "roundholecount"
+    | "roundholep"
+    | "roundholey"
+    | "roundholehd"
+    | "roundholeod"
+    | "mountingp"
+    | "topmountingcount"
+    | "topmountingy"
+    | "topmountinghw"
+    | "topmountinghh"
+    | "topmountingow"
+    | "topmountingoh"
+    | "bottommountingcount"
+    | "bottommountingy"
+    | "bottommountinghw"
+    | "bottommountinghh"
+    | "bottommountingow"
+    | "bottommountingoh"
+    | "bodyw"
+    | "bodyh"
+    | "pads"
+    | "roundholes"
+    | "mountingholes"
+  >
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -283,6 +322,7 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^usb_c(?=[\d_]|$)/i, "usbc")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
@@ -303,7 +343,7 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
-      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
+      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\-\?].*)?/)
       if (!m) return null
       const [, rawFn, v] = m
       if (!rawFn) return null
