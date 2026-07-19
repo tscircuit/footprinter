@@ -9,18 +9,18 @@ import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
 const sot343CourtyardOutline = [
-  { x: -1.703, y: 0.98 },
-  { x: -0.983, y: 0.98 },
-  { x: -0.983, y: 1.1 },
-  { x: 0.477, y: 1.1 },
-  { x: 0.477, y: 0.98 },
-  { x: 1.197, y: 0.98 },
-  { x: 1.197, y: -0.98 },
-  { x: 0.477, y: -0.98 },
-  { x: 0.477, y: -1.1 },
-  { x: -0.983, y: -1.1 },
-  { x: -0.983, y: -0.98 },
-  { x: -1.703, y: -0.98 },
+  { x: -1.45, y: 0.98 },
+  { x: -0.73, y: 0.98 },
+  { x: -0.73, y: 1.1 },
+  { x: 0.73, y: 1.1 },
+  { x: 0.73, y: 0.98 },
+  { x: 1.45, y: 0.98 },
+  { x: 1.45, y: -0.98 },
+  { x: 0.73, y: -0.98 },
+  { x: 0.73, y: -1.1 },
+  { x: -0.73, y: -1.1 },
+  { x: -0.73, y: -0.98 },
+  { x: -1.45, y: -0.98 },
 ]
 
 export const sot343_def = base_def.extend({
@@ -64,10 +64,10 @@ export const getCcwSot343Coords = (parameters: {
   p: number
 }) => {
   const { pn, p } = parameters
-  if (pn === 1) return { x: -p * 1.92, y: -0.65 }
-  if (pn === 2) return { x: -p * 1.92, y: 0.65 }
-  if (pn === 3) return { x: p, y: 0.65 }
-  if (pn === 4) return { x: p, y: -0.65 }
+  if (pn === 1) return { x: -p * 1.5, y: -0.65 }
+  if (pn === 2) return { x: -p * 1.5, y: 0.65 }
+  if (pn === 3) return { x: p * 1.5, y: 0.65 }
+  if (pn === 4) return { x: p * 1.5, y: -0.65 }
   return { x: 0, y: 0 }
 }
 
