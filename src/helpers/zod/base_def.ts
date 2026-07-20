@@ -1,4 +1,5 @@
 import { z } from "zod"
+import { pin1_location } from "./pin1-location"
 
 export const base_def = z.object({
   norefdes: z
@@ -17,4 +18,7 @@ export const base_def = z.object({
     .boolean()
     .optional()
     .describe("omit all silkscreen elements from the footprint"),
+  pin1location: pin1_location
+    .optional()
+    .describe("rotate the footprint to place pin 1 on a requested side"),
 })
