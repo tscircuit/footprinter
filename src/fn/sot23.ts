@@ -6,8 +6,8 @@ import type {
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 const sot23_3CourtyardOutline = [
   { x: -2.05, y: 1.5 },
@@ -161,33 +161,71 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
 
 export const getCcwSot235Coords = (parameters: {
   h: number
+  padCenterX?: number
   p: number
   pn: number
 }) => {
-  const { p, h, pn } = parameters
+  const { p, pn, padCenterX = 1.1375 } = parameters
   if (pn === 1) {
-    return { x: -1.1375, y: p }
+    return { x: -padCenterX, y: p }
   }
   if (pn === 2) {
-    return { x: -1.1375, y: 0 }
+    return { x: -padCenterX, y: 0 }
   }
   if (pn === 3) {
-    return { x: -1.1375, y: -p }
+    return { x: -padCenterX, y: -p }
   }
   if (pn === 4) {
-    return { x: 1.1375, y: -p }
+    return { x: padCenterX, y: -p }
   }
   if (pn === 5) {
-    return { x: 1.1375, y: p }
+    return { x: padCenterX, y: p }
   }
   throw new Error("Invalid pin number")
 }
 
-export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
+type Sot235Parameters = z.infer<typeof sot23_def> & {
+  padCenterX?: number
+  rot180?: boolean
+}
+
+const rotateSot235Element180 = (
+  element: AnyCircuitElement,
+): AnyCircuitElement => {
+  if (element.type === "pcb_smtpad" && element.shape !== "polygon") {
+    return { ...element, x: -element.x, y: -element.y }
+  }
+  if (element.type === "pcb_silkscreen_text") {
+    return {
+      ...element,
+      anchor_position: {
+        x: -element.anchor_position.x,
+        y: -element.anchor_position.y,
+      },
+      ccw_rotation: ((element.ccw_rotation ?? 0) + 180) % 360,
+    }
+  }
+  if (element.type === "pcb_silkscreen_path") {
+    return {
+      ...element,
+      route: element.route.map((point) => ({ x: -point.x, y: -point.y })),
+    }
+  }
+  if (element.type === "pcb_courtyard_outline") {
+    return {
+      ...element,
+      outline: element.outline.map((point) => ({ x: -point.x, y: -point.y })),
+    }
+  }
+  return element
+}
+
+export const sot23_5 = (parameters: Sot235Parameters) => {
   const pads: AnyCircuitElement[] = []
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({
       h: Number.parseFloat(parameters.h),
+      padCenterX: parameters.padCenterX,
       p: Number.parseFloat(parameters.p),
       pn: i,
     })
@@ -230,6 +268,7 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.3, 0.3)
   const pin1Position = getCcwSot235Coords({
     h: Number.parseFloat(parameters.h),
+    padCenterX: parameters.padCenterX,
     p: Number.parseFloat(parameters.p),
     pn: 1,
   })
@@ -270,7 +309,7 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     layer: "top",
   }
 
-  return [
+  const circuitJson: AnyCircuitElement[] = [
     ...pads,
     silkscreenRefText,
     silkscreenPath1,
@@ -278,4 +317,8 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     pin1Indicator as AnyCircuitElement,
     courtyard,
   ]
+
+  return parameters.rot180
+    ? circuitJson.map(rotateSot235Element180)
+    : circuitJson
 }
