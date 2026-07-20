@@ -36139,12 +36139,36 @@ var silkscreenRef = (x, y, font_size) => {
   };
 };
 
+// src/helpers/zod/function-call.ts
+var function_call = exports_external.string().or(exports_external.array(exports_external.any())).transform((a) => {
+  if (Array.isArray(a))
+    return a;
+  if (a.startsWith("(") && a.endsWith(")")) {
+    a = a.slice(1, -1);
+  }
+  return a.split(",").map((v2) => {
+    const numVal = Number(v2);
+    return isNaN(numVal) ? v2 : numVal;
+  });
+}).pipe(exports_external.array(exports_external.string().or(exports_external.number())));
+
+// src/helpers/zod/pin1-location.ts
+var horizontalSide = exports_external.enum(["leftside", "rightside"]);
+var verticalSide = exports_external.enum(["topside", "bottomside"]);
+var horizontalAlignment = exports_external.enum(["left", "right"]);
+var verticalAlignment = exports_external.enum(["top", "bottom"]);
+var pin1_location = function_call.pipe(exports_external.union([
+  exports_external.tuple([horizontalSide, verticalAlignment]),
+  exports_external.tuple([verticalSide, horizontalAlignment])
+]));
+
 // src/helpers/zod/base_def.ts
 var base_def = exports_external.object({
   norefdes: exports_external.boolean().optional().describe("disable reference designator label"),
   invert: exports_external.boolean().optional().describe("hint to invert the orientation of the 3D model"),
   faceup: exports_external.boolean().optional().describe("The male pin header should face upwards, out of the top layer"),
-  nosilkscreen: exports_external.boolean().optional().describe("omit all silkscreen elements from the footprint")
+  nosilkscreen: exports_external.boolean().optional().describe("omit all silkscreen elements from the footprint"),
+  pin1location: pin1_location.optional().describe("rotate the footprint to place pin 1 on a requested side")
 });
 
 // node_modules/@tscircuit/mm/dist/index.js
@@ -37379,19 +37403,6 @@ var dim2d = exports_external.string().transform((a) => {
   x: exports_external.number(),
   y: exports_external.number()
 }));
-
-// src/helpers/zod/function-call.ts
-var function_call = exports_external.string().or(exports_external.array(exports_external.any())).transform((a) => {
-  if (Array.isArray(a))
-    return a;
-  if (a.startsWith("(") && a.endsWith(")")) {
-    a = a.slice(1, -1);
-  }
-  return a.split(",").map((v2) => {
-    const numVal = Number(v2);
-    return isNaN(numVal) ? v2 : numVal;
-  });
-}).pipe(exports_external.array(exports_external.string().or(exports_external.number())));
 
 // src/fn/bga.ts
 var bga_def = base_def.extend({
@@ -46547,6 +46558,109 @@ var applyOrigin = (elements, origin) => {
   return elements;
 };
 
+// src/helpers/apply-pin1-location.ts
+var RIGHT_ANGLE_ROTATIONS = [0, 90, 180, 270];
+var rotatePoint = (point2, rotation3) => {
+  switch (rotation3) {
+    case 90:
+      return { x: -point2.y, y: point2.x };
+    case 180:
+      return { x: -point2.x, y: -point2.y };
+    case 270:
+      return { x: point2.y, y: -point2.x };
+    default:
+      return { ...point2 };
+  }
+};
+var getPadCenter = (pad2) => {
+  if (typeof pad2.x === "number" && typeof pad2.y === "number") {
+    return { x: pad2.x, y: pad2.y };
+  }
+  if (Array.isArray(pad2.points) && pad2.points.length > 0) {
+    const xs2 = pad2.points.map((point2) => point2.x);
+    const ys2 = pad2.points.map((point2) => point2.y);
+    return {
+      x: (Math.min(...xs2) + Math.max(...xs2)) / 2,
+      y: (Math.min(...ys2) + Math.max(...ys2)) / 2
+    };
+  }
+  return null;
+};
+var isPin1 = (pad2) => pad2.port_hints?.some((hint) => /^(?:pin)?1$/i.test(String(hint)));
+var pinMatchesLocation = (padCenters, pin1Center, [side, alignment]) => {
+  const xs2 = padCenters.map((point2) => point2.x);
+  const ys2 = padCenters.map((point2) => point2.y);
+  const minX = Math.min(...xs2);
+  const maxX = Math.max(...xs2);
+  const minY = Math.min(...ys2);
+  const maxY = Math.max(...ys2);
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
+  const spanX = maxX - minX;
+  const spanY = maxY - minY;
+  const tolerance = Math.max(spanX, spanY, 1) * 0.000001;
+  const onRequestedSide = side === "leftside" && Math.abs(pin1Center.x - minX) <= tolerance || side === "rightside" && Math.abs(pin1Center.x - maxX) <= tolerance || side === "topside" && Math.abs(pin1Center.y - maxY) <= tolerance || side === "bottomside" && Math.abs(pin1Center.y - minY) <= tolerance;
+  const atRequestedAlignment = alignment === "left" && (spanX <= tolerance || pin1Center.x < centerX - tolerance) || alignment === "right" && (spanX <= tolerance || pin1Center.x > centerX + tolerance) || alignment === "top" && (spanY <= tolerance || pin1Center.y > centerY + tolerance) || alignment === "bottom" && (spanY <= tolerance || pin1Center.y < centerY - tolerance);
+  return onRequestedSide && atRequestedAlignment;
+};
+var rotatePointField = (value, rotation3) => {
+  if (!value || typeof value !== "object" || typeof value.x !== "number" || typeof value.y !== "number") {
+    return;
+  }
+  const rotated = rotatePoint(value, rotation3);
+  value.x = rotated.x;
+  value.y = rotated.y;
+};
+var normalizeRotation = (rotation3) => (rotation3 % 360 + 360) % 360;
+var rotateElements = (elements, rotation3) => {
+  if (rotation3 === 0)
+    return elements;
+  const rotatedElements = structuredClone(elements);
+  for (const element of rotatedElements) {
+    if (typeof element.x === "number" && typeof element.y === "number") {
+      const rotated = rotatePoint(element, rotation3);
+      element.x = rotated.x;
+      element.y = rotated.y;
+    }
+    rotatePointField(element.center, rotation3);
+    rotatePointField(element.anchor_position, rotation3);
+    for (const field of ["route", "outline", "points"]) {
+      if (!Array.isArray(element[field]))
+        continue;
+      for (const point2 of element[field]) {
+        rotatePointField(point2, rotation3);
+      }
+    }
+    if (element.type === "pcb_smtpad" && element.shape !== "polygon" || element.type === "pcb_plated_hole" || element.type === "pcb_silkscreen_text" || element.type === "pcb_fabrication_note_text") {
+      element.ccw_rotation = normalizeRotation(Number(element.ccw_rotation ?? 0) + rotation3);
+    }
+    if ((rotation3 === 90 || rotation3 === 270) && (element.type === "pcb_courtyard_rect" || element.type === "pcb_silkscreen_rect" || element.type === "pcb_fabrication_note_rect" || element.type === "pcb_cutout" && element.shape === "rect")) {
+      [element.width, element.height] = [element.height, element.width];
+    }
+  }
+  return rotatedElements;
+};
+var applyPin1Location = (elements, pin1Location) => {
+  if (!pin1Location)
+    return elements;
+  const pads = elements.filter((element) => element.type === "pcb_smtpad" || element.type === "pcb_plated_hole");
+  const pin1 = pads.find(isPin1);
+  const padCenters = pads.map(getPadCenter).filter((point2) => point2 !== null);
+  const pin1Center = pin1 ? getPadCenter(pin1) : null;
+  if (!pin1 || !pin1Center || padCenters.length === 0) {
+    throw new Error(`pin1location(${pin1Location.join(",")}) requires a footprint with a pad whose port_hints contain "1" or "pin1"`);
+  }
+  const rotation3 = RIGHT_ANGLE_ROTATIONS.find((candidateRotation) => {
+    const rotatedPads = padCenters.map((point2) => rotatePoint(point2, candidateRotation));
+    const rotatedPin1 = rotatePoint(pin1Center, candidateRotation);
+    return pinMatchesLocation(rotatedPads, rotatedPin1, pin1Location);
+  });
+  if (rotation3 === undefined) {
+    throw new Error(`pin1location(${pin1Location.join(",")}) cannot be reached with a rotation; the requested location may be the mirrored orientation of this footprint`);
+  }
+  return rotateElements(elements, rotation3);
+};
+
 // src/helpers/is-not-null.ts
 function isNotNull(value) {
   return value !== null && value !== undefined;
@@ -46561,6 +46675,13 @@ var string2 = (def) => {
   const normalizedDef = normalizeDefinition(def);
   const modifiedDef = normalizedDef.replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1").replace(/^zh(\d+)(?:$|_)/, "jst$1_zh");
   const def_parts = modifiedDef.split(/_(?!metric)/).map((s) => {
+    const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i);
+    if (pin1LocationMatch) {
+      return {
+        fn: pin1LocationMatch[1].toLowerCase(),
+        v: pin1LocationMatch[2]
+      };
+    }
     const m2 = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/);
     if (!m2)
       return null;
@@ -46590,7 +46711,8 @@ var footprinter = () => {
             const { circuitJson } = exports_fn[target.fn](target);
             const circuitWithoutSilkscreen = applyNoSilkscreen(circuitJson, target);
             const circuitWithoutRefDes = applyNoRefDes(circuitWithoutSilkscreen, target);
-            return applyOrigin(circuitWithoutRefDes, target.origin);
+            const circuitWithPin1Location = applyPin1Location(circuitWithoutRefDes, target.pin1location ? pin1_location.parse(target.pin1location) : undefined);
+            return applyOrigin(circuitWithPin1Location, target.origin);
           };
         }
         if (!exports_fn[target.fn]) {
@@ -46618,7 +46740,8 @@ var footprinter = () => {
           return proxy;
         };
       }
-      return (v2) => {
+      return (...values) => {
+        const v2 = values[0];
         if (Object.keys(target).length === 0) {
           if (`${prop}${v2}` in exports_fn) {
             target[`${prop}${v2}`] = true;
@@ -46640,7 +46763,7 @@ var footprinter = () => {
           }
         } else {
           if (!v2 && ["w", "h", "p"].includes(prop)) {} else {
-            target[prop] = v2 ?? true;
+            target[prop] = prop === "pin1location" && values.length > 1 ? values : v2 ?? true;
           }
         }
         return proxy;
