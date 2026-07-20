@@ -75,6 +75,24 @@ fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 ```
 
+### Pin 1 location
+
+Every footprint accepts a `pin1location(side,alignment)` modifier that rotates
+the complete footprint in 90-degree increments. The first argument selects the
+side, while the second selects the position along that side:
+
+```ts
+fp.string("soic8_pin1location(leftside,top)")
+fp.string("crystal_pin1location(topside,left)")
+
+// Builder equivalent:
+fp().crystal().pin1location("topside", "left")
+```
+
+Valid pairs are `leftside|rightside` with `top|bottom`, and
+`topside|bottomside` with `left|right`. Rotation preserves pin ordering, so a
+mirrored-only location is rejected with an error.
+
 ## Getting JSON output from the builder
 
 Use the `.circuitJson()` function to output [tscircuit circuit JSON](https://github.com/tscircuit/circuit-json)
