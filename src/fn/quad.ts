@@ -3,16 +3,17 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { optional, z } from "zod"
 import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { rectpad } from "../helpers/rectpad"
-import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
+import { optional, z } from "zod"
+import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
+import { base_def } from "../helpers/zod/base_def"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -31,6 +32,7 @@ export const base_quad_def = base_def.extend({
   pw: length.optional(),
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
+  pillpads: z.boolean().optional().default(false),
   legsoutside: z.boolean().default(false),
 })
 
@@ -148,7 +150,11 @@ export const quad = (
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
     padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
-    pads.push(rectpad(pn, x, y, padWidth, padHeight))
+    pads.push(
+      parameters.pillpads
+        ? pillpad(pn, x, y, padWidth, padHeight)
+        : rectpad(pn, x, y, padWidth, padHeight),
+    )
   }
 
   if (parameters.thermalpad) {
