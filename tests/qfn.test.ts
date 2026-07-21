@@ -10,6 +10,7 @@ test("qfn32", () => {
 
 test("qfn32_pillpads keeps its thermal pad rectangular", () => {
   const soup = fp.string("qfn32_pillpads_thermalpad3.1x3.1mm").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
   const pads = soup.filter((element) => element.type === "pcb_smtpad")
   const perimeterPads = pads.filter(
     (pad) => !pad.port_hints.includes("thermalpad"),
@@ -24,4 +25,8 @@ test("qfn32_pillpads keeps its thermal pad rectangular", () => {
     ),
   ).toBe(true)
   expect(thermalPad?.shape).toBe("rect")
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "qfn32_pillpads_thermalpad3.1x3.1mm",
+  )
 })
