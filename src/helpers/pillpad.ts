@@ -13,7 +13,7 @@ export const pillpad = (
     y,
     width: w,
     height: h,
-    radius: h / 2,
+    radius: Math.min(w, h) / 2,
     layer: "top",
     shape: "pill",
     pcb_smtpad_id: "",
