@@ -71,7 +71,7 @@ export const dfn = (
         y,
         parameters.pl ?? "1mm",
         parameters.pw ?? "0.6mm",
-        cornerRadius
+        cornerRadius,
       ),
     )
     outputPinNumber += 1
