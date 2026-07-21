@@ -4,9 +4,11 @@ import * as FOOTPRINT_FN from "./fn"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
+import { applyPin1Location } from "./helpers/apply-pin1-location"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
+import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
 
 type BaseOptionKey =
   | "origin"
@@ -14,6 +16,7 @@ type BaseOptionKey =
   | "invert"
   | "faceup"
   | "nosilkscreen"
+  | "pin1location"
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
@@ -21,7 +24,9 @@ export type FootprinterParamsBuilder<K extends string> = {
     | "soup"
     | "circuitJson"
     ? Footprinter[P]
-    : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+    : P extends "pin1location"
+      ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
+      : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -41,6 +46,9 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  crystal: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
@@ -79,7 +87,9 @@ export type Footprinter = {
   mlp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
-  dfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  dfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "pw" | "pl" | "missing">
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -182,6 +192,11 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
   >
+  wson: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "rowspan" | "pl" | "pw" | "ep" | "epw" | "eph" | "w" | "h"
+  >
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -192,6 +207,9 @@ export type Footprinter = {
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
+  smdpushbutton: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
   stampboard: () => FootprinterParamsBuilder<
     | "w"
     | "h"
@@ -258,6 +276,32 @@ export type Footprinter = {
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
+  usbcmidmount: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "pinstart"
+    | "split"
+    | "reverse"
+    | "noholes"
+    | "rowy"
+    | "ph"
+    | "pw"
+    | "powerpw"
+    | "powerx"
+    | "shellx"
+    | "topy"
+    | "bottomy"
+    | "tophw"
+    | "tophh"
+    | "topring"
+    | "bottomhw"
+    | "bottomhh"
+    | "bottomring"
+    | "holex"
+    | "holey"
+    | "holed"
+    | "bodybottom"
+  >
 
   params: () => any
   /** @deprecated use circuitJson() instead */
@@ -290,6 +334,13 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
+      const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i)
+      if (pin1LocationMatch) {
+        return {
+          fn: pin1LocationMatch[1]!.toLowerCase(),
+          v: pin1LocationMatch[2],
+        }
+      }
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
       if (!m) return null
       const [, rawFn, v] = m
@@ -358,7 +409,13 @@ export const footprinter = (): Footprinter & {
                 circuitWithoutSilkscreen,
                 target,
               )
-              return applyOrigin(circuitWithoutRefDes, target.origin)
+              const circuitWithPin1Location = applyPin1Location(
+                circuitWithoutRefDes,
+                target.pin1location
+                  ? pin1_location.parse(target.pin1location)
+                  : undefined,
+              )
+              return applyOrigin(circuitWithPin1Location, target.origin)
             }
           }
 
@@ -400,7 +457,8 @@ export const footprinter = (): Footprinter & {
             return proxy
           }
         }
-        return (v: any) => {
+        return (...values: any[]) => {
+          const v = values[0]
           if (Object.keys(target).length === 0) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
@@ -432,7 +490,10 @@ export const footprinter = (): Footprinter & {
             if (!v && ["w", "h", "p"].includes(prop as string)) {
               // ignore
             } else {
-              target[prop] = v ?? true
+              target[prop] =
+                prop === "pin1location" && values.length > 1
+                  ? values
+                  : (v ?? true)
             }
           }
           return proxy

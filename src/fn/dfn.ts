@@ -3,18 +3,18 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import {
-  extendSoicDef,
-  soicWithoutParsing,
-  type SoicInput,
-  getCcwSoicCoords,
-} from "./soic"
+import { extendSoicDef, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
-import { z } from "zod"
+import type { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { function_call } from "src/helpers/zod/function-call"
 
 export const dfn_def = extendSoicDef({})
+export type DfnInput = z.input<typeof dfn_def> & {
+  /** Omit nominal pad positions while preserving an even, regular pad grid. */
+  missing?: string | Array<string | number>
+}
 
 /**
  * Dual Flat No-lead
@@ -22,27 +22,65 @@ export const dfn_def = extendSoicDef({})
  * Similar to SOIC but different silkscreen
  */
 export const dfn = (
-  raw_params: SoicInput,
+  raw_params: DfnInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = dfn_def.parse(raw_params)
+  const missing = function_call.parse(raw_params.missing ?? [])
+  if (missing.some((position) => typeof position !== "number")) {
+    throw new Error("DFN missing positions must be pad numbers")
+  }
+  const missingPositions = [...new Set(missing)]
+  if (missingPositions.length !== missing.length) {
+    throw new Error("DFN missing positions must not contain duplicates")
+  }
+
+  const parameters = { ...dfn_def.parse(raw_params), missing: missingPositions }
+  const nominalPinCount = parameters.num_pins
+  if (
+    missingPositions.some(
+      (position) => position < 1 || position > nominalPinCount,
+    )
+  ) {
+    throw new Error("DFN missing position is outside the nominal pad range")
+  }
+
+  const missingPositionSet = new Set(missingPositions)
   const pads: AnyCircuitElement[] = []
   const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
-  for (let i = 0; i < parameters.num_pins; i++) {
+  let maxPadExtentY = 0
+  let outputPinNumber = 1
+  for (
+    let nominalPinNumber = 1;
+    nominalPinNumber <= nominalPinCount;
+    nominalPinNumber += 1
+  ) {
+    if (missingPositionSet.has(nominalPinNumber)) continue
+
     const { x, y } = getCcwSoicCoords({
-      num_pins: parameters.num_pins,
-      pn: i + 1,
+      num_pins: nominalPinCount,
+      pn: nominalPinNumber,
       w: parameters.w,
       p: parameters.p ?? 1.27,
       pl: parameters.pl,
       widthincludeslegs: true,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
+    pads.push(
+      rectpad(
+        outputPinNumber,
+        x,
+        y,
+        parameters.pl ?? "1mm",
+        parameters.pw ?? "0.6mm",
+        cornerRadius
+      ),
+    )
+    outputPinNumber += 1
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1
   const m = Math.min(1, parameters.p / 2)
   const sw = parameters.w + m
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+  const sh = maxPadExtentY * 2 + m
   const silkscreenPaths: PcbSilkscreenPath[] = []
 
   for (const corner of CORNERS) {
@@ -101,10 +139,8 @@ export const dfn = (
   )
   const roundUpToCourtyardGrid = (value: number) =>
     Math.ceil(value / 0.05) * 0.05
-  const pinRowSpanY =
-    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
   const courtyardHalfWidthMm = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
-  const courtyardHalfHeightMm = roundUpToCourtyardGrid(pinRowSpanY / 2 + 0.45)
+  const courtyardHalfHeightMm = roundUpToCourtyardGrid(maxPadExtentY + 0.45)
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
