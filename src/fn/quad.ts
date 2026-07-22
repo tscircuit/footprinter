@@ -154,8 +154,7 @@ export const quad = (
     pads.push(
       parameters.pillpads
         ? pillpad(pn, x, y, padWidth, padHeight)
-        : rectpad(pn, x, y, padWidth, padHeight),
-      cornerRadius
+        : rectpad(pn, x, y, padWidth, padHeight, cornerRadius),
     )
   }
 
