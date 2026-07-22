@@ -191,7 +191,7 @@ export const dip = (raw_params: {
       pcb_fabrication_note_text_id: `pin_${i + 1}`,
       layer: "top",
       pcb_component_id: `pin_${i + 1}`,
-      text: `{pin${i + 1}}`,
+      text: `${i + 1}`,
       anchor_position: { x: pinLabelX, y: pinLabelY },
       font_size: 0.3,
       font: "tscircuit2024",
