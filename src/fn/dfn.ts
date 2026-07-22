@@ -10,6 +10,7 @@ import type { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { function_call } from "src/helpers/zod/function-call"
+import { createThermalPad } from "src/helpers/create-thermal-pad"
 
 export const dfn_def = extendSoicDef({})
 export type DfnInput = z.input<typeof dfn_def> & {
@@ -76,6 +77,10 @@ export const dfn = (
       ),
     )
     outputPinNumber += 1
+  }
+
+  if (parameters.thermalpad) {
+    pads.push(createThermalPad(parameters.thermalpad))
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1

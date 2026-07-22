@@ -10,6 +10,8 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { u_curve } from "../helpers/u-curve"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { createThermalPad } from "src/helpers/create-thermal-pad"
 
 // TODO we should accept MS-012 or MS-013
 
@@ -22,6 +24,7 @@ export const ssop_def = base_def
     pw: length.optional(),
     pl: length.optional(),
     legsoutside: z.boolean().optional().default(false),
+    thermalpad: dim2d.optional(),
     silkscreen_stroke_width: z.number().optional().default(0.1),
   })
   .transform((v) => {
@@ -41,6 +44,7 @@ export const ssop_def = base_def
       pl: number
       num_pins: number
       legsoutside: boolean
+      thermalpad?: { x: number; y: number }
       silkscreen_stroke_width?: number
       fn: string
     }
@@ -88,6 +92,10 @@ export const ssop = (
       legsoutside: parameters.legsoutside,
     })
     pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
+  }
+
+  if (parameters.thermalpad) {
+    pads.push(createThermalPad(parameters.thermalpad))
   }
 
   const m = Math.min(1, parameters.p / 2)

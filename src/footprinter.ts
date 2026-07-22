@@ -98,17 +98,21 @@ export type Footprinter = {
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads"
+    "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads" | "thermalpad"
   >
   mlp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
-  ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
-  tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
+  ssop: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "thermalpad">
+  tssop: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "thermalpad">
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "pw" | "pl" | "missing" | "pillpads"
+    "w" | "p" | "pw" | "pl" | "missing" | "pillpads" | "thermalpad"
   >
   pinrow: (
     num_pins?: number,
@@ -221,10 +225,10 @@ export type Footprinter = {
   >
   vssop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "thermalpad">
   msop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "thermalpad">
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
