@@ -107,7 +107,9 @@ export type Footprinter = {
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "pw" | "pl" | "missing">
+  ) => FootprinterParamsBuilder<
+    "w" | "p" | "pw" | "pl" | "missing" | "pillpads"
+  >
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
