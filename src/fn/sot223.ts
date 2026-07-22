@@ -89,32 +89,38 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
+  const pl = Number.parseFloat(parameters.pl)
+  const p = Number.parseFloat(parameters.p)
+  const pw = Number.parseFloat(parameters.pw)
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = get2CcwSot223Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(parameters.w),
-      h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl),
-      p: Number.parseFloat(parameters.p),
+      w,
+      h,
+      pl,
+      p,
     })
 
-    const pinWidth = i === 3 ? 3.8 : Number.parseFloat(parameters.pw)
-    const pinLength = Number.parseFloat(parameters.pl)
+    const pinWidth = i === 3 ? 3.8 : pw
+    const pinLength = pl
+    const cornerRadius = Math.min(pinLength, pinWidth) / 8
 
     padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
     padOuterHalfHeight = Math.max(
       padOuterHalfHeight,
       Math.abs(y) + pinWidth / 2,
     )
-    pads.push(rectpad(i + 1, x, y, pinLength, pinWidth))
+    pads.push(rectpad(i + 1, x, y, pinLength, pinWidth, cornerRadius))
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const width = Number.parseFloat(parameters.w) / 2 - 2.4
-  const height = Number.parseFloat(parameters.h) / 2
+  const width = w / 2 - 2.4
+  const height = h / 2
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -140,8 +146,8 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
     stroke_width: 0.1,
   }
 
-  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
-  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const bodyHalfWidth = w / 2
+  const bodyHalfHeight = h / 2
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
     bodyHalfWidth + 0.15,
@@ -204,12 +210,14 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2235Coords({
-      h: Number.parseFloat(parameters.h),
+      h,
       p: 1.5,
       pn: i,
-      w: Number.parseFloat(parameters.w),
+      w,
     })
 
     let pinWidth = Number.parseFloat(parameters.pw)
@@ -222,17 +230,18 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       pinWidth = 1
       pinLength = 2.2
     }
+    const cornerRadius = Math.min(pinLength, pinWidth) / 8
 
     padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
     padOuterHalfHeight = Math.max(
       padOuterHalfHeight,
       Math.abs(y) + pinWidth / 2,
     )
-    pads.push(rectpad(i, x, y, pinLength, pinWidth))
+    pads.push(rectpad(i, x, y, pinLength, pinWidth, cornerRadius))
   }
 
-  const width = Number.parseFloat(parameters.w) / 2 - 2.4
-  const height = Number.parseFloat(parameters.h) / 2
+  const width = w / 2 - 2.4
+  const height = h / 2
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -260,8 +269,8 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
-  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const bodyHalfWidth = w / 2
+  const bodyHalfHeight = h / 2
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
     bodyHalfWidth + 0.15,
@@ -321,12 +330,14 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
+  const h = Number.parseFloat(parameters.h)
+  const w = 8.7
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2236Coords({
-      h: Number.parseFloat(parameters.h),
+      h,
       p: 1.3,
       pn: i,
-      w: 8.7,
+      w,
     })
 
     let pinWidth = Number.parseFloat(parameters.pw)
@@ -339,17 +350,18 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       pinWidth = 0.6
       pinLength = 2.2
     }
+    const cornerRadius = Math.min(pinLength, pinWidth) / 8
 
     padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
     padOuterHalfHeight = Math.max(
       padOuterHalfHeight,
       Math.abs(y) + pinWidth / 2,
     )
-    pads.push(rectpad(i, x, y, pinLength, pinWidth))
+    pads.push(rectpad(i, x, y, pinLength, pinWidth, cornerRadius))
   }
 
   const width = Number.parseFloat(parameters.w) / 2 - 2.4
-  const height = Number.parseFloat(parameters.h) / 2
+  const height = h / 2
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -378,7 +390,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
   const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
-  const bodyHalfHeight = Number.parseFloat(parameters.h) / 2
+  const bodyHalfHeight = h / 2
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
     bodyHalfWidth + 0.15,

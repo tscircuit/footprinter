@@ -43,6 +43,7 @@ export const vson = (
   }
 
   const pads: PcbSmtPad[] = []
+  const cornerRadius = Math.min(pinw, pinh) / 8
 
   // place the 8 or 10 outside pins
   for (let i = 0; i < num_pins; i++) {
@@ -52,7 +53,7 @@ export const vson = (
       width: w,
       pitch: p,
     })
-    pads.push(rectpad(i + 1, pinX, pinY, pinw, pinh))
+    pads.push(rectpad(i + 1, pinX, pinY, pinw, pinh, cornerRadius))
   }
 
   // place the central exposed pad (ep)

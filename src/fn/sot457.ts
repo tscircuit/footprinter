@@ -97,6 +97,7 @@ const generateSot457Elements = (
   const padWidth = parseDimension(params.pw)
   const width = parseDimension(params.w)
   const height = parseDimension(params.h)
+  const cornerRadius = Math.min(padLength, padWidth) / 8
 
   if (params.wave) {
     const pinConfigs: Record<
@@ -104,9 +105,9 @@ const generateSot457Elements = (
       (args: { padWidth: number; padHeight: number }) => AnyCircuitElement
     > = {
       1: ({ padWidth, padHeight }) =>
-        rectpad(1, -pitch, pitch, padHeight, padWidth),
+        rectpad(1, -pitch, pitch, padHeight, padWidth, cornerRadius),
       2: ({ padWidth, padHeight }) =>
-        rectpad(2, -pitch, -pitch, padHeight, padWidth),
+        rectpad(2, -pitch, -pitch, padHeight, padWidth, cornerRadius),
       3: ({ padWidth, padHeight }) =>
         pillpad(
           3,
@@ -124,9 +125,9 @@ const generateSot457Elements = (
           parseDimension(params.pillh),
         ),
       5: ({ padWidth, padHeight }) =>
-        rectpad(5, pitch, pitch, padHeight, padWidth),
+        rectpad(5, pitch, pitch, padHeight, padWidth, cornerRadius),
       6: ({ padWidth, padHeight }) =>
-        rectpad(6, pitch, -pitch, padHeight, padWidth),
+        rectpad(6, pitch, -pitch, padHeight, padWidth, cornerRadius),
     }
 
     for (let i = 1; i <= params.num_pins; i++) {
@@ -138,7 +139,7 @@ const generateSot457Elements = (
   } else {
     for (let i = 1; i <= params.num_pins; i++) {
       const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i })
-      pads.push(rectpad(i, x, y, padLength, padWidth))
+      pads.push(rectpad(i, x, y, padLength, padWidth, cornerRadius))
     }
   }
 

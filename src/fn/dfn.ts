@@ -46,6 +46,7 @@ export const dfn = (
 
   const missingPositionSet = new Set(missingPositions)
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
   let maxPadExtentY = 0
   let outputPinNumber = 1
   for (
@@ -71,6 +72,7 @@ export const dfn = (
         y,
         parameters.pl ?? "1mm",
         parameters.pw ?? "0.6mm",
+        cornerRadius,
       ),
     )
     outputPinNumber += 1

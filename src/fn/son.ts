@@ -48,12 +48,13 @@ export const son = (
   const pw = length.parse(parameters.pw)
   const epw = length.parse(parameters.epw)
   const eph = length.parse(parameters.eph)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   const pads: AnyCircuitElement[] = []
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getSonPadCoord(parameters.num_pins, i + 1, w, p)
-    pads.push(rectpad(i + 1, x, y, pl, pw))
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
 
   if (parameters.ep) {

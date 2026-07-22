@@ -122,25 +122,23 @@ export const getCcwSot23Coords = (parameters: {
 
 export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
+  const w = Number.parseFloat(parameters.w)
+  const h = Number.parseFloat(parameters.h)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const p = Number.parseFloat(parameters.p)
+  const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23Coords({
       num_pins: parameters.num_pins,
       pn: i + 1,
-      w: Number.parseFloat(parameters.w),
-      h: Number.parseFloat(parameters.h),
-      pl: Number.parseFloat(parameters.pl),
-      p: Number.parseFloat(parameters.p),
+      w,
+      h,
+      pl,
+      p,
     })
-    pads.push(
-      rectpad(
-        i + 1,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
@@ -185,33 +183,29 @@ export const getCcwSot235Coords = (parameters: {
 
 export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
+  const h = Number.parseFloat(parameters.h)
+  const p = Number.parseFloat(parameters.p)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const cornerRadius = Math.min(pl, pw) / 8
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({
-      h: Number.parseFloat(parameters.h),
-      p: Number.parseFloat(parameters.p),
+      h,
+      p,
       pn: i,
     })
-    pads.push(
-      rectpad(
-        i,
-        x,
-        y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
-      ),
-    )
+    pads.push(rectpad(i, x, y, pl, pw, cornerRadius))
   }
 
-  const width =
-    ((parameters.num_pins + 1) / 2) * Number.parseFloat(parameters.p)
-  const height = Number.parseFloat(parameters.h)
+  const width = ((parameters.num_pins + 1) / 2) * p
+  const height = h
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
     route: [
-      { x: -width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
-      { x: width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
+      { x: -width / 3, y: height / 2 + p / 1.3 },
+      { x: width / 3, y: height / 2 + p / 1.3 },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.05,
@@ -221,19 +215,15 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_2",
     route: [
-      { x: -width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
-      { x: width / 3, y: -height / 2 - Number.parseFloat(parameters.p) / 1.3 },
+      { x: -width / 3, y: -height / 2 - p / 1.3 },
+      { x: width / 3, y: -height / 2 - p / 1.3 },
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.05,
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.3, 0.3)
-  const pin1Position = getCcwSot235Coords({
-    h: Number.parseFloat(parameters.h),
-    p: Number.parseFloat(parameters.p),
-    pn: 1,
-  })
-  pin1Position.x = pin1Position.x - Number.parseFloat(parameters.pw) * 1.5
+  const pin1Position = getCcwSot235Coords({ h, p, pn: 1 })
+  pin1Position.x = pin1Position.x - pw * 1.5
   const triangleHeight = 0.3 // Adjust triangle size as needed
   const triangleWidth = 0.4 // Adjust triangle width as needed
   const pin1Indicator: PcbSilkscreenPath = {

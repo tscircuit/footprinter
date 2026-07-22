@@ -58,6 +58,7 @@ export const tssop = (
 
   const parameters = tssop_def.parse(params)
   const pads: AnyCircuitElement[] = []
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
   const wForPads = isFinePitch
     ? parameters.w - length.parse("0.15mm")
     : parameters.w
@@ -71,7 +72,7 @@ export const tssop = (
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw))
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }
 
   const m = Math.min(1, parameters.p / 2)

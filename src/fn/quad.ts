@@ -146,6 +146,7 @@ export const quad = (
     if (orientation === "vert") {
       ;[padWidth, padHeight] = [padHeight, padWidth]
     }
+    const cornerRadius = Math.min(padWidth, padHeight) / 8
 
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
@@ -153,7 +154,7 @@ export const quad = (
     pads.push(
       parameters.pillpads
         ? pillpad(pn, x, y, padWidth, padHeight)
-        : rectpad(pn, x, y, padWidth, padHeight),
+        : rectpad(pn, x, y, padWidth, padHeight, cornerRadius),
     )
   }
 
