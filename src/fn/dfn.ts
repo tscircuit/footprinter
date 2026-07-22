@@ -5,6 +5,7 @@ import type {
 } from "circuit-json"
 import { extendSoicDef, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
+import { pillpad } from "src/helpers/pillpad"
 import type { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
@@ -65,7 +66,7 @@ export const dfn = (
     })
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
     pads.push(
-      rectpad(
+      (parameters.pillpads ? pillpad : rectpad)(
         outputPinNumber,
         x,
         y,

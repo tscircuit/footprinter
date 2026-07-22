@@ -8,6 +8,20 @@ test("dfn8_w5.3mm_p1.27mm", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dfn8_w5.3mm_p1.27mm")
 })
 
+test("dfn8_pillpads", () => {
+  const soup = fp.string("dfn8_w5.3mm_p1.27mm_pillpads").circuitJson()
+  const pads = soup.filter((element) => element.type === "pcb_smtpad")
+
+  expect(pads).toHaveLength(8)
+  expect(pads.every((pad) => pad.shape === "pill")).toBe(true)
+  expect(
+    pads.every((pad) => pad.radius === Math.min(pad.width, pad.height) / 2),
+  ).toBe(true)
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dfn8_pillpads")
+})
+
 test("dfn6 can omit its second nominal pad position", () => {
   const soup = fp
     .string("dfn6_w3.2mm_p0.95mm_pw0.6mm_pl1mm_missing(2)")

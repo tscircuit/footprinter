@@ -55,11 +55,23 @@ export type Footprinter = {
   lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  ) => FootprinterParamsBuilder<
+    "w" | "p" | "id" | "od" | "wide" | "narrow" | "pillpads"
+  >
   quad: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "l" | "square" | "pl" | "pr" | "pb" | "pt" | "p" | "pw" | "ph"
+    | "w"
+    | "l"
+    | "square"
+    | "pl"
+    | "pr"
+    | "pb"
+    | "pt"
+    | "p"
+    | "pw"
+    | "ph"
+    | "pillpads"
   >
   bga: (
     num_pins?: number,
@@ -77,19 +89,27 @@ export type Footprinter = {
     | "brorigin"
     | "circularpads"
   >
-  qfn: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
-  tqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  qfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  tqfp: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads"
   >
-  mlp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "p">
+  mlp: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
   ssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   tssop: (num_pins?: number) => FootprinterParamsBuilder<"w" | "p">
   dfn: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "pw" | "pl" | "missing">
+  ) => FootprinterParamsBuilder<
+    "w" | "p" | "pw" | "pl" | "missing" | "pillpads"
+  >
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -153,7 +173,9 @@ export type Footprinter = {
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   ms013: () => FootprinterParamsBuilder<"w" | "p">
   ms012: () => FootprinterParamsBuilder<"w" | "p">
-  lqfp: (num_pins?: number) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
+  lqfp: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
