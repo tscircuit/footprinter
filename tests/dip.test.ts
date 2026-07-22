@@ -9,6 +9,40 @@ test("dip footprint", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip footprint")
 })
 
+test("dip positions fabrication note placeholders outside their pin rows", () => {
+  const circuitJson = fp.string("dip4").circuitJson()
+  const fabricationNotePins = circuitJson
+    .filter((element) => element.type === "pcb_fabrication_note_text")
+    .map(({ text, anchor_position, anchor_alignment }) => ({
+      text,
+      anchor_position,
+      anchor_alignment,
+    }))
+
+  expect(fabricationNotePins).toEqual([
+    {
+      text: "{pin1}",
+      anchor_position: { x: -5.21, y: 1.42 },
+      anchor_alignment: "top_right",
+    },
+    {
+      text: "{pin2}",
+      anchor_position: { x: -5.21, y: -1.12 },
+      anchor_alignment: "top_right",
+    },
+    {
+      text: "{pin3}",
+      anchor_position: { x: 5.21, y: -1.12 },
+      anchor_alignment: "top_left",
+    },
+    {
+      text: "{pin4}",
+      anchor_position: { x: 5.21, y: 1.42 },
+      anchor_alignment: "top_left",
+    },
+  ])
+})
+
 test("dip16", () => {
   const circuitJson = fp.string("dip16").circuitJson() as AnyCircuitElement[]
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)

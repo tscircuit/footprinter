@@ -165,37 +165,33 @@ export const dip = (raw_params: {
     stroke_width: 0.1,
   }
 
-  /** Pin labels placed just outside silk line */
+  /** Pin labels placed outside their corresponding pin rows */
   const silkscreenPins: PcbFabricationNoteText[] = []
   for (let i = 0; i < parameters.num_pins; i++) {
-    const isLeft = i < parameters.num_pins / 2
-    // Place fabrication text outside the outer edge of the holes/pads
-    // Hole centers are at ±w/2; outer pad edge is at ±(w/2 + od/2)
-    // Add a small clearance margin to keep text away from holes
-    const clearance = 0.6
-    // Use CCW pin coordinates for correct top-left origin for pin1
-    const { y: pinCenterY } = getCcwDipCoords(
+    const pinNumber = i + 1
+    const isLeft = pinNumber <= parameters.num_pins / 2
+    const pinCenter = getCcwDipCoords(
       parameters.num_pins,
-      i + 1,
+      pinNumber,
       parameters.w,
       parameters.p ?? 2.54,
       parameters.nosquareplating,
     )
+    const clearance = 0.6
     const pinLabelX = isLeft
-      ? -parameters.w / 2 - parameters.od / 2 - clearance
-      : parameters.w / 2 + parameters.od / 2 + clearance
-    // Align label vertically with the actual pin center to preserve CCW order
-    const pinLabelY = pinCenterY
+      ? pinCenter.x - parameters.od / 2 - clearance
+      : pinCenter.x + parameters.od / 2 + clearance
+    const fontSize = 0.3
     silkscreenPins.push({
       type: "pcb_fabrication_note_text",
-      pcb_fabrication_note_text_id: `pin_${i + 1}`,
+      pcb_fabrication_note_text_id: `pin_${pinNumber}`,
       layer: "top",
-      pcb_component_id: `pin_${i + 1}`,
-      text: `{pin${i + 1}}`,
-      anchor_position: { x: pinLabelX, y: pinLabelY },
-      font_size: 0.3,
+      pcb_component_id: `pin_${pinNumber}`,
+      text: `{pin${pinNumber}}`,
+      anchor_position: { x: pinLabelX, y: pinCenter.y + fontSize / 2 },
+      font_size: fontSize,
       font: "tscircuit2024",
-      anchor_alignment: "top_left",
+      anchor_alignment: isLeft ? "top_right" : "top_left",
     })
   }
 
