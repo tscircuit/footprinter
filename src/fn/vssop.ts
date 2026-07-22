@@ -9,6 +9,8 @@ import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { createThermalPad } from "src/helpers/create-thermal-pad"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -47,6 +49,7 @@ export const vssop_def = base_def.extend({
   p: z.string().optional(),
   pl: z.string().optional(),
   pw: z.string().optional(),
+  thermalpad: dim2d.optional(),
   string: z.string().optional(),
 })
 
@@ -70,6 +73,10 @@ export const vssop = (
     const { x, y } = getVssopPadCoord(parameters.num_pins, i + 1, w, p)
     const logical_pn = i < half ? i + 1 : parameters.num_pins - (i - half)
     pads.push(rectpad(logical_pn, x, y, pl, pw, cornerRadius))
+  }
+
+  if (parameters.thermalpad) {
+    pads.push(createThermalPad(parameters.thermalpad))
   }
 
   const silkscreenBoxWidth = w
