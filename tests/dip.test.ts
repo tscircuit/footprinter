@@ -103,3 +103,15 @@ test("dip_0.1in", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip_0.1in")
 })
+
+test("dip8 fabrication note pin label rendering repro", () => {
+  const circuitJson = fp.string("dip8").circuitJson() as AnyCircuitElement[]
+
+  // Documents the current rendering bug where fabrication notes contain
+  // literal `{pinN}` placeholders instead of resolved pin labels.
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "dip8 fabrication note pin labels repro",
+  )
+})
