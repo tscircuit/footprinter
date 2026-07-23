@@ -345,6 +345,7 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^spdip-?(?=[\d_]|$)/i, "dip")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
