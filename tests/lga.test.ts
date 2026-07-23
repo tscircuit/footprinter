@@ -45,21 +45,13 @@ test("lga16 supports pill pads and a five by three side grid", () => {
 })
 
 test("lga6 supports pads on only two opposing sides", () => {
-  const footprint =
-    "lga6_grid3x0_p0.94mm_w1.74mm_pw0.64mm_pl0.57mm"
+  const footprint = "lga6_grid3x0_p0.94mm_w1.74mm_pw0.64mm_pl0.57mm"
   const circuitJson = fp.string(footprint).circuitJson()
   const pads = getPads(footprint)
 
   expect(pads).toHaveLength(6)
   expect(pads.every((pad) => Math.abs(pad.x) > 0.5)).toBe(true)
-  expect(pads.map((pad) => pad.y)).toEqual([
-    0.94,
-    0,
-    -0.94,
-    -0.94,
-    0,
-    0.94,
-  ])
+  expect(pads.map((pad) => pad.y)).toEqual([0.94, 0, -0.94, -0.94, 0, 0.94])
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     footprint,
