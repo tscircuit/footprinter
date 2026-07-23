@@ -180,6 +180,11 @@ export type Footprinter = {
   lqfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
+  lga: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "grid" | "p" | "w" | "h" | "pl" | "pw" | "pillpads"
+  >
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
