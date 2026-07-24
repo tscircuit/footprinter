@@ -5,6 +5,7 @@ import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyPin1Location } from "./helpers/apply-pin1-location"
+import { applyRounded } from "./helpers/apply-rounded"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
@@ -16,6 +17,7 @@ type BaseOptionKey =
   | "invert"
   | "faceup"
   | "nosilkscreen"
+  | "rounded"
   | "pin1location"
 
 export type FootprinterParamsBuilder<K extends string> = {
@@ -26,7 +28,9 @@ export type FootprinterParamsBuilder<K extends string> = {
     ? Footprinter[P]
     : P extends "pin1location"
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
-      : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+      : P extends "rounded"
+        ? (radius: number | string) => FootprinterParamsBuilder<K>
+        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -446,7 +450,11 @@ export const footprinter = (): Footprinter & {
                   ? pin1_location.parse(target.pin1location)
                   : undefined,
               )
-              return applyOrigin(circuitWithPin1Location, target.origin)
+              const circuitWithRoundedPads = applyRounded(
+                circuitWithPin1Location,
+                target.rounded,
+              )
+              return applyOrigin(circuitWithRoundedPads, target.origin)
             }
           }
 
