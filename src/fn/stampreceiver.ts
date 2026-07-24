@@ -13,17 +13,17 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const stampreceiver_def = base_def.extend({
   fn: z.string(),
-  w: length.default("22.58mm"),
+  w: length.prefault("22.58mm"),
   h: length.optional(),
-  left: length.optional().default(20),
-  right: length.optional().default(20),
-  top: length.optional().default(2),
-  bottom: length.optional().default(2),
-  p: length.default(length.parse("2.54mm")),
-  pw: length.default(length.parse("1.6mm")),
-  pl: length.default(length.parse("3.2mm")),
+  left: length.optional().prefault(20),
+  right: length.optional().prefault(20),
+  top: length.optional().prefault(2),
+  bottom: length.optional().prefault(2),
+  p: length.prefault(length.parse("2.54mm")),
+  pw: length.prefault(length.parse("1.6mm")),
+  pl: length.prefault(length.parse("3.2mm")),
   innerhole: z.boolean().default(false),
-  innerholeedgedistance: length.default(length.parse("1.61mm")),
+  innerholeedgedistance: length.prefault(length.parse("1.61mm")),
 })
 
 export type Stampreceiver_def = z.input<typeof stampreceiver_def>

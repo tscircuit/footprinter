@@ -4,6 +4,11 @@
 
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
 
+> **Zod v4 migration:** Footprinter now requires `zod@^4` and
+> `circuit-json@^0.0.454` as peer dependencies so generated Circuit JSON can be
+> composed with consumer schemas. Consumers that inspect raw parsing errors
+> should update their handling for Zod v4's error format.
+
 ![image](https://github.com/user-attachments/assets/24f7a9ba-47ef-4dd9-9a66-9536159a8ff9)
 
 You can create very custom footprints using the `<footprint>` element, but the

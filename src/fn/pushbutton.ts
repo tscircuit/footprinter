@@ -11,10 +11,10 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const pushbutton_def = base_def.extend({
   fn: z.literal("pushbutton"),
-  w: length.default(4.5),
-  h: length.default(6.5),
-  id: length.default(1),
-  od: length.default(1.2),
+  w: length.prefault(4.5),
+  h: length.prefault(6.5),
+  id: length.prefault(1),
+  od: length.prefault(1.2),
 })
 
 export const pushbutton = (

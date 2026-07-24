@@ -25,16 +25,5 @@ test("to92s_3", () => {
 })
 // invalid test
 test("to92s_4", () => {
-  try {
-    const circuitJson = fp.string("to92s_4").circuitJson()
-    const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
-      showCourtyards: true,
-    })
-    expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92s_4")
-  } catch (error) {
-    const e = error as Error
-    expect(e).toBeInstanceOf(Error)
-    expect(e.message).toContain("Invalid literal value, expected 3")
-    expect(e.message).toContain("Invalid literal value, expected 2")
-  }
+  expect(() => fp.string("to92s_4").circuitJson()).toThrow()
 })

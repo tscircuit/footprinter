@@ -9,14 +9,14 @@ const getCopperBounds = (circuitJson: AnySoupElement[]) => {
   let maxY = Number.NEGATIVE_INFINITY
 
   for (const element of circuitJson) {
-    if (element.type === "pcb_smtpad") {
+    if (element.type === "pcb_smtpad" && element.shape === "rect") {
       minX = Math.min(minX, element.x - element.width / 2)
       maxX = Math.max(maxX, element.x + element.width / 2)
       minY = Math.min(minY, element.y - element.height / 2)
       maxY = Math.max(maxY, element.y + element.height / 2)
     }
 
-    if (element.type === "pcb_plated_hole") {
+    if (element.type === "pcb_plated_hole" && element.shape === "circle") {
       minX = Math.min(minX, element.x - element.outer_diameter / 2)
       maxX = Math.max(maxX, element.x + element.outer_diameter / 2)
       minY = Math.min(minY, element.y - element.outer_diameter / 2)

@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { any_circuit_element } from "circuit-json"
 import { fp } from "../src/footprinter"
 import { getTestFixture } from "./fixtures/get-test-fixture"
 
@@ -46,6 +47,7 @@ test("smtpad rect w/h", async () => {
   const { snapshotSoup } = await getTestFixture("smtpad_rect_w2_h1")
   const circuitJson = fp().smtpad().rect().w("2mm").h("1mm").circuitJson()
   expectPad(circuitJson, "rect", { width: 2, height: 1 })
+  expect(() => any_circuit_element.array().parse(circuitJson)).not.toThrow()
   snapshotSoup(circuitJson)
 })
 
