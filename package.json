@@ -27,7 +27,7 @@
     "@types/bun": "^1.2.2",
     "@types/node": "^20.12.13",
     "bun-match-svg": "^0.0.12",
-    "circuit-json": "^0.0.411",
+    "circuit-json": "^0.0.454",
     "circuit-json-to-connectivity-map": "^0.0.18",
     "circuit-to-svg": "^0.0.371",
     "esbuild": "^0.21.4",
@@ -37,13 +37,14 @@
     "schematic-symbols": "^0.0.230",
     "ts-node": "^10.9.2",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "zod": "^4.0.0"
   },
   "dependencies": {
-    "@tscircuit/mm": "^0.0.8",
-    "zod": "^3.23.8"
+    "@tscircuit/mm": "^0.0.8"
   },
   "peerDependencies": {
-    "circuit-json": "*"
+    "circuit-json": "^0.0.454",
+    "zod": "^4.0.0"
   }
 }

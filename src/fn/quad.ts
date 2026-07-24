@@ -28,7 +28,7 @@ export const base_quad_def = base_def.extend({
   num_pins: z.number().optional().default(64),
   w: length.optional(),
   h: length.optional(),
-  p: length.default(length.parse("0.5mm")),
+  p: length.prefault(length.parse("0.5mm")),
   pw: length.optional(),
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),

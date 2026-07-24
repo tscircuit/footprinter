@@ -21,27 +21,27 @@ export const usbcmidmount_def = base_def.extend({
     .default(false)
     .describe("number contact lands right-to-left"),
   noholes: z.boolean().default(false).describe("omit the two locator holes"),
-  rowy: length.default("2.125mm").describe("contact pad row y position"),
-  ph: length.default("1.1mm").describe("contact pad height"),
-  pw: length.default("0.3mm").describe("signal contact pad width"),
-  powerpw: length.default("0.55mm").describe("merged power pad width"),
-  powerx: length.default("3.2mm").describe("outer merged power pad x"),
-  shellx: length.default("4.325mm").describe("shell tab x position"),
-  topy: length.default("1.575mm").describe("upper shell tab y position"),
+  rowy: length.prefault("2.125mm").describe("contact pad row y position"),
+  ph: length.prefault("1.1mm").describe("contact pad height"),
+  pw: length.prefault("0.3mm").describe("signal contact pad width"),
+  powerpw: length.prefault("0.55mm").describe("merged power pad width"),
+  powerx: length.prefault("3.2mm").describe("outer merged power pad x"),
+  shellx: length.prefault("4.325mm").describe("shell tab x position"),
+  topy: length.prefault("1.575mm").describe("upper shell tab y position"),
   bottomy: length
-    .default("2.625mm")
+    .prefault("2.625mm")
     .describe("lower shell tab negative y magnitude"),
-  tophw: length.default("0.6mm").describe("upper shell slot width"),
-  tophh: length.default("1.5mm").describe("upper shell slot height"),
-  topring: length.default("0.25mm").describe("upper shell annular ring"),
-  bottomhw: length.default("0.6mm").describe("lower shell slot width"),
-  bottomhh: length.default("1.2mm").describe("lower shell slot height"),
-  bottomring: length.default("0.3mm").describe("lower shell annular ring"),
-  holex: length.default("2.89mm").describe("locator hole x position"),
-  holey: length.default("1.055mm").describe("locator hole y position"),
-  holed: length.default("0.7mm").describe("locator hole diameter"),
+  tophw: length.prefault("0.6mm").describe("upper shell slot width"),
+  tophh: length.prefault("1.5mm").describe("upper shell slot height"),
+  topring: length.prefault("0.25mm").describe("upper shell annular ring"),
+  bottomhw: length.prefault("0.6mm").describe("lower shell slot width"),
+  bottomhh: length.prefault("1.2mm").describe("lower shell slot height"),
+  bottomring: length.prefault("0.3mm").describe("lower shell annular ring"),
+  holex: length.prefault("2.89mm").describe("locator hole x position"),
+  holey: length.prefault("1.055mm").describe("locator hole y position"),
+  holed: length.prefault("0.7mm").describe("locator hole diameter"),
   bodybottom: length
-    .default("5.225mm")
+    .prefault("5.225mm")
     .describe("connector body negative y extent"),
 })
 
@@ -185,7 +185,7 @@ export const usbcmidmount = (
         index < 2 || index >= signalXs.length - 2 ? powerpw : pw,
       )
   const signalPads = signalXs.map((x, index) =>
-    rectpad(pinStart + 4 + index, x, rowy, signalWidths[index], ph),
+    rectpad(pinStart + 4 + index, x, rowy, signalWidths[index]!, ph),
   )
   const silkX = Math.min(shellx - Math.max(tophw, bottomhw) / 2 - 0.2, 4.5)
   const silkscreen = [

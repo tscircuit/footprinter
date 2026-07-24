@@ -24,9 +24,9 @@ export const pinrow_def = base_def
       .optional()
       .default(1)
       .describe("number of rows"),
-    p: length.default("0.1in").describe("pitch"),
-    id: length.default("1.0mm").describe("inner diameter"),
-    od: length.default("1.5mm").describe("outer diameter"),
+    p: length.prefault("0.1in").describe("pitch"),
+    id: length.prefault("1.0mm").describe("inner diameter"),
+    od: length.prefault("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
     smd: z.boolean().optional().describe("surface mount device"),
@@ -35,8 +35,8 @@ export const pinrow_def = base_def
       .optional()
       .describe("surface mount device (verbose)"),
     rightangle: z.boolean().optional().describe("right angle"),
-    pw: length.optional().default("1.0mm").describe("pad width for SMD"),
-    pl: length.optional().default("2.0mm").describe("pad length for SMD"),
+    pw: length.optional().prefault("1.0mm").describe("pad width for SMD"),
+    pl: length.optional().prefault("2.0mm").describe("pad length for SMD"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),

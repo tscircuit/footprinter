@@ -12,10 +12,10 @@ import { base_def } from "../helpers/zod/base_def"
 export const crystal_def = base_def.extend({
   fn: z.literal("crystal"),
   num_pins: z.literal(4).default(4),
-  px: length.default("2.2mm").describe("horizontal pad center pitch"),
-  py: length.default("1.7mm").describe("vertical pad center pitch"),
-  pw: length.default("1.4mm").describe("pad width"),
-  ph: length.default("1.2mm").describe("pad height"),
+  px: length.prefault("2.2mm").describe("horizontal pad center pitch"),
+  py: length.prefault("1.7mm").describe("vertical pad center pitch"),
+  pw: length.prefault("1.4mm").describe("pad width"),
+  ph: length.prefault("1.2mm").describe("pad height"),
 })
 
 export const crystal = (

@@ -12,10 +12,10 @@ import { base_def } from "../helpers/zod/base_def"
 export const smdpushbutton_def = base_def.extend({
   fn: z.literal("smdpushbutton"),
   num_pins: z.literal(4).default(4),
-  px: length.default("4.2mm").describe("horizontal pad center pitch"),
-  py: length.default("2.15mm").describe("vertical pad center pitch"),
-  pw: length.default("1.05mm").describe("pad width"),
-  ph: length.default("0.7mm").describe("pad height"),
+  px: length.prefault("4.2mm").describe("horizontal pad center pitch"),
+  py: length.prefault("2.15mm").describe("vertical pad center pitch"),
+  pw: length.prefault("1.05mm").describe("pad width"),
+  ph: length.prefault("0.7mm").describe("pad height"),
 })
 
 export const smdpushbutton = (
