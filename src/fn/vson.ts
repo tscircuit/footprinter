@@ -20,10 +20,10 @@ export const vson_def = base_def.extend({
   w: length.describe("width between vertical rows of pins"),
   grid: dim2d.describe("width and height of the border of the footprint"),
   ep: dim2d
-    .default("0x0mm")
+    .prefault("0x0mm")
     .describe("width and height of the central exposed thermal pad"),
   epx: length
-    .default("0mm")
+    .prefault("0mm")
     .describe("x offset of the center of the central exposed thermal pad"),
   pinw: length.describe("width of the pin pads"),
   pinh: length.describe("height of the pin pads"),

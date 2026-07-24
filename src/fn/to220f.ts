@@ -13,11 +13,11 @@ const TO220F_PITCH_MM = 2.54
 export const to220f_def = base_def.extend({
   fn: z.string(),
   // KiCad TO-220F-3_Vertical: hole=1.2mm, pad=1.905×2.0mm, pitch=2.54mm
-  id: length.optional().default("1.2mm"),
-  od: length.optional().default("1.905mm"),
-  ph: length.optional().default("2mm"),
-  w: length.optional().default("13mm"),
-  h: length.optional().default("7mm"),
+  id: length.optional().prefault("1.2mm"),
+  od: length.optional().prefault("1.905mm"),
+  ph: length.optional().prefault("2mm"),
+  w: length.optional().prefault("13mm"),
+  h: length.optional().prefault("7mm"),
   num_pins: z.number().optional(),
   string: z.string().optional(),
 })

@@ -42,7 +42,7 @@ export const base_quad_def = base_def.extend({
   topbottompins: side_pin_count,
   w: length.optional(),
   h: length.optional(),
-  p: length.default(length.parse("0.5mm")),
+  p: length.prefault(length.parse("0.5mm")),
   px: length.optional().describe("top and bottom side pad pitch"),
   py: length.optional().describe("left and right side pad pitch"),
   pw: length.optional(),

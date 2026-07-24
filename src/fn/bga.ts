@@ -21,7 +21,7 @@ export const bga_def = base_def
     fn: z.string(),
     num_pins: z.number().optional().default(64),
     grid: dim2d.optional(),
-    p: distance.default("0.8mm"),
+    p: distance.prefault("0.8mm"),
     w: length.optional(),
     h: length.optional(),
     ball: length.optional().describe("ball diameter"),

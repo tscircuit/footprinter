@@ -37,7 +37,7 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
       w: lengthInMm.optional(),
-      p: lengthInMm.default(newDefaults.p ?? "2.54mm"),
+      p: lengthInMm.prefault(newDefaults.p ?? "2.54mm"),
       id: lengthInMm.optional(),
       od: lengthInMm.optional(),
       nosquareplating: z

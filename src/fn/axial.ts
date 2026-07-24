@@ -14,9 +14,9 @@ import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const axial_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("2.54mm"),
-  id: length.optional().default("0.7mm"),
-  od: length.optional().default("1.4mm"),
+  p: length.optional().prefault("2.54mm"),
+  id: length.optional().prefault("0.7mm"),
+  od: length.optional().prefault("1.4mm"),
 })
 export type AxialDef = z.input<typeof axial_def>
 

@@ -11,11 +11,11 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
-  id: length.optional().default("1.0mm"),
-  od: length.optional().default("1.9mm"),
-  w: length.optional().default("13mm"),
-  h: length.optional().default("7mm"),
+  p: length.optional().prefault("5.0mm"),
+  id: length.optional().prefault("1.0mm"),
+  od: length.optional().prefault("1.9mm"),
+  w: length.optional().prefault("13mm"),
+  h: length.optional().prefault("7mm"),
   num_pins: z.number().optional(),
   string: z.string().optional(),
 })

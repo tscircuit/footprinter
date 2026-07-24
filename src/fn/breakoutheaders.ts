@@ -12,15 +12,15 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const breakoutheaders_def = base_def.extend({
   fn: z.string(),
-  w: length.default("10mm"),
+  w: length.prefault("10mm"),
   h: length.optional(),
-  left: length.optional().default(20),
-  right: length.optional().default(20),
-  top: length.optional().default(0),
-  bottom: length.optional().default(0),
-  p: length.default(length.parse("2.54mm")),
-  id: length.optional().default(length.parse("1mm")),
-  od: length.optional().default(length.parse("1.5mm")),
+  left: length.optional().prefault(20),
+  right: length.optional().prefault(20),
+  top: length.optional().prefault(0),
+  bottom: length.optional().prefault(0),
+  p: length.prefault(length.parse("2.54mm")),
+  id: length.optional().prefault(length.parse("1mm")),
+  od: length.optional().prefault(length.parse("1.5mm")),
 })
 
 export type breakoutheaders_def = z.input<typeof breakoutheaders_def>

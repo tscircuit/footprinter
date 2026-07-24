@@ -12,15 +12,15 @@ import { base_def } from "../helpers/zod/base_def"
 export const wson_def = base_def.extend({
   fn: z.literal("wson"),
   num_pins: z.literal(8).default(8),
-  p: length.default("0.5mm").describe("pin pitch"),
-  rowspan: length.default("3.015mm").describe("distance between pad rows"),
-  pl: length.default("0.6mm").describe("pad length across the package edge"),
-  pw: length.default("0.28mm").describe("pad width along the pin row"),
+  p: length.prefault("0.5mm").describe("pin pitch"),
+  rowspan: length.prefault("3.015mm").describe("distance between pad rows"),
+  pl: length.prefault("0.6mm").describe("pad length across the package edge"),
+  pw: length.prefault("0.28mm").describe("pad width along the pin row"),
   ep: z.boolean().default(true).describe("include the exposed pad"),
-  epw: length.default("1.7mm").describe("exposed pad width"),
-  eph: length.default("0.3mm").describe("exposed pad height"),
-  w: length.default("2mm").describe("package body width"),
-  h: length.default("3mm").describe("package body height"),
+  epw: length.prefault("1.7mm").describe("exposed pad width"),
+  eph: length.prefault("0.3mm").describe("exposed pad height"),
+  w: length.prefault("2mm").describe("package body width"),
+  h: length.prefault("3mm").describe("package body height"),
 })
 
 export const wson = (

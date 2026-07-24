@@ -28,10 +28,10 @@ export const extendSoicDef = (newDefaults: {
     .extend({
       fn: z.string(),
       num_pins: z.number().optional().default(8),
-      w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
-      p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
-      pw: length.default(length.parse(newDefaults.pw ?? "0.6mm")),
-      pl: length.default(length.parse(newDefaults.pl ?? "1.0mm")),
+      w: length.prefault(length.parse(newDefaults.w ?? "5.3mm")),
+      p: length.prefault(length.parse(newDefaults.p ?? "1.27mm")),
+      pw: length.prefault(length.parse(newDefaults.pw ?? "0.6mm")),
+      pl: length.prefault(length.parse(newDefaults.pl ?? "1.0mm")),
       legsoutside: z
         .boolean()
         .optional()

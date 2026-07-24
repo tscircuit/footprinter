@@ -19,8 +19,8 @@ export const ssop_def = base_def
   .extend({
     fn: z.string(),
     num_pins: z.number().optional().default(8),
-    w: length.default(length.parse("3.9mm")),
-    p: length.default(length.parse("1.27mm")),
+    w: length.prefault(length.parse("3.9mm")),
+    p: length.prefault(length.parse("1.27mm")),
     pw: length.optional(),
     pl: length.optional(),
     legsoutside: z.boolean().optional().default(false),
