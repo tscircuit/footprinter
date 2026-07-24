@@ -58,6 +58,57 @@ test("pinrow4_rows2 geometry is centered on origin", () => {
   expect(refText?.anchor_position).toEqual({ x: 0, y: 3.81 })
 })
 
+const verticalColumnLabelCases = [
+  {
+    side: "left",
+    definition: "pinrow4_rows4_nosquareplating_pinlabeltextalignright",
+    expectedX: -1.35,
+    anchorAlignment: "center_right",
+  },
+  {
+    side: "right",
+    definition: "pinrow4_rows4_nosquareplating_pinlabeltextalignleft",
+    expectedX: 1.35,
+    anchorAlignment: "center_left",
+  },
+] as const
+
+for (const {
+  side,
+  definition,
+  expectedX,
+  anchorAlignment,
+} of verticalColumnLabelCases) {
+  test(`vertical pin column keeps labels on the ${side} of plated holes`, () => {
+    const circuitJson = fp.string(definition).circuitJson()
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    const platedHoles = circuitJson.filter(
+      (element) => element.type === "pcb_plated_hole",
+    )
+    const pinLabels = circuitJson.filter(
+      (element) =>
+        element.type === "pcb_silkscreen_text" &&
+        element.text.startsWith("{PIN"),
+    )
+    const pinYs = [3.81, 1.27, -1.27, -3.81]
+
+    expect(platedHoles.map(({ x, y }) => ({ x, y }))).toEqual(
+      pinYs.map((y) => ({ x: 0, y })),
+    )
+    expect(pinLabels).toMatchObject(
+      pinYs.map((y, index) => ({
+        text: `{PIN${index + 1}}`,
+        anchor_position: { x: expectedX, y },
+        anchor_alignment: anchorAlignment,
+      })),
+    )
+    expect(svgContent).toMatchSvgSnapshot(
+      import.meta.path,
+      `pinrow4_vertical_column_labels_${side}`,
+    )
+  })
+}
+
 test("pinrow8_rows4", () => {
   const circuitJson = fp.string("pinrow8_rows4").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
@@ -152,7 +203,6 @@ test("pinrow6_nosquareplating", () => {
     "pinrow6_nosquareplating_1",
   )
 })
-
 const textAlignments = ["left", "center", "right"] as const
 const orthogonalStates = [
   { name: "", value: false },

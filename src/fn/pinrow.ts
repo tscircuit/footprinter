@@ -152,7 +152,9 @@ export const pinrow = (
           break
       }
     } else {
-      const offset = od * 0.75
+      // Keep through-hole pin labels beyond the outer edge of the plating.
+      // A fixed clearance remains effective for every supported pad diameter.
+      const offset = od / 2 + 0.6
       switch (anchorSide) {
         case "right":
           dx = offset
