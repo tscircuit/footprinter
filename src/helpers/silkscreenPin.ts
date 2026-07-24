@@ -11,6 +11,7 @@ export const silkscreenPin = ({
   anchor_x,
   anchor_y,
   textalign = "center",
+  anchorplacement,
   orthogonal = false,
   verticallyinverted = false,
   layer = "top",
@@ -37,13 +38,41 @@ export const silkscreenPin = ({
   }
 
   let anchor_alignment: PcbSilkscreenText["anchor_alignment"] = "center"
-  if (textalign === "left") {
-    if (verticallyinverted) anchor_alignment = "center_right"
-    else anchor_alignment = "center_left"
-  }
-  if (textalign === "right") {
-    if (verticallyinverted) anchor_alignment = "center_left"
-    else anchor_alignment = "center_right"
+  if (textalign !== "center") {
+    const fallbackAlignment =
+      textalign === "left"
+        ? verticallyinverted
+          ? "center_right"
+          : "center_left"
+        : verticallyinverted
+          ? "center_left"
+          : "center_right"
+
+    anchor_alignment = fallbackAlignment
+
+    if (anchorplacement) {
+      const placementDirection = {
+        top: { x: 0, y: 1 },
+        bottom: { x: 0, y: -1 },
+        left: { x: -1, y: 0 },
+        right: { x: 1, y: 0 },
+      }[anchorplacement]
+      const rotationRadians = (ccw_rotation * Math.PI) / 180
+      const textDirection = {
+        x: Math.cos(rotationRadians),
+        y: Math.sin(rotationRadians),
+      }
+      const directionDotProduct =
+        placementDirection.x * textDirection.x +
+        placementDirection.y * textDirection.y
+
+      // Anchor the near edge of the label at the clearance point so rotated
+      // text extends away from the corresponding pad.
+      if (Math.abs(directionDotProduct) > 0.5) {
+        anchor_alignment =
+          directionDotProduct > 0 ? "center_left" : "center_right"
+      }
+    }
   }
 
   if (layer === "bottom") {
