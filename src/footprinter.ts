@@ -241,6 +241,23 @@ export type Footprinter = {
   smdpushbutton: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
+  fpc: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "p"
+    | "pw"
+    | "pl"
+    | "staggered"
+    | "reverse"
+    | "py"
+    | "toppl"
+    | "bottompl"
+    | "mpx"
+    | "mpy"
+    | "mounttop"
+    | "mpw"
+    | "mpl"
+  >
   stampboard: () => FootprinterParamsBuilder<
     | "w"
     | "h"
