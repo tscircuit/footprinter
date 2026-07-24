@@ -5,7 +5,7 @@
 Footprinter is tscircuit's DSL and micro-builder for creating footprints.
 
 > **Zod v4 migration:** Footprinter now requires `zod@^4` and
-> `circuit-json@^0.0.454` as peer dependencies so generated Circuit JSON can be
+> `circuit-json@^0.0.455` as peer dependencies so generated Circuit JSON can be
 > composed with consumer schemas. Consumers that inspect raw parsing errors
 > should update their handling for Zod v4's error format.
 
