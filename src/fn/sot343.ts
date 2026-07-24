@@ -8,19 +8,20 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
+// Mirrored courtyard about x=0 (KiCad-aligned SOT-343 symmetry).
 const sot343CourtyardOutline = [
-  { x: -1.703, y: 0.98 },
-  { x: -0.983, y: 0.98 },
-  { x: -0.983, y: 1.1 },
-  { x: 0.477, y: 1.1 },
-  { x: 0.477, y: 0.98 },
-  { x: 1.197, y: 0.98 },
-  { x: 1.197, y: -0.98 },
-  { x: 0.477, y: -0.98 },
-  { x: 0.477, y: -1.1 },
-  { x: -0.983, y: -1.1 },
-  { x: -0.983, y: -0.98 },
-  { x: -1.703, y: -0.98 },
+  { x: -1.45, y: 0.98 },
+  { x: -0.73, y: 0.98 },
+  { x: -0.73, y: 1.1 },
+  { x: 0.73, y: 1.1 },
+  { x: 0.73, y: 0.98 },
+  { x: 1.45, y: 0.98 },
+  { x: 1.45, y: -0.98 },
+  { x: 0.73, y: -0.98 },
+  { x: 0.73, y: -1.1 },
+  { x: -0.73, y: -1.1 },
+  { x: -0.73, y: -0.98 },
+  { x: -1.45, y: -0.98 },
 ]
 
 export const sot343_def = base_def.extend({
@@ -38,7 +39,7 @@ export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot343_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 4) : 4
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 4
 
   const parameters = sot343_def.parse({
     ...raw_params,
@@ -64,10 +65,11 @@ export const getCcwSot343Coords = (parameters: {
   p: number
 }) => {
   const { pn, p } = parameters
-  if (pn === 1) return { x: -p * 1.92, y: -0.65 }
-  if (pn === 2) return { x: -p * 1.92, y: 0.65 }
-  if (pn === 3) return { x: p, y: 0.65 }
-  if (pn === 4) return { x: p, y: -0.65 }
+  // Symmetric about origin (±p*1.5), matching KiCad SOT-343 pad centers.
+  if (pn === 1) return { x: -p * 1.5, y: -0.65 }
+  if (pn === 2) return { x: -p * 1.5, y: 0.65 }
+  if (pn === 3) return { x: p * 1.5, y: 0.65 }
+  if (pn === 4) return { x: p * 1.5, y: -0.65 }
   return { x: 0, y: 0 }
 }
 
@@ -81,10 +83,10 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const p = Number.parseFloat(parameters.p)
   const cornerRadius = Math.min(pl, pw) / 8
 
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot343Coords({
