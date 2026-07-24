@@ -68,3 +68,29 @@ test("son6", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "son6")
 })
+
+test("son8 pins are numbered counterclockwise", () => {
+  const circuitJson = fp.string("son8").circuitJson() as any[]
+  const pad = (pin: string) =>
+    circuitJson.find(
+      (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === pin,
+    )
+  // Pins 1-4 run down the left side, pins 5-8 run up the right side,
+  // so pin 5 sits across from pin 4 and pin 8 across from pin 1
+  expect(pad("5").y).toBeCloseTo(pad("4").y)
+  expect(pad("8").y).toBeCloseTo(pad("1").y)
+  expect(pad("5").y).toBeLessThan(pad("8").y)
+})
+
+test("son6 pins are numbered counterclockwise", () => {
+  const circuitJson = fp.string("son6").circuitJson() as any[]
+  const pad = (pin: string) =>
+    circuitJson.find(
+      (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === pin,
+    )
+  // Pins 1-3 run down the left side, pins 4-6 run up the right side,
+  // so pin 4 sits across from pin 3 and pin 6 across from pin 1
+  expect(pad("4").y).toBeCloseTo(pad("3").y)
+  expect(pad("6").y).toBeCloseTo(pad("1").y)
+  expect(pad("4").y).toBeLessThan(pad("6").y)
+})
