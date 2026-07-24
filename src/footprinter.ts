@@ -52,6 +52,12 @@ export type Footprinter = {
   res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  led2835: () => FootprinterParamsBuilder<
+    "p1w" | "p2w" | "ph" | "p1x" | "p2x" | "w" | "h"
+  >
+  led5050: () => FootprinterParamsBuilder<
+    "p" | "rowspan" | "pl" | "pw" | "w" | "h"
+  >
   lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
   qfp: (
     num_pins?: number,
