@@ -152,7 +152,6 @@ test("pinrow6_nosquareplating", () => {
     "pinrow6_nosquareplating_1",
   )
 })
-
 const textAlignments = ["left", "center", "right"] as const
 const orthogonalStates = [
   { name: "", value: false },
