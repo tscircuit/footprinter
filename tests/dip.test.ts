@@ -54,6 +54,18 @@ test("DIP16 string resolves using lowercase function", () => {
   const lowercaseJson = fp.string("dip16").json()
   expect(uppercaseJson).toEqual(lowercaseJson)
 })
+
+test("SPDIP-28 string resolves to DIP28", () => {
+  const spdipJson = fp.string("SPDIP-28").json()
+  const dipJson = fp.string("dip28").json()
+  expect(spdipJson).toEqual(dipJson)
+})
+
+test("spdip28 string resolves to DIP28", () => {
+  const spdipJson = fp.string("spdip28").json()
+  const dipJson = fp.string("dip28").json()
+  expect(spdipJson).toEqual(dipJson)
+})
 test("dip16 with nosquareplating", () => {
   const circuitJson = fp
     .string("dip16_nosquareplating")
