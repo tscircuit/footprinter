@@ -1,4 +1,4 @@
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, PcbSmtPad } from "circuit-json"
 import type { Pin1Location } from "./zod/pin1-location"
 
 type RightAngleRotation = 0 | 90 | 180 | 270
@@ -92,15 +92,42 @@ const rotatePointField = (value: unknown, rotation: RightAngleRotation) => {
 
 const normalizeRotation = (rotation: number) => ((rotation % 360) + 360) % 360
 
+const rotateSmtPad = (
+  pad: PcbSmtPad,
+  rotation: RightAngleRotation,
+): PcbSmtPad => {
+  switch (pad.shape) {
+    case "rect":
+      return {
+        ...pad,
+        shape: "rotated_rect",
+        ccw_rotation: normalizeRotation(rotation),
+      }
+    case "pill":
+      return {
+        ...pad,
+        shape: "rotated_pill",
+        ccw_rotation: normalizeRotation(rotation),
+      }
+    case "rotated_rect":
+    case "rotated_pill":
+      return {
+        ...pad,
+        ccw_rotation: normalizeRotation(pad.ccw_rotation + rotation),
+      }
+    default:
+      return pad
+  }
+}
+
 const rotateElements = (
   elements: AnyCircuitElement[],
   rotation: RightAngleRotation,
 ) => {
   if (rotation === 0) return elements
 
-  const rotatedElements = structuredClone(elements)
-
-  for (const element of rotatedElements as any[]) {
+  return elements.map((sourceElement) => {
+    const element = structuredClone(sourceElement) as any
     if (typeof element.x === "number" && typeof element.y === "number") {
       const rotated = rotatePoint(element, rotation)
       element.x = rotated.x
@@ -117,8 +144,10 @@ const rotateElements = (
       }
     }
 
+    if (element.type === "pcb_smtpad")
+      return rotateSmtPad(element as PcbSmtPad, rotation)
+
     if (
-      (element.type === "pcb_smtpad" && element.shape !== "polygon") ||
       element.type === "pcb_plated_hole" ||
       element.type === "pcb_silkscreen_text" ||
       element.type === "pcb_fabrication_note_text"
@@ -137,9 +166,8 @@ const rotateElements = (
     ) {
       ;[element.width, element.height] = [element.height, element.width]
     }
-  }
-
-  return rotatedElements
+    return element
+  })
 }
 
 export const applyPin1Location = (
