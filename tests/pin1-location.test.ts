@@ -19,8 +19,11 @@ const getPin1 = (
 test("pin1location(leftside,top) leaves an already matching SOIC unchanged", () => {
   const original = fp.string("soic8").circuitJson()
   const positioned = fp.string("soic8_pin1location(leftside,top)").circuitJson()
+  const pads = getPads(positioned)
 
   expect(positioned).toEqual(original)
+  expect(pads).toHaveLength(8)
+  expect(pads.every((pad) => pad.shape === "rect")).toBe(true)
 })
 
 test("pin1location(topside,left) rotates a complete footprint", () => {
