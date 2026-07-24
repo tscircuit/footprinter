@@ -1,5 +1,8 @@
-import type { AnySoupElement } from "circuit-json"
-import type { AnyCircuitElement } from "circuit-json"
+import {
+  type AnyCircuitElement,
+  type AnySoupElement,
+  length,
+} from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
@@ -352,6 +355,13 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^jst_(ph|sh|zh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
 
+const normalizeMicrometerLengths = (value: string): string =>
+  value.replace(
+    /([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(?:um|µm)(?=$|[x,() ])/gi,
+    (micrometerLength) =>
+      `${Number(length.parse(micrometerLength).toPrecision(12))}mm`,
+  )
+
 export const string = (def: string): Footprinter => {
   let fp = footprinter()
   const normalizedDef = normalizeDefinition(def)
@@ -490,6 +500,8 @@ export const footprinter = (): Footprinter & {
         }
         return (...values: any[]) => {
           const v = values[0]
+          const normalizedValue =
+            typeof v === "string" ? normalizeMicrometerLengths(v) : v
           if (Object.keys(target).length === 0) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
@@ -524,7 +536,7 @@ export const footprinter = (): Footprinter & {
               target[prop] =
                 prop === "pin1location" && values.length > 1
                   ? values
-                  : (v ?? true)
+                  : (normalizedValue ?? true)
             }
           }
           return proxy
