@@ -123,6 +123,13 @@ export const quad = (
   const pads: AnyCircuitElement[] = []
   let padOuterHalfX = 0
   let padOuterHalfY = 0
+  /** Bounds of every pad, kept so the silkscreen can be clamped clear of them. */
+  const padBoxes: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }[] = []
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
@@ -151,6 +158,7 @@ export const quad = (
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
     padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
+    padBoxes.push({ x, y, width: padWidth, height: padHeight })
     pads.push(
       parameters.pillpads
         ? pillpad(pn, x, y, padWidth, padHeight)
@@ -182,6 +190,49 @@ export const quad = (
 
   // Silkscreen corners
   const silkscreen_corners: PcbSilkscreenPath[] = []
+  const SILK_STROKE_WIDTH = 0.1
+  /** IPC silkscreen-to-pad clearance, plus half the stroke we draw with. */
+  const silkPadClearance = 0.2 + SILK_STROKE_WIDTH / 2
+
+  /**
+   * How far a corner arm may run before it would touch a pad.
+   *
+   * The corner sits at (±w/2, ±h/2), which is the pad-row centre line, so an
+   * arm running inward along one axis passes straight through the band the
+   * outer pads occupy on the perpendicular side. Without this the mark is drawn
+   * over copper whenever the outermost pad reaches far enough along the arm,
+   * which is what happens on narrow-body variants such as `tqfp32_w7`.
+   */
+  const maxArmLength = (
+    cornerX: number,
+    cornerY: number,
+    axis: "x" | "y",
+    sign: number,
+    requested: number,
+  ) => {
+    let limit = requested
+    for (const pad of padBoxes) {
+      const left = pad.x - pad.width / 2 - silkPadClearance
+      const right = pad.x + pad.width / 2 + silkPadClearance
+      const bottom = pad.y - pad.height / 2 - silkPadClearance
+      const top = pad.y + pad.height / 2 + silkPadClearance
+
+      if (axis === "x") {
+        // Arm runs horizontally at y = cornerY; only pads spanning that y matter.
+        if (cornerY < bottom || cornerY > top) continue
+        const reach = sign < 0 ? cornerX - right : left - cornerX
+        if (reach >= 0) limit = Math.min(limit, reach)
+        else limit = 0
+      } else {
+        if (cornerX < left || cornerX > right) continue
+        const reach = sign < 0 ? cornerY - top : bottom - cornerY
+        if (reach >= 0) limit = Math.min(limit, reach)
+        else limit = 0
+      }
+    }
+    return Math.max(0, limit)
+  }
+
   for (const [corner, dx, dy] of [
     ["top-left", -1, 1],
     ["bottom-left", -1, -1],
@@ -228,13 +279,15 @@ export const quad = (
 
     // Normal Corner
     if (arrow === "none" || parameters.legsoutside) {
+      const armX = maxArmLength(corner_x, corner_y, "x", -dx, csz)
+      const armY = maxArmLength(corner_x, corner_y, "y", -dy, csz)
       silkscreen_corners.push({
         layer: "top",
         pcb_component_id: "",
         pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}`,
         route: [
           {
-            x: corner_x - csz * dx,
+            x: corner_x - armX * dx,
             y: corner_y,
           },
           {
@@ -243,7 +296,7 @@ export const quad = (
           },
           {
             x: corner_x,
-            y: corner_y - csz * dy,
+            y: corner_y - armY * dy,
           },
         ],
         type: "pcb_silkscreen_path",
