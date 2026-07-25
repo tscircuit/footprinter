@@ -175,7 +175,12 @@ const generateSot457Elements = (
   const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 })
   const triangleHeight = params.wave ? 1 : 0.5
   const triangleWidth = params.wave ? 0.7 : 0.3
-  pin1Position.x -= params.wave ? padWidth : padWidth * 1.7
+  // Place the marker outboard of pad 1's actual edge. Offsetting by a multiple
+  // of the pad *width* instead let the triangle land on the pad whenever pl and
+  // pw are set independently (e.g. `sot457_w2_pl1.5_pw0.6`, where it overlapped
+  // by 0.005mm).
+  const pin1PadOuterEdgeX = pin1Position.x - padLength / 2
+  pin1Position.x = pin1PadOuterEdgeX - triangleHeight / 2 - 0.2 - 0.05 / 2
 
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
