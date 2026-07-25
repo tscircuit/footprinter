@@ -15,7 +15,7 @@ export const smdpinheader_def = base_def.extend({
   // Defaults follow the Harwin M20-877R recommended vertical SMT land pattern.
   p: length.default("2.54mm").describe("contact pitch"),
   py: length
-    .default("5.82mm")
+    .default("3.31mm")
     .describe("center-to-center distance between alternating pad rows"),
   pw: length.default("1mm").describe("pad width"),
   ph: length.default("2.51mm").describe("pad height"),
@@ -45,14 +45,56 @@ export const smdpinheader = (
   const bodyHalfWidth = (num_pins * p) / 2
   const bodyHalfHeight = bh / 2
   const pin1Chamfer = Math.min(0.5, bh / 4)
-  const bodyOutline = silkscreenpath([
-    { x: -bodyHalfWidth + pin1Chamfer, y: bodyHalfHeight },
-    { x: bodyHalfWidth, y: bodyHalfHeight },
-    { x: bodyHalfWidth, y: -bodyHalfHeight },
-    { x: -bodyHalfWidth, y: -bodyHalfHeight },
-    { x: -bodyHalfWidth, y: bodyHalfHeight - pin1Chamfer },
-    { x: -bodyHalfWidth + pin1Chamfer, y: bodyHalfHeight },
-  ])
+  const createHorizontalOutlineSegments = (
+    y: number,
+    padParity: 0 | 1,
+    startX = -bodyHalfWidth,
+  ) => {
+    const padClearance = pw / 2 + 0.2
+    const segments: ReturnType<typeof silkscreenpath>[] = []
+    let segmentStart = startX
+
+    for (let index = padParity; index < num_pins; index += 2) {
+      const padCenterX = xStart + index * p
+      const segmentEnd = padCenterX - padClearance
+      if (segmentEnd > segmentStart) {
+        segments.push(
+          silkscreenpath([
+            { x: segmentStart, y },
+            { x: segmentEnd, y },
+          ]),
+        )
+      }
+      segmentStart = padCenterX + padClearance
+    }
+
+    if (segmentStart < bodyHalfWidth) {
+      segments.push(
+        silkscreenpath([
+          { x: segmentStart, y },
+          { x: bodyHalfWidth, y },
+        ]),
+      )
+    }
+    return segments
+  }
+  const bodyOutline = [
+    ...createHorizontalOutlineSegments(
+      bodyHalfHeight,
+      0,
+      -bodyHalfWidth + pin1Chamfer,
+    ),
+    ...createHorizontalOutlineSegments(-bodyHalfHeight, 1),
+    silkscreenpath([
+      { x: bodyHalfWidth, y: -bodyHalfHeight },
+      { x: bodyHalfWidth, y: bodyHalfHeight },
+    ]),
+    silkscreenpath([
+      { x: -bodyHalfWidth, y: -bodyHalfHeight },
+      { x: -bodyHalfWidth, y: bodyHalfHeight - pin1Chamfer },
+      { x: -bodyHalfWidth + pin1Chamfer, y: bodyHalfHeight },
+    ]),
+  ]
 
   const padOuterHalfWidth = ((num_pins - 1) * p) / 2 + pw / 2
   const padOuterHalfHeight = py / 2 + ph / 2
@@ -71,7 +113,7 @@ export const smdpinheader = (
   const ref = silkscreenRef(0, courtyardHalfHeight + 0.6, 0.5)
 
   return {
-    circuitJson: [...pads, bodyOutline, ref, courtyard],
+    circuitJson: [...pads, ...bodyOutline, ref, courtyard],
     parameters,
   }
 }
