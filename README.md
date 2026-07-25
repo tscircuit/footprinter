@@ -22,6 +22,7 @@ res0805
 soic8_p1.27mm
 dip16
 pinrow10
+smdpinheader6
 tssop20_p0.5mm
 sot23
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw

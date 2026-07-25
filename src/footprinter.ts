@@ -145,6 +145,9 @@ export type Footprinter = {
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
   >
+  smdpinheader: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"p" | "py" | "pw" | "ph" | "bh">
   axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
   radial: () => FootprinterParamsBuilder<
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
