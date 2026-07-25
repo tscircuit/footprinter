@@ -93,6 +93,21 @@ Valid pairs are `leftside|rightside` with `top|bottom`, and
 `topside|bottomside` with `left|right`. Rotation preserves pin ordering, so a
 mirrored-only location is rejected with an error.
 
+### Rounded pads
+
+Every footprint accepts a `rounded${radius}` modifier that applies the requested
+corner radius to all rectangular copper pads. The radius is clamped to half of
+each pad's smaller dimension:
+
+```ts
+fp.string("soic8_rounded0.2mm")
+
+// Builder equivalent:
+fp().soic(8).rounded("0.2mm")
+```
+
+Circular, pill-shaped, and polygonal pads keep their original geometry.
+
 ## Getting JSON output from the builder
 
 Use the `.circuitJson()` function to output [tscircuit circuit JSON](https://github.com/tscircuit/circuit-json)

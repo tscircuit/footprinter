@@ -1,3 +1,4 @@
+import { length } from "circuit-json"
 import { z } from "zod"
 import { pin1_location } from "./pin1-location"
 
@@ -18,6 +19,12 @@ export const base_def = z.object({
     .boolean()
     .optional()
     .describe("omit all silkscreen elements from the footprint"),
+  rounded: length
+    .refine((radius) => radius >= 0, {
+      message: "rounded radius must be non-negative",
+    })
+    .optional()
+    .describe("corner radius applied to all rectangular copper pads"),
   pin1location: pin1_location
     .optional()
     .describe("rotate the footprint to place pin 1 on a requested side"),
