@@ -154,7 +154,95 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     layer: "top",
   }
 
-  return [...pads, silkscreenRefText as AnyCircuitElement, courtyard]
+  // Body outline. The pads overlap the body horizontally (a pad spans
+  // x[-1.8, -0.475] while the body edge sits at x=-0.91), so the outline is
+  // emitted as separate open paths that stop short of each pad instead of one
+  // closed rectangle. This is how KiCad's SOT-23-3 draws it, and the pads
+  // generated above are identical to KiCad's.
+  const bodyHalfWidth = 0.91
+  const bodyHalfHeight = 1.56
+  const padHalfHeight = pw / 2
+  const strokeWidth = 0.12
+  // Silkscreen must not touch copper. KiCad's SOT-23-3 leaves a uniform 0.26mm
+  // between each pad edge and the end of the adjacent silkscreen segment,
+  // which is half the stroke width plus IPC's 0.2mm silk-to-pad clearance.
+  const padClearance = strokeWidth / 2 + 0.2
+
+  const silkPath = (
+    id: string,
+    route: { x: number; y: number }[],
+  ): PcbSilkscreenPath => ({
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: id,
+    route,
+    stroke_width: strokeWidth,
+  })
+
+  const silkscreenPaths: PcbSilkscreenPath[] = [
+    // Top and bottom edges run the full body width — no pad crosses them.
+    silkPath("silkscreen_path_top", [
+      { x: -bodyHalfWidth, y: bodyHalfHeight },
+      { x: bodyHalfWidth, y: bodyHalfHeight },
+    ]),
+    silkPath("silkscreen_path_bottom", [
+      { x: -bodyHalfWidth, y: -bodyHalfHeight },
+      { x: bodyHalfWidth, y: -bodyHalfHeight },
+    ]),
+    // Left edge, broken by pins 1 and 2: a stub above pin 1, the stretch
+    // between the two pins, and a stub below pin 2.
+    silkPath("silkscreen_path_left_top", [
+      { x: -bodyHalfWidth, y: p + padHalfHeight + padClearance },
+      { x: -bodyHalfWidth, y: bodyHalfHeight },
+    ]),
+    silkPath("silkscreen_path_left_middle", [
+      { x: -bodyHalfWidth, y: -(p - padHalfHeight - padClearance) },
+      { x: -bodyHalfWidth, y: p - padHalfHeight - padClearance },
+    ]),
+    silkPath("silkscreen_path_left_bottom", [
+      { x: -bodyHalfWidth, y: -bodyHalfHeight },
+      { x: -bodyHalfWidth, y: -(p + padHalfHeight + padClearance) },
+    ]),
+    // Right edge, broken by pin 3.
+    silkPath("silkscreen_path_right_top", [
+      { x: bodyHalfWidth, y: bodyHalfHeight },
+      { x: bodyHalfWidth, y: padHalfHeight + padClearance },
+    ]),
+    silkPath("silkscreen_path_right_bottom", [
+      { x: bodyHalfWidth, y: -(padHalfHeight + padClearance) },
+      { x: bodyHalfWidth, y: -bodyHalfHeight },
+    ]),
+  ]
+
+  // Pin 1 indicator: an open chevron outboard of pad 1, clear of the copper.
+  const pin1 = getCcwSot23Coords({
+    num_pins: parameters.num_pins,
+    pn: 1,
+    w,
+    h,
+    pl,
+    p,
+  })
+  // Apex points up at pad 1, base below it, tucked under the outboard end of
+  // the pad — the same placement KiCad uses.
+  const markerX = pin1.x - pl / 2 + 0.35
+  const markerHalfWidth = 0.24
+  const markerHeight = 0.33
+  const markerApexY = pin1.y - padHalfHeight - padClearance
+  const pin1Indicator = silkPath("pin1_indicator", [
+    { x: markerX, y: markerApexY },
+    { x: markerX + markerHalfWidth, y: markerApexY - markerHeight },
+    { x: markerX - markerHalfWidth, y: markerApexY - markerHeight },
+  ])
+
+  return [
+    ...pads,
+    ...(silkscreenPaths as AnyCircuitElement[]),
+    pin1Indicator as AnyCircuitElement,
+    silkscreenRefText as AnyCircuitElement,
+    courtyard,
+  ]
 }
 
 export const getCcwSot235Coords = (parameters: {
