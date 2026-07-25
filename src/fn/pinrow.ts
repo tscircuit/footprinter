@@ -1,18 +1,19 @@
-import { z } from "zod"
+import { mm } from "@tscircuit/mm"
 import {
-  length,
-  rotation,
   type AnyCircuitElement,
   type PcbCourtyardRect,
+  length,
+  rotation,
 } from "circuit-json"
-import { platedhole } from "../helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { mm } from "@tscircuit/mm"
 import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
+import { silkscreenPin } from "src/helpers/silkscreenPin"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { z } from "zod"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedhole } from "../helpers/platedhole"
+import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
+import { function_call } from "../helpers/zod/function-call"
 
 export const pinrow_def = base_def
   .extend({
@@ -24,9 +25,18 @@ export const pinrow_def = base_def
       .optional()
       .default(1)
       .describe("number of rows"),
+    cols: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .optional()
+      .describe("number of nominal columns in a sparse grid"),
     p: length.default("0.1in").describe("pitch"),
+    py: length.optional().describe("vertical row pitch"),
     id: length.default("1.0mm").describe("inner diameter"),
     od: length.default("1.5mm").describe("outer diameter"),
+    missing: function_call
+      .default([])
+      .describe("row-major nominal grid positions to omit"),
     male: z.boolean().optional().describe("for male pin headers"),
     female: z.boolean().optional().describe("for female pin headers"),
     smd: z.boolean().optional().describe("surface mount device"),
@@ -85,6 +95,23 @@ export const pinrow_def = base_def
         path: ["male", "female"],
       })
     }
+    if (
+      data.cols !== undefined &&
+      (!Number.isInteger(data.cols) || data.cols < 1)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'cols' must be a positive integer",
+        path: ["cols"],
+      })
+    }
+    if (data.missing.some((position) => typeof position !== "number")) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'missing' positions must be pad numbers",
+        path: ["missing"],
+      })
+    }
   })
 
 export const pinrow = (
@@ -93,10 +120,13 @@ export const pinrow = (
   const parameters = pinrow_def.parse(raw_params)
   const {
     p,
+    py,
     id,
     od,
     rows,
+    cols,
     num_pins,
+    missing,
     pinlabelAnchorSide,
     pinlabelverticallyinverted,
     pinlabelorthogonal,
@@ -111,10 +141,34 @@ export const pinrow = (
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnyCircuitElement[] = []
-  const numPinsPerRow = Math.ceil(num_pins / rows)
-  const pinRowSpanY = (rows - 1) * p
+  const missingPositions = missing as number[]
+  const uniqueMissingPositions = new Set(missingPositions)
+  if (uniqueMissingPositions.size !== missingPositions.length) {
+    throw new Error("Pinrow missing positions must not contain duplicates")
+  }
+  const nominalPinCount = num_pins + missingPositions.length
+  const numPinsPerRow = cols ?? Math.ceil(nominalPinCount / rows)
+  const gridPositionCount = numPinsPerRow * rows
+  const usesExplicitGrid = cols !== undefined || missingPositions.length > 0
+  if (usesExplicitGrid && gridPositionCount !== nominalPinCount) {
+    throw new Error(
+      `Pinrow grid has ${gridPositionCount} positions, but ${nominalPinCount} are required for ${num_pins} pins and ${missingPositions.length} missing positions`,
+    )
+  }
+  if (
+    missingPositions.some(
+      (position) =>
+        !Number.isInteger(position) ||
+        position < 1 ||
+        position > gridPositionCount,
+    )
+  ) {
+    throw new Error("Pinrow missing position is outside the nominal grid")
+  }
+  const rowPitch = py ?? p
+  const pinRowSpanY = (rows - 1) * rowPitch
   const yStart = pinRowSpanY / 2
-  const ySpacing = -p
+  const ySpacing = -rowPitch
 
   const calculateAnchorPosition = ({
     xoff,
@@ -257,10 +311,24 @@ export const pinrow = (
   // Track used positions to prevent overlaps
   const usedPositions = new Set<string>()
 
-  // Check if BGA-style numbering should be used
-  const useBGAStyle = rows > 2 && numPinsPerRow > 2
-
-  if (rows === 1) {
+  if (usesExplicitGrid) {
+    // Explicit grids use row-major nominal positions. Missing positions do not
+    // consume output pin numbers, so generated port hints remain contiguous.
+    const xStart = -((numPinsPerRow - 1) / 2) * p
+    let outputPinNumber = 1
+    for (let row = 0; row < rows; row++) {
+      for (let col = 0; col < numPinsPerRow; col++) {
+        const nominalPosition = row * numPinsPerRow + col + 1
+        if (uniqueMissingPositions.has(nominalPosition)) continue
+        const xoff = xStart + col * p
+        const yoff = yStart + row * ySpacing
+        const posKey = `${xoff},${yoff}`
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+        usedPositions.add(posKey)
+        addPin(outputPinNumber++, xoff, yoff)
+      }
+    }
+  } else if (rows === 1) {
     // Single row: left to right, pin 1 to num_pins
     const xStart = -((num_pins - 1) / 2) * p
     for (let i = 0; i < num_pins; i++) {
@@ -271,84 +339,95 @@ export const pinrow = (
       usedPositions.add(posKey)
       addPin(pinNumber, xoff, 0)
     }
-  } else if (useBGAStyle) {
-    // BGA-style: row-major numbering (left to right, top to bottom)
-    const xStart = -((numPinsPerRow - 1) / 2) * p
-    let currentPin = 1
-    for (let row = 0; row < rows && currentPin <= num_pins; row++) {
-      for (let col = 0; col < numPinsPerRow && currentPin <= num_pins; col++) {
-        const xoff = xStart + col * p
-        const yoff = yStart + row * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
-      }
-    }
   } else {
-    // Multi-row: counterclockwise spiral traversal
-    const xStart = -((numPinsPerRow - 1) / 2) * p
-    let currentPin = 1
-    let top = 0
-    let bottom = rows - 1
-    let left = 0
-    let right = numPinsPerRow - 1
+    // Check if BGA-style numbering should be used
+    const useBGAStyle = rows > 2 && numPinsPerRow > 2
 
-    while (currentPin <= num_pins && top <= bottom && left <= right) {
-      // Left column: top to bottom
-      for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
-        const xoff = xStart + left * p
-        const yoff = yStart + row * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
-      }
-      left++
-
-      // Bottom row: left to right
-      for (let col = left; col <= right && currentPin <= num_pins; col++) {
-        const xoff = xStart + col * p
-        const yoff = yStart + bottom * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(currentPin++, xoff, yoff)
-      }
-      bottom--
-
-      if (left <= right) {
-        // Right column: bottom to top
-        for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
-          const xoff = xStart + right * p
+    if (useBGAStyle) {
+      // BGA-style: row-major numbering (left to right, top to bottom)
+      const xStart = -((numPinsPerRow - 1) / 2) * p
+      let currentPin = 1
+      for (let row = 0; row < rows && currentPin <= num_pins; row++) {
+        for (
+          let col = 0;
+          col < numPinsPerRow && currentPin <= num_pins;
+          col++
+        ) {
+          const xoff = xStart + col * p
           const yoff = yStart + row * ySpacing
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
           addPin(currentPin++, xoff, yoff)
         }
-        right--
       }
+    } else {
+      // Multi-row: counterclockwise spiral traversal
+      const xStart = -((numPinsPerRow - 1) / 2) * p
+      let currentPin = 1
+      let top = 0
+      let bottom = rows - 1
+      let left = 0
+      let right = numPinsPerRow - 1
 
-      if (top <= bottom) {
-        // Top row: right to left
-        for (let col = right; col >= left && currentPin <= num_pins; col--) {
-          const xoff = xStart + col * p
-          const yoff = yStart + top * ySpacing
+      while (currentPin <= num_pins && top <= bottom && left <= right) {
+        // Left column: top to bottom
+        for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
+          const xoff = xStart + left * p
+          const yoff = yStart + row * ySpacing
           const posKey = `${xoff},${yoff}`
           if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
           usedPositions.add(posKey)
           addPin(currentPin++, xoff, yoff)
         }
-        top++
-      }
-    }
+        left++
 
-    // Verify all pins were assigned
-    if (currentPin - 1 < num_pins) {
-      throw new Error(
-        `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
-      )
+        // Bottom row: left to right
+        for (let col = left; col <= right && currentPin <= num_pins; col++) {
+          const xoff = xStart + col * p
+          const yoff = yStart + bottom * ySpacing
+          const posKey = `${xoff},${yoff}`
+          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+          usedPositions.add(posKey)
+          addPin(currentPin++, xoff, yoff)
+        }
+        bottom--
+
+        if (left <= right) {
+          // Right column: bottom to top
+          for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
+            const xoff = xStart + right * p
+            const yoff = yStart + row * ySpacing
+            const posKey = `${xoff},${yoff}`
+            if (usedPositions.has(posKey))
+              throw new Error(`Overlap at ${posKey}`)
+            usedPositions.add(posKey)
+            addPin(currentPin++, xoff, yoff)
+          }
+          right--
+        }
+
+        if (top <= bottom) {
+          // Top row: right to left
+          for (let col = right; col >= left && currentPin <= num_pins; col--) {
+            const xoff = xStart + col * p
+            const yoff = yStart + top * ySpacing
+            const posKey = `${xoff},${yoff}`
+            if (usedPositions.has(posKey))
+              throw new Error(`Overlap at ${posKey}`)
+            usedPositions.add(posKey)
+            addPin(currentPin++, xoff, yoff)
+          }
+          top++
+        }
+      }
+
+      // Verify all pins were assigned
+      if (currentPin - 1 < num_pins) {
+        throw new Error(
+          `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
+        )
+      }
     }
   }
 

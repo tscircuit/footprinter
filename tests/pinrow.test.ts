@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -203,6 +203,43 @@ test("pinrow6_nosquareplating", () => {
     "pinrow6_nosquareplating_1",
   )
 })
+
+test("pinrow6 sparse 5x2 relay grid", () => {
+  const definition =
+    "pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)_nosquareplating_od2.1mm_id1.2mm_nopinlabels"
+  const circuitJson = fp.string(definition).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
+  const platedHoles = circuitJson.filter(
+    (element) => element.type === "pcb_plated_hole",
+  )
+
+  expect(
+    platedHoles.map(({ x, y, port_hints }) => ({ x, y, port_hints })),
+  ).toEqual([
+    { x: -5.08, y: 2.54, port_hints: ["1"] },
+    { x: -2.54, y: 2.54, port_hints: ["2"] },
+    { x: 5.08, y: 2.54, port_hints: ["3"] },
+    { x: -5.08, y: -2.54, port_hints: ["4"] },
+    { x: -2.54, y: -2.54, port_hints: ["5"] },
+    { x: 5.08, y: -2.54, port_hints: ["6"] },
+  ])
+  expect(fp.string(definition).json()).toMatchObject({
+    fn: "pinrow",
+    num_pins: 6,
+    rows: 2,
+    cols: 5,
+    p: 2.54,
+    py: 5.08,
+    missing: [3, 4, 8, 9],
+  })
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow6_sparse_5x2_relay_grid",
+  )
+})
+
 const textAlignments = ["left", "center", "right"] as const
 const orthogonalStates = [
   { name: "", value: false },
@@ -225,7 +262,7 @@ for (const textAlign of textAlignments) {
       }
 
       // Construct snapshot name similar to the definition string but more readable for file names
-      let snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
+      const snapshotName = `pinrow5_textalign${textAlign}${orthoState.name}${invertedState.name}`
 
       test(`Test: ${def} (Snapshot: ${snapshotName})`, () => {
         const soup = fp.string(def).circuitJson()
