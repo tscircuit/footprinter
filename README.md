@@ -22,6 +22,7 @@ res0805
 soic8_p1.27mm
 dip16
 pinrow10
+pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
 smdpinheader6
 tssop20_p0.5mm
 sot23
@@ -108,6 +109,18 @@ fp().soic(8).rounded("0.2mm")
 ```
 
 Circular, pill-shaped, and polygonal pads keep their original geometry.
+
+### Sparse pin grids
+
+`pinrow` can represent relay and connector layouts that omit positions from a
+regular grid. `p` controls the column pitch, `py` controls the row pitch, and
+`missing(...)` uses row-major nominal positions:
+
+```ts
+fp.string(
+  "pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)_nosquareplating",
+)
+```
 
 ## Getting JSON output from the builder
 
