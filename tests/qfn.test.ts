@@ -31,10 +31,10 @@ test("qfn32_pillpads keeps its thermal pad rectangular", () => {
   )
 })
 
-test("qfn20_grid2x8 supports unequal side counts and pitches", () => {
+test("qfn20_sidepins2x8 supports unequal side counts and pitches", () => {
   const soup = fp
     .string(
-      "qfn20_grid2x8_px0.5mm_py1.5mm_w5.55mm_h4.55mm_pw0.28mm_pl0.85mm_thermalpad2.7x1.7mm_startingpin(leftside,bottompin)",
+      "qfn20_sidepins2x8_px0.5mm_py1.5mm_w5.55mm_h4.55mm_pw0.28mm_pl0.85mm_thermalpad2.7x1.7mm_startingpin(leftside,bottompin)",
     )
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
@@ -53,6 +53,6 @@ test("qfn20_grid2x8 supports unequal side counts and pitches", () => {
   expect(pin1?.y).toBeCloseTo(-0.75)
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
-    "qfn20_grid2x8_separate_pitches_thermalpad",
+    "qfn20_sidepins2x8_separate_pitches_thermalpad",
   )
 })

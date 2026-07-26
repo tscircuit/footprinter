@@ -31,20 +31,20 @@ import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
  */
 export const getQuadPinMap = ({
   num_pins,
-  grid,
+  sidepins,
   cw,
   ccw,
   startingpin,
 }: {
   num_pins: number
-  grid?: { x: number; y: number }
+  sidepins?: { x: number; y: number }
   cw?: boolean
   ccw?: boolean
   startingpin?: PinOrderSpecifier[]
 }): number[] => {
   const pin_map: number[] = []
-  const verticalSidePinCount = grid?.x ?? num_pins / 4
-  const horizontalSidePinCount = grid?.y ?? num_pins / 4
+  const verticalSidePinCount = sidepins?.x ?? num_pins / 4
+  const horizontalSidePinCount = sidepins?.y ?? num_pins / 4
   const leftBottomPin = verticalSidePinCount
   const bottomLeftPin = leftBottomPin + 1
   const bottomRightPin = verticalSidePinCount + horizontalSidePinCount

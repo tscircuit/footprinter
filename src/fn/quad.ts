@@ -26,7 +26,7 @@ export const base_quad_def = base_def.extend({
     .pipe(z.array(pin_order_specifier))
     .optional(),
   num_pins: z.number().optional().default(64),
-  grid: dim2d
+  sidepins: dim2d
     .optional()
     .describe("pads per left/right side (x) and top/bottom side (y)"),
   w: length.optional(),
@@ -51,8 +51,8 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   }
 
   const side_pin_count = v.num_pins / 4
-  const horizontal_side_pin_count = v.grid?.y ?? side_pin_count
-  const vertical_side_pin_count = v.grid?.x ?? side_pin_count
+  const horizontal_side_pin_count = v.sidepins?.y ?? side_pin_count
+  const vertical_side_pin_count = v.sidepins?.x ?? side_pin_count
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
 
@@ -94,7 +94,7 @@ export const quad_def = base_quad_def.transform(quadTransform)
 const SIDES_CCW = ["left", "bottom", "right", "top"] as const
 
 export const getQuadCoords = (params: {
-  grid?: { x: number; y: number }
+  sidepins?: { x: number; y: number }
   pin_count: number
   pn: number // pin number
   w: number // width of the package
@@ -105,9 +105,9 @@ export const getQuadCoords = (params: {
   pl: number // length of the pin
   legsoutside?: boolean
 }) => {
-  const { grid, pin_count, pn, w, h, p, px, py, pl, legsoutside } = params
-  const sidePinCounts = grid
-    ? [grid.x, grid.y, grid.x, grid.y]
+  const { sidepins, pin_count, pn, w, h, p, px, py, pl, legsoutside } = params
+  const sidePinCounts = sidepins
+    ? [sidepins.x, sidepins.y, sidepins.x, sidepins.y]
     : Array.from({ length: 4 }, () => pin_count / 4)
   let sideIndex = 0
   let pos = pn - 1
@@ -165,16 +165,17 @@ export const quad = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
   if (
-    parameters.grid &&
-    (!Number.isInteger(parameters.grid.x) ||
-      !Number.isInteger(parameters.grid.y) ||
-      parameters.grid.x < 1 ||
-      parameters.grid.y < 1 ||
-      2 * (parameters.grid.x + parameters.grid.y) !== parameters.num_pins)
+    parameters.sidepins &&
+    (!Number.isInteger(parameters.sidepins.x) ||
+      !Number.isInteger(parameters.sidepins.y) ||
+      parameters.sidepins.x < 1 ||
+      parameters.sidepins.y < 1 ||
+      2 * (parameters.sidepins.x + parameters.sidepins.y) !==
+        parameters.num_pins)
   ) {
     throw new Error(
-      `Quad grid ${parameters.grid.x}x${parameters.grid.y} requires ${
-        2 * (parameters.grid.x + parameters.grid.y)
+      `Quad sidepins ${parameters.sidepins.x}x${parameters.sidepins.y} requires ${
+        2 * (parameters.sidepins.x + parameters.sidepins.y)
       } pads, got ${parameters.num_pins}`,
     )
   }
@@ -184,8 +185,8 @@ export const quad = (
   const pin_map = getQuadPinMap(parameters)
   /** Side pin count */
   const spc = parameters.num_pins / 4
-  const verticalSidePinCount = parameters.grid?.x ?? spc
-  const horizontalSidePinCount = parameters.grid?.y ?? spc
+  const verticalSidePinCount = parameters.sidepins?.x ?? spc
+  const horizontalSidePinCount = parameters.sidepins?.y ?? spc
   const leftBottomPin = verticalSidePinCount
   const bottomLeftPin = leftBottomPin + 1
   const bottomRightPin = verticalSidePinCount + horizontalSidePinCount
@@ -199,7 +200,7 @@ export const quad = (
       y,
       o: orientation,
     } = getQuadCoords({
-      grid: parameters.grid,
+      sidepins: parameters.sidepins,
       pin_count: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,

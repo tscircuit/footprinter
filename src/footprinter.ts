@@ -106,7 +106,7 @@ export type Footprinter = {
     | "py"
     | "pw"
     | "pl"
-    | "grid"
+    | "sidepins"
     | "thermalpad"
     | "pillpads"
   >
