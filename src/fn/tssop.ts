@@ -66,6 +66,9 @@ export const tssop = (
     ? parameters.w - length.parse("0.15mm")
     : parameters.w
 
+  /** Distance from the origin to the inner edge of the pad columns. */
+  let padInnerHalfX = Number.POSITIVE_INFINITY
+  let padOuterHalfY = 0
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
       num_pins: parameters.num_pins,
@@ -75,6 +78,8 @@ export const tssop = (
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
     })
+    padInnerHalfX = Math.min(padInnerHalfX, Math.abs(x) - parameters.pl / 2)
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + parameters.pw / 2)
     pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }
 
@@ -83,9 +88,26 @@ export const tssop = (
   }
 
   const m = Math.min(1, parameters.p / 2)
-  const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+  const silkscreenStrokeWidth = parameters.silkscreen_stroke_width ?? 0.1
+  // Inset the body outline from the pad edges by IPC's silk-to-pad clearance
+  // plus half the stroke. The previous flat `- 0.2` was a total inset of 0.1
+  // per side, which is less than the stroke half-width alone once the pads
+  // reach the body (e.g. `tssop10_w3mm_p0.5mm` overlapped by 0.025mm).
+  const silkPadClearance = 0.2 + silkscreenStrokeWidth / 2
+  // Derive both from the pads that were actually placed, rather than from `w`.
+  // Fine-pitch parts shift the pads inward (`wForPads`), so a width-based
+  // formula drifts from the real copper — that drift is what put the outline on
+  // the pads for `tssop10_w3mm_p0.5mm`.
+  const sw = Math.min(
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2,
+    (padInnerHalfX - silkPadClearance) * 2,
+  )
+  // The outline's horizontal runs pass above and below the outermost pads, so
+  // the height needs the same clearance the width gets.
+  const sh = Math.max(
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m,
+    (padOuterHalfY + silkPadClearance) * 2,
+  )
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
@@ -96,7 +118,7 @@ export const tssop = (
     layer: "top",
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
-    stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
+    stroke_width: silkscreenStrokeWidth,
     route: [
       { x: -sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: sh / 2 },
