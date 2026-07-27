@@ -5,7 +5,7 @@ import { fp } from "../src/footprinter"
 test("dfn4_cornerpads", () => {
   const circuitJson = fp
     .string(
-      "dfn4_w0.85mm_p0.9mm_pl0.2mm_pw0.4mm_cornerpads_cornerpadcut0.15mm_thermalpad0.48mmx0.48mm_pin1location(leftside,bottom)_rounded0",
+      "dfn4_w0.85mm_p0.9mm_pl0.2mm_pw0.4mm_cornerpads_cornerpadcutlength0.15mm_thermalpad0.48mmx0.48mm_pin1location(leftside,bottom)_rounded0",
     )
     .circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
@@ -15,7 +15,7 @@ test("dfn4_cornerpads", () => {
 test("dfn4 corner pads derive their geometry from DFN parameters", () => {
   const pads = fp
     .string(
-      "dfn4_w1.2mm_p0.8mm_pl0.3mm_pw0.5mm_cornerpads_cornerpadcut0.1mm_thermalpad0.6mmx0.7mm",
+      "dfn4_w1.2mm_p0.8mm_pl0.3mm_pw0.5mm_cornerpads_cornerpadcutlength0.1mm_thermalpad0.6mmx0.7mm",
     )
     .circuitJson()
     .filter((element) => element.type === "pcb_smtpad")

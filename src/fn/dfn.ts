@@ -19,7 +19,7 @@ export type DfnInput = z.input<typeof dfn_def> & {
   /** Replace the four rectangular DFN pads with chamfered corner pads. */
   cornerpads?: boolean
   /** Length of the diagonal cut at each corner pad's inner corner. */
-  cornerpadcut?: string | number
+  cornerpadcutlength?: string | number
   /** Omit nominal pad positions while preserving an even, regular pad grid. */
   missing?: string | Array<string | number>
 }
@@ -33,10 +33,10 @@ export const dfn = (
   raw_params: DfnInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const cornerpads = z.boolean().optional().parse(raw_params.cornerpads)
-  const cornerpadcut =
-    raw_params.cornerpadcut === undefined
+  const cornerpadcutlength =
+    raw_params.cornerpadcutlength === undefined
       ? undefined
-      : length.parse(raw_params.cornerpadcut)
+      : length.parse(raw_params.cornerpadcutlength)
   const missing = function_call.parse(raw_params.missing ?? [])
   if (missing.some((position) => typeof position !== "number")) {
     throw new Error("DFN missing positions must be pad numbers")
@@ -49,7 +49,7 @@ export const dfn = (
   const parameters = {
     ...dfn_def.parse(raw_params),
     cornerpads,
-    cornerpadcut,
+    cornerpadcutlength,
     missing: missingPositions,
   }
   const nominalPinCount = parameters.num_pins
@@ -71,11 +71,11 @@ export const dfn = (
       )
     }
     if (
-      cornerpadcut === undefined ||
-      cornerpadcut <= 0 ||
-      cornerpadcut > Math.min(parameters.pl, parameters.pw)
+      cornerpadcutlength === undefined ||
+      cornerpadcutlength <= 0 ||
+      cornerpadcutlength > Math.min(parameters.pl, parameters.pw)
     ) {
-      throw new Error("DFN corner pads require a valid cornerpadcut")
+      throw new Error("DFN corner pads require a valid cornerpadcutlength")
     }
   }
 
@@ -109,11 +109,11 @@ export const dfn = (
       const outerY = y + (yDirection * parameters.pw) / 2
       pads.push(
         polygonpad(outputPinNumber, [
-          { x: innerX, y: innerY + yDirection * cornerpadcut! },
+          { x: innerX, y: innerY + yDirection * cornerpadcutlength! },
           { x: innerX, y: outerY },
           { x: outerX, y: outerY },
           { x: outerX, y: innerY },
-          { x: innerX + xDirection * cornerpadcut!, y: innerY },
+          { x: innerX + xDirection * cornerpadcutlength!, y: innerY },
         ]),
       )
     } else {

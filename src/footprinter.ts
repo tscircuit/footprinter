@@ -171,7 +171,7 @@ export type Footprinter = {
     | "pillpads"
     | "thermalpad"
     | "cornerpads"
-    | "cornerpadcut"
+    | "cornerpadcutlength"
   >
   pinrow: (
     num_pins?: number,
