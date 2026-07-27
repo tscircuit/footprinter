@@ -5,6 +5,11 @@ import { fp } from "../src/footprinter"
 test("pinrow5", () => {
   const soup = fp.string("pinrow5").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const pin1Arrow = soup.find(
+    (element) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.pcb_silkscreen_path_id === "pin1_arrow",
+  )
   const pinrowJson = fp.string("pinrow5_female").json()
   expect(pinrowJson).toMatchObject({
     fn: "pinrow",
@@ -20,6 +25,7 @@ test("pinrow5", () => {
     pinlabelverticallyinverted: false,
     pinlabelorthogonal: false,
   })
+  expect(pin1Arrow?.route.every((point) => point.x < -5.08)).toBe(true)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
 
@@ -196,6 +202,13 @@ test("pinrow6_nosquareplating", () => {
     rows: 1,
     nosquareplating: true,
   })
+  expect(
+    circuitJson.some(
+      (element) =>
+        element.type === "pcb_silkscreen_path" &&
+        element.pcb_silkscreen_path_id === "pin1_arrow",
+    ),
+  ).toBe(true)
 
   // Verify SVG snapshot
   expect(svgContent).toMatchSvgSnapshot(
@@ -307,6 +320,13 @@ test("pinrow5_nopinlabels", () => {
       (el) => el.type === "pcb_silkscreen_text" && el.text?.startsWith("{PIN"),
     ),
   ).toBe(false)
+  expect(
+    soup.some(
+      (element) =>
+        element.type === "pcb_silkscreen_path" &&
+        element.pcb_silkscreen_path_id === "pin1_arrow",
+    ),
+  ).toBe(true)
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_nopinlabels")
 })
@@ -344,6 +364,13 @@ test("pinrow3_smd", () => {
   // Verify SMD pads are used instead of plated holes
   expect(circuitJson.some((el) => el.type === "pcb_smtpad")).toBe(true)
   expect(circuitJson.some((el) => el.type === "pcb_plated_hole")).toBe(false)
+  expect(
+    circuitJson.some(
+      (element) =>
+        element.type === "pcb_silkscreen_path" &&
+        element.pcb_silkscreen_path_id === "pin1_arrow",
+    ),
+  ).toBe(true)
 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow3_smd")
 })

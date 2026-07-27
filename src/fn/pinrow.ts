@@ -2,6 +2,7 @@ import { mm } from "@tscircuit/mm"
 import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
+  type PcbSilkscreenPath,
   length,
   rotation,
 } from "circuit-json"
@@ -14,6 +15,112 @@ import { platedhole } from "../helpers/platedhole"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 import { function_call } from "../helpers/zod/function-call"
+
+type Pin1ArrowSide = "left" | "top" | "bottom" | "right"
+
+type Bounds = {
+  minX: number
+  maxX: number
+  minY: number
+  maxY: number
+}
+
+const boundsIntersect = (a: Bounds, b: Bounds): boolean =>
+  a.minX <= b.maxX && a.maxX >= b.minX && a.minY <= b.maxY && a.maxY >= b.minY
+
+const createPin1Arrow = ({
+  pin1Position,
+  padHalfWidth,
+  padHalfHeight,
+  padOuterHalfWidth,
+  padOuterHalfHeight,
+  markerSize,
+  blockedTextSide,
+  refText,
+}: {
+  pin1Position: { x: number; y: number }
+  padHalfWidth: number
+  padHalfHeight: number
+  padOuterHalfWidth: number
+  padOuterHalfHeight: number
+  markerSize: number
+  blockedTextSide?: Pin1ArrowSide
+  refText: SilkscreenRef
+}): PcbSilkscreenPath | undefined => {
+  const clearance = 0.1
+  const strokeWidth = 0.1
+  const epsilon = 1e-6
+  const { x, y } = pin1Position
+
+  const refTextHalfWidth = refText.font_size * refText.text.length * 0.35
+  const refTextBounds: Bounds = {
+    minX: refText.anchor_position.x - refTextHalfWidth,
+    maxX: refText.anchor_position.x + refTextHalfWidth,
+    minY: refText.anchor_position.y - refText.font_size / 2,
+    maxY: refText.anchor_position.y + refText.font_size / 2,
+  }
+
+  const sides: Array<{
+    name: Pin1ArrowSide
+    direction: { x: number; y: number }
+  }> = [
+    { name: "left", direction: { x: -1, y: 0 } },
+    { name: "top", direction: { x: 0, y: 1 } },
+    { name: "bottom", direction: { x: 0, y: -1 } },
+    { name: "right", direction: { x: 1, y: 0 } },
+  ]
+
+  for (const { name, direction } of sides) {
+    if (name === blockedTextSide) continue
+
+    const isHorizontal = direction.x !== 0
+    const padExtent = isHorizontal ? padHalfWidth : padHalfHeight
+    const outerExtent = isHorizontal ? padOuterHalfWidth : padOuterHalfHeight
+    const pinCoordinate = isHorizontal ? x : y
+    const sideDirection = isHorizontal ? direction.x : direction.y
+    const isOuterSide =
+      Math.abs(pinCoordinate + sideDirection * (padExtent - outerExtent)) <=
+      epsilon
+    if (!isOuterSide) continue
+
+    const tip = {
+      x: x + direction.x * (padExtent + clearance),
+      y: y + direction.y * (padExtent + clearance),
+    }
+    const baseCenter = {
+      x: tip.x + direction.x * markerSize,
+      y: tip.y + direction.y * markerSize,
+    }
+    const normal = { x: -direction.y, y: direction.x }
+    const route = [
+      {
+        x: baseCenter.x + normal.x * (markerSize / 2),
+        y: baseCenter.y + normal.y * (markerSize / 2),
+      },
+      tip,
+      {
+        x: baseCenter.x - normal.x * (markerSize / 2),
+        y: baseCenter.y - normal.y * (markerSize / 2),
+      },
+    ]
+    const routeBounds: Bounds = {
+      minX: Math.min(...route.map((point) => point.x)) - strokeWidth / 2,
+      maxX: Math.max(...route.map((point) => point.x)) + strokeWidth / 2,
+      minY: Math.min(...route.map((point) => point.y)) - strokeWidth / 2,
+      maxY: Math.max(...route.map((point) => point.y)) + strokeWidth / 2,
+    }
+    if (boundsIntersect(routeBounds, refTextBounds)) continue
+
+    return {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: "pin1_arrow",
+      route: [...route, route[0]!],
+      stroke_width: strokeWidth,
+    }
+  }
+}
 
 export const pinrow_def = base_def
   .extend({
@@ -141,6 +248,7 @@ export const pinrow = (
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnyCircuitElement[] = []
+  let pin1Position: { x: number; y: number } | undefined
   const missingPositions = missing as number[]
   const uniqueMissingPositions = new Set(missingPositions)
   if (uniqueMissingPositions.size !== missingPositions.length) {
@@ -229,6 +337,8 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
+    if (pinNumber === 1) pin1Position = { x: xoff, y: yoff }
+
     if (parameters.smd) {
       // SMD pads
       holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
@@ -441,6 +551,22 @@ export const pinrow = (
   const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
   const bodyHalfWidth = pinRowSpanX / 2 + p / 2
   const bodyHalfHeight = pinRowSpanY / 2 + p / 2
+  const pin1Arrow = pin1Position
+    ? createPin1Arrow({
+        pin1Position,
+        padHalfWidth,
+        padHalfHeight,
+        padOuterHalfWidth,
+        padOuterHalfHeight,
+        markerSize: Math.min(
+          0.5,
+          Math.max(0.25, Math.min(2 * padHalfWidth, 2 * padHalfHeight, p) / 4),
+        ),
+        blockedTextSide:
+          !nopinlabels && !bottomsidepinlabel ? pinlabelAnchorSide : undefined,
+        refText,
+      })
+    : undefined
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
     bodyHalfWidth + 0.5,
@@ -460,7 +586,12 @@ export const pinrow = (
   }
 
   return {
-    circuitJson: [...holes, refText, courtyard as AnyCircuitElement],
+    circuitJson: [
+      ...holes,
+      ...(pin1Arrow ? [pin1Arrow] : []),
+      refText,
+      courtyard as AnyCircuitElement,
+    ],
     parameters,
   }
 }
