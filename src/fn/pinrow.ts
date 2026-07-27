@@ -1,4 +1,5 @@
 import { mm } from "@tscircuit/mm"
+import { type Bounds, doBoundsOverlap } from "@tscircuit/math-utils"
 import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
@@ -17,16 +18,6 @@ import { base_def } from "../helpers/zod/base_def"
 import { function_call } from "../helpers/zod/function-call"
 
 type Pin1ArrowSide = "left" | "top" | "bottom" | "right"
-
-type Bounds = {
-  minX: number
-  maxX: number
-  minY: number
-  maxY: number
-}
-
-const boundsIntersect = (a: Bounds, b: Bounds): boolean =>
-  a.minX <= b.maxX && a.maxX >= b.minX && a.minY <= b.maxY && a.maxY >= b.minY
 
 const createPin1Arrow = ({
   pin1Position,
@@ -109,7 +100,7 @@ const createPin1Arrow = ({
       minY: Math.min(...route.map((point) => point.y)) - strokeWidth / 2,
       maxY: Math.max(...route.map((point) => point.y)) + strokeWidth / 2,
     }
-    if (boundsIntersect(routeBounds, refTextBounds)) continue
+    if (doBoundsOverlap(routeBounds, refTextBounds)) continue
 
     return {
       type: "pcb_silkscreen_path",
