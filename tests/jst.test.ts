@@ -31,6 +31,34 @@ test("jst6_sh", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst6_sh")
 })
 
+test("jst4_smd with mounting pads below the signal row", () => {
+  const definition =
+    "jst4_smd_p2mm_pw1mm_pl6mm_mpx10.698mm_mpy2.316mm_mpw1.8mm_mpl3.4mm"
+  const circuitJson = fp.string(definition).circuitJson()
+  const params = fp.string(definition).json() as any
+
+  expect(params.num_pins).toBe(4)
+  expect(params.smd).toBe(true)
+  expect(params.mounttop).toBe(false)
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path + "jst4_smd",
+  )
+})
+
+test("jst5_smd_mounttop", () => {
+  const definition =
+    "jst5_smd_mounttop_p1.5mm_pw0.7mm_pl5mm_mpx10.1mm_mpy1.85mm_mpw1.5mm_mpl2.3mm"
+  const circuitJson = fp.string(definition).circuitJson()
+  const params = fp.string(definition).json() as any
+
+  expect(params.num_pins).toBe(5)
+  expect(params.smd).toBe(true)
+  expect(params.mounttop).toBe(true)
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path + "jst5_smd_mounttop",
+  )
+})
+
 test("jst_sh6_is_invalid", () => {
   expect(() => fp.string("jst_sh6").json()).toThrow()
 })
