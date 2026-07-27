@@ -265,7 +265,9 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  sot223: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sot223: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "tabpl" | "tabpw" | "taboffset"
+  >
   m2host: () => FootprinterParamsBuilder<never>
   son: (
     num_pins?: number,
