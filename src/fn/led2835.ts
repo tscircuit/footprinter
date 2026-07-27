@@ -14,13 +14,13 @@ export const led2835_def = base_def.extend({
   num_pins: z.literal(2).default(2),
   // Anode (pin 1) is the wide pad, cathode (pin 2) the narrow pad, matching
   // the KiCad LED_PLCC_2835 land pattern
-  p1w: length.default("2.2mm").describe("pin 1 (anode) pad width"),
-  p2w: length.default("1.25mm").describe("pin 2 (cathode) pad width"),
-  ph: length.default("2.2mm").describe("pad height"),
-  p1x: length.default("-0.9mm").describe("pin 1 pad center x"),
-  p2x: length.default("1.375mm").describe("pin 2 pad center x"),
-  w: length.default("3.5mm").describe("package body width"),
-  h: length.default("2.8mm").describe("package body height"),
+  p1w: length.prefault("2.2mm").describe("pin 1 (anode) pad width"),
+  p2w: length.prefault("1.25mm").describe("pin 2 (cathode) pad width"),
+  ph: length.prefault("2.2mm").describe("pad height"),
+  p1x: length.prefault("-0.9mm").describe("pin 1 pad center x"),
+  p2x: length.prefault("1.375mm").describe("pin 2 pad center x"),
+  w: length.prefault("3.5mm").describe("package body width"),
+  h: length.prefault("2.8mm").describe("package body height"),
 })
 
 export const led2835 = (

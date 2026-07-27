@@ -12,9 +12,9 @@ import { base_def } from "../helpers/zod/base_def"
 export const fpc_def = base_def.extend({
   fn: z.literal("fpc"),
   num_pins: z.coerce.number().int().min(2),
-  p: length.default("0.5mm").describe("contact pad pitch"),
-  pw: length.default("0.3mm").describe("contact pad width"),
-  pl: length.default("1.25mm").describe("contact pad length"),
+  p: length.prefault("0.5mm").describe("contact pad pitch"),
+  pw: length.prefault("0.3mm").describe("contact pad width"),
+  pl: length.prefault("1.25mm").describe("contact pad length"),
   staggered: z
     .boolean()
     .default(false)
@@ -23,7 +23,7 @@ export const fpc_def = base_def.extend({
     .boolean()
     .default(false)
     .describe("place pin 1 on the upper row when staggered"),
-  py: length.default("2.4mm").describe("staggered row center pitch"),
+  py: length.prefault("2.4mm").describe("staggered row center pitch"),
   toppl: length.optional().describe("upper-row contact pad length"),
   bottompl: length.optional().describe("lower-row contact pad length"),
   mpx: length.optional().describe("mounting pad center pitch"),
@@ -34,8 +34,8 @@ export const fpc_def = base_def.extend({
     .boolean()
     .default(false)
     .describe("place the mounting pads above the contact-row center"),
-  mpw: length.default("2mm").describe("mounting pad width"),
-  mpl: length.default("2.5mm").describe("mounting pad length"),
+  mpw: length.prefault("2mm").describe("mounting pad width"),
+  mpl: length.prefault("2.5mm").describe("mounting pad length"),
 })
 
 type PadBounds = {
