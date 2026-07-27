@@ -342,6 +342,24 @@ export type Footprinter = {
   smdpushbutton: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
+  smdslideswitch: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "signalcols"
+    | "missing"
+    | "p"
+    | "pw"
+    | "pl"
+    | "mounty"
+    | "mpx"
+    | "mpy"
+    | "mpw"
+    | "mpl"
+    | "holex"
+    | "holey"
+    | "holed"
+    | "noholes"
+  >
   fpc: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
