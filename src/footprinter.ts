@@ -104,7 +104,25 @@ export type Footprinter = {
   >
   qfn: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "p"
+    | "px"
+    | "py"
+    | "pw"
+    | "pl"
+    | "leftpins"
+    | "toppins"
+    | "rightpins"
+    | "bottompins"
+    | "lrpins"
+    | "leftrightpins"
+    | "tbpins"
+    | "topbottompins"
+    | "thermalpad"
+    | "pillpads"
+  >
   tqfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">

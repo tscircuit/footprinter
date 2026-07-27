@@ -1,4 +1,5 @@
 import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
+import type { QuadSidePinCounts } from "./get-quad-side-pin-counts"
 
 /**
  * A counter-clockwise pin map is [1,2,3,4,5,6,7,8] for an 8-pin package
@@ -31,17 +32,25 @@ import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
  */
 export const getQuadPinMap = ({
   num_pins,
+  sidePinCounts,
   cw,
   ccw,
   startingpin,
 }: {
   num_pins: number
+  sidePinCounts: QuadSidePinCounts
   cw?: boolean
   ccw?: boolean
   startingpin?: PinOrderSpecifier[]
 }): number[] => {
   const pin_map: number[] = []
-  const pins_per_side = num_pins / 4
+  const leftBottomPin = sidePinCounts.left
+  const bottomLeftPin = leftBottomPin + 1
+  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom
+  const rightBottomPin = bottomRightPin + 1
+  const rightTopPin =
+    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right
+  const topRightPin = rightTopPin + 1
   let current_position_ccw_normal = 1
 
   /** Starting Flag Pins */
@@ -67,19 +76,19 @@ export const getQuadPinMap = ({
   if (sfp.leftside && sfp.toppin) {
     current_position_ccw_normal = 1
   } else if (sfp.leftside && sfp.bottompin) {
-    current_position_ccw_normal = pins_per_side
+    current_position_ccw_normal = leftBottomPin
   } else if (sfp.bottomside && sfp.leftpin) {
-    current_position_ccw_normal = pins_per_side + 1
+    current_position_ccw_normal = bottomLeftPin
   } else if (sfp.bottomside && sfp.rightpin) {
-    current_position_ccw_normal = pins_per_side * 2
+    current_position_ccw_normal = bottomRightPin
   } else if (sfp.rightside && sfp.bottompin) {
-    current_position_ccw_normal = pins_per_side * 2 + 1
+    current_position_ccw_normal = rightBottomPin
   } else if (sfp.rightside && sfp.toppin) {
-    current_position_ccw_normal = pins_per_side * 3
+    current_position_ccw_normal = rightTopPin
   } else if (sfp.topside && sfp.rightpin) {
-    current_position_ccw_normal = pins_per_side * 3 + 1
+    current_position_ccw_normal = topRightPin
   } else if (sfp.topside && sfp.leftpin) {
-    current_position_ccw_normal = pins_per_side * 4
+    current_position_ccw_normal = num_pins
   }
 
   pin_map.push(-1) // the first index is meaningless
