@@ -196,6 +196,30 @@ export type Footprinter = {
   radial: () => FootprinterParamsBuilder<
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
   >
+  rj45: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "ledpins"
+    | "firstpinleft"
+    | "firstpintop"
+    | "p"
+    | "py"
+    | "id"
+    | "od"
+    | "shieldx"
+    | "shieldy"
+    | "shieldid"
+    | "shieldod"
+    | "holex"
+    | "holey"
+    | "holed"
+    | "ledx"
+    | "ledp"
+    | "ledy"
+    | "w"
+    | "h"
+    | "bodyy"
+  >
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
@@ -459,7 +483,7 @@ export const string = (def: string): Footprinter => {
           v: pin1LocationMatch[2],
         }
       }
-      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\?].*)?/)
+      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\-\?].*)?/)
       if (!m) return null
       const [, rawFn, v] = m
       if (!rawFn) return null
