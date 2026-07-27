@@ -258,7 +258,20 @@ export type Footprinter = {
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   jst: () => FootprinterParamsBuilder<
-    "w" | "h" | "p" | "id" | "pw" | "pl" | "ph" | "sh"
+    | "w"
+    | "h"
+    | "p"
+    | "id"
+    | "pw"
+    | "pl"
+    | "ph"
+    | "sh"
+    | "smd"
+    | "mpx"
+    | "mpy"
+    | "mpw"
+    | "mpl"
+    | "mounttop"
   >
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   ms013: () => FootprinterParamsBuilder<"w" | "p">

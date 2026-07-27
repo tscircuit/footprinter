@@ -20,6 +20,24 @@ export const jst_def = base_def.extend({
   pl: length.optional(),
   w: length.optional(),
   h: length.optional(),
+  mpx: length
+    .optional()
+    .describe("center-to-center distance between the SMD mounting pads"),
+  mpy: length
+    .optional()
+    .describe("mounting-pad row distance from the signal-pad row"),
+  mpw: length.optional().describe("SMD mounting pad width"),
+  mpl: length.optional().describe("SMD mounting pad length"),
+  mounttop: z
+    .boolean()
+    .optional()
+    .describe("place SMD mounting pads above the signal-pad row"),
+  smd: z
+    .boolean()
+    .optional()
+    .describe(
+      "Generic surface-mount JST-style connector with one signal row and two mounting pads.",
+    ),
   sh: z
     .boolean()
     .optional()
@@ -47,7 +65,7 @@ export const jst_def = base_def.extend({
 export type jstDef = z.input<typeof jst_def>
 
 // Variant type
-type JstVariant = "ph" | "sh" | "zh"
+type JstVariant = "ph" | "sh" | "smd" | "zh"
 
 type Bounds = {
   minX: number
@@ -100,6 +118,17 @@ const variantDefaults: Record<JstVariant, any> = {
     w: length.parse("5.8mm"),
     h: length.parse("7.8mm"),
   },
+  smd: {
+    p: length.parse("2mm"),
+    id: 0,
+    pw: length.parse("1mm"),
+    pl: length.parse("3mm"),
+    mpw: length.parse("1.8mm"),
+    mpl: length.parse("3mm"),
+    mpy: length.parse("2.5mm"),
+    w: length.parse("8mm"),
+    h: length.parse("5mm"),
+  },
   zh: {
     p: length.parse("1.5mm"),
     id: length.parse("0.73mm"),
@@ -111,6 +140,7 @@ const variantDefaults: Record<JstVariant, any> = {
 }
 
 function getVariant(params: jstDef): JstVariant {
+  if (params.smd) return "smd"
   if (params.sh) return "sh"
   if (params.ph) return "ph"
   if (params.zh) return "zh"
@@ -124,6 +154,11 @@ function generatePads({
   id,
   pw,
   pl,
+  mpx,
+  mpy,
+  mpw,
+  mpl,
+  mounttop,
 }: {
   variant: JstVariant
   numPins: number
@@ -131,6 +166,11 @@ function generatePads({
   id: number
   pw: number
   pl: number
+  mpx: number
+  mpy: number
+  mpw: number
+  mpl: number
+  mounttop: boolean
 }): {
   pads: AnyCircuitElement[]
   padBounds: Bounds
@@ -140,7 +180,33 @@ function generatePads({
   const padBounds = createEmptyBounds()
   let maxPadHalfY = 0
 
-  if (variant === "ph") {
+  if (variant === "smd") {
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      pads.push(rectpad(i + 1, x, 0, pw, pl))
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 0,
+        width: pw,
+        height: pl,
+      })
+    }
+
+    const mountY = mpy === 0 ? 0 : (mounttop ? 1 : -1) * mpy
+    for (const [index, x] of [-mpx / 2, mpx / 2].entries()) {
+      pads.push(rectpad(numPins + index + 1, x, mountY, mpw, mpl))
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: mountY,
+        width: mpw,
+        height: mpl,
+      })
+    }
+    maxPadHalfY = Math.max(pl / 2, mpl / 2)
+  } else if (variant === "ph") {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
@@ -244,7 +310,22 @@ function generateSilkscreenBody({
   numPins?: number
   p?: number
 }): PcbSilkscreenPath {
-  if (variant === "ph") {
+  if (variant === "smd") {
+    return {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      route: [
+        { x: -w / 2, y: -h / 2 },
+        { x: w / 2, y: -h / 2 },
+        { x: w / 2, y: h / 2 },
+        { x: -w / 2, y: h / 2 },
+        { x: -w / 2, y: -h / 2 },
+      ],
+      stroke_width: 0.1,
+      pcb_silkscreen_path_id: "",
+    }
+  } else if (variant === "ph") {
     return {
       type: "pcb_silkscreen_path",
       layer: "top",
@@ -337,6 +418,11 @@ export const jst = (
     )
   }
 
+  const mpx = params.mpx ?? (numPins - 1) * p + 3.4
+  const mpy = params.mpy ?? defaults.mpy ?? 0
+  const mpw = params.mpw ?? defaults.mpw ?? 0
+  const mpl = params.mpl ?? defaults.mpl ?? 0
+  const mounttop = params.mounttop ?? false
   const padGeometry = generatePads({
     variant,
     numPins,
@@ -344,16 +430,41 @@ export const jst = (
     id,
     pw,
     pl,
+    mpx,
+    mpy,
+    mpw,
+    mpl,
+    mounttop,
   })
   const { pads, padBounds, maxPadHalfY } = padGeometry
+  const silkscreenWidth =
+    variant === "smd"
+      ? Math.max(
+          w,
+          2 * Math.max(Math.abs(padBounds.minX), Math.abs(padBounds.maxX)) +
+            0.4,
+        )
+      : w
+  const silkscreenHeight =
+    variant === "smd"
+      ? Math.max(
+          h,
+          2 * Math.max(Math.abs(padBounds.minY), Math.abs(padBounds.maxY)) +
+            0.4,
+        )
+      : h
   const silkscreenBody = generateSilkscreenBody({
     variant,
-    w,
-    h,
+    w: silkscreenWidth,
+    h: silkscreenHeight,
     numPins,
     p,
   })
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    silkscreenHeight / 2 + 1,
+    0.5,
+  )
 
   const silkscreenXs = silkscreenBody.route.map((point) => point.x)
   const silkscreenYs = silkscreenBody.route.map((point) => point.y)
@@ -409,7 +520,17 @@ export const jst = (
       num_pins: numPins,
       sh: variant === "sh",
       ph: variant === "ph",
+      smd: variant === "smd",
       zh: variant === "zh",
+      ...(variant === "smd"
+        ? {
+            mpx,
+            mpy,
+            mpw,
+            mpl,
+            mounttop,
+          }
+        : {}),
     },
   }
 }
