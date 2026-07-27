@@ -52,6 +52,26 @@ export type Footprinter = {
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  dpak: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
+  >
+  d2pak: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
+  >
+  to252: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
+  >
+  to263: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
+  >
   cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
   crystal: (
     num_pins?: number,
@@ -399,6 +419,13 @@ const normalizeDefinition = (def: string): string => {
   return def
     .trim()
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+    .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
+    .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+      pins ? `to252_${pins}` : "to252",
+    )
+    .replace(/^to-263(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+      pins ? `to263_${pins}` : "to263",
+    )
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
