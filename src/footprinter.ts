@@ -163,7 +163,15 @@ export type Footprinter = {
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "pw" | "pl" | "missing" | "pillpads" | "thermalpad"
+    | "w"
+    | "p"
+    | "pw"
+    | "pl"
+    | "missing"
+    | "pillpads"
+    | "thermalpad"
+    | "cornerpads"
+    | "cornerpadcutlength"
   >
   pinrow: (
     num_pins?: number,

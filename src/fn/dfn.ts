@@ -3,17 +3,23 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
+import { length } from "circuit-json"
 import { extendSoicDef, getCcwSoicCoords } from "./soic"
 import { rectpad } from "src/helpers/rectpad"
 import { pillpad } from "src/helpers/pillpad"
-import type { z } from "zod"
+import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { function_call } from "src/helpers/zod/function-call"
 import { createThermalPad } from "src/helpers/create-thermal-pad"
+import { polygonpad } from "src/helpers/polygonpad"
 
 export const dfn_def = extendSoicDef({})
 export type DfnInput = z.input<typeof dfn_def> & {
+  /** Replace the four rectangular DFN pads with chamfered corner pads. */
+  cornerpads?: boolean
+  /** Length of the diagonal cut at each corner pad's inner corner. */
+  cornerpadcutlength?: string | number
   /** Omit nominal pad positions while preserving an even, regular pad grid. */
   missing?: string | Array<string | number>
 }
@@ -26,6 +32,11 @@ export type DfnInput = z.input<typeof dfn_def> & {
 export const dfn = (
   raw_params: DfnInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  const cornerpads = z.boolean().optional().parse(raw_params.cornerpads)
+  const cornerpadcutlength =
+    raw_params.cornerpadcutlength === undefined
+      ? undefined
+      : length.parse(raw_params.cornerpadcutlength)
   const missing = function_call.parse(raw_params.missing ?? [])
   if (missing.some((position) => typeof position !== "number")) {
     throw new Error("DFN missing positions must be pad numbers")
@@ -35,7 +46,12 @@ export const dfn = (
     throw new Error("DFN missing positions must not contain duplicates")
   }
 
-  const parameters = { ...dfn_def.parse(raw_params), missing: missingPositions }
+  const parameters = {
+    ...dfn_def.parse(raw_params),
+    cornerpads,
+    cornerpadcutlength,
+    missing: missingPositions,
+  }
   const nominalPinCount = parameters.num_pins
   if (
     missingPositions.some(
@@ -43,6 +59,24 @@ export const dfn = (
     )
   ) {
     throw new Error("DFN missing position is outside the nominal pad range")
+  }
+  if (cornerpads) {
+    if (
+      nominalPinCount !== 4 ||
+      missingPositions.length > 0 ||
+      parameters.pillpads
+    ) {
+      throw new Error(
+        "DFN corner pads require four nominal pads with none missing",
+      )
+    }
+    if (
+      cornerpadcutlength === undefined ||
+      cornerpadcutlength <= 0 ||
+      cornerpadcutlength > Math.min(parameters.pl, parameters.pw)
+    ) {
+      throw new Error("DFN corner pads require a valid cornerpadcutlength")
+    }
   }
 
   const missingPositionSet = new Set(missingPositions)
@@ -66,16 +100,34 @@ export const dfn = (
       widthincludeslegs: true,
     })
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
-    pads.push(
-      (parameters.pillpads ? pillpad : rectpad)(
-        outputPinNumber,
-        x,
-        y,
-        parameters.pl ?? "1mm",
-        parameters.pw ?? "0.6mm",
-        cornerRadius,
-      ),
-    )
+    if (cornerpads) {
+      const xDirection = Math.sign(x)
+      const yDirection = Math.sign(y)
+      const innerX = x - (xDirection * parameters.pl) / 2
+      const innerY = y - (yDirection * parameters.pw) / 2
+      const outerX = x + (xDirection * parameters.pl) / 2
+      const outerY = y + (yDirection * parameters.pw) / 2
+      pads.push(
+        polygonpad(outputPinNumber, [
+          { x: innerX, y: innerY + yDirection * cornerpadcutlength! },
+          { x: innerX, y: outerY },
+          { x: outerX, y: outerY },
+          { x: outerX, y: innerY },
+          { x: innerX + xDirection * cornerpadcutlength!, y: innerY },
+        ]),
+      )
+    } else {
+      pads.push(
+        (parameters.pillpads ? pillpad : rectpad)(
+          outputPinNumber,
+          x,
+          y,
+          parameters.pl ?? "1mm",
+          parameters.pw ?? "0.6mm",
+          cornerRadius,
+        ),
+      )
+    }
     outputPinNumber += 1
   }
 
