@@ -13,6 +13,16 @@ test("sot223", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot223")
 })
 
+test("sot223 supports independently sized and offset tab pads", () => {
+  const circuitJson = fp
+    .string(
+      "sot223_w8.06mm_p2.3mm_pl2.5mm_pw1.1mm_tabpl2.34mm_tabpw3.6mm_taboffset0.08mm_pin1location(rightside,bottom)_rounded0",
+    )
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot223_c6186")
+})
+
 test("sot223_5", () => {
   const circuitJson = fp.string("sot223_5").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)

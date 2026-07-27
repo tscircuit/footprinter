@@ -17,6 +17,9 @@ export const sot223_def = base_def.extend({
   pl: z.string().default("2mm"),
   pw: z.string().default("1.5mm"),
   p: z.string().default("2.30mm"),
+  tabpl: z.string().optional(),
+  tabpw: z.string().default("3.8mm"),
+  taboffset: z.string().default("0mm"),
   string: z.string().optional(),
 })
 
@@ -62,6 +65,7 @@ export const sot223 = (
   }
   throw new Error("Invalid number of pins")
 }
+
 export const get2CcwSot223Coords = (parameters: {
   num_pins: number
   pn: number
@@ -69,8 +73,9 @@ export const get2CcwSot223Coords = (parameters: {
   h: number
   pl: number
   p: number
+  taboffset: number
 }) => {
-  const { pn, w, h, pl, p } = parameters
+  const { pn, w, h, pl, p, taboffset } = parameters
 
   if (pn === 1) {
     return { x: -w / 2 + 1.1, y: p }
@@ -82,7 +87,7 @@ export const get2CcwSot223Coords = (parameters: {
     return { x: -w / 2 + 1.1, y: -p }
   }
 
-  return { x: w / 2 - 1.1, y: 0 }
+  return { x: w / 2 - 1.1 + taboffset, y: 0 }
 }
 
 export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
@@ -94,6 +99,9 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const p = Number.parseFloat(parameters.p)
   const pw = Number.parseFloat(parameters.pw)
+  const tabpl = Number.parseFloat(parameters.tabpl ?? parameters.pl)
+  const tabpw = Number.parseFloat(parameters.tabpw)
+  const taboffset = Number.parseFloat(parameters.taboffset)
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = get2CcwSot223Coords({
@@ -103,10 +111,11 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
       h,
       pl,
       p,
+      taboffset,
     })
 
-    const pinWidth = i === 3 ? 3.8 : pw
-    const pinLength = pl
+    const pinWidth = i === 3 ? tabpw : pw
+    const pinLength = i === 3 ? tabpl : pl
     const cornerRadius = Math.min(pinLength, pinWidth) / 8
 
     padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)
