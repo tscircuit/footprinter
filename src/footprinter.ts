@@ -165,6 +165,7 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "w" | "p" | "pw" | "pl" | "missing" | "pillpads" | "thermalpad"
   >
+  dfn4ep_cornerpads: () => FootprinterParamsBuilder<never>
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -449,7 +450,22 @@ export const string = (def: string): Footprinter => {
     .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
     .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
 
-  const def_parts = modifiedDef
+  // A named family may start with another family name (for example,
+  // `dfn4ep_cornerpads` starts with `dfn`). Resolve the longest exact family
+  // prefix before parsing its underscore-delimited parameters.
+  const namedFamily = [...getFootprintNames()]
+    .toSorted((left, right) => right.length - left.length)
+    .find(
+      (footprintName) =>
+        modifiedDef === footprintName ||
+        modifiedDef.startsWith(`${footprintName}_`),
+    )
+  if (namedFamily) fp = fp[namedFamily]()
+  const parameterDef = namedFamily
+    ? modifiedDef.slice(namedFamily.length).replace(/^_/, "")
+    : modifiedDef
+
+  const def_parts = parameterDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
       const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i)
