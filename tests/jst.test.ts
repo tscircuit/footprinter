@@ -49,6 +49,16 @@ test("jst_ph_4 (pretransform)", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
 })
 
+test("jst_ph_4 has four pin plated holes (regression #495)", () => {
+  const circuitJson = fp.string("jst_ph_4").circuitJson()
+  const pinHoles = circuitJson.filter(
+    (e) =>
+      e.type === "pcb_plated_hole" &&
+      e.shape === "circular_hole_with_rect_pad",
+  )
+  expect(pinHoles.length).toBe(4)
+})
+
 test("jst_sh_6 (pretransform)", () => {
   const circuitJson = fp.string("jst_sh_6").circuitJson()
   const params = fp.string("jst_sh_6").json() as any
