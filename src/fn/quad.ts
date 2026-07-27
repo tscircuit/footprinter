@@ -5,6 +5,10 @@ import type {
 } from "circuit-json"
 import { length } from "circuit-json"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
+import {
+  getQuadSidePinCounts,
+  type QuadSidePinCounts,
+} from "src/helpers/get-quad-side-pin-counts"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { dim2d } from "src/helpers/zod/dim-2d"
@@ -14,6 +18,8 @@ import { pillpad } from "../helpers/pillpad"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 import type { NowDefined } from "../helpers/zod/now-defined"
+
+const side_pin_count = z.coerce.number().int().positive().optional()
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -26,9 +32,14 @@ export const base_quad_def = base_def.extend({
     .pipe(z.array(pin_order_specifier))
     .optional(),
   num_pins: z.number().optional().default(64),
-  sidepins: dim2d
-    .optional()
-    .describe("pads per left/right side (x) and top/bottom side (y)"),
+  leftpins: side_pin_count,
+  toppins: side_pin_count,
+  rightpins: side_pin_count,
+  bottompins: side_pin_count,
+  lrpins: side_pin_count,
+  leftrightpins: side_pin_count,
+  tbpins: side_pin_count,
+  topbottompins: side_pin_count,
   w: length.optional(),
   h: length.optional(),
   p: length.default(length.parse("0.5mm")),
@@ -50,9 +61,15 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.w = v.h
   }
 
-  const side_pin_count = v.num_pins / 4
-  const horizontal_side_pin_count = v.sidepins?.y ?? side_pin_count
-  const vertical_side_pin_count = v.sidepins?.x ?? side_pin_count
+  const sidePinCounts = getQuadSidePinCounts(v)
+  const horizontal_side_pin_count = Math.max(
+    sidePinCounts.top,
+    sidePinCounts.bottom,
+  )
+  const vertical_side_pin_count = Math.max(
+    sidePinCounts.left,
+    sidePinCounts.right,
+  )
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
 
@@ -94,7 +111,7 @@ export const quad_def = base_quad_def.transform(quadTransform)
 const SIDES_CCW = ["left", "bottom", "right", "top"] as const
 
 export const getQuadCoords = (params: {
-  sidepins?: { x: number; y: number }
+  sidePinCounts: QuadSidePinCounts
   pin_count: number
   pn: number // pin number
   w: number // width of the package
@@ -105,20 +122,23 @@ export const getQuadCoords = (params: {
   pl: number // length of the pin
   legsoutside?: boolean
 }) => {
-  const { sidepins, pin_count, pn, w, h, p, px, py, pl, legsoutside } = params
-  const sidePinCounts = sidepins
-    ? [sidepins.x, sidepins.y, sidepins.x, sidepins.y]
-    : Array.from({ length: 4 }, () => pin_count / 4)
+  const { sidePinCounts, pn, w, h, p, px, py, pl, legsoutside } = params
+  const sidePinCountsCcw = [
+    sidePinCounts.left,
+    sidePinCounts.bottom,
+    sidePinCounts.right,
+    sidePinCounts.top,
+  ]
   let sideIndex = 0
   let pos = pn - 1
   while (
-    sideIndex < sidePinCounts.length - 1 &&
-    pos >= sidePinCounts[sideIndex]
+    sideIndex < sidePinCountsCcw.length - 1 &&
+    pos >= sidePinCountsCcw[sideIndex]
   ) {
-    pos -= sidePinCounts[sideIndex]
+    pos -= sidePinCountsCcw[sideIndex]
     sideIndex += 1
   }
-  const sidePinCount = sidePinCounts[sideIndex]
+  const sidePinCount = sidePinCountsCcw[sideIndex]
   const side = SIDES_CCW[sideIndex]
   const sidePitch = side === "left" || side === "right" ? (py ?? p) : (px ?? p)
 
@@ -164,34 +184,22 @@ export const quad = (
   raw_params: z.input<typeof quad_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
-  if (
-    parameters.sidepins &&
-    (!Number.isInteger(parameters.sidepins.x) ||
-      !Number.isInteger(parameters.sidepins.y) ||
-      parameters.sidepins.x < 1 ||
-      parameters.sidepins.y < 1 ||
-      2 * (parameters.sidepins.x + parameters.sidepins.y) !==
-        parameters.num_pins)
-  ) {
-    throw new Error(
-      `Quad sidepins ${parameters.sidepins.x}x${parameters.sidepins.y} requires ${
-        2 * (parameters.sidepins.x + parameters.sidepins.y)
-      } pads, got ${parameters.num_pins}`,
-    )
-  }
+  const sidePinCounts = getQuadSidePinCounts(parameters)
   const pads: AnyCircuitElement[] = []
   let padOuterHalfX = 0
   let padOuterHalfY = 0
-  const pin_map = getQuadPinMap(parameters)
-  /** Side pin count */
-  const spc = parameters.num_pins / 4
-  const verticalSidePinCount = parameters.sidepins?.x ?? spc
-  const horizontalSidePinCount = parameters.sidepins?.y ?? spc
-  const leftBottomPin = verticalSidePinCount
+  const pin_map = getQuadPinMap({ ...parameters, sidePinCounts })
+  const verticalSidePinCount = Math.max(sidePinCounts.left, sidePinCounts.right)
+  const horizontalSidePinCount = Math.max(
+    sidePinCounts.top,
+    sidePinCounts.bottom,
+  )
+  const leftBottomPin = sidePinCounts.left
   const bottomLeftPin = leftBottomPin + 1
-  const bottomRightPin = verticalSidePinCount + horizontalSidePinCount
+  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom
   const rightBottomPin = bottomRightPin + 1
-  const rightTopPin = verticalSidePinCount * 2 + horizontalSidePinCount
+  const rightTopPin =
+    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right
   const topRightPin = rightTopPin + 1
   const topLeftPin = parameters.num_pins
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -200,7 +208,7 @@ export const quad = (
       y,
       o: orientation,
     } = getQuadCoords({
-      sidepins: parameters.sidepins,
+      sidePinCounts,
       pin_count: parameters.num_pins,
       pn: i + 1,
       w: parameters.w,
