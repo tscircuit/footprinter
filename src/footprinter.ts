@@ -514,9 +514,7 @@ export const footprinter = (): Footprinter & {
 
           if (!FOOTPRINT_FN[target.fn]) {
             throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
+              `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.`,
             )
           }
 
@@ -530,9 +528,7 @@ export const footprinter = (): Footprinter & {
         if (prop === "json") {
           if (!FOOTPRINT_FN[target.fn]) {
             throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
+              `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.`,
             )
           }
           return () => FOOTPRINT_FN[target.fn](target).parameters
