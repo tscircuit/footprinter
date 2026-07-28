@@ -132,7 +132,12 @@ export const dfn = (
   }
 
   if (parameters.thermalpad) {
-    pads.push(createThermalPad(parameters.thermalpad))
+    pads.push(
+      createThermalPad(parameters.thermalpad, {
+        x: parameters.thermalpadx,
+        y: parameters.thermalpady,
+      }),
+    )
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1

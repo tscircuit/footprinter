@@ -31,3 +31,27 @@ for (const [footprint, width, height] of cases) {
     expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprint)
   })
 }
+
+test("dfn thermal pad supports independent x and y offsets", () => {
+  const footprint = "dfn8_thermalpad2.4x3mm_thermalpadx-0.2mm_thermalpady0.35mm"
+  const soup = fp.string(footprint).circuitJson()
+  const thermalPad = soup.find(
+    (element) =>
+      element.type === "pcb_smtpad" &&
+      element.port_hints.includes("thermalpad"),
+  )
+
+  expect(thermalPad).toMatchObject({
+    shape: "rect",
+    x: -0.2,
+    y: 0.35,
+    width: 2.4,
+    height: 3,
+  })
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "dfn8_offset_thermalpad",
+  )
+})

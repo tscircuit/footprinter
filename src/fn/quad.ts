@@ -16,6 +16,10 @@ import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { optional, z } from "zod"
 import { pillpad } from "../helpers/pillpad"
 import { rectpad } from "../helpers/rectpad"
+import {
+  createThermalPad,
+  thermalPadOffsetFields,
+} from "../helpers/create-thermal-pad"
 import { base_def } from "../helpers/zod/base_def"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
@@ -48,6 +52,7 @@ export const base_quad_def = base_def.extend({
   pw: length.optional(),
   pl: length.optional(),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
+  ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
   legsoutside: z.boolean().default(false),
 })
@@ -238,6 +243,10 @@ export const quad = (
   }
 
   if (parameters.thermalpad) {
+    const thermalPadOffset = {
+      x: parameters.thermalpadx,
+      y: parameters.thermalpady,
+    }
     if (typeof parameters.thermalpad === "boolean") {
       const ibw =
         (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) +
@@ -245,21 +254,25 @@ export const quad = (
       const ibh =
         (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
         parameters.pw
-      padOuterHalfX = Math.max(padOuterHalfX, ibw / 2)
-      padOuterHalfY = Math.max(padOuterHalfY, ibh / 2)
-      pads.push(rectpad(["thermalpad"], 0, 0, ibw, ibh))
-    } else {
-      padOuterHalfX = Math.max(padOuterHalfX, parameters.thermalpad.x / 2)
-      padOuterHalfY = Math.max(padOuterHalfY, parameters.thermalpad.y / 2)
-      pads.push(
-        rectpad(
-          ["thermalpad"],
-          0,
-          0,
-          parameters.thermalpad.x,
-          parameters.thermalpad.y,
-        ),
+      padOuterHalfX = Math.max(
+        padOuterHalfX,
+        Math.abs(thermalPadOffset.x) + ibw / 2,
       )
+      padOuterHalfY = Math.max(
+        padOuterHalfY,
+        Math.abs(thermalPadOffset.y) + ibh / 2,
+      )
+      pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset))
+    } else {
+      padOuterHalfX = Math.max(
+        padOuterHalfX,
+        Math.abs(thermalPadOffset.x) + parameters.thermalpad.x / 2,
+      )
+      padOuterHalfY = Math.max(
+        padOuterHalfY,
+        Math.abs(thermalPadOffset.y) + parameters.thermalpad.y / 2,
+      )
+      pads.push(createThermalPad(parameters.thermalpad, thermalPadOffset))
     }
   }
 

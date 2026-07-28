@@ -11,7 +11,10 @@ import { base_def } from "../helpers/zod/base_def"
 import { u_curve } from "../helpers/u-curve"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { dim2d } from "src/helpers/zod/dim-2d"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
+import {
+  createThermalPad,
+  thermalPadOffsetFields,
+} from "src/helpers/create-thermal-pad"
 
 // TODO we should accept MS-012 or MS-013
 
@@ -25,6 +28,7 @@ export const ssop_def = base_def
     pl: length.optional(),
     legsoutside: z.boolean().optional().default(false),
     thermalpad: dim2d.optional(),
+    ...thermalPadOffsetFields,
     silkscreen_stroke_width: z.number().optional().default(0.1),
   })
   .transform((v) => {
@@ -45,6 +49,8 @@ export const ssop_def = base_def
       num_pins: number
       legsoutside: boolean
       thermalpad?: { x: number; y: number }
+      thermalpadx: number
+      thermalpady: number
       silkscreen_stroke_width?: number
       fn: string
     }
@@ -95,7 +101,12 @@ export const ssop = (
   }
 
   if (parameters.thermalpad) {
-    pads.push(createThermalPad(parameters.thermalpad))
+    pads.push(
+      createThermalPad(parameters.thermalpad, {
+        x: parameters.thermalpadx,
+        y: parameters.thermalpady,
+      }),
+    )
   }
 
   const m = Math.min(1, parameters.p / 2)
