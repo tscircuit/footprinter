@@ -475,6 +475,9 @@ export type Footprinter = {
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]
   }
+  smtpadpair: () => FootprinterParamsBuilder<
+    "px" | "py" | "p1w" | "p1h" | "p2w" | "p2h"
+  >
   platedhole: () => FootprinterParamsBuilder<
     "d" | "hd" | "r" | "hr" | "pd" | "pr"
   >
@@ -563,6 +566,15 @@ export const string = (def: string): Footprinter => {
         return {
           fn: pin1LocationMatch[1]!.toLowerCase(),
           v: pin1LocationMatch[2],
+        }
+      }
+      const numberedPadParameterMatch = s.match(
+        /^(p[12][whxy])([\(\d\.\+\-\?].*)$/i,
+      )
+      if (numberedPadParameterMatch) {
+        return {
+          fn: numberedPadParameterMatch[1]!.toLowerCase(),
+          v: numberedPadParameterMatch[2],
         }
       }
       const m = s.match(/([a-zA-Z]+)([\(\d\.\+\-\?].*)?/)
