@@ -476,7 +476,7 @@ export type Footprinter = {
     circuitJson: () => AnyCircuitElement[]
   }
   smtpadpair: () => FootprinterParamsBuilder<
-    "px" | "py" | "p1w" | "p1h" | "p2w" | "p2h"
+    "px" | "py" | "pw" | "ph" | "p1w" | "p1h" | "p2w" | "p2h"
   >
   platedhole: () => FootprinterParamsBuilder<
     "d" | "hd" | "r" | "hr" | "pd" | "pr"

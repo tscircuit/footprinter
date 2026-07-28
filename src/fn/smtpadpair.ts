@@ -19,10 +19,12 @@ export const smtpadpair_def = base_def
     num_pins: z.literal(2).default(2),
     px: length.default("2mm").describe("pin 2 x offset from pin 1"),
     py: length.default("0mm").describe("pin 2 y offset from pin 1"),
-    p1w: positiveLength.default("1mm").describe("pin 1 pad width"),
-    p1h: positiveLength.default("1mm").describe("pin 1 pad height"),
-    p2w: positiveLength.default("1mm").describe("pin 2 pad width"),
-    p2h: positiveLength.default("1mm").describe("pin 2 pad height"),
+    pw: positiveLength.default("1mm").describe("shared pad width"),
+    ph: positiveLength.default("1mm").describe("shared pad height"),
+    p1w: positiveLength.optional().describe("pin 1 pad width override"),
+    p1h: positiveLength.optional().describe("pin 1 pad height override"),
+    p2w: positiveLength.optional().describe("pin 2 pad width override"),
+    p2h: positiveLength.optional().describe("pin 2 pad height override"),
   })
   .superRefine(({ px, py }, ctx) => {
     if (px === 0 && py === 0) {
@@ -33,6 +35,13 @@ export const smtpadpair_def = base_def
       })
     }
   })
+  .transform((parameters) => ({
+    ...parameters,
+    p1h: parameters.p1h ?? parameters.ph,
+    p1w: parameters.p1w ?? parameters.pw,
+    p2h: parameters.p2h ?? parameters.ph,
+    p2w: parameters.p2w ?? parameters.pw,
+  }))
 
 export const smtpadpair = (
   rawParams: z.input<typeof smtpadpair_def>,

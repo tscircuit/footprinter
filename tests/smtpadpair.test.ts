@@ -16,7 +16,7 @@ const getPadGeometry = (footprint: string) =>
     }))
 
 test("smtpadpair supports independently sized pads", () => {
-  const footprint = "smtpadpair_px2.1mm_p1w2mm_p1h1mm_p2w1.2mm_p2h1mm"
+  const footprint = "smtpadpair_px2.1mm_ph1mm_p1w2mm_p2w1.2mm"
   const circuitJson = fp.string(footprint).circuitJson()
 
   expect(getPadGeometry(footprint)).toEqual([
@@ -30,8 +30,7 @@ test("smtpadpair supports independently sized pads", () => {
 })
 
 test("smtpadpair supports a signed vertical pad offset", () => {
-  const footprint =
-    "smtpadpair_px13.45mm_py-2.54mm_p1w2.5mm_p1h2.55mm_p2w2.5mm_p2h2.55mm"
+  const footprint = "smtpadpair_px13.45mm_py-2.54mm_pw2.5mm_ph2.55mm"
   const circuitJson = fp.string(footprint).circuitJson()
 
   expect(getPadGeometry(footprint)).toEqual([
