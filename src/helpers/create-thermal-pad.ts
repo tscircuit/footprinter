@@ -3,8 +3,8 @@ import { length } from "circuit-json"
 import { rectpad } from "./rectpad"
 
 export const thermalPadOffsetFields = {
-  thermalpadx: length.optional().default(0),
-  thermalpady: length.optional().default(0),
+  thermalpadcenteroffsetx: length.optional().default(0),
+  thermalpadcenteroffsety: length.optional().default(0),
 }
 
 export const createThermalPad = (

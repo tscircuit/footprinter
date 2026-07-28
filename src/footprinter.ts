@@ -141,8 +141,8 @@ export type Footprinter = {
     | "tbpins"
     | "topbottompins"
     | "thermalpad"
-    | "thermalpadx"
-    | "thermalpady"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
     | "pillpads"
   >
   tqfp: (
@@ -159,8 +159,8 @@ export type Footprinter = {
     | "od"
     | "pillpads"
     | "thermalpad"
-    | "thermalpadx"
-    | "thermalpady"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   mlp: (
     num_pins?: number,
@@ -168,12 +168,20 @@ export type Footprinter = {
   ssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "thermalpad" | "thermalpadx" | "thermalpady"
+    | "w"
+    | "p"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   tssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "thermalpad" | "thermalpadx" | "thermalpady"
+    | "w"
+    | "p"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   dfn: (
     num_pins?: number,
@@ -185,8 +193,8 @@ export type Footprinter = {
     | "missing"
     | "pillpads"
     | "thermalpad"
-    | "thermalpadx"
-    | "thermalpady"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
     | "cornerpads"
     | "cornerpadcutlength"
   >
@@ -349,12 +357,26 @@ export type Footprinter = {
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "h" | "p" | "pl" | "pw" | "thermalpad" | "thermalpadx" | "thermalpady"
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   msop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "h" | "p" | "pl" | "pw" | "thermalpad" | "thermalpadx" | "thermalpady"
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<

@@ -33,7 +33,9 @@ test("qfn32_pillpads keeps its thermal pad rectangular", () => {
 
 test("qfn thermal pad supports independent x and y offsets", () => {
   const soup = fp
-    .string("qfn32_thermalpad3.1x3.1mm_thermalpadx0.25mm_thermalpady-0.4mm")
+    .string(
+      "qfn32_thermalpad3.1x3.1mm_thermalpadcenteroffsetx0.25mm_thermalpadcenteroffsety-0.4mm",
+    )
     .circuitJson()
   const thermalPad = soup.find(
     (element) =>

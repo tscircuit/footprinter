@@ -85,8 +85,8 @@ export const tssop = (
   if (parameters.thermalpad) {
     pads.push(
       createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadx,
-        y: parameters.thermalpady,
+        x: parameters.thermalpadcenteroffsetx,
+        y: parameters.thermalpadcenteroffsety,
       }),
     )
   }

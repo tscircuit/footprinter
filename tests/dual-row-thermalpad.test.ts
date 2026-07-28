@@ -33,7 +33,8 @@ for (const [footprint, width, height] of cases) {
 }
 
 test("dfn thermal pad supports independent x and y offsets", () => {
-  const footprint = "dfn8_thermalpad2.4x3mm_thermalpadx-0.2mm_thermalpady0.35mm"
+  const footprint =
+    "dfn8_thermalpad2.4x3mm_thermalpadcenteroffsetx-0.2mm_thermalpadcenteroffsety0.35mm"
   const soup = fp.string(footprint).circuitJson()
   const thermalPad = soup.find(
     (element) =>

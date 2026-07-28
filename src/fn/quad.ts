@@ -244,8 +244,8 @@ export const quad = (
 
   if (parameters.thermalpad) {
     const thermalPadOffset = {
-      x: parameters.thermalpadx,
-      y: parameters.thermalpady,
+      x: parameters.thermalpadcenteroffsetx,
+      y: parameters.thermalpadcenteroffsety,
     }
     if (typeof parameters.thermalpad === "boolean") {
       const ibw =

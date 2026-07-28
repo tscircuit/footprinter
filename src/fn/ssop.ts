@@ -49,8 +49,8 @@ export const ssop_def = base_def
       num_pins: number
       legsoutside: boolean
       thermalpad?: { x: number; y: number }
-      thermalpadx: number
-      thermalpady: number
+      thermalpadcenteroffsetx: number
+      thermalpadcenteroffsety: number
       silkscreen_stroke_width?: number
       fn: string
     }
@@ -103,8 +103,8 @@ export const ssop = (
   if (parameters.thermalpad) {
     pads.push(
       createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadx,
-        y: parameters.thermalpady,
+        x: parameters.thermalpadcenteroffsetx,
+        y: parameters.thermalpadcenteroffsety,
       }),
     )
   }
