@@ -10,7 +10,10 @@ import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { dim2d } from "src/helpers/zod/dim-2d"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
+import {
+  createThermalPad,
+  thermalPadOffsetFields,
+} from "src/helpers/create-thermal-pad"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -60,6 +63,7 @@ export const msop_def = base_def.extend({
   pl: z.string().optional(),
   pw: z.string().optional(),
   thermalpad: dim2d.optional(),
+  ...thermalPadOffsetFields,
   string: z.string().optional(),
 })
 
@@ -103,7 +107,12 @@ export const msop = (
   }
 
   if (parameters.thermalpad) {
-    pads.push(createThermalPad(parameters.thermalpad))
+    pads.push(
+      createThermalPad(parameters.thermalpad, {
+        x: parameters.thermalpadcenteroffsetx,
+        y: parameters.thermalpadcenteroffsety,
+      }),
+    )
   }
 
   const silkscreenBoxWidth = w

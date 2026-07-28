@@ -141,6 +141,8 @@ export type Footprinter = {
     | "tbpins"
     | "topbottompins"
     | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
     | "pillpads"
   >
   tqfp: (
@@ -149,17 +151,38 @@ export type Footprinter = {
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads" | "thermalpad"
+    | "w"
+    | "p"
+    | "pw"
+    | "pl"
+    | "id"
+    | "od"
+    | "pillpads"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
   >
   mlp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
   ssop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "thermalpad">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "p"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
+  >
   tssop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "thermalpad">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "p"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
+  >
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -170,6 +193,8 @@ export type Footprinter = {
     | "missing"
     | "pillpads"
     | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
     | "cornerpads"
     | "cornerpadcutlength"
   >
@@ -331,10 +356,28 @@ export type Footprinter = {
   >
   vssop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "thermalpad">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
+  >
   msop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw" | "thermalpad">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
+  >
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"

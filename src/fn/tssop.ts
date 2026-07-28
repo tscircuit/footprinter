@@ -11,7 +11,10 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { u_curve } from "../helpers/u-curve"
 import { dim2d } from "src/helpers/zod/dim-2d"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
+import {
+  createThermalPad,
+  thermalPadOffsetFields,
+} from "src/helpers/create-thermal-pad"
 
 export const tssop_def = base_def.extend({
   fn: z.string(),
@@ -22,6 +25,7 @@ export const tssop_def = base_def.extend({
   pl: length.default(length.parse("1.45mm")),
   legsoutside: z.boolean().optional().default(true),
   thermalpad: dim2d.optional(),
+  ...thermalPadOffsetFields,
   silkscreen_stroke_width: z.number().optional().default(0.1),
 })
 
@@ -79,7 +83,12 @@ export const tssop = (
   }
 
   if (parameters.thermalpad) {
-    pads.push(createThermalPad(parameters.thermalpad))
+    pads.push(
+      createThermalPad(parameters.thermalpad, {
+        x: parameters.thermalpadcenteroffsetx,
+        y: parameters.thermalpadcenteroffsety,
+      }),
+    )
   }
 
   const m = Math.min(1, parameters.p / 2)

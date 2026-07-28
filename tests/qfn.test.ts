@@ -31,6 +31,33 @@ test("qfn32_pillpads keeps its thermal pad rectangular", () => {
   )
 })
 
+test("qfn thermal pad supports independent x and y offsets", () => {
+  const soup = fp
+    .string(
+      "qfn32_thermalpad3.1x3.1mm_thermalpadcenteroffsetx0.25mm_thermalpadcenteroffsety-0.4mm",
+    )
+    .circuitJson()
+  const thermalPad = soup.find(
+    (element) =>
+      element.type === "pcb_smtpad" &&
+      element.port_hints.includes("thermalpad"),
+  )
+
+  expect(thermalPad).toMatchObject({
+    shape: "rect",
+    x: 0.25,
+    y: -0.4,
+    width: 3.1,
+    height: 3.1,
+  })
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "qfn32_offset_thermalpad",
+  )
+})
+
 test("qfn20 supports explicit and shared side pin counts", () => {
   const soup = fp
     .string(
