@@ -6,9 +6,9 @@ import { base_def } from "./zod/base_def"
 import mm from "@tscircuit/mm"
 
 export const res0603Array4_def = base_def.extend({
-  pw: length.default("0.9mm"),
-  ph: length.default("0.4mm"),
-  p: length.default("0.8mm"),
+  pw: length.prefault("0.9mm"),
+  ph: length.prefault("0.4mm"),
+  p: length.prefault("0.8mm"),
   textbottom: z.boolean().optional(),
   convex: z.boolean().optional(),
   concave: z.boolean().optional(),

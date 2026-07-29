@@ -19,9 +19,9 @@ export const mountedpcbmodule_def = base_def
       .optional()
       .default(1)
       .describe("number of rows"),
-    p: length.default("2.54mm").describe("pitch"),
-    id: length.default("1.0mm").describe("inner diameter"),
-    od: length.default("1.5mm").describe("outer diameter"),
+    p: length.prefault("2.54mm").describe("pitch"),
+    id: length.prefault("1.0mm").describe("inner diameter"),
+    od: length.prefault("1.5mm").describe("outer diameter"),
     male: z.boolean().optional().describe("the module uses male headers"),
     nopin: z
       .boolean()
@@ -78,7 +78,7 @@ export const mountedpcbmodule_def = base_def
       .optional(),
     width: length.optional(),
     height: length.optional(),
-    pinRowHoleEdgeToEdgeDist: length.default("2mm"),
+    pinRowHoleEdgeToEdgeDist: length.prefault("2mm"),
     holes: z
       .union([z.string(), z.array(z.string())])
       .optional()
@@ -95,7 +95,7 @@ export const mountedpcbmodule_def = base_def
       }),
     holeXDist: length.optional(),
     holeYDist: length.optional(),
-    holeInset: length.default("1mm"),
+    holeInset: length.prefault("1mm"),
     pinrow: z.union([z.string(), z.number()]).optional(),
     usbposition: z
       .enum(["left", "right", "top", "bottom"])

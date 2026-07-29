@@ -12,10 +12,10 @@ import { base_def } from "../helpers/zod/base_def"
 
 const electrolytic_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("7.5mm"),
-  id: length.optional().default("1mm"),
-  od: length.optional().default("2mm"),
-  d: length.optional().default("10.5mm"),
+  p: length.optional().prefault("7.5mm"),
+  id: length.optional().prefault("1mm"),
+  od: length.optional().prefault("2mm"),
+  d: length.optional().prefault("10.5mm"),
 })
 
 export default electrolytic_def

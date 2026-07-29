@@ -12,12 +12,12 @@ import { base_def } from "../helpers/zod/base_def"
 export const led5050_def = base_def.extend({
   fn: z.literal("led5050"),
   num_pins: z.literal(6).default(6),
-  p: length.default("1.7mm").describe("pin pitch along each column"),
-  rowspan: length.default("4.8mm").describe("distance between pad columns"),
-  pl: length.default("2mm").describe("pad length across the package edge"),
-  pw: length.default("1.1mm").describe("pad width along the pin column"),
-  w: length.default("5mm").describe("package body width"),
-  h: length.default("5mm").describe("package body height"),
+  p: length.prefault("1.7mm").describe("pin pitch along each column"),
+  rowspan: length.prefault("4.8mm").describe("distance between pad columns"),
+  pl: length.prefault("2mm").describe("pad length across the package edge"),
+  pw: length.prefault("1.1mm").describe("pad width along the pin column"),
+  w: length.prefault("5mm").describe("package body width"),
+  h: length.prefault("5mm").describe("package body height"),
 })
 
 export const led5050 = (

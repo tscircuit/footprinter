@@ -38,7 +38,11 @@ export const dfn = (
       ? undefined
       : length.parse(raw_params.cornerpadcutlength)
   const missing = function_call.parse(raw_params.missing ?? [])
-  if (missing.some((position) => typeof position !== "number")) {
+  if (
+    !missing.every(
+      (position): position is number => typeof position === "number",
+    )
+  ) {
     throw new Error("DFN missing positions must be pad numbers")
   }
   const missingPositions = [...new Set(missing)]

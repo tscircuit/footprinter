@@ -13,19 +13,19 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const stampboard_def = base_def.extend({
   fn: z.string(),
-  w: length.default("22.58mm"),
+  w: length.prefault("22.58mm"),
   h: length.optional(),
-  left: length.optional().default(20),
-  right: length.optional().default(20),
-  top: length.optional().default(2),
-  bottom: length.optional().default(2),
-  p: length.default(length.parse("2.54mm")),
-  pw: length.default(length.parse("1.6mm")),
-  pl: length.default(length.parse("2.4mm")),
+  left: length.optional().prefault(20),
+  right: length.optional().prefault(20),
+  top: length.optional().prefault(2),
+  bottom: length.optional().prefault(2),
+  p: length.prefault(length.parse("2.54mm")),
+  pw: length.prefault(length.parse("1.6mm")),
+  pl: length.prefault(length.parse("2.4mm")),
   innerhole: z.boolean().default(false),
-  innerholeedgedistance: length.default(length.parse("1.61mm")),
+  innerholeedgedistance: length.prefault(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
-  silkscreenlabelmargin: length.default(length.parse("0.1mm")),
+  silkscreenlabelmargin: length.prefault(length.parse("0.1mm")),
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>

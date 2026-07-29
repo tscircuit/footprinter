@@ -13,13 +13,13 @@ export const smdpinheader_def = base_def.extend({
   fn: z.literal("smdpinheader"),
   num_pins: z.number().int().positive().default(6),
   // Defaults follow the Harwin M20-877R recommended vertical SMT land pattern.
-  p: length.default("2.54mm").describe("contact pitch"),
+  p: length.prefault("2.54mm").describe("contact pitch"),
   py: length
-    .default("3.31mm")
+    .prefault("3.31mm")
     .describe("center-to-center distance between alternating pad rows"),
-  pw: length.default("1mm").describe("pad width"),
-  ph: length.default("2.51mm").describe("pad height"),
-  bh: length.default("2.5mm").describe("plastic body height"),
+  pw: length.prefault("1mm").describe("pad width"),
+  ph: length.prefault("2.51mm").describe("pad height"),
+  bh: length.prefault("2.5mm").describe("plastic body height"),
   male: z.literal(true).default(true),
   female: z.literal(false).default(false),
   smd: z.literal(true).default(true),

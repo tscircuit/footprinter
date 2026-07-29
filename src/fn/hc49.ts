@@ -27,11 +27,11 @@ const generate_u_curve = (
 
 export const hc49_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("4.88mm"),
-  id: length.optional().default("0.8mm"),
-  od: length.optional().default("1.5mm"),
-  w: length.optional().default("5.6mm"),
-  h: length.optional().default("3.5mm"),
+  p: length.optional().prefault("4.88mm"),
+  id: length.optional().prefault("0.8mm"),
+  od: length.optional().prefault("1.5mm"),
+  w: length.optional().prefault("5.6mm"),
+  h: length.optional().prefault("3.5mm"),
 })
 
 export type Hc49Def = z.input<typeof hc49_def>

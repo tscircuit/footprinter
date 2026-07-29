@@ -15,11 +15,11 @@ export const lga_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().int().positive().optional().default(14),
   grid: dim2d.optional(),
-  p: length.default(length.parse("0.5mm")),
+  p: length.prefault(length.parse("0.5mm")),
   w: length.optional(),
   h: length.optional(),
-  pw: length.default(length.parse("0.28mm")),
-  pl: length.default(length.parse("0.7mm")),
+  pw: length.prefault(length.parse("0.28mm")),
+  pl: length.prefault(length.parse("0.7mm")),
   pillpads: z.boolean().optional().default(false),
 })
 
