@@ -23,7 +23,6 @@ test.failing(
     const pad2 = pads.find((p: any) => p.port_hints?.includes("2"))!
     const halfWidth = 0.6604 / 2
 
-    // Snapshot first (unaffected by the FP bug)
     const svg = convertCircuitJsonToPcbSvg(result.circuitJson)
     expect(svg).toMatchSvgSnapshot(
       import.meta.path,
