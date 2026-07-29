@@ -2,6 +2,9 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { solderjumper } from "../src/fn/solderjumper"
 
+// These values (p=1.0414, pw=0.6604) are from the SparkFun Qwiic ToF Imager
+// VL53L5CX board. They are NOT exactly representable in IEEE 754 binary FP,
+// which triggers the compound error in the bridge trace endpoint calculation.
 test.failing(
   "solderjumper bridge trace endpoint lands inside pad (FP precision)",
   () => {
