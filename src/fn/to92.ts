@@ -12,10 +12,10 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const to92CourtyardOutline = [
-  { x: -2.73, y: 3.71 },
-  { x: -2.73, y: -1.03 },
-  { x: 2.73, y: -1.03 },
-  { x: 2.73, y: 3.71 },
+  { x: -2.73, y: 2.37 },
+  { x: -2.73, y: -2.37 },
+  { x: 2.73, y: -2.37 },
+  { x: 2.73, y: 2.37 },
 ]
 
 export const to92_def = base_def.extend({
@@ -45,20 +45,19 @@ const generateSemicircle = (
 }
 
 export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
-  const { p, id, od, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
+  const { p, id, od } = parameters
   const padSpacing = Number.parseFloat(p)
 
   return [
     platedHoleWithRectPad({
       pn: 1,
       x: -padSpacing,
-      y: holeY - padSpacing,
+      y: -padSpacing,
       holeDiameter: id,
       rectPadWidth: od,
       rectPadHeight: od,
     }),
-    platedhole(2, padSpacing, holeY - padSpacing, id, od),
+    platedhole(2, padSpacing, -padSpacing, id, od),
   ]
 }
 
@@ -77,10 +76,16 @@ export const to92 = (
   })
 
   const { p, id, od, w, h, inline } = parameters
-  const holeY = Number.parseFloat(h) / 2
   const padSpacing = Number.parseFloat(p)
   const holeDia = Number.parseFloat(id)
   const padDia = Number.parseFloat(od)
+  const bodyWidth = Number.parseFloat(w)
+  const bodyHeight = Number.parseFloat(h)
+  const bodyBottomY = -bodyHeight / 2
+  const bodyTopY = bodyHeight / 2
+  const bodyRadius = bodyWidth / 2
+  const bodyArcCenterY = bodyTopY - bodyRadius
+  const leadRowY = bodyBottomY + bodyHeight / 2 - padSpacing
 
   const padWidth = padDia
   const padHeight = padDia * (1.5 / 1.05)
@@ -93,33 +98,26 @@ export const to92 = (
         platedHoleWithRectPad({
           pn: 1,
           x: -padSpacing,
-          y: holeY - padSpacing,
+          y: leadRowY,
           holeDiameter: holeDia,
           rectPadWidth: padDia,
           rectPadHeight: padHeight,
         }),
-        platedHolePill(2, 0, holeY - padSpacing, holeDia, padWidth, padHeight),
-        platedHolePill(
-          3,
-          padSpacing,
-          holeY - padSpacing,
-          holeDia,
-          padWidth,
-          padHeight,
-        ),
+        platedHolePill(2, 0, leadRowY, holeDia, padWidth, padHeight),
+        platedHolePill(3, padSpacing, leadRowY, holeDia, padWidth, padHeight),
       ]
     } else {
       platedHoles = [
         platedHoleWithRectPad({
           pn: 1,
           x: -padSpacing,
-          y: holeY - padSpacing,
+          y: leadRowY,
           holeDiameter: holeDia,
           rectPadWidth: padDia,
           rectPadHeight: padDia,
         }),
-        platedhole(2, 0, holeY, holeDia, padDia),
-        platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia),
+        platedhole(2, 0, 0, holeDia, padDia),
+        platedhole(3, padSpacing, leadRowY, holeDia, padDia),
       ]
     }
   } else if (parameters.num_pins === 2) {
@@ -127,26 +125,18 @@ export const to92 = (
       platedHoleWithRectPad({
         pn: 1,
         x: -padSpacing,
-        y: holeY - padSpacing,
+        y: leadRowY,
         holeDiameter: holeDia,
         rectPadWidth: padWidth,
         rectPadHeight: padHeight,
       }),
-      platedHolePill(
-        2,
-        padSpacing,
-        holeY - padSpacing,
-        holeDia,
-        padWidth,
-        padHeight,
-      ),
+      platedHolePill(2, padSpacing, leadRowY, holeDia, padWidth, padHeight),
     ]
   } else {
     throw new Error("Invalid number of pins for TO-92")
   }
 
-  const radius = Number.parseFloat(w) / 2
-  const semicircle = generateSemicircle(0, holeY, radius)
+  const semicircle = generateSemicircle(0, bodyArcCenterY, bodyRadius)
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -154,15 +144,19 @@ export const to92 = (
     pcb_component_id: "",
     route: [
       ...semicircle,
-      { x: -radius, y: 0 },
-      { x: radius, y: 0 },
+      { x: -bodyRadius, y: bodyBottomY },
+      { x: bodyRadius, y: bodyBottomY },
       semicircle[0]!,
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    bodyTopY - 1.25,
+    0.5,
+  )
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
