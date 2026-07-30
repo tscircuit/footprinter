@@ -18368,6 +18368,9 @@ __export(exports_dist, {
   timestamp: () => timestamp,
   time: () => time,
   supplier_name: () => supplier_name,
+  supplier_footprint_mismatch_warning: () => supplier_footprint_mismatch_warning,
+  spice_simulation_options: () => spice_simulation_options,
+  source_unnamed_trace_warning: () => source_unnamed_trace_warning,
   source_trace_not_connected_error: () => source_trace_not_connected_error,
   source_trace: () => source_trace,
   source_simple_voltage_source: () => source_simple_voltage_source,
@@ -18387,6 +18390,7 @@ __export(exports_dist, {
   source_simple_led: () => source_simple_led,
   source_simple_inductor: () => source_simple_inductor,
   source_simple_ground: () => source_simple_ground,
+  source_simple_fuse: () => source_simple_fuse,
   source_simple_fiducial: () => source_simple_fiducial,
   source_simple_diode: () => source_simple_diode,
   source_simple_current_source: () => source_simple_current_source,
@@ -18395,6 +18399,8 @@ __export(exports_dist, {
   source_simple_chip: () => source_simple_chip,
   source_simple_capacitor: () => source_simple_capacitor,
   source_simple_battery: () => source_simple_battery,
+  source_simple_ammeter: () => source_simple_ammeter,
+  source_refdes_convention_warning: () => source_refdes_convention_warning,
   source_property_ignored_warning: () => source_property_ignored_warning,
   source_project_metadata: () => source_project_metadata,
   source_port: () => source_port,
@@ -18402,6 +18408,7 @@ __export(exports_dist, {
   source_pin_missing_trace_warning: () => source_pin_missing_trace_warning,
   source_pin_attributes: () => source_pin_attributes,
   source_pcb_ground_plane: () => source_pcb_ground_plane,
+  source_part_not_found_warning: () => source_part_not_found_warning,
   source_no_power_pin_defined_warning: () => source_no_power_pin_defined_warning,
   source_no_ground_pin_defined_warning: () => source_no_ground_pin_defined_warning,
   source_net: () => source_net,
@@ -18414,6 +18421,7 @@ __export(exports_dist, {
   source_group: () => source_group,
   source_failed_to_create_component_error: () => source_failed_to_create_component_error,
   source_component_pins_underspecified_warning: () => source_component_pins_underspecified_warning,
+  source_component_misconfigured_error: () => source_component_misconfigured_error,
   source_component_internal_connection: () => source_component_internal_connection,
   source_component_base: () => source_component_base,
   source_board: () => source_board,
@@ -18423,12 +18431,16 @@ __export(exports_dist, {
   simulation_voltage_probe: () => simulation_voltage_probe,
   simulation_unknown_experiment_error: () => simulation_unknown_experiment_error,
   simulation_transient_voltage_graph: () => simulation_transient_voltage_graph,
+  simulation_transient_current_graph: () => simulation_transient_current_graph,
   simulation_switch: () => simulation_switch,
+  simulation_spice_subcircuit: () => simulation_spice_subcircuit,
+  simulation_oscilloscope_trace: () => simulation_oscilloscope_trace,
   simulation_op_amp: () => simulation_op_amp,
   simulation_experiment: () => simulation_experiment,
   simulation_dc_voltage_source: () => simulation_dc_voltage_source,
   simulation_dc_current_source: () => simulation_dc_current_source,
   simulation_current_source: () => simulation_current_source,
+  simulation_current_probe: () => simulation_current_probe,
   simulation_ac_voltage_source: () => simulation_ac_voltage_source,
   simulation_ac_current_source: () => simulation_ac_current_source,
   schematic_voltage_probe: () => schematic_voltage_probe,
@@ -18448,6 +18460,7 @@ __export(exports_dist, {
   schematic_layout_error: () => schematic_layout_error,
   schematic_group: () => schematic_group,
   schematic_error: () => schematic_error,
+  schematic_element_outside_sheet_warning: () => schematic_element_outside_sheet_warning,
   schematic_debug_rect: () => schematic_debug_rect,
   schematic_debug_point: () => schematic_debug_point,
   schematic_debug_object_base: () => schematic_debug_object_base,
@@ -18455,6 +18468,7 @@ __export(exports_dist, {
   schematic_debug_line: () => schematic_debug_line,
   schematic_component_port_arrangement_by_size: () => schematic_component_port_arrangement_by_size,
   schematic_component_port_arrangement_by_sides: () => schematic_component_port_arrangement_by_sides,
+  schematic_component_overlap_warning: () => schematic_component_overlap_warning,
   schematic_component: () => schematic_component,
   schematic_circle: () => schematic_circle,
   schematic_box: () => schematic_box,
@@ -18469,11 +18483,14 @@ __export(exports_dist, {
   point_with_bulge: () => point_with_bulge,
   point3: () => point3,
   point: () => point,
+  pcb_via_trace_clearance_error: () => pcb_via_trace_clearance_error,
   pcb_via_clearance_error: () => pcb_via_clearance_error,
   pcb_via: () => pcb_via,
   pcb_trace_warning: () => pcb_trace_warning,
+  pcb_trace_too_long_warning: () => pcb_trace_too_long_warning,
   pcb_trace_route_point_wire: () => pcb_trace_route_point_wire,
   pcb_trace_route_point_via: () => pcb_trace_route_point_via,
+  pcb_trace_route_point_through_pad: () => pcb_trace_route_point_through_pad,
   pcb_trace_route_point: () => pcb_trace_route_point,
   pcb_trace_missing_error: () => pcb_trace_missing_error,
   pcb_trace_hint: () => pcb_trace_hint,
@@ -18490,6 +18507,8 @@ __export(exports_dist, {
   pcb_silkscreen_path: () => pcb_silkscreen_path,
   pcb_silkscreen_oval: () => pcb_silkscreen_oval,
   pcb_silkscreen_line: () => pcb_silkscreen_line,
+  pcb_silkscreen_graphic_brep: () => pcb_silkscreen_graphic_brep,
+  pcb_silkscreen_graphic: () => pcb_silkscreen_graphic,
   pcb_silkscreen_circle: () => pcb_silkscreen_circle,
   pcb_route_hints: () => pcb_route_hints,
   pcb_route_hint: () => pcb_route_hint,
@@ -18500,6 +18519,8 @@ __export(exports_dist, {
   pcb_placement_error: () => pcb_placement_error,
   pcb_panelization_placement_error: () => pcb_panelization_placement_error,
   pcb_panel: () => pcb_panel,
+  pcb_pad_trace_clearance_error: () => pcb_pad_trace_clearance_error,
+  pcb_pad_pad_clearance_error: () => pcb_pad_pad_clearance_error,
   pcb_note_text: () => pcb_note_text,
   pcb_note_rect: () => pcb_note_rect,
   pcb_note_path: () => pcb_note_path,
@@ -18531,6 +18552,7 @@ __export(exports_dist, {
   pcb_cutout: () => pcb_cutout,
   pcb_courtyard_rect: () => pcb_courtyard_rect,
   pcb_courtyard_polygon: () => pcb_courtyard_polygon,
+  pcb_courtyard_pill: () => pcb_courtyard_pill,
   pcb_courtyard_overlap_error: () => pcb_courtyard_overlap_error,
   pcb_courtyard_outline: () => pcb_courtyard_outline,
   pcb_courtyard_circle: () => pcb_courtyard_circle,
@@ -18548,8 +18570,10 @@ __export(exports_dist, {
   pcb_board: () => pcb_board,
   pcb_autorouting_error: () => pcb_autorouting_error,
   pcbRenderLayer: () => pcbRenderLayer,
+  parseAndConvertSiUnit: () => parseAndConvertSiUnit,
   ninePointAnchor: () => ninePointAnchor,
   ms: () => ms,
+  manufacturing_drc_properties: () => manufacturing_drc_properties,
   length: () => length,
   layer_string: () => layer_string,
   layer_ref: () => layer_ref,
@@ -18591,6 +18615,279 @@ __export(exports_dist, {
   any_circuit_element: () => any_circuit_element,
   all_layers: () => all_layers
 });
+
+// node_modules/format-si-unit/dist/index.js
+var SI_PREFIX_VALUES = /* @__PURE__ */ new Map([
+  ["T", 1000000000000],
+  ["G", 1e9],
+  ["M", 1e6],
+  ["K", 1000],
+  ["k", 1000],
+  ["", 1],
+  ["m", 0.001],
+  ["µ", 0.000001],
+  ["μ", 0.000001],
+  ["u", 0.000001],
+  ["n", 0.000000001],
+  ["p", 0.000000000001],
+  ["f", 0.000000000000001]
+]);
+var SI_PREFIXES = [...SI_PREFIX_VALUES.keys()];
+function getSiPrefixMultiplier(prefix) {
+  return SI_PREFIX_VALUES.get(prefix);
+}
+var unitMappings = {
+  Hz: {
+    baseUnit: "Hz",
+    variants: {
+      MHz: 1e6,
+      kHz: 1000,
+      Hz: 1
+    }
+  },
+  g: {
+    baseUnit: "g",
+    variants: {
+      kg: 1000,
+      g: 1
+    }
+  },
+  Ω: {
+    baseUnit: "Ω",
+    variants: {
+      mΩ: 0.001,
+      mohm: 0.001,
+      mOhm: 0.001,
+      milliohm: 0.001,
+      Ω: 1,
+      ohm: 1,
+      Ohm: 1,
+      kΩ: 1000,
+      KΩ: 1000,
+      kohm: 1000,
+      kOhm: 1000,
+      KOhm: 1000,
+      Kohm: 1000,
+      MΩ: 1e6,
+      Mohm: 1e6,
+      MOhm: 1e6,
+      megohm: 1e6,
+      Megohm: 1e6,
+      GΩ: 1e9,
+      Gohm: 1e9,
+      GOhm: 1e9,
+      TΩ: 1000000000000,
+      Tohm: 1000000000000,
+      TOhm: 1000000000000
+    }
+  },
+  V: {
+    baseUnit: "V",
+    variants: {
+      mV: 0.001,
+      V: 1,
+      kV: 1000,
+      KV: 1000,
+      MV: 1e6,
+      GV: 1e9,
+      TV: 1000000000000
+    }
+  },
+  A: {
+    baseUnit: "A",
+    variants: {
+      µA: 0.000001,
+      μA: 0.000001,
+      mA: 0.001,
+      ma: 0.001,
+      A: 1,
+      kA: 1000,
+      MA: 1e6
+    }
+  },
+  F: {
+    baseUnit: "F",
+    variants: {
+      pF: 0.000000000001,
+      nF: 0.000000001,
+      µF: 0.000001,
+      μF: 0.000001,
+      uF: 0.000001,
+      mF: 0.001,
+      F: 1,
+      kF: 1000,
+      KF: 1000,
+      MF: 1e6
+    }
+  },
+  H: {
+    baseUnit: "H",
+    variants: {
+      pH: 0.000000000001,
+      nH: 0.000000001,
+      µH: 0.000001,
+      μH: 0.000001,
+      uH: 0.000001,
+      mH: 0.001,
+      H: 1,
+      kH: 1000,
+      KH: 1000,
+      MH: 1e6
+    }
+  },
+  ml: {
+    baseUnit: "ml",
+    variants: {
+      ml: 1,
+      mL: 1,
+      l: 1000,
+      L: 1000
+    }
+  },
+  deg: {
+    baseUnit: "deg",
+    variants: {
+      rad: 180 / Math.PI
+    }
+  },
+  ms: {
+    baseUnit: "ms",
+    variants: {
+      fs: 0.000000000001,
+      ps: 0.000000001,
+      ns: 0.000001,
+      us: 0.001,
+      µs: 0.001,
+      μs: 0.001,
+      ms: 1,
+      s: 1000
+    }
+  },
+  mm: {
+    baseUnit: "mm",
+    variants: {
+      nm: 0.000001,
+      µm: 0.001,
+      μm: 0.001,
+      um: 0.001,
+      mm: 1,
+      cm: 10,
+      dm: 100,
+      m: 1000,
+      km: 1e6,
+      in: 25.4,
+      ft: 304.8,
+      IN: 25.4,
+      FT: 304.8,
+      yd: 914.4,
+      mi: 1609344,
+      mil: 0.0254
+    }
+  }
+};
+var unitMappingAndVariantSuffixes = /* @__PURE__ */ new Set;
+for (const [baseUnit, info] of Object.entries(unitMappings)) {
+  unitMappingAndVariantSuffixes.add(baseUnit);
+  for (const variant of Object.keys(info.variants)) {
+    unitMappingAndVariantSuffixes.add(variant);
+  }
+}
+function getBaseTscircuitUnit(unit) {
+  for (const info of Object.values(unitMappings)) {
+    if (unit in info.variants) {
+      return {
+        baseUnit: info.baseUnit,
+        conversionFactor: info.variants[unit]
+      };
+    }
+    for (const [variant, conversionFactor] of Object.entries(info.variants)) {
+      if (!unit.endsWith(variant))
+        continue;
+      const prefix = unit.slice(0, -variant.length);
+      const prefixMultiplier = getSiPrefixMultiplier(prefix);
+      if (prefixMultiplier == null)
+        continue;
+      return {
+        baseUnit: info.baseUnit,
+        conversionFactor: prefixMultiplier * conversionFactor
+      };
+    }
+  }
+  return {
+    baseUnit: unit,
+    conversionFactor: 1
+  };
+}
+function parseAndConvertSiUnit(v, unitOfValue) {
+  if (v === undefined || v === null)
+    return { parsedUnit: null, unitOfValue: null, value: null };
+  if (typeof v === "string" && v.match(/^-?[\d.]+$/))
+    return {
+      value: Number.parseFloat(v),
+      parsedUnit: null,
+      unitOfValue: null
+    };
+  if (typeof v === "number")
+    return { value: v, parsedUnit: null, unitOfValue: null };
+  if (typeof v === "object" && "x" in v && "y" in v) {
+    const firstResult = parseAndConvertSiUnit(v.x, unitOfValue);
+    const xResult = parseAndConvertSiUnit(v.x, unitOfValue);
+    const yResult = parseAndConvertSiUnit(v.y, unitOfValue);
+    if (xResult.value === null || yResult.value === null) {
+      return { parsedUnit: null, unitOfValue: null, value: null };
+    }
+    return {
+      parsedUnit: firstResult.parsedUnit,
+      unitOfValue: firstResult.unitOfValue,
+      value: {
+        x: xResult.value,
+        y: yResult.value
+      }
+    };
+  }
+  const reversedInputString = v.toString().split("").reverse().join("");
+  const unitReversed = reversedInputString.match(/[^\d\s]+/)?.[0];
+  if (!unitReversed) {
+    throw new Error(`Could not determine unit: "${v}"`);
+  }
+  const unit = unitReversed.split("").reverse().join("");
+  const numberPart = v.slice(0, -unit.length);
+  const bareSiPrefixMultiplier = getSiPrefixMultiplier(unit);
+  if (unitOfValue && bareSiPrefixMultiplier != null) {
+    return {
+      parsedUnit: null,
+      unitOfValue,
+      value: Number.parseFloat(numberPart) * bareSiPrefixMultiplier
+    };
+  }
+  if (bareSiPrefixMultiplier != null && !unitMappingAndVariantSuffixes.has(unit)) {
+    return {
+      parsedUnit: null,
+      unitOfValue: null,
+      value: Number.parseFloat(numberPart) * bareSiPrefixMultiplier
+    };
+  }
+  const { baseUnit, conversionFactor } = getBaseTscircuitUnit(unit);
+  return {
+    parsedUnit: unit,
+    unitOfValue: baseUnit,
+    value: conversionFactor * Number.parseFloat(numberPart)
+  };
+}
+var SI_PREFIX_PATTERN = SI_PREFIXES.filter((prefix) => prefix !== "").sort((a, b) => b.length - a.length).map((prefix) => prefix.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+var SI_UNIT_PATTERN = new RegExp(`^([+-]?(?:\\d+(?:\\.\\d*)?|\\.\\d+)(?:[eE][+-]?\\d+)?)(?:(${SI_PREFIX_PATTERN}))?$`);
+var SI_PREFIXES2 = [
+  { value: 1000000000000, symbol: "T" },
+  { value: 1e9, symbol: "G" },
+  { value: 1e6, symbol: "M" },
+  { value: 1000, symbol: "k" },
+  { value: 1, symbol: "" },
+  { value: 0.001, symbol: "m" },
+  { value: 0.000001, symbol: "µ" },
+  { value: 0.000000001, symbol: "n" },
+  { value: 0.000000000001, symbol: "p" }
+];
+var FALLBACK_PREFIX = SI_PREFIXES2[SI_PREFIXES2.length - 1];
 
 // node_modules/zod/v3/external.js
 var exports_external = {};
@@ -22566,220 +22863,16 @@ var coerce = {
 };
 var NEVER = INVALID;
 // node_modules/circuit-json/dist/index.mjs
-var unitMappings = {
-  Hz: {
-    baseUnit: "Hz",
-    variants: {
-      MHz: 1e6,
-      kHz: 1000,
-      Hz: 1
-    }
-  },
-  g: {
-    baseUnit: "g",
-    variants: {
-      kg: 1000,
-      g: 1
-    }
-  },
-  Ω: {
-    baseUnit: "Ω",
-    variants: {
-      mΩ: 0.001,
-      Ω: 1,
-      kΩ: 1000,
-      KΩ: 1000,
-      kohm: 1000,
-      MΩ: 1e6,
-      GΩ: 1e9,
-      TΩ: 1000000000000
-    }
-  },
-  V: {
-    baseUnit: "V",
-    variants: {
-      mV: 0.001,
-      V: 1,
-      kV: 1000,
-      KV: 1000,
-      MV: 1e6,
-      GV: 1e9,
-      TV: 1000000000000
-    }
-  },
-  A: {
-    baseUnit: "A",
-    variants: {
-      µA: 0.000001,
-      mA: 0.001,
-      ma: 0.001,
-      A: 1,
-      kA: 1000,
-      MA: 1e6
-    }
-  },
-  F: {
-    baseUnit: "F",
-    variants: {
-      pF: 0.000000000001,
-      nF: 0.000000001,
-      µF: 0.000001,
-      uF: 0.000001,
-      mF: 0.001,
-      F: 1
-    }
-  },
-  ml: {
-    baseUnit: "ml",
-    variants: {
-      ml: 1,
-      mL: 1,
-      l: 1000,
-      L: 1000
-    }
-  },
-  deg: {
-    baseUnit: "deg",
-    variants: {
-      rad: 180 / Math.PI
-    }
-  },
-  ms: {
-    baseUnit: "ms",
-    variants: {
-      fs: 0.000000000001,
-      ps: 0.000000001,
-      ns: 0.000001,
-      us: 0.001,
-      µs: 0.001,
-      ms: 1,
-      s: 1000
-    }
-  },
-  mm: {
-    baseUnit: "mm",
-    variants: {
-      nm: 0.000001,
-      µm: 0.001,
-      um: 0.001,
-      mm: 1,
-      cm: 10,
-      dm: 100,
-      m: 1000,
-      km: 1e6,
-      in: 25.4,
-      ft: 304.8,
-      IN: 25.4,
-      FT: 304.8,
-      yd: 914.4,
-      mi: 1609344,
-      mil: 0.0254
-    }
-  }
-};
-var unitMappingAndVariantSuffixes = /* @__PURE__ */ new Set;
-for (const [baseUnit, info] of Object.entries(unitMappings)) {
-  unitMappingAndVariantSuffixes.add(baseUnit);
-  for (const variant of Object.keys(info.variants)) {
-    unitMappingAndVariantSuffixes.add(variant);
-  }
-}
-function getBaseTscircuitUnit(unit) {
-  for (const [baseUnit, info] of Object.entries(unitMappings)) {
-    if (unit in info.variants) {
-      return {
-        baseUnit: info.baseUnit,
-        conversionFactor: info.variants[unit]
-      };
-    }
-  }
-  return {
-    baseUnit: unit,
-    conversionFactor: 1
-  };
-}
-var si_prefix_multiplier = {
-  tera: 1000000000000,
-  T: 1000000000000,
-  giga: 1e9,
-  G: 1e9,
-  mega: 1e6,
-  M: 1e6,
-  kilo: 1000,
-  k: 1000,
-  deci: 0.1,
-  d: 0.1,
-  centi: 0.01,
-  c: 0.01,
-  milli: 0.001,
-  m: 0.001,
-  micro: 0.000001,
-  u: 0.000001,
-  µ: 0.000001,
-  nano: 0.000000001,
-  n: 0.000000001,
-  pico: 0.000000000001,
-  p: 0.000000000001
-};
-function parseAndConvertSiUnit(v) {
-  if (v === undefined || v === null)
-    return { parsedUnit: null, unitOfValue: null, value: null };
-  if (typeof v === "string" && v.match(/^-?[\d\.]+$/))
-    return {
-      value: Number.parseFloat(v),
-      parsedUnit: null,
-      unitOfValue: null
-    };
-  if (typeof v === "number")
-    return { value: v, parsedUnit: null, unitOfValue: null };
-  if (typeof v === "object" && "x" in v && "y" in v) {
-    const { parsedUnit, unitOfValue } = parseAndConvertSiUnit(v.x);
-    const xResult = parseAndConvertSiUnit(v.x);
-    const yResult = parseAndConvertSiUnit(v.y);
-    if (xResult.value === null || yResult.value === null) {
-      return { parsedUnit: null, unitOfValue: null, value: null };
-    }
-    return {
-      parsedUnit,
-      unitOfValue,
-      value: {
-        x: xResult.value,
-        y: yResult.value
-      }
-    };
-  }
-  const reversed_input_string = v.toString().split("").reverse().join("");
-  const unit_reversed = reversed_input_string.match(/[^\d\s]+/)?.[0];
-  if (!unit_reversed) {
-    throw new Error(`Could not determine unit: "${v}"`);
-  }
-  const unit = unit_reversed.split("").reverse().join("");
-  const numberPart = v.slice(0, -unit.length);
-  if (unit in si_prefix_multiplier && !unitMappingAndVariantSuffixes.has(unit)) {
-    const siMultiplier = si_prefix_multiplier[unit];
-    return {
-      parsedUnit: null,
-      unitOfValue: null,
-      value: Number.parseFloat(numberPart) * siMultiplier
-    };
-  }
-  const { baseUnit, conversionFactor } = getBaseTscircuitUnit(unit);
-  return {
-    parsedUnit: unit,
-    unitOfValue: baseUnit,
-    value: conversionFactor * Number.parseFloat(numberPart)
-  };
-}
-var resistance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
-var capacitance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value).transform((value) => {
+var resistance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "Ω").value);
+var capacitance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "F").value).transform((value) => {
   return Number.parseFloat(value.toPrecision(12));
 });
-var inductance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
-var voltage = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
+var inductance = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "H").value);
+var voltage = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "V").value);
 var length = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
-var frequency = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
+var frequency = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "Hz").value);
 var distance = length;
-var current = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
+var current = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v, "A").value);
 var duration_ms = exports_external.string().or(exports_external.number()).transform((v) => parseAndConvertSiUnit(v).value);
 var time = duration_ms;
 var ms = duration_ms;
@@ -22875,6 +22968,8 @@ var pcbRenderLayer = exports_external.enum([
   "inner4_copper",
   "inner5_copper",
   "inner6_copper",
+  "inner7_copper",
+  "inner8_copper",
   "edge_cuts",
   "drill"
 ]);
@@ -23078,6 +23173,16 @@ var source_simple_current_source = source_component_base.extend({
   duty_cycle: exports_external.number().min(0).max(1).optional()
 });
 expectTypesMatch(true);
+var source_simple_fuse = source_component_base.extend({
+  ftype: exports_external.literal("simple_fuse"),
+  current_rating_amps: exports_external.number().describe("Nominal current in amps the fuse is rated for"),
+  voltage_rating_volts: exports_external.number().describe("Voltage rating in volts, e.g. ±5V would be 5")
+});
+expectTypesMatch(true);
+var source_simple_ammeter = source_component_base.extend({
+  ftype: exports_external.literal("simple_ammeter")
+});
+expectTypesMatch(true);
 var source_pin_attributes = exports_external.object({
   must_be_connected: exports_external.boolean().optional(),
   provides_power: exports_external.boolean().optional(),
@@ -23116,12 +23221,6 @@ var source_pin_attributes = exports_external.object({
   supports_spi_cs: exports_external.boolean().optional(),
   supports_uart_tx: exports_external.boolean().optional(),
   supports_uart_rx: exports_external.boolean().optional()
-});
-expectTypesMatch(true);
-var source_simple_fuse = source_component_base.extend({
-  ftype: exports_external.literal("simple_fuse"),
-  current_rating_amps: exports_external.number().describe("Nominal current in amps the fuse is rated for"),
-  voltage_rating_volts: exports_external.number().describe("Voltage rating in volts, e.g. ±5V would be 5")
 });
 expectTypesMatch(true);
 var source_simple_battery = source_component_base.extend({
@@ -23209,6 +23308,7 @@ var source_project_metadata = exports_external.object({
   name: exports_external.string().optional(),
   software_used_string: exports_external.string().optional(),
   project_url: exports_external.string().optional(),
+  source_filesystem_md5_hash: exports_external.string().optional(),
   created_at: timestamp.optional()
 });
 expectTypesMatch(true);
@@ -23290,6 +23390,19 @@ var source_missing_manufacturer_part_number_warning = exports_external.object({
   subcircuit_id: exports_external.string().optional()
 }).describe("Warning emitted when a standard connector is missing manufacturer part number");
 expectTypesMatch(true);
+var source_refdes_convention_warning = exports_external.object({
+  type: exports_external.literal("source_refdes_convention_warning"),
+  source_refdes_convention_warning_id: getZodPrefixedIdWithDefault("source_refdes_convention_warning"),
+  warning_type: exports_external.literal("source_refdes_convention_warning").default("source_refdes_convention_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  refdes: exports_external.string(),
+  source_component_ftype: exports_external.string(),
+  expected_prefixes: exports_external.array(exports_external.string()),
+  actual_prefix: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a source component reference designator does not match the component type convention");
+expectTypesMatch(true);
 var source_simple_voltage_probe = source_component_base.extend({
   ftype: exports_external.literal("simple_voltage_probe")
 });
@@ -23305,6 +23418,14 @@ var source_i2c_misconfigured_error = base_circuit_json_error.extend({
   source_port_ids: exports_external.array(exports_external.string())
 }).describe("Error emitted when incompatible I2C pins (e.g. SDA and SCL) are connected to the same net");
 expectTypesMatch(true);
+var source_component_misconfigured_error = base_circuit_json_error.extend({
+  type: exports_external.literal("source_component_misconfigured_error"),
+  source_component_misconfigured_error_id: getZodPrefixedIdWithDefault("source_component_misconfigured_error"),
+  error_type: exports_external.literal("source_component_misconfigured_error").default("source_component_misconfigured_error"),
+  source_component_ids: exports_external.array(exports_external.string()),
+  source_port_ids: exports_external.array(exports_external.string()).optional()
+}).describe("Error emitted when one or more source components have an invalid or conflicting configuration");
+expectTypesMatch(true);
 var source_simple_voltage_source = source_component_base.extend({
   ftype: exports_external.literal("simple_voltage_source"),
   voltage,
@@ -23312,7 +23433,12 @@ var source_simple_voltage_source = source_component_base.extend({
   peak_to_peak_voltage: voltage.optional(),
   wave_shape: exports_external.enum(["sinewave", "square", "triangle", "sawtooth"]).optional(),
   phase: rotation.optional(),
-  duty_cycle: exports_external.number().optional().describe("Duty cycle as a fraction (0 to 1)")
+  duty_cycle: exports_external.number().optional().describe("Duty cycle as a fraction (0 to 1)"),
+  pulse_delay: ms.optional(),
+  rise_time: ms.optional(),
+  fall_time: ms.optional(),
+  pulse_width: ms.optional(),
+  period: ms.optional()
 });
 expectTypesMatch(true);
 var any_source_component = exports_external.union([
@@ -23325,6 +23451,7 @@ var any_source_component = exports_external.union([
   source_simple_chip,
   source_simple_power_source,
   source_simple_current_source,
+  source_simple_ammeter,
   source_simple_battery,
   source_simple_inductor,
   source_simple_push_button,
@@ -23351,7 +23478,9 @@ var any_source_component = exports_external.union([
   source_property_ignored_warning,
   source_pin_missing_trace_warning,
   source_missing_manufacturer_part_number_warning,
-  source_i2c_misconfigured_error
+  source_refdes_convention_warning,
+  source_i2c_misconfigured_error,
+  source_component_misconfigured_error
 ]);
 expectTypesMatch(true);
 var source_port = exports_external.object({
@@ -23383,6 +23512,7 @@ var source_trace = exports_external.object({
   subcircuit_id: exports_external.string().optional(),
   subcircuit_connectivity_map_key: exports_external.string().optional(),
   max_length: exports_external.number().optional(),
+  name: exports_external.string().optional(),
   min_trace_thickness: exports_external.number().optional(),
   display_name: exports_external.string().optional()
 });
@@ -23445,7 +23575,9 @@ var all_layers = [
   "inner3",
   "inner4",
   "inner5",
-  "inner6"
+  "inner6",
+  "inner7",
+  "inner8"
 ];
 var layer_string = exports_external.enum(all_layers);
 var layer_ref = layer_string.or(exports_external.object({
@@ -23466,6 +23598,15 @@ var source_manually_placed_via = exports_external.object({
   subcircuit_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional()
 }).describe("Defines a via that is manually placed in the source domain");
+expectTypesMatch(true);
+var source_unnamed_trace_warning = exports_external.object({
+  type: exports_external.literal("source_unnamed_trace_warning"),
+  source_unnamed_trace_warning_id: getZodPrefixedIdWithDefault("source_unnamed_trace_warning"),
+  warning_type: exports_external.literal("source_unnamed_trace_warning").default("source_unnamed_trace_warning"),
+  message: exports_external.string(),
+  source_trace_id: exports_external.string(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a source trace is missing a name");
 expectTypesMatch(true);
 var source_no_power_pin_defined_warning = exports_external.object({
   type: exports_external.literal("source_no_power_pin_defined_warning"),
@@ -23514,8 +23655,22 @@ var unknown_error_finding_part = base_circuit_json_error.extend({
   subcircuit_id: exports_external.string().optional()
 }).describe("Error emitted when an unexpected error occurs while finding a part");
 expectTypesMatch(true);
+var source_part_not_found_warning = exports_external.object({
+  type: exports_external.literal("source_part_not_found_warning"),
+  source_part_not_found_warning_id: getZodPrefixedIdWithDefault("source_part_not_found_warning"),
+  warning_type: exports_external.literal("source_part_not_found_warning").default("source_part_not_found_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  supplier_name: supplier_name.optional(),
+  manufacturer_part_number: exports_external.string().optional(),
+  supplier_part_number: exports_external.string().optional(),
+  part_name: exports_external.string().optional()
+}).describe("Warning emitted when a requested part can not be found");
+expectTypesMatch(true);
 var schematic_box = exports_external.object({
   type: exports_external.literal("schematic_box"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   width: distance,
@@ -23529,12 +23684,16 @@ expectTypesMatch(true);
 var schematic_path = exports_external.object({
   type: exports_external.literal("schematic_path"),
   schematic_path_id: getZodPrefixedIdWithDefault("schematic_path"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   fill_color: exports_external.string().optional(),
   is_filled: exports_external.boolean().optional(),
+  is_dashed: exports_external.boolean().default(false),
   stroke_width: distance.nullable().optional(),
   stroke_color: exports_external.string().optional(),
+  dash_length: distance.optional(),
+  dash_gap: distance.optional(),
   points: exports_external.array(point),
   subcircuit_id: exports_external.string().optional()
 });
@@ -23581,6 +23740,7 @@ var schematic_component = exports_external.object({
   center: point,
   source_component_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string(),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   pin_spacing: length.optional(),
   pin_styles: schematic_pin_styles.optional(),
@@ -23609,6 +23769,7 @@ expectTypesMatch(true);
 var schematic_line = exports_external.object({
   type: exports_external.literal("schematic_line"),
   schematic_line_id: getZodPrefixedIdWithDefault("schematic_line"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   x1: distance,
@@ -23618,12 +23779,15 @@ var schematic_line = exports_external.object({
   stroke_width: distance.nullable().optional(),
   color: exports_external.string().default("#000000"),
   is_dashed: exports_external.boolean().default(false),
+  dash_length: distance.optional(),
+  dash_gap: distance.optional(),
   subcircuit_id: exports_external.string().optional()
 }).describe("Draws a styled line on the schematic");
 expectTypesMatch(true);
 var schematic_rect = exports_external.object({
   type: exports_external.literal("schematic_rect"),
   schematic_rect_id: getZodPrefixedIdWithDefault("schematic_rect"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   center: point,
@@ -23641,6 +23805,7 @@ expectTypesMatch(true);
 var schematic_circle = exports_external.object({
   type: exports_external.literal("schematic_circle"),
   schematic_circle_id: getZodPrefixedIdWithDefault("schematic_circle"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   center: point,
@@ -23656,6 +23821,7 @@ expectTypesMatch(true);
 var schematic_arc = exports_external.object({
   type: exports_external.literal("schematic_arc"),
   schematic_arc_id: getZodPrefixedIdWithDefault("schematic_arc"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   center: point,
@@ -23672,6 +23838,7 @@ expectTypesMatch(true);
 var schematic_trace = exports_external.object({
   type: exports_external.literal("schematic_trace"),
   schematic_trace_id: exports_external.string(),
+  schematic_sheet_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional(),
   junctions: exports_external.array(exports_external.object({
     x: exports_external.number(),
@@ -23704,6 +23871,7 @@ var fivePointAnchor = exports_external.enum([
 expectTypesMatch(true);
 var schematic_text = exports_external.object({
   type: exports_external.literal("schematic_text"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   schematic_symbol_id: exports_external.string().optional(),
   schematic_text_id: exports_external.string(),
@@ -23723,6 +23891,7 @@ var schematic_port = exports_external.object({
   type: exports_external.literal("schematic_port"),
   schematic_port_id: exports_external.string(),
   source_port_id: exports_external.string(),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_component_id: exports_external.string().optional(),
   center: point,
   facing_direction: exports_external.enum(["up", "down", "left", "right"]).optional(),
@@ -23733,6 +23902,8 @@ var schematic_port = exports_external.object({
   display_pin_label: exports_external.string().optional(),
   subcircuit_id: exports_external.string().optional(),
   is_connected: exports_external.boolean().optional(),
+  is_internal_circuit_port: exports_external.boolean().optional(),
+  is_overlapping_internal_circuit_port: exports_external.boolean().optional(),
   has_input_arrow: exports_external.boolean().optional(),
   has_output_arrow: exports_external.boolean().optional(),
   is_drawn_with_inversion_circle: exports_external.boolean().optional()
@@ -23741,6 +23912,7 @@ expectTypesMatch(true);
 var schematic_net_label = exports_external.object({
   type: exports_external.literal("schematic_net_label"),
   schematic_net_label_id: getZodPrefixedIdWithDefault("schematic_net_label"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_trace_id: exports_external.string().optional(),
   source_trace_id: exports_external.string().optional(),
   source_net_id: exports_external.string(),
@@ -23797,6 +23969,7 @@ expectTypesMatch(true);
 var schematic_voltage_probe = exports_external.object({
   type: exports_external.literal("schematic_voltage_probe"),
   schematic_voltage_probe_id: exports_external.string(),
+  schematic_sheet_id: exports_external.string().optional(),
   source_component_id: exports_external.string().optional(),
   name: exports_external.string().optional(),
   position: point,
@@ -23818,9 +23991,33 @@ var schematic_manual_edit_conflict_warning = exports_external.object({
   source_component_id: exports_external.string()
 }).describe("Warning emitted when a component has both manual placement and explicit schX/schY coordinates");
 expectTypesMatch(true);
+var schematic_component_overlap_warning = exports_external.object({
+  type: exports_external.literal("schematic_component_overlap_warning"),
+  schematic_component_overlap_warning_id: getZodPrefixedIdWithDefault("schematic_component_overlap_warning"),
+  warning_type: exports_external.literal("schematic_component_overlap_warning").default("schematic_component_overlap_warning"),
+  message: exports_external.string(),
+  schematic_component_ids: exports_external.tuple([exports_external.string(), exports_external.string()]),
+  schematic_sheet_id: exports_external.string().optional()
+}).describe("Warning emitted when the rendered bounds of two schematic components overlap");
+expectTypesMatch(true);
+var schematic_element_outside_sheet_warning = exports_external.object({
+  type: exports_external.literal("schematic_element_outside_sheet_warning"),
+  schematic_element_outside_sheet_warning_id: getZodPrefixedIdWithDefault("schematic_element_outside_sheet_warning"),
+  warning_type: exports_external.literal("schematic_element_outside_sheet_warning").default("schematic_element_outside_sheet_warning"),
+  message: exports_external.string(),
+  schematic_sheet_id: exports_external.string(),
+  schematic_element_type: exports_external.enum([
+    "schematic_component",
+    "schematic_net_label",
+    "schematic_trace"
+  ]),
+  schematic_element_id: exports_external.string()
+}).describe("Warning emitted when a schematic component, net label, or trace extends outside its schematic sheet");
+expectTypesMatch(true);
 var schematic_group = exports_external.object({
   type: exports_external.literal("schematic_group"),
   schematic_group_id: getZodPrefixedIdWithDefault("schematic_group"),
+  schematic_sheet_id: exports_external.string().optional(),
   source_group_id: exports_external.string(),
   is_subcircuit: exports_external.boolean().optional(),
   subcircuit_id: exports_external.string().optional(),
@@ -23836,6 +24033,7 @@ expectTypesMatch(true);
 var schematic_table = exports_external.object({
   type: exports_external.literal("schematic_table"),
   schematic_table_id: getZodPrefixedIdWithDefault("schematic_table"),
+  schematic_sheet_id: exports_external.string().optional(),
   anchor_position: point,
   column_widths: exports_external.array(distance),
   row_heights: exports_external.array(distance),
@@ -23849,6 +24047,7 @@ expectTypesMatch(true);
 var schematic_table_cell = exports_external.object({
   type: exports_external.literal("schematic_table_cell"),
   schematic_table_cell_id: getZodPrefixedIdWithDefault("schematic_table_cell"),
+  schematic_sheet_id: exports_external.string().optional(),
   schematic_table_id: exports_external.string(),
   start_row_index: exports_external.number(),
   end_row_index: exports_external.number(),
@@ -23868,7 +24067,9 @@ var schematic_sheet = exports_external.object({
   type: exports_external.literal("schematic_sheet"),
   schematic_sheet_id: getZodPrefixedIdWithDefault("schematic_sheet"),
   name: exports_external.string().optional(),
-  subcircuit_id: exports_external.string().optional()
+  sheet_index: exports_external.number().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  outline_color: exports_external.string().optional()
 }).describe("Defines a schematic sheet or page that components can be placed on");
 expectTypesMatch(true);
 var point_with_bulge = exports_external.object({
@@ -23903,6 +24104,19 @@ var route_hint_point = exports_external.object({
   trace_width: distance.optional()
 });
 expectTypesMatch(true);
+var manufacturing_drc_properties = exports_external.object({
+  min_trace_width: length.optional(),
+  min_board_edge_clearance: length.optional(),
+  min_via_hole_edge_to_via_hole_edge_clearance: length.optional(),
+  min_plated_hole_drill_edge_to_drill_edge_clearance: length.optional(),
+  min_trace_to_pad_edge_clearance: length.optional(),
+  min_pad_edge_to_pad_edge_clearance: length.optional(),
+  min_same_net_trace_edge_to_trace_edge_clearance: length.optional(),
+  min_different_net_trace_edge_to_trace_edge_clearance: length.optional(),
+  min_via_edge_to_pad_edge_clearance: length.optional(),
+  min_via_hole_diameter: length.optional(),
+  min_via_pad_diameter: length.optional()
+});
 var pcb_component = exports_external.object({
   type: exports_external.literal("pcb_component"),
   pcb_component_id: getZodPrefixedIdWithDefault("pcb_component"),
@@ -24449,9 +24663,20 @@ var pcb_trace_route_point_via = exports_external.object({
   from_layer: layer_ref,
   to_layer: layer_ref
 });
+var pcb_trace_route_point_through_pad = exports_external.object({
+  route_type: exports_external.literal("through_pad"),
+  start: point,
+  end: point,
+  width: distance,
+  start_layer: layer_ref,
+  end_layer: layer_ref,
+  pcb_smtpad_id: exports_external.string().optional(),
+  pcb_plated_hole_id: exports_external.string().optional()
+});
 var pcb_trace_route_point = exports_external.union([
   pcb_trace_route_point_wire,
-  pcb_trace_route_point_via
+  pcb_trace_route_point_via,
+  pcb_trace_route_point_through_pad
 ]);
 var pcb_trace = exports_external.object({
   type: exports_external.literal("pcb_trace"),
@@ -24481,6 +24706,19 @@ var pcb_trace_warning = exports_external.object({
   pcb_port_ids: exports_external.array(exports_external.string()),
   subcircuit_id: exports_external.string().optional()
 }).describe("Defines a trace warning on the PCB");
+expectTypesMatch(true);
+var pcb_trace_too_long_warning = exports_external.object({
+  type: exports_external.literal("pcb_trace_too_long_warning"),
+  pcb_trace_too_long_warning_id: getZodPrefixedIdWithDefault("pcb_trace_too_long_warning"),
+  warning_type: exports_external.literal("pcb_trace_too_long_warning").default("pcb_trace_too_long_warning"),
+  message: exports_external.string(),
+  pcb_trace_id: exports_external.string(),
+  source_net_id: exports_external.string().optional(),
+  source_trace_id: exports_external.string().optional(),
+  actual_trace_length: distance,
+  maximum_trace_length: distance,
+  subcircuit_id: exports_external.string().optional()
+}).describe("Warning emitted when a PCB trace is longer than its maximum allowed length");
 expectTypesMatch(true);
 var pcb_trace_error = base_circuit_json_error.extend({
   type: exports_external.literal("pcb_trace_error"),
@@ -24566,10 +24804,12 @@ var pcb_board = exports_external.object({
   outline: exports_external.array(point).optional(),
   shape: exports_external.enum(["rect", "polygon"]).optional(),
   material: exports_external.enum(["fr4", "fr1"]).default("fr4"),
+  solder_mask_color: exports_external.string().optional(),
+  silkscreen_color: exports_external.string().optional(),
   anchor_position: point.optional(),
   anchor_alignment: ninePointAnchor.optional(),
   position_mode: exports_external.enum(["relative_to_panel_anchor", "none"]).optional()
-}).describe("Defines the board outline of the PCB");
+}).merge(manufacturing_drc_properties).describe("Defines the board outline of the PCB");
 expectTypesMatch(true);
 var pcb_panel = exports_external.object({
   type: exports_external.literal("pcb_panel"),
@@ -24731,6 +24971,22 @@ var pcb_silkscreen_oval = exports_external.object({
   ccw_rotation: rotation.optional()
 }).describe("Defines a silkscreen oval on the PCB");
 expectTypesMatch(true);
+var pcb_silkscreen_graphic_base = exports_external.object({
+  type: exports_external.literal("pcb_silkscreen_graphic"),
+  pcb_silkscreen_graphic_id: getZodPrefixedIdWithDefault("pcb_silkscreen_graphic"),
+  pcb_component_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  layer: visible_layer,
+  image_asset: asset.optional()
+});
+var pcb_silkscreen_graphic_brep = pcb_silkscreen_graphic_base.extend({
+  shape: exports_external.literal("brep"),
+  brep_shape
+}).describe("Defines a BRep silkscreen graphic on the PCB");
+expectTypesMatch(true);
+var pcb_silkscreen_graphic = exports_external.discriminatedUnion("shape", [pcb_silkscreen_graphic_brep]).describe("Defines a silkscreen graphic on the PCB");
+expectTypesMatch(true);
 var pcb_silkscreen_pill = exports_external.object({
   type: exports_external.literal("pcb_silkscreen_pill"),
   pcb_silkscreen_pill_id: getZodPrefixedIdWithDefault("pcb_silkscreen_pill"),
@@ -24753,6 +25009,7 @@ var pcb_fabrication_note_text = exports_external.object({
   font_size: distance.default("1mm"),
   pcb_component_id: exports_external.string(),
   text: exports_external.string(),
+  ccw_rotation: exports_external.number().optional(),
   layer: visible_layer,
   anchor_position: point.default({ x: 0, y: 0 }),
   anchor_alignment: exports_external.enum(["center", "top_left", "top_right", "bottom_left", "bottom_right"]).default("center"),
@@ -24824,6 +25081,7 @@ var pcb_note_text = exports_external.object({
   anchor_position: point.default({ x: 0, y: 0 }),
   anchor_alignment: exports_external.enum(["center", "top_left", "top_right", "bottom_left", "bottom_right"]).default("center"),
   layer: visible_layer.default("top"),
+  is_mirrored_from_top_view: exports_external.boolean().optional(),
   color: exports_external.string().optional()
 }).describe("Defines a documentation note in text on the PCB");
 expectTypesMatch(true);
@@ -25077,6 +25335,21 @@ var pcb_connector_not_in_accessible_orientation_warning = exports_external.objec
   subcircuit_id: exports_external.string().optional()
 }).describe("Warning emitted when a connector PCB component is facing inward toward the board and should be reoriented to an outward-facing direction");
 expectTypesMatch(true);
+var supplier_footprint_mismatch_warning = exports_external.object({
+  type: exports_external.literal("supplier_footprint_mismatch_warning"),
+  supplier_footprint_mismatch_warning_id: getZodPrefixedIdWithDefault("supplier_footprint_mismatch_warning"),
+  warning_type: exports_external.literal("supplier_footprint_mismatch_warning").default("supplier_footprint_mismatch_warning"),
+  message: exports_external.string(),
+  source_component_id: exports_external.string(),
+  pcb_component_id: exports_external.string().optional(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  supplier_name: supplier_name.optional(),
+  supplier_part_number: exports_external.string().optional(),
+  supplier_footprint_url: exports_external.string().optional(),
+  footprint_copper_intersection_over_union: exports_external.number()
+}).describe("Warning emitted when a supplier part footprint does not match the expected footprint");
+expectTypesMatch(true);
 var pcb_breakout_point = exports_external.object({
   type: exports_external.literal("pcb_breakout_point"),
   pcb_breakout_point_id: getZodPrefixedIdWithDefault("pcb_breakout_point"),
@@ -25207,6 +25480,50 @@ var pcb_via_clearance_error = base_circuit_json_error.extend({
   subcircuit_id: exports_external.string().optional()
 }).describe("Error emitted when vias are closer than the allowed clearance");
 expectTypesMatch(true);
+var pcb_via_trace_clearance_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_via_trace_clearance_error"),
+  pcb_via_trace_clearance_error_id: getZodPrefixedIdWithDefault("pcb_via_trace_clearance_error"),
+  error_type: exports_external.literal("pcb_via_trace_clearance_error").default("pcb_via_trace_clearance_error"),
+  pcb_via_id: exports_external.string(),
+  pcb_trace_id: exports_external.string(),
+  minimum_clearance: distance.optional(),
+  actual_clearance: distance.optional(),
+  center: exports_external.object({
+    x: exports_external.number().optional(),
+    y: exports_external.number().optional()
+  }).optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when a via and trace are closer than the allowed clearance");
+expectTypesMatch(true);
+var pcb_pad_pad_clearance_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_pad_pad_clearance_error"),
+  pcb_pad_pad_clearance_error_id: getZodPrefixedIdWithDefault("pcb_pad_pad_clearance_error"),
+  error_type: exports_external.literal("pcb_pad_pad_clearance_error").default("pcb_pad_pad_clearance_error"),
+  pcb_pad_ids: exports_external.array(exports_external.string()).min(2),
+  minimum_clearance: distance.optional(),
+  actual_clearance: distance.optional(),
+  center: exports_external.object({
+    x: exports_external.number().optional(),
+    y: exports_external.number().optional()
+  }).optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when pads are closer than the allowed clearance");
+expectTypesMatch(true);
+var pcb_pad_trace_clearance_error = base_circuit_json_error.extend({
+  type: exports_external.literal("pcb_pad_trace_clearance_error"),
+  pcb_pad_trace_clearance_error_id: getZodPrefixedIdWithDefault("pcb_pad_trace_clearance_error"),
+  error_type: exports_external.literal("pcb_pad_trace_clearance_error").default("pcb_pad_trace_clearance_error"),
+  pcb_pad_id: exports_external.string(),
+  pcb_trace_id: exports_external.string(),
+  minimum_clearance: distance.optional(),
+  actual_clearance: distance.optional(),
+  center: exports_external.object({
+    x: exports_external.number().optional(),
+    y: exports_external.number().optional()
+  }).optional(),
+  subcircuit_id: exports_external.string().optional()
+}).describe("Error emitted when a pad and trace are closer than allowed clearance");
+expectTypesMatch(true);
 var pcb_courtyard_rect = exports_external.object({
   type: exports_external.literal("pcb_courtyard_rect"),
   pcb_courtyard_rect_id: getZodPrefixedIdWithDefault("pcb_courtyard_rect"),
@@ -25253,6 +25570,20 @@ var pcb_courtyard_circle = exports_external.object({
   layer: visible_layer,
   color: exports_external.string().optional()
 }).describe("Defines a courtyard circle on the PCB");
+expectTypesMatch(true);
+var pcb_courtyard_pill = exports_external.object({
+  type: exports_external.literal("pcb_courtyard_pill"),
+  pcb_courtyard_pill_id: getZodPrefixedIdWithDefault("pcb_courtyard_pill"),
+  pcb_component_id: exports_external.string(),
+  pcb_group_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  center: point,
+  width: length,
+  height: length,
+  radius: length,
+  layer: visible_layer,
+  color: exports_external.string().optional()
+}).describe("Defines a courtyard pill on the PCB");
 expectTypesMatch(true);
 var cad_model_formats = [
   "obj",
@@ -25311,6 +25642,7 @@ var cad_component = exports_external.object({
   model_object_fit: exports_external.enum(["contain_within_bounds", "fill_bounds"]).optional().default("contain_within_bounds"),
   model_jscad: exports_external.any().optional(),
   show_as_translucent_model: exports_external.boolean().optional(),
+  show_as_bounding_box: exports_external.boolean().optional(),
   anchor_alignment: exports_external.enum(["center", "center_of_component_on_board_surface"]).optional().default("center")
 }).describe("Defines a component on the PCB");
 expectTypesMatch(true);
@@ -25347,7 +25679,12 @@ var simulation_ac_voltage_source = exports_external.object({
   peak_to_peak_voltage: voltage.optional(),
   wave_shape: wave_shape.optional(),
   phase: rotation.optional(),
-  duty_cycle: percentage.optional()
+  duty_cycle: percentage.optional(),
+  pulse_delay: ms.optional(),
+  rise_time: ms.optional(),
+  fall_time: ms.optional(),
+  pulse_width: ms.optional(),
+  period: ms.optional()
 }).describe("Defines an AC voltage source for simulation");
 var simulation_voltage_source = exports_external.union([simulation_dc_voltage_source, simulation_ac_voltage_source]).describe("Defines a voltage source for simulation");
 expectTypesMatch(true);
@@ -25397,6 +25734,12 @@ var experiment_type = exports_external.union([
   exports_external.literal("spice_transient_analysis"),
   exports_external.literal("spice_ac_analysis")
 ]);
+var spice_simulation_options = exports_external.object({
+  method: exports_external.enum(["trap", "gear"]).optional(),
+  reltol: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  abstol: exports_external.union([exports_external.number(), exports_external.string()]).optional(),
+  vntol: exports_external.union([exports_external.number(), exports_external.string()]).optional()
+}).describe("SPICE solver options for a simulation experiment");
 var simulation_experiment = exports_external.object({
   type: exports_external.literal("simulation_experiment"),
   simulation_experiment_id: getZodPrefixedIdWithDefault("simulation_experiment"),
@@ -25404,7 +25747,8 @@ var simulation_experiment = exports_external.object({
   experiment_type,
   time_per_step: duration_ms.optional(),
   start_time_ms: ms.optional(),
-  end_time_ms: ms.optional()
+  end_time_ms: ms.optional(),
+  spice_options: spice_simulation_options.optional()
 }).describe("Defines a simulation experiment configuration");
 expectTypesMatch(true);
 var simulation_transient_voltage_graph = exports_external.object({
@@ -25421,6 +25765,21 @@ var simulation_transient_voltage_graph = exports_external.object({
   name: exports_external.string().optional(),
   color: exports_external.string().optional()
 }).describe("Stores voltage measurements over time for a simulation");
+expectTypesMatch(true);
+var simulation_transient_current_graph = exports_external.object({
+  type: exports_external.literal("simulation_transient_current_graph"),
+  simulation_transient_current_graph_id: getZodPrefixedIdWithDefault("simulation_transient_current_graph"),
+  simulation_experiment_id: exports_external.string(),
+  timestamps_ms: exports_external.array(exports_external.number()).optional(),
+  current_levels: exports_external.array(exports_external.number()),
+  source_component_id: exports_external.string().optional(),
+  subcircuit_connectivity_map_key: exports_external.string().optional(),
+  time_per_step: duration_ms,
+  start_time_ms: ms,
+  end_time_ms: ms,
+  name: exports_external.string().optional(),
+  color: exports_external.string().optional()
+}).describe("Stores current measurements over time for a simulation");
 expectTypesMatch(true);
 var simulation_switch = exports_external.object({
   type: exports_external.literal("simulation_switch"),
@@ -25478,6 +25837,55 @@ var simulation_voltage_probe = exports_external.object({
   }
 });
 expectTypesMatch(true);
+var simulation_current_probe = exports_external.object({
+  type: exports_external.literal("simulation_current_probe"),
+  simulation_current_probe_id: getZodPrefixedIdWithDefault("simulation_current_probe"),
+  source_component_id: exports_external.string().optional(),
+  name: exports_external.string().optional(),
+  positive_source_port_id: exports_external.string().optional(),
+  negative_source_port_id: exports_external.string().optional(),
+  positive_source_net_id: exports_external.string().optional(),
+  negative_source_net_id: exports_external.string().optional(),
+  subcircuit_id: exports_external.string().optional(),
+  color: exports_external.string().optional()
+}).describe("Defines a current probe for simulation. It measures current flowing from the positive endpoint to the negative endpoint.").superRefine((data, ctx) => {
+  const hasPositivePort = !!data.positive_source_port_id;
+  const hasNegativePort = !!data.negative_source_port_id;
+  const hasPositiveNet = !!data.positive_source_net_id;
+  const hasNegativeNet = !!data.negative_source_net_id;
+  const hasPorts = hasPositivePort || hasNegativePort;
+  const hasNets = hasPositiveNet || hasNegativeNet;
+  if (hasPorts && hasNets) {
+    ctx.addIssue({
+      code: exports_external.ZodIssueCode.custom,
+      message: "Cannot mix port and net connections in a current probe."
+    });
+    return;
+  }
+  if (hasPorts) {
+    if (!hasPositivePort || !hasNegativePort) {
+      ctx.addIssue({
+        code: exports_external.ZodIssueCode.custom,
+        message: "Current probe using source ports requires both positive_source_port_id and negative_source_port_id."
+      });
+    }
+    return;
+  }
+  if (hasNets) {
+    if (!hasPositiveNet || !hasNegativeNet) {
+      ctx.addIssue({
+        code: exports_external.ZodIssueCode.custom,
+        message: "Current probe using source nets requires both positive_source_net_id and negative_source_net_id."
+      });
+    }
+    return;
+  }
+  ctx.addIssue({
+    code: exports_external.ZodIssueCode.custom,
+    message: "A current probe must have either positive/negative source port ids or positive/negative source net ids."
+  });
+});
+expectTypesMatch(true);
 var simulation_unknown_experiment_error = base_circuit_json_error.extend({
   type: exports_external.literal("simulation_unknown_experiment_error"),
   simulation_unknown_experiment_error_id: getZodPrefixedIdWithDefault("simulation_unknown_experiment_error"),
@@ -25496,6 +25904,57 @@ var simulation_op_amp = exports_external.object({
   positive_supply_source_port_id: exports_external.string(),
   negative_supply_source_port_id: exports_external.string()
 }).describe("Defines a simple ideal operational amplifier for simulation");
+expectTypesMatch(true);
+var simulation_spice_subcircuit = exports_external.object({
+  type: exports_external.literal("simulation_spice_subcircuit"),
+  simulation_spice_subcircuit_id: getZodPrefixedIdWithDefault("simulation_spice_subcircuit"),
+  source_component_id: exports_external.string(),
+  spice_pin_to_source_port_map: exports_external.record(exports_external.string(), exports_external.string()),
+  subcircuit_source: exports_external.string()
+}).describe("Defines a custom SPICE subcircuit model for simulation");
+expectTypesMatch(true);
+var hasValue = (value) => value !== undefined;
+var simulation_oscilloscope_trace = exports_external.object({
+  type: exports_external.literal("simulation_oscilloscope_trace"),
+  simulation_oscilloscope_trace_id: getZodPrefixedIdWithDefault("simulation_oscilloscope_trace"),
+  simulation_transient_voltage_graph_id: exports_external.string().optional(),
+  simulation_transient_current_graph_id: exports_external.string().optional(),
+  simulation_voltage_probe_id: exports_external.string().optional(),
+  simulation_current_probe_id: exports_external.string().optional(),
+  display_name: exports_external.string().optional(),
+  color: exports_external.string().optional(),
+  display_center_value: exports_external.number().optional(),
+  display_center_offset_divs: exports_external.number().optional(),
+  volts_per_div: exports_external.number().positive().optional(),
+  amps_per_div: exports_external.number().positive().optional()
+}).describe("Defines how a simulation measurement is rendered as an oscilloscope-style trace.").superRefine((data, ctx) => {
+  const voltageReferences = [
+    data.simulation_transient_voltage_graph_id,
+    data.simulation_voltage_probe_id
+  ].filter(hasValue).length;
+  const currentReferences = [
+    data.simulation_transient_current_graph_id,
+    data.simulation_current_probe_id
+  ].filter(hasValue).length;
+  if (voltageReferences + currentReferences !== 1) {
+    ctx.addIssue({
+      code: exports_external.ZodIssueCode.custom,
+      message: "An oscilloscope trace must reference exactly one voltage graph, current graph, voltage probe, or current probe."
+    });
+  }
+  if (voltageReferences > 0 && data.amps_per_div !== undefined) {
+    ctx.addIssue({
+      code: exports_external.ZodIssueCode.custom,
+      message: "Voltage oscilloscope traces must use volts_per_div, not amps_per_div."
+    });
+  }
+  if (currentReferences > 0 && data.volts_per_div !== undefined) {
+    ctx.addIssue({
+      code: exports_external.ZodIssueCode.custom,
+      message: "Current oscilloscope traces must use amps_per_div, not volts_per_div."
+    });
+  }
+});
 expectTypesMatch(true);
 var any_circuit_element = exports_external.union([
   source_trace,
@@ -25529,13 +25988,17 @@ var any_circuit_element = exports_external.union([
   source_invalid_component_property_error,
   source_trace_not_connected_error,
   source_pin_missing_trace_warning,
+  source_unnamed_trace_warning,
   source_missing_manufacturer_part_number_warning,
+  source_refdes_convention_warning,
   source_no_power_pin_defined_warning,
   source_no_ground_pin_defined_warning,
   source_component_pins_underspecified_warning,
   source_pin_must_be_connected_error,
   unknown_error_finding_part,
+  source_part_not_found_warning,
   source_i2c_misconfigured_error,
+  source_component_misconfigured_error,
   source_ambiguous_port_reference,
   pcb_component,
   pcb_hole,
@@ -25544,6 +26007,7 @@ var any_circuit_element = exports_external.union([
   circuit_json_footprint_load_error,
   pcb_manual_edit_conflict_warning,
   pcb_connector_not_in_accessible_orientation_warning,
+  supplier_footprint_mismatch_warning,
   pcb_plated_hole,
   pcb_keepout,
   pcb_port,
@@ -25551,6 +26015,7 @@ var any_circuit_element = exports_external.union([
   pcb_text,
   pcb_trace,
   pcb_trace_warning,
+  pcb_trace_too_long_warning,
   pcb_via,
   pcb_smtpad,
   pcb_solder_paste,
@@ -25566,6 +26031,7 @@ var any_circuit_element = exports_external.union([
   pcb_silkscreen_rect,
   pcb_silkscreen_circle,
   pcb_silkscreen_oval,
+  pcb_silkscreen_graphic,
   pcb_trace_error,
   pcb_trace_missing_error,
   pcb_placement_error,
@@ -25573,6 +26039,9 @@ var any_circuit_element = exports_external.union([
   pcb_port_not_matched_error,
   pcb_port_not_connected_error,
   pcb_via_clearance_error,
+  pcb_via_trace_clearance_error,
+  pcb_pad_pad_clearance_error,
+  pcb_pad_trace_clearance_error,
   pcb_fabrication_note_path,
   pcb_fabrication_note_text,
   pcb_fabrication_note_rect,
@@ -25598,6 +26067,7 @@ var any_circuit_element = exports_external.union([
   pcb_courtyard_outline,
   pcb_courtyard_polygon,
   pcb_courtyard_circle,
+  pcb_courtyard_pill,
   schematic_box,
   schematic_text,
   schematic_line,
@@ -25615,6 +26085,8 @@ var any_circuit_element = exports_external.union([
   schematic_debug_object,
   schematic_voltage_probe,
   schematic_manual_edit_conflict_warning,
+  schematic_component_overlap_warning,
+  schematic_element_outside_sheet_warning,
   schematic_group,
   schematic_sheet,
   schematic_table,
@@ -25624,10 +26096,14 @@ var any_circuit_element = exports_external.union([
   simulation_current_source,
   simulation_experiment,
   simulation_transient_voltage_graph,
+  simulation_transient_current_graph,
   simulation_switch,
   simulation_voltage_probe,
+  simulation_current_probe,
+  simulation_oscilloscope_trace,
   simulation_unknown_experiment_error,
-  simulation_op_amp
+  simulation_op_amp,
+  simulation_spice_subcircuit
 ]);
 var any_soup_element = any_circuit_element;
 expectTypesMatch(true);
@@ -39021,7 +39497,7 @@ var tssop = (raw_params) => {
   const isFinePitch = pValue != null && pValue <= length.parse("0.5mm");
   const parameters = tssop_def.parse(params);
   const pads = [];
-  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8;
+  const cornerRadius = parameters.rounded ?? Math.min(parameters.pl, parameters.pw) / 8;
   const wForPads = isFinePitch ? parameters.w - length.parse("0.15mm") : parameters.w;
   for (let i = 0;i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
@@ -48355,6 +48831,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="106.66666666666669" y="66.66666666666663" width="586.6666666666665" height="466.66666666666674" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="213.33333333333331" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="280" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="346.6666666666667" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="413.3333333333333" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="480" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="546.6666666666667" y="429.99999999999994" width="40" height="103.33333333333334" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="106.66666666666666" y="252" width="80" height="120.00000000000001" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="613.3333333333334" y="252" width="80" height="120.00000000000001" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="" fill="none" stroke="#f2eda1" stroke-width="6.666666666666668" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="33.333333333333336" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,66.66666666666663)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
     title: "jst.test.tsjst_sh_6"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="222.5501915920803" y="44.91035847537955" width="354.8996168158394" height="510.1792830492409" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(505.09023883238814 103.29370772644097) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(391.01792830492406 103.29370772644097) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(276.94561777746 103.29370772644097) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(276.94561777746 496.70629227355903) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(391.01792830492406 496.70629227355903) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="-58.38334925106139" y="-31.94024694768994" width="116.76669850212278" height="63.88049389537988" transform="translate(505.09023883238814 496.70629227355903) rotate(-270)" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 222.5501915920803 166.1680928250403 L 559.4856650177678 166.1680928250403 L 559.4856650177678 255.38936427501343 L 542.4139138185412 258.7851467213681 L 527.941181983587 268.45551696581913 L 518.270811739136 282.9282488007735 L 514.8750292927813 300 L 518.270811739136 317.0717511992266 L 527.941181983587 331.54448303418087 L 542.4139138185412 341.2148532786319 L 559.4856650177678 344.61063572498654 L 559.4856650177678 433.8319071749597 L 222.5501915920803 433.8319071749597 L 222.5501915920803 166.1680928250403 Z" fill="none" stroke="#f2eda1" stroke-width="4.4910358475379555" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="silkscreen_path_1" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="28.077956118807297" text-anchor="middle" dominant-baseline="central" transform="matrix(-1.8369701987210297e-16,1,-1,-1.8369701987210297e-16,577.4498084079197,300)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
+    title: "C78589_sop6"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="185.71428571428572" y="142.85714285714283" width="428.5714285714286" height="314.2857142857143" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="228.57142857142858" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429" data-type="pcb_smtpad" data-pcb-layer="top" rx="8.035714285714286" ry="8.035714285714286"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="528.5714285714286" y="296.4285714285714" width="85.71428571428571" height="64.28571428571429" data-type="pcb_smtpad" data-pcb-layer="top" rx="8.035714285714286" ry="8.035714285714286"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 571.4285714285714 199.99999999999997 L 185.71428571428572 199.99999999999997 L 185.71428571428572 457.1428571428571 L 571.4285714285714 457.1428571428571" fill="none" stroke="#f2eda1" stroke-width="14.285714285714286" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="42.857142857142854" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,421.42857142857144,142.85714285714283)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><rect x="192.85714285714286" y="192.85714285714283" width="457.14285714285717" height="271.42857142857144" class="pcb-courtyard-rect pcb-courtyard-top" data-pcb-courtyard-rect-id="" data-type="pcb_courtyard_rect" data-pcb-layer="top" stroke-linejoin="round" fill="none" stroke="#FF00FF" stroke-width="7.142857142857143"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 398.92857142857144 328.57142857142856 L 407.02857142857147 328.57142857142856" stroke-width="2.2500000000000004" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_anode_leg" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 407.02857142857147 310.57142857142856 L 435.8285714285714 328.57142857142856 L 407.02857142857147 346.57142857142856 Z" stroke-width="2.2500000000000004" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_triangle" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 435.8285714285714 310.57142857142856 L 435.8285714285714 346.57142857142856" stroke-width="2.2500000000000004" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_cathode" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 435.8285714285714 328.57142857142856 L 443.92857142857144 328.57142857142856" stroke-width="2.2500000000000004" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_cathode_leg" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="16.071428571428573" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,276.7857142857143,328.57142857142856)" class="pcb-fabrication-note-text" fill="rgba(255,255,255,0.5)" data-type="pcb_fabrication_note_text" data-pcb-layer="overlay">+</text><text x="0" y="0" font-family="Arial, sans-serif" font-size="16.071428571428573" text-anchor="middle" dominant-baseline="central" transform="matrix(0.9998476951563913,0.01745240643728351,-0.01745240643728351,0.9998476951563913,566.0714285714287,328.57142857142856)" class="pcb-fabrication-note-text" fill="rgba(255,255,255,0.5)" data-type="pcb_fabrication_note_text" data-pcb-layer="overlay">-</text></svg>',
