@@ -10,6 +10,7 @@ import { rectpad } from "../helpers/rectpad"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { dim2d } from "../helpers/zod/dim-2d"
 
 export const stampboard_def = base_def.extend({
   fn: z.string(),
@@ -22,6 +23,13 @@ export const stampboard_def = base_def.extend({
   p: length.default(length.parse("2.54mm")),
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("2.4mm")),
+  sidey: length.default(0).describe("shared Y offset for left and right rows"),
+  innergrid: dim2d.optional().describe("columns and rows of inner SMT pads"),
+  innerp: length.default("1mm").describe("inner SMT pad grid pitch"),
+  innerpw: length.default("1mm").describe("inner SMT pad width"),
+  innerph: length.default("1mm").describe("inner SMT pad height"),
+  innerx: length.default(0).describe("inner SMT pad grid center X"),
+  innery: length.default(0).describe("inner SMT pad grid center Y"),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
@@ -141,12 +149,16 @@ export const stampboard = (
   let routes: { x: number; y: number }[] = []
   const innerDiameter = 1
   const outerDiameter = innerDiameter
-  const totalPadsNumber =
+  const perimeterPadCount =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
+  const innerPadCount = params.innergrid
+    ? params.innergrid.x * params.innergrid.y
+    : 0
+  const totalPadsNumber = perimeterPadCount + innerPadCount
   const maxLabelLength = `pin${totalPadsNumber}`.length
   const textHalf = (maxLabelLength * 0.7) / 2
   if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p
+    const yoff = -((params.right - 1) / 2) * params.p + params.sidey
     for (let i = 0; i < params.right; i++) {
       if (
         i === 0 &&
@@ -213,7 +225,7 @@ export const stampboard = (
     }
   }
   if (params.left) {
-    const yoff = ((params.left - 1) / 2) * params.p
+    const yoff = ((params.left - 1) / 2) * params.p + params.sidey
     for (let i = 0; i < params.left; i++) {
       if (i === 0 && !params.silkscreenlabels) {
         routes = getTriangleDir(
@@ -412,6 +424,22 @@ export const stampboard = (
             -height / 2 + params.innerholeedgedistance,
             innerDiameter,
             outerDiameter,
+          ),
+        )
+      }
+    }
+  }
+  if (params.innergrid) {
+    const { x: columns, y: rows } = params.innergrid
+    for (let row = 0; row < rows; row++) {
+      for (let column = 0; column < columns; column++) {
+        rectpads.push(
+          rectpad(
+            perimeterPadCount + row * columns + column + 1,
+            params.innerx + (column - (columns - 1) / 2) * params.innerp,
+            params.innery + (row - (rows - 1) / 2) * params.innerp,
+            params.innerpw,
+            params.innerph,
           ),
         )
       }

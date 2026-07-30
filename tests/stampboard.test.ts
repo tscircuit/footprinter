@@ -23,6 +23,64 @@ test("stampboard", () => {
   )
 })
 
+test("stampboard with offset side rows and inner SMT grid", () => {
+  const def =
+    "stampboard_left14_right14_bottom12_top0_w19.000089mm_h18.9899036mm_p1.27mm_pw0.8999982mm_pl1.499997mm_sidey0.7899527mm_innergrid3x3_innerp1.400048mm_innerpw0.8999982mm_innerph0.8999982mm_innerx-1.500124mm_innery1.3248767mm"
+  const soup = fp.string(def).circuitJson()
+  const pads = soup.filter((element) => element.type === "pcb_smtpad")
+  const pad = (pinNumber: number) =>
+    pads.find((element) => element.port_hints.includes(pinNumber.toString()))
+  const expectPad = (
+    pinNumber: number,
+    expected: { x: number; y: number; width: number; height: number },
+  ) => {
+    const actual = pad(pinNumber)
+    expect(actual).toBeDefined()
+    expect(actual!.x).toBeCloseTo(expected.x, 6)
+    expect(actual!.y).toBeCloseTo(expected.y, 6)
+    expect(actual!.width).toBeCloseTo(expected.width, 6)
+    expect(actual!.height).toBeCloseTo(expected.height, 6)
+  }
+
+  expect(pads).toHaveLength(49)
+  expectPad(1, {
+    x: -8.750046,
+    y: 9.0449527,
+    width: 1.499997,
+    height: 0.8999982,
+  })
+  expectPad(15, {
+    x: -6.985,
+    y: -8.7449533,
+    width: 0.8999982,
+    height: 1.499997,
+  })
+  expectPad(27, {
+    x: 8.750046,
+    y: -7.4650473,
+    width: 1.499997,
+    height: 0.8999982,
+  })
+  expectPad(41, {
+    x: -2.900172,
+    y: -0.0751713,
+    width: 0.8999982,
+    height: 0.8999982,
+  })
+  expectPad(49, {
+    x: -0.100076,
+    y: 2.7249247,
+    width: 0.8999982,
+    height: 0.8999982,
+  })
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "stampboard_offset_side_rows_inner_smt_grid",
+  )
+})
+
 test("stampboard silkscreen labels", () => {
   const def =
     "stampboard_left10_right10_bottom4_top4_w21mm_p2.54mm_silkscreenlabels"
