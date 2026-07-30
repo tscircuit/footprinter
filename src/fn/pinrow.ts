@@ -74,12 +74,36 @@ export const pinrow_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
+    pinLabelSide: z
+      .enum(["top", "bottom", "left", "right"])
+      .optional()
+      .describe(
+        "side of the pin row the pin labels sit on; overrides the side derived from text alignment",
+      ),
+    // string-form flags for pinLabelSide (e.g. `pinrow5_pinlabelbottom`), mirroring
+    // mountedpcbmodule's pinRowSide / pinrow<side> convention
+    pinlabeltop: z.boolean().optional().default(false),
+    pinlabelbottom: z.boolean().optional().default(false),
+    pinlabelleft: z.boolean().optional().default(false),
+    pinlabelright: z.boolean().optional().default(false),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
+    const pinLabelSide =
+      data.pinLabelSide ??
+      (data.pinlabeltop
+        ? "top"
+        : data.pinlabelbottom
+          ? "bottom"
+          : data.pinlabelleft
+            ? "left"
+            : data.pinlabelright
+              ? "right"
+              : undefined)
     return {
       ...data,
       pinlabelAnchorSide,
+      pinLabelSide,
       male: data.male ?? !data.female,
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
@@ -135,10 +159,15 @@ export const pinrow = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
+    pinLabelSide,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
+
+  // pinLabelSide names the side of the pin row the labels anchor to directly;
+  // when unset it falls back to the side derived from text alignment / orthogonal.
+  const effectiveAnchorSide = pinLabelSide ?? pinlabelAnchorSide
 
   const holes: AnyCircuitElement[] = []
   const missingPositions = missing as number[]
@@ -255,7 +284,7 @@ export const pinrow = (
       xoff,
       yoff,
       od,
-      anchorSide: pinlabelAnchorSide,
+      anchorSide: effectiveAnchorSide,
       smd: parameters.smd,
       pw: parameters.pw,
       pl: parameters.pl,
@@ -268,7 +297,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
@@ -282,7 +311,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
@@ -297,7 +326,7 @@ export const pinrow = (
             pn: pinNumber,
             anchor_x,
             anchor_y,
-            anchorplacement: pinlabelAnchorSide,
+            anchorplacement: effectiveAnchorSide,
             textalign: pinlabelTextAlign,
             orthogonal: pinlabelorthogonal,
             verticallyinverted: pinlabelverticallyinverted,
