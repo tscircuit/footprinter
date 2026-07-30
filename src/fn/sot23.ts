@@ -50,7 +50,7 @@ const sot23_5CourtyardOutline = [
 export const sot23_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().default(3),
-  w: z.string().default("1.92mm"),
+  w: z.string().default("2.275mm"),
   h: z.string().default("2.74mm"),
   pl: z.string().default("1.325mm"),
   pw: z.string().default("0.6mm"),
@@ -111,13 +111,13 @@ export const getCcwSot23Coords = (parameters: {
   const { pn, w, h, pl, p } = parameters
 
   if (pn === 1) {
-    return { x: -1.1375, y: p }
+    return { x: -w / 2, y: p }
   }
   if (pn === 2) {
-    return { x: -1.1375, y: -p }
+    return { x: -w / 2, y: -p }
   }
 
-  return { x: 1.1375, y: 0 }
+  return { x: w / 2, y: 0 }
 }
 
 export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
@@ -127,7 +127,7 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const cornerRadius = parameters.rounded ?? Math.min(pl, pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot23Coords({
@@ -158,38 +158,41 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
 }
 
 export const getCcwSot235Coords = (parameters: {
+  w: number
   h: number
   p: number
   pn: number
 }) => {
-  const { p, h, pn } = parameters
+  const { w, p, h, pn } = parameters
   if (pn === 1) {
-    return { x: -1.1375, y: p }
+    return { x: -w / 2, y: p }
   }
   if (pn === 2) {
-    return { x: -1.1375, y: 0 }
+    return { x: -w / 2, y: 0 }
   }
   if (pn === 3) {
-    return { x: -1.1375, y: -p }
+    return { x: -w / 2, y: -p }
   }
   if (pn === 4) {
-    return { x: 1.1375, y: -p }
+    return { x: w / 2, y: -p }
   }
   if (pn === 5) {
-    return { x: 1.1375, y: p }
+    return { x: w / 2, y: p }
   }
   throw new Error("Invalid pin number")
 }
 
 export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
+  const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
   const p = Number.parseFloat(parameters.p)
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const cornerRadius = parameters.rounded ?? Math.min(pl, pw) / 8
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({
+      w,
       h,
       p,
       pn: i,
@@ -222,7 +225,7 @@ export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
     stroke_width: 0.05,
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.3, 0.3)
-  const pin1Position = getCcwSot235Coords({ h, p, pn: 1 })
+  const pin1Position = getCcwSot235Coords({ w, h, p, pn: 1 })
   pin1Position.x = pin1Position.x - pw * 1.5
   const triangleHeight = 0.3 // Adjust triangle size as needed
   const triangleWidth = 0.4 // Adjust triangle width as needed
