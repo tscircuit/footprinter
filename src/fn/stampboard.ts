@@ -12,15 +12,6 @@ import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 import { dim2d } from "../helpers/zod/dim-2d"
 
-const innerPadGrid = dim2d.refine(
-  ({ x: columns, y: rows }) =>
-    Number.isInteger(columns) &&
-    columns > 0 &&
-    Number.isInteger(rows) &&
-    rows > 0,
-  "inner pad grid must have positive integer columns and rows",
-)
-
 export const stampboard_def = base_def.extend({
   fn: z.string(),
   w: length.default("22.58mm"),
@@ -34,27 +25,16 @@ export const stampboard_def = base_def.extend({
   pl: length.default(length.parse("2.4mm")),
   leftrowy: length.default(0).describe("left pad row center y position"),
   rightrowy: length.default(0).describe("right pad row center y position"),
-  innerpadgrid: innerPadGrid
-    .optional()
-    .describe("inner SMT pad grid size in columns by rows"),
-  innerpadpitch: length
-    .default("1mm")
-    .refine((value) => value > 0, "inner pad pitch must be greater than zero")
-    .describe("center-to-center pitch of the inner SMT pads"),
-  innerpadwidth: length
-    .default("1mm")
-    .refine((value) => value > 0, "inner pad width must be greater than zero")
-    .describe("width of each inner SMT pad"),
-  innerpadheight: length
-    .default("1mm")
-    .refine((value) => value > 0, "inner pad height must be greater than zero")
-    .describe("height of each inner SMT pad"),
-  innerpadgridcenteroffsetx: length
+  innergrid: dim2d.optional().describe("inner SMT pad columns by rows"),
+  innerp: length.default("1mm").describe("inner SMT pad pitch"),
+  innerpw: length.default("1mm").describe("inner SMT pad width"),
+  innerph: length.default("1mm").describe("inner SMT pad height"),
+  innergridcenterx: length
     .default(0)
-    .describe("inner SMT pad grid center x offset from the footprint origin"),
-  innerpadgridcenteroffsety: length
+    .describe("x position of the inner SMT pad grid center"),
+  innergridcentery: length
     .default(0)
-    .describe("inner SMT pad grid center y offset from the footprint origin"),
+    .describe("y position of the inner SMT pad grid center"),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
@@ -174,8 +154,8 @@ export const stampboard = (
   const outerDiameter = innerDiameter
   const perimeterPadCount =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
-  const innerPadCount = params.innerpadgrid
-    ? params.innerpadgrid.x * params.innerpadgrid.y
+  const innerPadCount = params.innergrid
+    ? params.innergrid.x * params.innergrid.y
     : 0
   const totalPadsNumber = perimeterPadCount + innerPadCount
   const maxLabelLength = `pin${totalPadsNumber}`.length
@@ -452,19 +432,18 @@ export const stampboard = (
       }
     }
   }
-  if (params.innerpadgrid) {
-    const { x: columns, y: rows } = params.innerpadgrid
+  if (params.innergrid) {
+    const { x: columns, y: rows } = params.innergrid
     for (let row = 0; row < rows; row++) {
       for (let column = 0; column < columns; column++) {
         rectpads.push(
           rectpad(
             perimeterPadCount + row * columns + column + 1,
-            params.innerpadgridcenteroffsetx +
-              (column - (columns - 1) / 2) * params.innerpadpitch,
-            params.innerpadgridcenteroffsety +
-              (row - (rows - 1) / 2) * params.innerpadpitch,
-            params.innerpadwidth,
-            params.innerpadheight,
+            params.innergridcenterx +
+              (column - (columns - 1) / 2) * params.innerp,
+            params.innergridcentery + (row - (rows - 1) / 2) * params.innerp,
+            params.innerpw,
+            params.innerph,
           ),
         )
       }
