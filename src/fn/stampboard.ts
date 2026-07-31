@@ -1,16 +1,25 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbPlatedHole,
   type PcbSilkscreenPath,
   type PcbSilkscreenText,
+  length,
 } from "circuit-json"
+import { platedhole } from "src/helpers/platedhole"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { dim2d } from "../helpers/zod/dim-2d"
+
+const innerPadGrid = dim2d.refine(
+  ({ x: columns, y: rows }) =>
+    Number.isInteger(columns) &&
+    columns > 0 &&
+    Number.isInteger(rows) &&
+    rows > 0,
+  "inner pad grid must have positive integer columns and rows",
+)
 
 export const stampboard_def = base_def.extend({
   fn: z.string(),
@@ -23,13 +32,29 @@ export const stampboard_def = base_def.extend({
   p: length.default(length.parse("2.54mm")),
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("2.4mm")),
-  sidey: length.default(0).describe("shared Y offset for left and right rows"),
-  innergrid: dim2d.optional().describe("columns and rows of inner SMT pads"),
-  innerp: length.default("1mm").describe("inner SMT pad grid pitch"),
-  innerpw: length.default("1mm").describe("inner SMT pad width"),
-  innerph: length.default("1mm").describe("inner SMT pad height"),
-  innerx: length.default(0).describe("inner SMT pad grid center X"),
-  innery: length.default(0).describe("inner SMT pad grid center Y"),
+  leftrowy: length.default(0).describe("left pad row center y position"),
+  rightrowy: length.default(0).describe("right pad row center y position"),
+  innerpadgrid: innerPadGrid
+    .optional()
+    .describe("inner SMT pad grid size in columns by rows"),
+  innerpadpitch: length
+    .default("1mm")
+    .refine((value) => value > 0, "inner pad pitch must be greater than zero")
+    .describe("center-to-center pitch of the inner SMT pads"),
+  innerpadwidth: length
+    .default("1mm")
+    .refine((value) => value > 0, "inner pad width must be greater than zero")
+    .describe("width of each inner SMT pad"),
+  innerpadheight: length
+    .default("1mm")
+    .refine((value) => value > 0, "inner pad height must be greater than zero")
+    .describe("height of each inner SMT pad"),
+  innerpadgridcenteroffsetx: length
+    .default(0)
+    .describe("inner SMT pad grid center x offset from the footprint origin"),
+  innerpadgridcenteroffsety: length
+    .default(0)
+    .describe("inner SMT pad grid center y offset from the footprint origin"),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
@@ -37,19 +62,17 @@ export const stampboard_def = base_def.extend({
 })
 
 export type Stampboard_def = z.input<typeof stampboard_def>
+type StampboardParams = z.output<typeof stampboard_def>
 
-const getHeight = (parameters: Stampboard_def) => {
-  const params = stampboard_def.parse(parameters)
-  if (params.left && params.right) {
-    return Math.max(params.left, params.right) * params.p
-  }
-  if (params.left) {
-    return params.left * params.p
-  }
-  if (params.right) {
-    return params.right * params.p
-  }
-  return 51 // Default height if no pins are provided
+const getHeight = (params: StampboardParams) => {
+  const leftHalfHeight = params.left
+    ? Math.abs(params.leftrowy) + (params.left * params.p) / 2
+    : 0
+  const rightHalfHeight = params.right
+    ? Math.abs(params.rightrowy) + (params.right * params.p) / 2
+    : 0
+  const halfHeight = Math.max(leftHalfHeight, rightHalfHeight)
+  return halfHeight > 0 ? halfHeight * 2 : 51
 }
 const getTriangleDir = (x: number, y: number, side: string) => {
   let routes: { x: number; y: number }[] = []
@@ -151,14 +174,14 @@ export const stampboard = (
   const outerDiameter = innerDiameter
   const perimeterPadCount =
     params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
-  const innerPadCount = params.innergrid
-    ? params.innergrid.x * params.innergrid.y
+  const innerPadCount = params.innerpadgrid
+    ? params.innerpadgrid.x * params.innerpadgrid.y
     : 0
   const totalPadsNumber = perimeterPadCount + innerPadCount
   const maxLabelLength = `pin${totalPadsNumber}`.length
   const textHalf = (maxLabelLength * 0.7) / 2
   if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p + params.sidey
+    const yoff = -((params.right - 1) / 2) * params.p + params.rightrowy
     for (let i = 0; i < params.right; i++) {
       if (
         i === 0 &&
@@ -225,7 +248,7 @@ export const stampboard = (
     }
   }
   if (params.left) {
-    const yoff = ((params.left - 1) / 2) * params.p + params.sidey
+    const yoff = ((params.left - 1) / 2) * params.p + params.leftrowy
     for (let i = 0; i < params.left; i++) {
       if (i === 0 && !params.silkscreenlabels) {
         routes = getTriangleDir(
@@ -429,17 +452,19 @@ export const stampboard = (
       }
     }
   }
-  if (params.innergrid) {
-    const { x: columns, y: rows } = params.innergrid
+  if (params.innerpadgrid) {
+    const { x: columns, y: rows } = params.innerpadgrid
     for (let row = 0; row < rows; row++) {
       for (let column = 0; column < columns; column++) {
         rectpads.push(
           rectpad(
             perimeterPadCount + row * columns + column + 1,
-            params.innerx + (column - (columns - 1) / 2) * params.innerp,
-            params.innery + (row - (rows - 1) / 2) * params.innerp,
-            params.innerpw,
-            params.innerph,
+            params.innerpadgridcenteroffsetx +
+              (column - (columns - 1) / 2) * params.innerpadpitch,
+            params.innerpadgridcenteroffsety +
+              (row - (rows - 1) / 2) * params.innerpadpitch,
+            params.innerpadwidth,
+            params.innerpadheight,
           ),
         )
       }

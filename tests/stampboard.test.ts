@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -25,7 +25,7 @@ test("stampboard", () => {
 
 test("stampboard with offset side rows and inner SMT grid", () => {
   const def =
-    "stampboard_left14_right14_bottom12_top0_w19.000089mm_h18.9899036mm_p1.27mm_pw0.8999982mm_pl1.499997mm_sidey0.7899527mm_innergrid3x3_innerp1.400048mm_innerpw0.8999982mm_innerph0.8999982mm_innerx-1.500124mm_innery1.3248767mm"
+    "stampboard_left14_right14_bottom12_top0_w19.000089mm_h18.9899036mm_p1.27mm_pw0.8999982mm_pl1.499997mm_leftrowy0.7899527mm_rightrowy0.7899527mm_innerpadgrid3x3_innerpadpitch1.400048mm_innerpadwidth0.8999982mm_innerpadheight0.8999982mm_innerpadgridcenteroffsetx-1.500124mm_innerpadgridcenteroffsety1.3248767mm"
   const soup = fp.string(def).circuitJson()
   const pads = soup.filter((element) => element.type === "pcb_smtpad")
   const pad = (pinNumber: number) =>
@@ -79,6 +79,77 @@ test("stampboard with offset side rows and inner SMT grid", () => {
     import.meta.path,
     "stampboard_offset_side_rows_inner_smt_grid",
   )
+})
+
+test("stampboard supports the builder API for custom side rows and inner pads", () => {
+  const soup = fp()
+    .stampboard()
+    .left(2)
+    .right(2)
+    .top(0)
+    .bottom(0)
+    .w("10mm")
+    .p("2mm")
+    .pw("1mm")
+    .pl("2mm")
+    .leftrowy("1mm")
+    .rightrowy("-1mm")
+    .innerpadgrid("2x1")
+    .innerpadpitch("1.5mm")
+    .innerpadwidth("0.8mm")
+    .innerpadheight("1.2mm")
+    .innerpadgridcenteroffsetx("0.25mm")
+    .innerpadgridcenteroffsety("-0.5mm")
+    .circuitJson()
+  const pads = soup.filter((element) => element.type === "pcb_smtpad")
+  const pad = (pinNumber: number) => {
+    const pad = pads.find((element) =>
+      element.port_hints.includes(pinNumber.toString()),
+    )
+    expect(pad).toBeDefined()
+    return pad!
+  }
+
+  expect(pads).toHaveLength(6)
+  expect(pad(1).y).toBeCloseTo(2)
+  expect(pad(2).y).toBeCloseTo(0)
+  expect(pad(3).y).toBeCloseTo(-2)
+  expect(pad(4).y).toBeCloseTo(0)
+  expect(pad(5)).toMatchObject({
+    x: -0.5,
+    y: -0.5,
+    width: 0.8,
+    height: 1.2,
+  })
+  expect(pad(6)).toMatchObject({
+    x: 1,
+    y: -0.5,
+    width: 0.8,
+    height: 1.2,
+  })
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "stampboard_custom_side_rows_and_inner_pad_grid",
+  )
+})
+
+test("stampboard validates inner pad grid parameters", () => {
+  for (const grid of ["0x3", "2.5x3", "3x-1"]) {
+    expect(() =>
+      fp.string(`stampboard_innerpadgrid${grid}`).circuitJson(),
+    ).toThrow("inner pad grid must have positive integer columns and rows")
+  }
+  for (const parameter of [
+    "innerpadpitch0mm",
+    "innerpadwidth0mm",
+    "innerpadheight0mm",
+  ]) {
+    expect(() => fp.string(`stampboard_${parameter}`).circuitJson()).toThrow(
+      "must be greater than zero",
+    )
+  }
 })
 
 test("stampboard silkscreen labels", () => {
