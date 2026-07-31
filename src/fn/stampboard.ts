@@ -23,18 +23,22 @@ export const stampboard_def = base_def.extend({
   p: length.default(length.parse("2.54mm")),
   pw: length.default(length.parse("1.6mm")),
   pl: length.default(length.parse("2.4mm")),
-  leftrowy: length.default(0).describe("left pad row center y position"),
-  rightrowy: length.default(0).describe("right pad row center y position"),
+  leftrowoffsety: length
+    .default(0)
+    .describe("left pad row y offset from its default placement"),
+  rightrowoffsety: length
+    .default(0)
+    .describe("right pad row y offset from its default placement"),
   innergrid: dim2d.optional().describe("inner SMT pad columns by rows"),
   innerp: length.default("1mm").describe("inner SMT pad pitch"),
   innerpw: length.default("1mm").describe("inner SMT pad width"),
   innerph: length.default("1mm").describe("inner SMT pad height"),
-  innergridcenterx: length
+  innergridoffsetx: length
     .default(0)
-    .describe("x position of the inner SMT pad grid center"),
-  innergridcentery: length
+    .describe("inner SMT pad grid x offset from the footprint origin"),
+  innergridoffsety: length
     .default(0)
-    .describe("y position of the inner SMT pad grid center"),
+    .describe("inner SMT pad grid y offset from the footprint origin"),
   innerhole: z.boolean().default(false),
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
@@ -46,10 +50,10 @@ type StampboardParams = z.output<typeof stampboard_def>
 
 const getHeight = (params: StampboardParams) => {
   const leftHalfHeight = params.left
-    ? Math.abs(params.leftrowy) + (params.left * params.p) / 2
+    ? Math.abs(params.leftrowoffsety) + (params.left * params.p) / 2
     : 0
   const rightHalfHeight = params.right
-    ? Math.abs(params.rightrowy) + (params.right * params.p) / 2
+    ? Math.abs(params.rightrowoffsety) + (params.right * params.p) / 2
     : 0
   const halfHeight = Math.max(leftHalfHeight, rightHalfHeight)
   return halfHeight > 0 ? halfHeight * 2 : 51
@@ -161,7 +165,7 @@ export const stampboard = (
   const maxLabelLength = `pin${totalPadsNumber}`.length
   const textHalf = (maxLabelLength * 0.7) / 2
   if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p + params.rightrowy
+    const yoff = -((params.right - 1) / 2) * params.p + params.rightrowoffsety
     for (let i = 0; i < params.right; i++) {
       if (
         i === 0 &&
@@ -228,7 +232,7 @@ export const stampboard = (
     }
   }
   if (params.left) {
-    const yoff = ((params.left - 1) / 2) * params.p + params.leftrowy
+    const yoff = ((params.left - 1) / 2) * params.p + params.leftrowoffsety
     for (let i = 0; i < params.left; i++) {
       if (i === 0 && !params.silkscreenlabels) {
         routes = getTriangleDir(
@@ -439,9 +443,9 @@ export const stampboard = (
         rectpads.push(
           rectpad(
             perimeterPadCount + row * columns + column + 1,
-            params.innergridcenterx +
+            params.innergridoffsetx +
               (column - (columns - 1) / 2) * params.innerp,
-            params.innergridcentery + (row - (rows - 1) / 2) * params.innerp,
+            params.innergridoffsety + (row - (rows - 1) / 2) * params.innerp,
             params.innerpw,
             params.innerph,
           ),

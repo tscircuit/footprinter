@@ -25,7 +25,7 @@ test("stampboard", () => {
 
 test("stampboard with offset side rows and inner SMT grid", () => {
   const def =
-    "stampboard_left14_right14_bottom12_top0_w19.000089mm_h18.9899036mm_p1.27mm_pw0.8999982mm_pl1.499997mm_leftrowy0.7899527mm_rightrowy0.7899527mm_innergrid3x3_innerp1.400048mm_innerpw0.8999982mm_innerph0.8999982mm_innergridcenterx-1.500124mm_innergridcentery1.3248767mm"
+    "stampboard_left14_right14_bottom12_top0_w19.000089mm_h18.9899036mm_p1.27mm_pw0.8999982mm_pl1.499997mm_leftrowoffsety0.7899527mm_rightrowoffsety0.7899527mm_innergrid3x3_innerp1.400048mm_innerpw0.8999982mm_innerph0.8999982mm_innergridoffsetx-1.500124mm_innergridoffsety1.3248767mm"
   const soup = fp.string(def).circuitJson()
   const pads = soup.filter((element) => element.type === "pcb_smtpad")
   const pad = (pinNumber: number) =>
@@ -92,14 +92,14 @@ test("stampboard supports the builder API for custom side rows and inner pads", 
     .p("2mm")
     .pw("1mm")
     .pl("2mm")
-    .leftrowy("1mm")
-    .rightrowy("-1mm")
+    .leftrowoffsety("1mm")
+    .rightrowoffsety("-1mm")
     .innergrid("2x1")
     .innerp("1.5mm")
     .innerpw("0.8mm")
     .innerph("1.2mm")
-    .innergridcenterx("0.25mm")
-    .innergridcentery("-0.5mm")
+    .innergridoffsetx("0.25mm")
+    .innergridoffsety("-0.5mm")
     .circuitJson()
   const pads = soup.filter((element) => element.type === "pcb_smtpad")
   const pad = (pinNumber: number) => {
