@@ -6,6 +6,16 @@ test("to92 (triangular)", () => {
   const circuitJson = fp.string("to92").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path)
+
+  const courtyard = circuitJson.find(
+    (element) => element.type === "pcb_courtyard_outline",
+  )
+  expect(courtyard?.outline).toEqual([
+    { x: -2.5, y: 4.75 },
+    { x: -2.5, y: -0.25 },
+    { x: 2.5, y: -0.25 },
+    { x: 2.5, y: 4.75 },
+  ])
 })
 test("to92_2", () => {
   const circuitJson = fp.string("to92_2").circuitJson()

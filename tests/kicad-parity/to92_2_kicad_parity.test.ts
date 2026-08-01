@@ -3,19 +3,18 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/to92_2", async () => {
-  const {
-    combinedFootprintElements,
-    booleanDifferenceSvg,
-    courtyardDiffPercent,
-  } = await compareFootprinterVsKicad(
-    "to92_2_od1.05_id0.75",
-    "Package_TO_SOT_THT.pretty/TO-92-2.circuit.json",
-  )
+  const { combinedFootprintElements, booleanDifferenceSvg } =
+    await compareFootprinterVsKicad(
+      "to92_2_od1.05_id0.75",
+      "Package_TO_SOT_THT.pretty/TO-92-2.circuit.json",
+    )
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
-  expect(courtyardDiffPercent).toBeLessThan(5)
+  // The courtyard is intentionally centered for tscircuit component placement,
+  // so it no longer matches KiCad's offset courtyard. Copper parity remains
+  // covered by the boolean-difference snapshot below.
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92_2")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
