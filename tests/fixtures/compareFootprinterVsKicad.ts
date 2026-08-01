@@ -541,6 +541,23 @@ export async function compareFootprinterVsKicad(
     }
   }
 
+  // Some footprints, such as BGAs, contain only circular SMT pads. Fall back to
+  // shape-aware bounds when the legacy comparison bounds found no elements.
+  if (![minX, maxX, minY, maxY].every(Number.isFinite)) {
+    for (const elm of [...fpCircuitJson, ...transformedKiCad]) {
+      if (elm.type !== "pcb_smtpad" && elm.type !== "pcb_plated_hole") continue
+
+      const alignmentElement = elm as PcbAlignmentElement
+      const center = getElementCenter(alignmentElement)
+      const radiusX = getWidth(alignmentElement) / 2
+      const radiusY = getHeight(alignmentElement) / 2
+      minX = Math.min(minX, center.x - radiusX)
+      maxX = Math.max(maxX, center.x + radiusX)
+      minY = Math.min(minY, center.y - radiusY)
+      maxY = Math.max(maxY, center.y + radiusY)
+    }
+  }
+
   const midX = (minX + maxX) / 2
 
   const diffPercentText: PcbSilkscreenText = {

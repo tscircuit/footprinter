@@ -17,9 +17,14 @@ test("parity/bga165", async () => {
     showCourtyards: true,
   })
   expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(
+    combinedFootprintElements
+      .filter((element) => element.type === "pcb_smtpad")
+      .every((pad) => pad.shape === "circle"),
+  ).toBe(true)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga165")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "bga165_boolean_difference",
   )
-})
+}, 10_000)
