@@ -115,10 +115,10 @@ export const to92s = (
   const bodyMaxX = holeY
   const bodyMinY = 0
   const bodyMaxY = holeY + 0.5
-  const courtyardMinX = Math.min(padMinX, bodyMinX) - 0.27
-  const courtyardMaxX = Math.max(padMaxX, bodyMaxX) + 0.13
-  const courtyardMinY = Math.min(padMinY, bodyMinY) - 0.42
-  const courtyardMaxY = Math.max(padMaxY, bodyMaxY) + 0.08
+  const courtyardMinX = Math.min(padMinX, bodyMinX) - 0.25
+  const courtyardMaxX = Math.max(padMaxX, bodyMaxX) + 0.25
+  const courtyardMinY = Math.min(padMinY, bodyMinY) - 0.25
+  const courtyardMaxY = Math.max(padMaxY, bodyMaxY) + 0.25
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",

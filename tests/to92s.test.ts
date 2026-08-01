@@ -8,6 +8,15 @@ test("to92s", () => {
     showCourtyards: true,
   })
   expect(svgContent).toMatchSvgSnapshot(import.meta.path)
+
+  const courtyard = circuitJson.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+  expect(courtyard).toMatchObject({
+    center: { x: 0, y: 1.3 },
+    width: 4.7,
+    height: 3.1,
+  })
 })
 
 test("to92s_2", () => {
