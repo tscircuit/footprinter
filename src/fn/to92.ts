@@ -12,10 +12,10 @@ import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const to92CourtyardOutline = [
-  { x: -2.73, y: 3.71 },
-  { x: -2.73, y: -1.03 },
-  { x: 2.73, y: -1.03 },
-  { x: 2.73, y: 3.71 },
+  { x: -2.5, y: 4.75 },
+  { x: -2.5, y: -0.25 },
+  { x: 2.5, y: -0.25 },
+  { x: 2.5, y: 4.75 },
 ]
 
 export const to92_def = base_def.extend({
