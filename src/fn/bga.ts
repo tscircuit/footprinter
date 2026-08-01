@@ -81,7 +81,9 @@ export const bga = (
 
   ball ??= (0.75 / 1.27) * p
 
-  pad ??= ball * 0.8
+  // KiCad BGA land patterns use a pad diameter equal to half the ball pitch.
+  // Preserve the existing ball-based derivation when the ball is overridden.
+  pad ??= parameters.ball === undefined ? p * 0.5 : ball * 0.8
 
   const pads: PcbSmtPad[] = []
 

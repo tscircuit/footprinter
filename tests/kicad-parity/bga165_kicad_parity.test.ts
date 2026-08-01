@@ -16,6 +16,7 @@ test("parity/bga165", async () => {
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })
+  expect(avgRelDiff).toBeCloseTo(0, 10)
   expect(courtyardDiffPercent).toBeLessThan(0.5)
   expect(
     combinedFootprintElements

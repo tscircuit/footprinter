@@ -136,7 +136,7 @@ test("bga origin parameters", () => {
 })
 
 test("bga pads are circular by default", () => {
-  const soup = fp().bga(4).grid("2x2").p(1).pad(1).soup()
+  const soup = fp().bga(4).grid("2x2").p(1).soup()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "bga_circular_pads")
   const firstPad = soup.find(
@@ -146,5 +146,5 @@ test("bga pads are circular by default", () => {
       el.port_hints[0] === "1",
   )
   expect(firstPad?.shape).toBe("circle")
-  expect(firstPad?.radius).toBeCloseTo(0.5)
+  expect(firstPad?.radius).toBeCloseTo(0.25)
 })
