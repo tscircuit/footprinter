@@ -183,6 +183,15 @@ export type Footprinter = {
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
   >
+  tsop: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "p"
+    | "thermalpad"
+    | "thermalpadcenteroffsetx"
+    | "thermalpadcenteroffsety"
+  >
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<

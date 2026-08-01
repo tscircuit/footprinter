@@ -4,6 +4,8 @@ export { dpak } from "./dpak"
 export { diode } from "./diode"
 export { cap } from "./cap"
 export { crystal } from "./crystal"
+
+export { tsop } from "./tsop"
 export { led } from "./led"
 export { led2835 } from "./led2835"
 export { led5050 } from "./led5050"
