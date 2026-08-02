@@ -85,7 +85,9 @@ test("headermodule silkscreen border and custom module label", () => {
     .filter((element) => element.type === "pcb_plated_hole")
     .map((element) => element.y)
     .filter((y): y is number => typeof y === "number")
-  expect([...new Set(platedHoleYs)].sort((a, b) => a - b)).toEqual([-7.62, 7.62])
+  expect([...new Set(platedHoleYs)].sort((a, b) => a - b)).toEqual([
+    -7.62, 7.62,
+  ])
   const platedHoleXs = circuitJson
     .filter((element) => element.type === "pcb_plated_hole")
     .map((element) => element.x)
