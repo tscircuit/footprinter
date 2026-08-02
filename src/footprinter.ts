@@ -221,6 +221,34 @@ export type Footprinter = {
     | "nopinlabels"
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
+    | "silkscreenborder"
+    | "silkscreenlabel"
+  >
+  headermodule: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "p"
+    | "id"
+    | "od"
+    | "male"
+    | "female"
+    | "rows"
+    | "smd"
+    | "surfacemount"
+    | "rightangle"
+    | "pw"
+    | "pl"
+    | "pinlabeltextalignleft"
+    | "pinlabeltextaligncenter"
+    | "pinlabeltextalignright"
+    | "pinlabelverticallyinverted"
+    | "pinlabelorthogonal"
+    | "nosquareplating"
+    | "nopinlabels"
+    | "doublesidedpinlabel"
+    | "bottomsidepinlabel"
+    | "silkscreenborder"
+    | "silkscreenlabel"
   >
   smdpinheader: (
     num_pins?: number,

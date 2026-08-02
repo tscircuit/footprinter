@@ -23,6 +23,115 @@ test("pinrow5", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
 
+test("pinrow silkscreen border and custom module label", () => {
+  const definition =
+    "pinrow14_rows2_p2.54mm_py15.24mm_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
+  const circuitJson = fp.string(definition).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
+  const params = fp.string(definition).json()
+
+  expect(params).toMatchObject({
+    fn: "pinrow",
+    num_pins: 14,
+    rows: 2,
+    female: true,
+    silkscreenborder: true,
+    silkscreenlabel: "XIAO RP2040",
+  })
+  expect(
+    circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
+  ).toHaveLength(1)
+  expect(
+    circuitJson.find(
+      (element) =>
+        element.type === "pcb_silkscreen_text" &&
+        element.text === "XIAO RP2040",
+    ),
+  ).toMatchObject({
+    anchor_position: { x: 0, y: 0 },
+    anchor_alignment: "center",
+  })
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "pinrow14_silkscreenborder_silkscreenlabel",
+  )
+})
+
+test("headermodule silkscreen border and custom module label", () => {
+  const definition =
+    "headermodule14_rows2_p2.54mm_py15.24mm_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
+  const circuitJson = fp.string(definition).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
+  const params = fp.string(definition).json()
+
+  expect(params).toMatchObject({
+    fn: "headermodule",
+    num_pins: 14,
+    rows: 2,
+    p: 2.54,
+    py: 15.24,
+    female: true,
+    silkscreenborder: true,
+    silkscreenlabel: "XIAO RP2040",
+  })
+  expect(
+    circuitJson.filter(
+      (element) =>
+        element.type === "pcb_silkscreen_path" &&
+        element.pcb_component_id === "",
+    ),
+  ).toHaveLength(1)
+  const pin1Arrow = circuitJson.find(
+    (element) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.pcb_silkscreen_path_id === "pin_marker_1",
+  )
+  expect(pin1Arrow).toMatchObject({ pcb_component_id: "pin_marker_1" })
+  if (pin1Arrow?.type === "pcb_silkscreen_path") {
+    expect(pin1Arrow.route).toHaveLength(4)
+    expect(pin1Arrow.route[0]).toMatchObject({ x: -8.52, y: 7.62 })
+    expect(pin1Arrow.route[1]?.x).toBe(-9.12)
+    expect(pin1Arrow.route[1]?.y).toBeCloseTo(7.02)
+    expect(pin1Arrow.route[2]?.x).toBe(-9.12)
+    expect(pin1Arrow.route[2]?.y).toBeCloseTo(8.22)
+    expect(pin1Arrow.route[3]).toMatchObject({ x: -8.52, y: 7.62 })
+  }
+  const platedHoleYs = circuitJson
+    .filter((element) => element.type === "pcb_plated_hole")
+    .map((element) => element.y)
+    .filter((y): y is number => typeof y === "number")
+  expect([...new Set(platedHoleYs)].sort((a, b) => a - b)).toEqual([
+    -7.62, 7.62,
+  ])
+  const platedHoleXs = circuitJson
+    .filter((element) => element.type === "pcb_plated_hole")
+    .map((element) => element.x)
+    .filter((x): x is number => typeof x === "number")
+  expect(
+    [...new Set(platedHoleXs)]
+      .sort((a, b) => a - b)
+      .map((x) => Number(x.toFixed(2))),
+  ).toEqual([-7.62, -5.08, -2.54, 0, 2.54, 5.08, 7.62])
+  expect(
+    circuitJson.find(
+      (element) =>
+        element.type === "pcb_silkscreen_text" &&
+        element.text === "XIAO RP2040",
+    ),
+  ).toMatchObject({
+    anchor_position: { x: 0, y: 0 },
+    anchor_alignment: "center",
+  })
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "headermodule14_silkscreenborder_silkscreenlabel",
+  )
+})
+
 test("pinheader5_female_rows2 (alias)", () => {
   const aliasSvg = convertCircuitJsonToPcbSvg(
     fp.string("pinheader5_female_rows2").circuitJson(),
