@@ -25,7 +25,7 @@ test("pinrow5", () => {
 
 test("pinrow silkscreen border and custom module label", () => {
   const definition =
-    "pinrow14_rows2_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
+    "pinrow14_rows2_p2.54mm_py15.24mm_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
   const circuitJson = fp.string(definition).circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
     showCourtyards: true,
@@ -61,7 +61,7 @@ test("pinrow silkscreen border and custom module label", () => {
 
 test("headermodule silkscreen border and custom module label", () => {
   const definition =
-    "headermodule14_rows2_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
+    "headermodule14_rows2_p2.54mm_py15.24mm_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
   const circuitJson = fp.string(definition).circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
     showCourtyards: true,
@@ -72,6 +72,8 @@ test("headermodule silkscreen border and custom module label", () => {
     fn: "headermodule",
     num_pins: 14,
     rows: 2,
+    p: 2.54,
+    py: 15.24,
     female: true,
     silkscreenborder: true,
     silkscreenlabel: "XIAO RP2040",
@@ -79,6 +81,20 @@ test("headermodule silkscreen border and custom module label", () => {
   expect(
     circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
   ).toHaveLength(1)
+  const platedHoleYs = circuitJson
+    .filter((element) => element.type === "pcb_plated_hole")
+    .map((element) => element.y)
+    .filter((y): y is number => typeof y === "number")
+  expect([...new Set(platedHoleYs)].sort((a, b) => a - b)).toEqual([-7.62, 7.62])
+  const platedHoleXs = circuitJson
+    .filter((element) => element.type === "pcb_plated_hole")
+    .map((element) => element.x)
+    .filter((x): x is number => typeof x === "number")
+  expect(
+    [...new Set(platedHoleXs)]
+      .sort((a, b) => a - b)
+      .map((x) => Number(x.toFixed(2))),
+  ).toEqual([-7.62, -5.08, -2.54, 0, 2.54, 5.08, 7.62])
   expect(
     circuitJson.find(
       (element) =>
