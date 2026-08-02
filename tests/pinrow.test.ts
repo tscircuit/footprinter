@@ -59,6 +59,42 @@ test("pinrow silkscreen border and custom module label", () => {
   )
 })
 
+test("headermodule silkscreen border and custom module label", () => {
+  const definition =
+    "headermodule14_rows2_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
+  const circuitJson = fp.string(definition).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson, {
+    showCourtyards: true,
+  })
+  const params = fp.string(definition).json()
+
+  expect(params).toMatchObject({
+    fn: "headermodule",
+    num_pins: 14,
+    rows: 2,
+    female: true,
+    silkscreenborder: true,
+    silkscreenlabel: "XIAO RP2040",
+  })
+  expect(
+    circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
+  ).toHaveLength(1)
+  expect(
+    circuitJson.find(
+      (element) =>
+        element.type === "pcb_silkscreen_text" &&
+        element.text === "XIAO RP2040",
+    ),
+  ).toMatchObject({
+    anchor_position: { x: 0, y: 0 },
+    anchor_alignment: "center",
+  })
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "headermodule14_silkscreenborder_silkscreenlabel",
+  )
+})
+
 test("pinheader5_female_rows2 (alias)", () => {
   const aliasSvg = convertCircuitJsonToPcbSvg(
     fp.string("pinheader5_female_rows2").circuitJson(),
