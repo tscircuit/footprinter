@@ -79,8 +79,27 @@ test("headermodule silkscreen border and custom module label", () => {
     silkscreenlabel: "XIAO RP2040",
   })
   expect(
-    circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
+    circuitJson.filter(
+      (element) =>
+        element.type === "pcb_silkscreen_path" &&
+        element.pcb_component_id === "",
+    ),
   ).toHaveLength(1)
+  const pin1Arrow = circuitJson.find(
+    (element) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.pcb_silkscreen_path_id === "pin_marker_1",
+  )
+  expect(pin1Arrow).toMatchObject({ pcb_component_id: "pin_marker_1" })
+  if (pin1Arrow?.type === "pcb_silkscreen_path") {
+    expect(pin1Arrow.route).toHaveLength(4)
+    expect(pin1Arrow.route[0]).toMatchObject({ x: -8.52, y: 7.62 })
+    expect(pin1Arrow.route[1]?.x).toBe(-9.12)
+    expect(pin1Arrow.route[1]?.y).toBeCloseTo(7.02)
+    expect(pin1Arrow.route[2]?.x).toBe(-9.12)
+    expect(pin1Arrow.route[2]?.y).toBeCloseTo(8.22)
+    expect(pin1Arrow.route[3]).toMatchObject({ x: -8.52, y: 7.62 })
+  }
   const platedHoleYs = circuitJson
     .filter((element) => element.type === "pcb_plated_hole")
     .map((element) => element.y)

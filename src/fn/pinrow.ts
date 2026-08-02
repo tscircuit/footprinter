@@ -160,6 +160,7 @@ export const pinrow = (
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnyCircuitElement[] = []
+  let pin1Position: { x: number; y: number } | null = null
   const missingPositions = missing as number[]
   const uniqueMissingPositions = new Set(missingPositions)
   if (uniqueMissingPositions.size !== missingPositions.length) {
@@ -248,6 +249,7 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
+    if (pinNumber === 1) pin1Position = { x: xoff, y: yoff }
     if (parameters.smd) {
       // SMD pads
       holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
@@ -468,6 +470,50 @@ export const pinrow = (
       ])
     : null
 
+  const pin1Arrow = (() => {
+    if (parameters.fn !== "headermodule" || !pin1Position) return null
+
+    const arrowSize = Math.max(0.3, Math.min(0.6, p / 4))
+    const clearance = 0.15
+    const horizontal =
+      pinlabelAnchorSide === "top" || pinlabelAnchorSide === "bottom"
+
+    if (horizontal) {
+      const direction =
+        Math.sign(pin1Position.x) || (pinlabelAnchorSide === "top" ? -1 : 1)
+      const tipX = pin1Position.x + direction * (padHalfWidth + clearance)
+      const baseX = tipX + direction * arrowSize
+      return silkscreenpath(
+        [
+          { x: tipX, y: pin1Position.y },
+          { x: baseX, y: pin1Position.y - arrowSize },
+          { x: baseX, y: pin1Position.y + arrowSize },
+          { x: tipX, y: pin1Position.y },
+        ],
+        {
+          pcb_component_id: "pin_marker_1",
+          pcb_silkscreen_path_id: "pin_marker_1",
+        },
+      )
+    }
+
+    const direction = Math.sign(pin1Position.y) || 1
+    const tipY = pin1Position.y + direction * (padHalfHeight + clearance)
+    const baseY = tipY + direction * arrowSize
+    return silkscreenpath(
+      [
+        { x: pin1Position.x, y: tipY },
+        { x: pin1Position.x - arrowSize, y: baseY },
+        { x: pin1Position.x + arrowSize, y: baseY },
+        { x: pin1Position.x, y: tipY },
+      ],
+      {
+        pcb_component_id: "pin_marker_1",
+        pcb_silkscreen_path_id: "pin_marker_1",
+      },
+    )
+  })()
+
   // Add centered silkscreen reference text or an explicit module label.
   const refText: SilkscreenRef = silkscreenlabel
     ? {
@@ -509,6 +555,7 @@ export const pinrow = (
     circuitJson: [
       ...holes,
       ...(silkscreenBorder ? [silkscreenBorder] : []),
+      ...(pin1Arrow ? [pin1Arrow] : []),
       refText,
       courtyard as AnyCircuitElement,
     ],
