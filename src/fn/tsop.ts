@@ -110,13 +110,10 @@ export const tsop = (
     route: [
       { x: -sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: sh / 2 },
-      ...u_curve.map(({ x, y }) => {
-        const notchRadius = Math.min(sw / 6, 0.5)
-        return {
-          x: x * notchRadius,
-          y: y * notchRadius + sh / 2,
-        }
-      }),
+      ...u_curve.map(({ x, y }) => ({
+        x: (x * sw) / 6,
+        y: (y * sw) / 6 + sh / 2,
+      })),
       { x: sw / 2, y: sh / 2 },
       { x: sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: -sh / 2 },
