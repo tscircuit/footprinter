@@ -12,6 +12,7 @@ import { z } from "zod"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { platedhole } from "../helpers/platedhole"
 import { rectpad } from "../helpers/rectpad"
+import { silkscreenpath } from "../helpers/silkscreenpath"
 import { base_def } from "../helpers/zod/base_def"
 import { function_call } from "../helpers/zod/function-call"
 
@@ -74,6 +75,22 @@ export const pinrow_def = base_def
       .describe(
         "place the silkscreen reference text on the bottom layer instead of top",
       ),
+    silkscreenborder: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe("add a rectangular silkscreen border around the pin row"),
+    silkscreenlabel: z
+      .string()
+      .transform((value) =>
+        value.startsWith("(") && value.endsWith(")")
+          ? value.slice(1, -1)
+          : value,
+      )
+      .optional()
+      .describe(
+        "replace the reference designator with a custom silkscreen label",
+      ),
   })
   .transform((data) => {
     const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
@@ -135,6 +152,8 @@ export const pinrow = (
     nopinlabels,
     doublesidedpinlabel,
     bottomsidepinlabel,
+    silkscreenborder,
+    silkscreenlabel,
   } = parameters
   let pinlabelTextAlign: "center" | "left" | "right" = "center"
   if (pinlabeltextalignleft) pinlabelTextAlign = "left"
@@ -431,12 +450,39 @@ export const pinrow = (
     }
   }
 
-  // Add centered silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
-
   const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
   const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
   const pinRowSpanX = (numPinsPerRow - 1) * p
+  const silkscreenHalfWidth = pinRowSpanX / 2 + p / 2 + 1
+  const silkscreenHalfHeight = Math.max(
+    pinRowSpanY / 2 + padHalfHeight + 1,
+    p / 2 + 1,
+  )
+  const silkscreenBorder = silkscreenborder
+    ? silkscreenpath([
+        { x: -silkscreenHalfWidth, y: -silkscreenHalfHeight },
+        { x: silkscreenHalfWidth, y: -silkscreenHalfHeight },
+        { x: silkscreenHalfWidth, y: silkscreenHalfHeight },
+        { x: -silkscreenHalfWidth, y: silkscreenHalfHeight },
+        { x: -silkscreenHalfWidth, y: -silkscreenHalfHeight },
+      ])
+    : null
+
+  // Add centered silkscreen reference text or an explicit module label.
+  const refText: SilkscreenRef = silkscreenlabel
+    ? {
+        type: "pcb_silkscreen_text",
+        pcb_silkscreen_text_id: "silkscreen_text_1",
+        font: "tscircuit2024",
+        font_size: 0.8,
+        pcb_component_id: "pcb_component_1",
+        text: silkscreenlabel,
+        layer: "top",
+        anchor_position: { x: 0, y: 0 },
+        anchor_alignment: "center",
+      }
+    : silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
+
   const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth
   const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
   const bodyHalfWidth = pinRowSpanX / 2 + p / 2
@@ -460,7 +506,12 @@ export const pinrow = (
   }
 
   return {
-    circuitJson: [...holes, refText, courtyard as AnyCircuitElement],
+    circuitJson: [
+      ...holes,
+      ...(silkscreenBorder ? [silkscreenBorder] : []),
+      refText,
+      courtyard as AnyCircuitElement,
+    ],
     parameters,
   }
 }

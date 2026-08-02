@@ -221,6 +221,8 @@ export type Footprinter = {
     | "nopinlabels"
     | "doublesidedpinlabel"
     | "bottomsidepinlabel"
+    | "silkscreenborder"
+    | "silkscreenlabel"
   >
   smdpinheader: (
     num_pins?: number,
