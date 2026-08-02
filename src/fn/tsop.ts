@@ -96,41 +96,47 @@ export const tsop = (
   const sw =
     parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+
+  // Fab outline = package body only (not including pad lengths)
+  const fabBodyHalfW = parameters.w / 2
+  const fabBodyHalfH = sh / 2
+  // Silkscreen sits 0.12mm outside the fab body, matching KiCad:
+  // KiCad fab top = ±6.0mm, silkscreen top = ±6.12mm
+  const silkHalfH = fabBodyHalfH + 0.12
+
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    sh / 2 + 0.4,
+    silkHalfH + 0.88,
     sh / 12,
   )
 
-  const tailOffset = Math.min(1, sw / 4)
-  const chamferSize = Math.min(1, sw / 4, sh / 4)
+  const tailOffset = 1 // exactly 1mm past body edge, matching KiCad reference
+  const chamferSize = Math.min(1, fabBodyHalfW / 4, fabBodyHalfH / 4)
 
-  const silkscreenBorder: PcbSilkscreenPath = {
+  const silkscreenTop: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
-    pcb_silkscreen_path_id: "silkscreen_path_1",
+    pcb_silkscreen_path_id: "silkscreen_path_top",
     stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
     route: [
-      { x: -sw / 2 - tailOffset, y: sh / 2 },
-      { x: sw / 2, y: sh / 2 },
-      { x: sw / 2, y: -sh / 2 },
-      { x: -sw / 2, y: -sh / 2 },
-      { x: -sw / 2, y: sh / 2 },
+      { x: -fabBodyHalfW, y: silkHalfH },
+      { x: fabBodyHalfW, y: silkHalfH },
     ],
   }
 
-  const fabChamfer: PcbFabricationNotePath = {
-    type: "pcb_fabrication_note_path",
+  const silkscreenBottom: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
-    pcb_fabrication_note_path_id: "fab_chamfer_1",
+    pcb_silkscreen_path_id: "silkscreen_path_bottom",
     stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
     route: [
-      { x: -sw / 2 + chamferSize, y: sh / 2 },
-      { x: -sw / 2, y: sh / 2 - chamferSize },
+      { x: -fabBodyHalfW, y: -silkHalfH },
+      { x: fabBodyHalfW, y: -silkHalfH },
     ],
   }
+
   const pinRowSpanY =
     (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
   const pinToeHalfSpanX =
@@ -139,6 +145,22 @@ export const tsop = (
   const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.18
   const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
   const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.35
+
+  const fabOutline: PcbFabricationNotePath = {
+    type: "pcb_fabrication_note_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_fabrication_note_path_id: "fab_outline_1",
+    stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
+    route: [
+      { x: -fabBodyHalfW + chamferSize, y: fabBodyHalfH },
+      { x: fabBodyHalfW, y: fabBodyHalfH },
+      { x: fabBodyHalfW, y: -fabBodyHalfH },
+      { x: -fabBodyHalfW, y: -fabBodyHalfH },
+      { x: -fabBodyHalfW, y: fabBodyHalfH - chamferSize },
+      { x: -fabBodyHalfW + chamferSize, y: fabBodyHalfH },
+    ],
+  }
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -163,10 +185,10 @@ export const tsop = (
   return {
     circuitJson: [
       ...pads,
-      silkscreenBorder,
+      silkscreenTop,
+      silkscreenBottom,
       silkscreenRefText,
       courtyard,
-      fabChamfer,
     ],
     parameters,
   }
