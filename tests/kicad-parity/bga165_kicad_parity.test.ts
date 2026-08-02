@@ -28,4 +28,4 @@ test("parity/bga165", async () => {
     import.meta.path,
     "bga165_boolean_difference",
   )
-}, 10_000)
+})
