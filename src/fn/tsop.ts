@@ -2,6 +2,7 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
+  PcbFabricationNotePath,
 } from "circuit-json"
 import { length } from "circuit-json"
 import { z } from "zod"
@@ -9,7 +10,6 @@ import { rectpad } from "../helpers/rectpad"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
-import { u_curve } from "../helpers/u-curve"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
@@ -101,6 +101,10 @@ export const tsop = (
     sh / 2 + 0.4,
     sh / 12,
   )
+
+  const tailOffset = Math.min(1, sw / 4)
+  const chamferSize = Math.min(1, sw / 4, sh / 4)
+
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -108,15 +112,23 @@ export const tsop = (
     pcb_silkscreen_path_id: "silkscreen_path_1",
     stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
     route: [
-      { x: -sw / 2, y: -sh / 2 },
-      { x: -sw / 2, y: sh / 2 },
-      ...u_curve.map(({ x, y }) => ({
-        x: (x * sw) / 6,
-        y: (y * sw) / 6 + sh / 2,
-      })),
+      { x: -sw / 2 - tailOffset, y: sh / 2 },
       { x: sw / 2, y: sh / 2 },
       { x: sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: -sh / 2 },
+      { x: -sw / 2, y: sh / 2 },
+    ],
+  }
+
+  const fabChamfer: PcbFabricationNotePath = {
+    type: "pcb_fabrication_note_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_fabrication_note_path_id: "fab_chamfer_1",
+    stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
+    route: [
+      { x: -sw / 2 + chamferSize, y: sh / 2 },
+      { x: -sw / 2, y: sh / 2 - chamferSize },
     ],
   }
   const pinRowSpanY =
@@ -149,7 +161,13 @@ export const tsop = (
   }
 
   return {
-    circuitJson: [...pads, silkscreenBorder, silkscreenRefText, courtyard],
+    circuitJson: [
+      ...pads,
+      silkscreenBorder,
+      silkscreenRefText,
+      courtyard,
+      fabChamfer,
+    ],
     parameters,
   }
 }
