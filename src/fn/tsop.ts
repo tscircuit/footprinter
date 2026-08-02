@@ -120,7 +120,7 @@ export const tsop = (
     pcb_silkscreen_path_id: "silkscreen_path_top",
     stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
     route: [
-      { x: -fabBodyHalfW, y: silkHalfH },
+      { x: -fabBodyHalfW - tailOffset, y: silkHalfH },
       { x: fabBodyHalfW, y: silkHalfH },
     ],
   }
@@ -187,6 +187,7 @@ export const tsop = (
       ...pads,
       silkscreenTop,
       silkscreenBottom,
+      fabOutline,
       silkscreenRefText,
       courtyard,
     ],
