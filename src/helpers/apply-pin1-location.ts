@@ -5,6 +5,16 @@ type RightAngleRotation = 0 | 90 | 180 | 270
 type Point = { x: number; y: number }
 
 const RIGHT_ANGLE_ROTATIONS: RightAngleRotation[] = [0, 90, 180, 270]
+const PIN1_LOCATIONS: Pin1Location[] = [
+  ["leftside", "top"],
+  ["leftside", "bottom"],
+  ["rightside", "top"],
+  ["rightside", "bottom"],
+  ["topside", "left"],
+  ["topside", "right"],
+  ["bottomside", "left"],
+  ["bottomside", "right"],
+]
 
 const rotatePoint = (point: Point, rotation: RightAngleRotation): Point => {
   switch (rotation) {
@@ -38,6 +48,16 @@ const getPadCenter = (pad: any): Point | null => {
 
 const isPin1 = (pad: any) =>
   pad.port_hints?.some((hint: unknown) => /^(?:pin)?1$/i.test(String(hint)))
+
+const getPinNumber = (pad: any): number | null => {
+  for (const hint of pad.port_hints ?? []) {
+    const match = String(hint)
+      .trim()
+      .match(/^(?:pin)?(\d+)$/i)
+    if (match) return Number.parseInt(match[1]!, 10)
+  }
+  return null
+}
 
 const pinMatchesLocation = (
   padCenters: Point[],
@@ -73,6 +93,57 @@ const pinMatchesLocation = (
       (spanY <= tolerance || pin1Center.y < centerY - tolerance))
 
   return onRequestedSide && atRequestedAlignment
+}
+
+/**
+ * Infers the semantic pin 1 location from pad positions and numeric port hints.
+ * Returns null when pin 1 is missing or the geometry cannot distinguish a
+ * rotation from a reflection.
+ */
+export const analyzePin1Location = (
+  elements: readonly AnyCircuitElement[],
+): Pin1Location | null => {
+  const pads = (elements as readonly any[]).filter(
+    (element) =>
+      element.type === "pcb_smtpad" || element.type === "pcb_plated_hole",
+  )
+  const pin1 = pads.find(isPin1)
+  const pin1Center = pin1 ? getPadCenter(pin1) : null
+  const padCenters = pads.map(getPadCenter).filter((point) => point !== null)
+  if (!pin1Center || padCenters.length === 0) return null
+
+  const candidates = PIN1_LOCATIONS.filter((location) =>
+    pinMatchesLocation(padCenters, pin1Center, location),
+  )
+  if (candidates.length === 1) return candidates[0]!
+  if (candidates.length === 0) return null
+
+  const nextNumberedPad = pads
+    .map((pad) => ({ center: getPadCenter(pad), pinNumber: getPinNumber(pad) }))
+    .filter(
+      (entry): entry is { center: Point; pinNumber: number } =>
+        entry.center !== null &&
+        entry.pinNumber !== null &&
+        entry.pinNumber > 1,
+    )
+    .toSorted((a, b) => a.pinNumber - b.pinNumber)[0]
+  if (!nextNumberedPad) return null
+
+  const xs = padCenters.map((point) => point.x)
+  const ys = padCenters.map((point) => point.y)
+  const span = Math.max(
+    Math.max(...xs) - Math.min(...xs),
+    Math.max(...ys) - Math.min(...ys),
+    1,
+  )
+  const tolerance = span * 1e-6
+  const topologyCandidates = candidates.filter(([side]) =>
+    side === "leftside" || side === "rightside"
+      ? Math.abs(nextNumberedPad.center.x - pin1Center.x) <= tolerance
+      : Math.abs(nextNumberedPad.center.y - pin1Center.y) <= tolerance,
+  )
+
+  return topologyCandidates.length === 1 ? topologyCandidates[0]! : null
 }
 
 const rotatePointField = (value: unknown, rotation: RightAngleRotation) => {
