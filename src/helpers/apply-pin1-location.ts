@@ -4,6 +4,14 @@ import type { Pin1Location } from "./zod/pin1-location"
 type RightAngleRotation = 0 | 90 | 180 | 270
 type Point = { x: number; y: number }
 
+export interface Pin1LocationElement {
+  type: string
+  x?: number
+  y?: number
+  points?: readonly Point[]
+  port_hints?: readonly unknown[]
+}
+
 const RIGHT_ANGLE_ROTATIONS: RightAngleRotation[] = [0, 90, 180, 270]
 const PIN1_LOCATIONS: Pin1Location[] = [
   ["leftside", "top"],
@@ -101,9 +109,9 @@ const pinMatchesLocation = (
  * rotation from a reflection.
  */
 export const analyzePin1Location = (
-  elements: readonly AnyCircuitElement[],
+  elements: readonly Pin1LocationElement[],
 ): Pin1Location | null => {
-  const pads = (elements as readonly any[]).filter(
+  const pads = elements.filter(
     (element) =>
       element.type === "pcb_smtpad" || element.type === "pcb_plated_hole",
   )
