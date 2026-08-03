@@ -7,6 +7,31 @@ test("sot23", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23")
 })
+
+test("sot-23 legacy alias", () => {
+  const circuitJson = fp.string("sot-23").circuitJson()
+  expect(circuitJson).toEqual(fp.string("sot23").circuitJson())
+
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_legacy_alias")
+})
+
+test("sot-23 pin-count aliases", () => {
+  const aliases = [
+    ["sot-23-3", "sot23_3"],
+    ["sot-23-5", "sot23_5"],
+    ["sot-23-6", "sot23_6"],
+  ] as const
+
+  for (const [alias, canonical] of aliases) {
+    const circuitJson = fp.string(alias).circuitJson()
+    expect(circuitJson).toEqual(fp.string(canonical).circuitJson())
+
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, alias)
+  }
+})
+
 test("sot23_w3_h1.5_p0.95mm", () => {
   const circuitJson = fp.string("sot23_w3_h1.5_p0.95mm").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
