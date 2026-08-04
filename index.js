@@ -36954,7 +36954,8 @@ var base_def = exports_external.object({
   rounded: length.refine((radius) => radius >= 0, {
     message: "rounded radius must be non-negative"
   }).optional().describe("corner radius applied to all rectangular copper pads"),
-  pin1location: pin1_location.optional().describe("rotate the footprint to place pin 1 on a requested side")
+  pin1location: pin1_location.optional().describe("rotate the footprint to place pin 1 on a requested side"),
+  cathodepin: exports_external.coerce.number().pipe(exports_external.union([exports_external.literal(1), exports_external.literal(2)])).optional().describe("identify which diode pad is the cathode")
 });
 
 // node_modules/@tscircuit/mm/dist/index.js
@@ -37745,14 +37746,15 @@ var createFabricationNoteDiodeFromCopperPads = (parameters) => {
     maxX: padPitch / 2 + padLength / 2,
     minY: -padWidth / 2,
     maxY: padWidth / 2
-  });
+  }, { cathodePin: parameters.cathodepin });
 };
-var createFabricationNoteDiode = (bounds) => {
+var createFabricationNoteDiode = (bounds, options = {}) => {
   const elms = [];
   const width = bounds.maxX - bounds.minX;
   const height = bounds.maxY - bounds.minY;
   const centerX = (bounds.minX + bounds.maxX) / 2;
   const centerY = (bounds.minY + bounds.maxY) / 2;
+  const orientX = options.cathodePin === 1 ? (x) => 2 * centerX - x : (x) => x;
   const symbolHalfHeight = height * 0.28;
   const symbolHeight = symbolHalfHeight * 2;
   const maxSymbolWidth = width * 0.2;
@@ -37772,8 +37774,8 @@ var createFabricationNoteDiode = (bounds) => {
     layer: "top",
     stroke_width: strokeWidth,
     route: [
-      { x: symbolMinX, y: centerY },
-      { x: triangleBaseX, y: centerY }
+      { x: orientX(symbolMinX), y: centerY },
+      { x: orientX(triangleBaseX), y: centerY }
     ]
   }, {
     type: "pcb_fabrication_note_path",
@@ -37782,10 +37784,10 @@ var createFabricationNoteDiode = (bounds) => {
     layer: "top",
     stroke_width: strokeWidth,
     route: [
-      { x: triangleBaseX, y: centerY + symbolHalfHeight },
-      { x: cathodeX, y: centerY },
-      { x: triangleBaseX, y: centerY - symbolHalfHeight },
-      { x: triangleBaseX, y: centerY + symbolHalfHeight }
+      { x: orientX(triangleBaseX), y: centerY + symbolHalfHeight },
+      { x: orientX(cathodeX), y: centerY },
+      { x: orientX(triangleBaseX), y: centerY - symbolHalfHeight },
+      { x: orientX(triangleBaseX), y: centerY + symbolHalfHeight }
     ]
   }, {
     type: "pcb_fabrication_note_path",
@@ -37794,8 +37796,8 @@ var createFabricationNoteDiode = (bounds) => {
     layer: "top",
     stroke_width: strokeWidth,
     route: [
-      { x: cathodeX, y: centerY + symbolHalfHeight },
-      { x: cathodeX, y: centerY - symbolHalfHeight }
+      { x: orientX(cathodeX), y: centerY + symbolHalfHeight },
+      { x: orientX(cathodeX), y: centerY - symbolHalfHeight }
     ]
   }, {
     type: "pcb_fabrication_note_path",
@@ -37804,8 +37806,8 @@ var createFabricationNoteDiode = (bounds) => {
     layer: "top",
     stroke_width: strokeWidth,
     route: [
-      { x: cathodeX, y: centerY },
-      { x: symbolMaxX, y: centerY }
+      { x: orientX(cathodeX), y: centerY },
+      { x: orientX(symbolMaxX), y: centerY }
     ]
   }, {
     type: "pcb_fabrication_note_text",
@@ -37815,7 +37817,10 @@ var createFabricationNoteDiode = (bounds) => {
     font: "tscircuit2024",
     font_size: fontSize,
     text: "+",
-    anchor_position: { x: bounds.minX + width * 0.125, y: centerY },
+    anchor_position: {
+      x: orientX(bounds.minX + width * 0.125),
+      y: centerY
+    },
     anchor_alignment: "center"
   }, {
     type: "pcb_fabrication_note_text",
@@ -37825,7 +37830,10 @@ var createFabricationNoteDiode = (bounds) => {
     font: "tscircuit2024",
     font_size: fontSize,
     text: "-",
-    anchor_position: { x: bounds.maxX - width * 0.125, y: centerY },
+    anchor_position: {
+      x: orientX(bounds.maxX - width * 0.125),
+      y: centerY
+    },
     anchor_alignment: "center"
   });
   return elms;
@@ -37859,7 +37867,9 @@ var getCopperBounds = (circuitJson) => {
 var diode = (parameters) => {
   const circuitJson = passive({ ...parameters, roundedPads: true });
   return {
-    circuitJson: circuitJson.concat(createFabricationNoteDiode(getCopperBounds(circuitJson))),
+    circuitJson: circuitJson.concat(createFabricationNoteDiode(getCopperBounds(circuitJson), {
+      cathodePin: parameters.cathodepin
+    })),
     parameters
   };
 };
@@ -50118,6 +50128,10 @@ var content_default = [
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="194.28571428571425" y="114.28571428571425" width="411.42857142857144" height="371.42857142857144" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="194.28571428571422" y="200" width="151.42857142857144" height="68.57142857142857" data-type="pcb_smtpad" data-pcb-layer="top" rx="8.571428571428571" ry="8.571428571428571"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="194.28571428571422" y="417.1428571428571" width="151.42857142857144" height="68.57142857142857" data-type="pcb_smtpad" data-pcb-layer="top" rx="8.571428571428571" ry="8.571428571428571"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="454.2857142857143" y="308.57142857142856" width="151.42857142857144" height="68.57142857142857" data-type="pcb_smtpad" data-pcb-layer="top" rx="8.571428571428571" ry="8.571428571428571"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="34.285714285714285" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,399.99999999999994,114.28571428571425)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
     title: "sot23_3"
+  },
+  {
+    svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="119.40298507462688" y="177.61194029850748" width="561.1940298507463" height="244.77611940298505" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="131.3432835820896" y="264.17910447761193" width="143.28358208955223" height="113.43283582089552" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="537.3134328358209" y="264.17910447761193" width="143.28358208955223" height="113.43283582089552" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 608.955223880597 219.40298507462688 L 119.40298507462688 219.40298507462688 L 119.40298507462688 422.3880597014925 L 608.955223880597 422.3880597014925" fill="none" stroke="#f2eda1" stroke-width="11.940298507462687" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="35.82089552238806" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,405.9701492537314,177.61194029850748)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text><rect x="137.31343283582095" y="189.55223880597015" width="537.3134328358209" height="262.6865671641791" class="pcb-courtyard-rect pcb-courtyard-top" data-pcb-courtyard-rect-id="" data-type="pcb_courtyard_rect" data-pcb-layer="top" stroke-linejoin="round" fill="none" stroke="#FF00FF" stroke-width="5.970149253731344"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 445.6716417910448 320.8955223880597 L 431.379104477612 320.8955223880597" stroke-width="3.9701492537313436" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_anode_leg" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 431.379104477612 289.13432835820896 L 380.5611940298508 320.8955223880597 L 431.379104477612 352.65671641791045 Z" stroke-width="3.9701492537313436" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_triangle" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 380.5611940298508 289.13432835820896 L 380.5611940298508 352.65671641791045" stroke-width="3.9701492537313436" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_cathode" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><path class="pcb-fabrication-note-path" stroke="rgba(255,255,255,0.5)" fill="none" d="M 380.5611940298508 320.8955223880597 L 366.268656716418 320.8955223880597" stroke-width="3.9701492537313436" data-pcb-component-id="" data-pcb-fabrication-note-path-id="diode_fabrication_note_cathode_leg" data-type="pcb_fabrication_note_path" data-pcb-layer="overlay"/><text x="0" y="0" font-family="Arial, sans-serif" font-size="28.35820895522388" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,611.9402985074628,320.8955223880597)" class="pcb-fabrication-note-text" fill="rgba(255,255,255,0.5)" data-type="pcb_fabrication_note_text" data-pcb-layer="overlay">+</text><text x="0" y="0" font-family="Arial, sans-serif" font-size="28.35820895522388" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,200.00000000000006,320.8955223880597)" class="pcb-fabrication-note-text" fill="rgba(255,255,255,0.5)" data-type="pcb_fabrication_note_text" data-pcb-layer="overlay">-</text></svg>',
+    title: "sod123w-cathode-pin-1"
   },
   {
     svgContent: '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="225" viewBox="0 0 800 600"><style></style><rect class="boundary" x="0" y="0" fill="#000" width="800" height="600" data-type="pcb_background" data-pcb-layer="global"/><rect class="pcb-boundary" fill="none" stroke="#fff" stroke-width="0.3" x="196.61016949152543" y="101.69491525423734" width="406.77966101694915" height="396.6101694915254" data-type="pcb_boundary" data-pcb-layer="global"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="216.9491525423729" y="355.93220338983053" width="142.37288135593218" height="122.03389830508473" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="440.6779661016949" y="355.93220338983053" width="142.37288135593218" height="122.03389830508473" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="440.6779661016949" y="183.05084745762716" width="142.37288135593218" height="122.03389830508473" data-type="pcb_smtpad" data-pcb-layer="top"/><rect class="pcb-pad" fill="rgb(200, 52, 52)" x="216.9491525423729" y="183.05084745762716" width="142.37288135593218" height="122.03389830508473" data-type="pcb_smtpad" data-pcb-layer="top"/><path class="pcb-silkscreen pcb-silkscreen-top" d="M 196.61016949152543 498.30508474576277 L 603.3898305084746 498.30508474576277 L 603.3898305084746 162.7118644067797 L 196.61016949152543 162.7118644067797 L 196.61016949152543 498.30508474576277 Z" fill="none" stroke="#f2eda1" stroke-width="10.16949152542373" stroke-linecap="round" stroke-linejoin="round" data-pcb-component-id="" data-pcb-silkscreen-path-id="" data-type="pcb_silkscreen_path" data-pcb-layer="top"/><text x="0" y="0" dx="0" dy="0" fill="#f2eda1" font-family="Arial, sans-serif" font-size="50.847457627118644" text-anchor="middle" dominant-baseline="central" transform="matrix(1,0,0,1,400,101.69491525423734)" class="pcb-silkscreen-text pcb-silkscreen-top" data-pcb-silkscreen-text-id="silkscreen_text_1" stroke="none" data-type="pcb_silkscreen_text" data-pcb-layer="top">{REF}</text></svg>',
