@@ -44,6 +44,7 @@ export const diode = (
   return {
     circuitJson: circuitJson.concat(
       createFabricationNoteDiode(getCopperBounds(circuitJson), {
+        anodePin: parameters.anodepin,
         cathodePin: parameters.cathodepin,
       }),
     ),

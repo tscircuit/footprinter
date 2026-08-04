@@ -15,6 +15,8 @@ import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinte
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
 
 type BaseOptionKey =
+  | "anodepin"
+  | "cathodepin"
   | "origin"
   | "norefdes"
   | "invert"

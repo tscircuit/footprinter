@@ -41,3 +41,30 @@ test("sod123w supports cathode on pin 1", () => {
     "sod123w-cathode-pin-1",
   )
 })
+
+test("sod123w supports explicitly identifying pin 1 as the anode", () => {
+  const explicitCircuitJson = fp
+    .string("sod123w_p3.4mm_pw0.95mm_anodepin1")
+    .circuitJson()
+  const defaultCircuitJson = fp.string("sod123w_p3.4mm_pw0.95mm").circuitJson()
+  const builderCircuitJson = fp()
+    .sod123w()
+    .p("3.4mm")
+    .pw("0.95mm")
+    .anodepin(1)
+    .circuitJson()
+
+  expect(explicitCircuitJson).toEqual(defaultCircuitJson)
+  expect(builderCircuitJson).toEqual(defaultCircuitJson)
+
+  const svgContent = convertCircuitJsonToPcbSvg(explicitCircuitJson, {
+    showCourtyards: true,
+  })
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod123w-anode-pin-1")
+})
+
+test("sod123w rejects assigning the anode and cathode to the same pin", () => {
+  expect(() =>
+    fp.string("sod123w_anodepin1_cathodepin1").circuitJson(),
+  ).toThrow("Diode anode and cathode cannot use the same pin")
+})
