@@ -230,8 +230,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const pin1 = pads.find((p) => (p as any).port_hints?.includes("1")) || pads[0]
   const pin1PadX = (pin1 as any)?.x ?? -parameters.w / 2
   const pin1PadY =
-    (pin1 as any)?.y ??
-    ((parameters.num_pins / 2 - 1) / 2) * parameters.p
+    (pin1 as any)?.y ?? ((parameters.num_pins / 2 - 1) / 2) * parameters.p
   const pin1PadH = (pin1 as any)?.height ?? parameters.pw
   const pin1MarkerX = bw < 5 ? pin1PadX - 0.125 : pin1PadX
   const pin1MarkerDx = bw > 5 ? 0.34 : 0.24
