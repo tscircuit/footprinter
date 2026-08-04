@@ -598,7 +598,12 @@ export const string = (def: string): Footprinter => {
           v: pin1LocationMatch[2],
         }
       }
-      const m = s.match(/([a-zA-Z]+)([\(\d\.\+\-\?].*)?/)
+      // Pin-indexed parameters such as p1w and p2x contain a digit in the
+      // parameter name. Require another value token after that name so a
+      // normal pitch such as p1mm is still parsed as p + 1mm.
+      const m = s.match(
+        /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
+      )
       if (!m) return null
       const [, rawFn, v] = m
       if (!rawFn) return null

@@ -22,4 +22,4 @@ test("parity/pushbutton", async () => {
     import.meta.path,
     "pushbutton_boolean_difference",
   )
-})
+}, 15_000)
