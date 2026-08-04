@@ -9,11 +9,11 @@ test("parity/soic20", async () => {
     booleanDifferenceSvg,
     courtyardDiffPercent,
   } = await compareFootprinterVsKicad(
-    "soic20_w7.6mm_p1.27mm_legsoutside",
+    "soic20_w11.4mm_h12.8mm_bw7.6mm_p1.27mm_pl1.67mm_pw0.65mm",
     "Package_SO.pretty/Infineon_SOIC-20W_7.6x12.8mm_P1.27mm.circuit.json",
   )
 
-  expect(courtyardDiffPercent).toBeLessThan(16)
+  expect(courtyardDiffPercent).toBeLessThan(1)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })

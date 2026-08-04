@@ -20,6 +20,8 @@ import {
 
 export const extendSoicDef = (newDefaults: {
   w?: string
+  h?: string
+  bw?: string
   p?: string
   pw?: string
   pl?: string
@@ -32,6 +34,8 @@ export const extendSoicDef = (newDefaults: {
       fn: z.string(),
       num_pins: z.number().optional().default(8),
       w: length.default(length.parse(newDefaults.w ?? "5.3mm")),
+      h: length.optional(),
+      bw: length.optional(),
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.default(length.parse(newDefaults.pw ?? "0.6mm")),
       pl: length.default(length.parse(newDefaults.pl ?? "1.0mm")),
@@ -155,11 +159,17 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     )
   }
 
-  /** silkscreen width */
   const m = Math.min(1, parameters.p / 2)
-  const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+  const defaultHeight =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+
+  const maxPadInnerWidth =
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2)
+  const bw = parameters.bw ?? maxPadInnerWidth
+  const bh = parameters.h ?? defaultHeight
+  const sw = maxPadInnerWidth - 0.2
+  const sh = parameters.h ? parameters.h - 0.2 : defaultHeight
+
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
@@ -184,19 +194,18 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       { x: -sw / 2, y: -sh / 2 },
     ],
   }
-  const bodyHalfWidth = parameters.w / 2
-  const bodyHalfHeight = sh / 2
+
+  const bodyHalfWidth = bw / 2
+  const bodyHalfHeight = bh / 2
+  const pinRowSpanY =
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
 
   // Outer rect: wide (pad tips in X), short (pin span in Y)
-  const courtyardStepOuterHalfWidth =
-    Math.max(maxPadExtentX, bodyHalfWidth) + 0.25
-  const courtyardStepInnerHalfHeight =
-    Math.min(maxPadExtentY, bodyHalfHeight) + 0.25
+  const courtyardStepOuterHalfWidth = maxPadExtentX + 0.25
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.255
   // Inner rect: narrow (body width in X), tall (body height in Y)
-  const courtyardStepInnerHalfWidth =
-    Math.min(maxPadExtentX, bodyHalfWidth) + 0.25
-  const courtyardStepOuterHalfHeight =
-    Math.max(maxPadExtentY, bodyHalfHeight) + 0.25
+  const courtyardStepInnerHalfWidth = bodyHalfWidth + 0.25
+  const courtyardStepOuterHalfHeight = bodyHalfHeight + 0.25
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
