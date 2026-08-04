@@ -33,4 +33,9 @@ export const base_def = z.object({
     .pipe(z.union([z.literal(1), z.literal(2)]))
     .optional()
     .describe("identify which diode pad is the cathode"),
+  anodepin: z.coerce
+    .number()
+    .pipe(z.union([z.literal(1), z.literal(2)]))
+    .optional()
+    .describe("identify which diode pad is the anode"),
 })

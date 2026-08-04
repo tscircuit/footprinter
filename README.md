@@ -95,17 +95,21 @@ Valid pairs are `leftside|rightside` with `top|bottom`, and
 `topside|bottomside` with `left|right`. Rotation preserves pin ordering, so a
 mirrored-only location is rejected with an error.
 
-### Diode cathode pin
+### Diode polarity pins
 
-Diode footprints assume pin 2 is the cathode by default. Use `cathodepin1` for
-parts whose package numbering assigns the cathode to pin 1. This mirrors the
-fabrication-note diode symbol and polarity labels without changing pad numbers:
+Diode footprints assume pin 1 is the anode and pin 2 is the cathode by default.
+Use `anodepin1` to record that default explicitly, or `cathodepin1` for parts
+whose package numbering assigns the cathode to pin 1. These modifiers orient
+the fabrication-note diode symbol and polarity labels without changing pad
+numbers:
 
 ```ts
 fp.string("sod123w_p3.4mm_pw0.95mm_cathodepin1")
+fp.string("sod123w_p3.4mm_pw0.95mm_anodepin1")
 
 // Builder equivalent:
 fp().sod123w().p("3.4mm").pw("0.95mm").cathodepin(1)
+fp().sod123w().p("3.4mm").pw("0.95mm").anodepin(1)
 ```
 
 ### Rounded pads

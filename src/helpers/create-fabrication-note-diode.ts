@@ -11,11 +11,37 @@ type DiodeCopperPadBoundsParams = {
   pad_spacing?: string | number
   pl?: string | number
   pw?: string | number
-  cathodepin?: 1 | 2
+  cathodepin?: number
+  anodepin?: number
 }
 
 type DiodeFabricationNoteOptions = {
-  cathodePin?: 1 | 2
+  cathodePin?: number
+  anodePin?: number
+}
+
+const getCathodePin = ({
+  anodePin,
+  cathodePin,
+}: DiodeFabricationNoteOptions): 1 | 2 | undefined => {
+  if (anodePin !== undefined && anodePin !== 1 && anodePin !== 2) {
+    throw new Error("Diode anode pin must be 1 or 2")
+  }
+  if (cathodePin !== undefined && cathodePin !== 1 && cathodePin !== 2) {
+    throw new Error("Diode cathode pin must be 1 or 2")
+  }
+
+  if (anodePin !== undefined && cathodePin !== undefined) {
+    if (anodePin === cathodePin) {
+      throw new Error("Diode anode and cathode cannot use the same pin")
+    }
+    return cathodePin
+  }
+
+  if (cathodePin !== undefined) return cathodePin
+  if (anodePin === 1) return 2
+  if (anodePin === 2) return 1
+  return undefined
 }
 
 export const createFabricationNoteDiodeFromCopperPads = (
@@ -44,7 +70,10 @@ export const createFabricationNoteDiodeFromCopperPads = (
       minY: -padWidth / 2,
       maxY: padWidth / 2,
     },
-    { cathodePin: parameters.cathodepin },
+    {
+      anodePin: parameters.anodepin,
+      cathodePin: parameters.cathodepin,
+    },
   )
 }
 
@@ -58,8 +87,9 @@ export const createFabricationNoteDiode = (
   const height = bounds.maxY - bounds.minY
   const centerX = (bounds.minX + bounds.maxX) / 2
   const centerY = (bounds.minY + bounds.maxY) / 2
+  const cathodePin = getCathodePin(options)
   const orientX =
-    options.cathodePin === 1 ? (x: number) => 2 * centerX - x : (x: number) => x
+    cathodePin === 1 ? (x: number) => 2 * centerX - x : (x: number) => x
   const symbolHalfHeight = height * 0.28
   const symbolHeight = symbolHalfHeight * 2
   const maxSymbolWidth = width * 0.2
