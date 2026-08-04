@@ -134,6 +134,8 @@ export type Footprinter = {
     | "py"
     | "pw"
     | "pl"
+    | "lrpw"
+    | "lrpl"
     | "leftpins"
     | "toppins"
     | "rightpins"
