@@ -28,4 +28,9 @@ export const base_def = z.object({
   pin1location: pin1_location
     .optional()
     .describe("rotate the footprint to place pin 1 on a requested side"),
+  cathodepin: z.coerce
+    .number()
+    .pipe(z.union([z.literal(1), z.literal(2)]))
+    .optional()
+    .describe("identify which diode pad is the cathode"),
 })
