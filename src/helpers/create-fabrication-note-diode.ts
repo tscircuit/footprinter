@@ -1,8 +1,8 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbFabricationNotePath,
   type PcbFabricationNoteText,
+  length,
 } from "circuit-json"
 import type { RectBounds } from "./rect-union-outline"
 
@@ -11,6 +11,11 @@ type DiodeCopperPadBoundsParams = {
   pad_spacing?: string | number
   pl?: string | number
   pw?: string | number
+  cathodepin?: 1 | 2
+}
+
+type DiodeFabricationNoteOptions = {
+  cathodePin?: 1 | 2
 }
 
 export const createFabricationNoteDiodeFromCopperPads = (
@@ -32,16 +37,20 @@ export const createFabricationNoteDiodeFromCopperPads = (
   const padLength = length.parse(parameters.pl)
   const padWidth = length.parse(parameters.pw)
 
-  return createFabricationNoteDiode({
-    minX: -padPitch / 2 - padLength / 2,
-    maxX: padPitch / 2 + padLength / 2,
-    minY: -padWidth / 2,
-    maxY: padWidth / 2,
-  })
+  return createFabricationNoteDiode(
+    {
+      minX: -padPitch / 2 - padLength / 2,
+      maxX: padPitch / 2 + padLength / 2,
+      minY: -padWidth / 2,
+      maxY: padWidth / 2,
+    },
+    { cathodePin: parameters.cathodepin },
+  )
 }
 
 export const createFabricationNoteDiode = (
   bounds: RectBounds,
+  options: DiodeFabricationNoteOptions = {},
 ): AnyCircuitElement[] => {
   const elms: (PcbFabricationNotePath | PcbFabricationNoteText)[] = []
 
@@ -49,6 +58,8 @@ export const createFabricationNoteDiode = (
   const height = bounds.maxY - bounds.minY
   const centerX = (bounds.minX + bounds.maxX) / 2
   const centerY = (bounds.minY + bounds.maxY) / 2
+  const orientX =
+    options.cathodePin === 1 ? (x: number) => 2 * centerX - x : (x: number) => x
   const symbolHalfHeight = height * 0.28
   const symbolHeight = symbolHalfHeight * 2
   const maxSymbolWidth = width * 0.2
@@ -73,8 +84,8 @@ export const createFabricationNoteDiode = (
       layer: "top",
       stroke_width: strokeWidth,
       route: [
-        { x: symbolMinX, y: centerY },
-        { x: triangleBaseX, y: centerY },
+        { x: orientX(symbolMinX), y: centerY },
+        { x: orientX(triangleBaseX), y: centerY },
       ],
     },
     {
@@ -84,10 +95,10 @@ export const createFabricationNoteDiode = (
       layer: "top",
       stroke_width: strokeWidth,
       route: [
-        { x: triangleBaseX, y: centerY + symbolHalfHeight },
-        { x: cathodeX, y: centerY },
-        { x: triangleBaseX, y: centerY - symbolHalfHeight },
-        { x: triangleBaseX, y: centerY + symbolHalfHeight },
+        { x: orientX(triangleBaseX), y: centerY + symbolHalfHeight },
+        { x: orientX(cathodeX), y: centerY },
+        { x: orientX(triangleBaseX), y: centerY - symbolHalfHeight },
+        { x: orientX(triangleBaseX), y: centerY + symbolHalfHeight },
       ],
     },
     {
@@ -97,8 +108,8 @@ export const createFabricationNoteDiode = (
       layer: "top",
       stroke_width: strokeWidth,
       route: [
-        { x: cathodeX, y: centerY + symbolHalfHeight },
-        { x: cathodeX, y: centerY - symbolHalfHeight },
+        { x: orientX(cathodeX), y: centerY + symbolHalfHeight },
+        { x: orientX(cathodeX), y: centerY - symbolHalfHeight },
       ],
     },
     {
@@ -108,8 +119,8 @@ export const createFabricationNoteDiode = (
       layer: "top",
       stroke_width: strokeWidth,
       route: [
-        { x: cathodeX, y: centerY },
-        { x: symbolMaxX, y: centerY },
+        { x: orientX(cathodeX), y: centerY },
+        { x: orientX(symbolMaxX), y: centerY },
       ],
     },
     {
@@ -120,7 +131,10 @@ export const createFabricationNoteDiode = (
       font: "tscircuit2024",
       font_size: fontSize,
       text: "+",
-      anchor_position: { x: bounds.minX + width * 0.125, y: centerY },
+      anchor_position: {
+        x: orientX(bounds.minX + width * 0.125),
+        y: centerY,
+      },
       anchor_alignment: "center",
     },
     {
@@ -131,7 +145,10 @@ export const createFabricationNoteDiode = (
       font: "tscircuit2024",
       font_size: fontSize,
       text: "-",
-      anchor_position: { x: bounds.maxX - width * 0.125, y: centerY },
+      anchor_position: {
+        x: orientX(bounds.maxX - width * 0.125),
+        y: centerY,
+      },
       anchor_alignment: "center",
     },
   )

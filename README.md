@@ -95,6 +95,19 @@ Valid pairs are `leftside|rightside` with `top|bottom`, and
 `topside|bottomside` with `left|right`. Rotation preserves pin ordering, so a
 mirrored-only location is rejected with an error.
 
+### Diode cathode pin
+
+Diode footprints assume pin 2 is the cathode by default. Use `cathodepin1` for
+parts whose package numbering assigns the cathode to pin 1. This mirrors the
+fabrication-note diode symbol and polarity labels without changing pad numbers:
+
+```ts
+fp.string("sod123w_p3.4mm_pw0.95mm_cathodepin1")
+
+// Builder equivalent:
+fp().sod123w().p("3.4mm").pw("0.95mm").cathodepin(1)
+```
+
 ### Rounded pads
 
 Every footprint accepts a `rounded${radius}` modifier that applies the requested

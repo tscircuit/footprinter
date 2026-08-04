@@ -1,5 +1,5 @@
 import type { AnySoupElement } from "circuit-json"
-import { passive, type PassiveDef } from "src/helpers/passive-fn"
+import { type PassiveDef, passive } from "src/helpers/passive-fn"
 import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
 
 const getCopperBounds = (circuitJson: AnySoupElement[]) => {
@@ -43,7 +43,9 @@ export const diode = (
 
   return {
     circuitJson: circuitJson.concat(
-      createFabricationNoteDiode(getCopperBounds(circuitJson)),
+      createFabricationNoteDiode(getCopperBounds(circuitJson), {
+        cathodePin: parameters.cathodepin,
+      }),
     ),
     parameters,
   }
