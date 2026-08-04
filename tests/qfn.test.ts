@@ -135,3 +135,31 @@ test("qfn20 supports independently sized sides", () => {
     "qfn20_independent_side_pins",
   )
 })
+
+test("qfn10 supports wider left and right pads for C128396", () => {
+  const soup = fp
+    .string(
+      "qfn10_leftpins1_toppins4_rightpins1_bottompins4_px0.5mm_w2.4999864mm_h2.075264mm_pw0.2500122mm_pl0.5249926mm_lrpw0.2999994mm_lrpl0.580009mm_rounded0",
+    )
+    .circuitJson()
+  const pads = soup.filter((element) => element.type === "pcb_smtpad")
+  const leftRightPads = pads.filter((pad) => Math.abs(pad.x) > 0.8)
+  const topBottomPads = pads.filter((pad) => Math.abs(pad.y) > 0.6)
+
+  expect(leftRightPads).toHaveLength(2)
+  expect(leftRightPads[0]).toMatchObject({
+    width: 0.580009,
+    height: 0.2999994,
+  })
+  expect(topBottomPads).toHaveLength(8)
+  expect(topBottomPads[0]).toMatchObject({
+    width: 0.2500122,
+    height: 0.5249926,
+  })
+  expect(pads.every((pad) => pad.corner_radius === 0)).toBe(true)
+
+  expect(convertCircuitJsonToPcbSvg(soup)).toMatchSvgSnapshot(
+    import.meta.path,
+    "qfn10_c128396_left_right_pad_overrides",
+  )
+})

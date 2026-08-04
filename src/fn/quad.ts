@@ -51,6 +51,8 @@ export const base_quad_def = base_def.extend({
   py: length.optional().describe("left and right side pad pitch"),
   pw: length.optional(),
   pl: length.optional(),
+  lrpw: length.optional().describe("left and right side pad width"),
+  lrpl: length.optional().describe("left and right side pad length"),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
   ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
@@ -125,9 +127,10 @@ export const getQuadCoords = (params: {
   px?: number // horizontal pitch between top/bottom pins
   py?: number // vertical pitch between left/right pins
   pl: number // length of the pin
+  lrpl?: number // left and right side pin length
   legsoutside?: boolean
 }) => {
-  const { sidePinCounts, pn, w, h, p, px, py, pl, legsoutside } = params
+  const { sidePinCounts, pn, w, h, p, px, py, pl, lrpl, legsoutside } = params
   const sidePinCountsCcw = [
     sidePinCounts.left,
     sidePinCounts.bottom,
@@ -146,6 +149,7 @@ export const getQuadCoords = (params: {
   const sidePinCount = sidePinCountsCcw[sideIndex]
   const side = SIDES_CCW[sideIndex]
   const sidePitch = side === "left" || side === "right" ? (py ?? p) : (px ?? p)
+  const padLength = side === "left" || side === "right" ? (lrpl ?? pl) : pl
 
   /** inner box width */
   const ibw = sidePitch * (sidePinCount - 1)
@@ -153,7 +157,7 @@ export const getQuadCoords = (params: {
   const ibh = sidePitch * (sidePinCount - 1)
 
   /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? pl / 2 : -pl / 2
+  const pcdfe = legsoutside ? padLength / 2 : -padLength / 2
 
   switch (side) {
     case "left":
@@ -222,11 +226,17 @@ export const quad = (
       px: parameters.px,
       py: parameters.py,
       pl: parameters.pl,
+      lrpl: parameters.lrpl,
       legsoutside: parameters.legsoutside,
     })
 
-    let padWidth = parameters.pw
-    let padHeight = parameters.pl
+    const isLeftOrRight = orientation === "vert"
+    let padWidth = isLeftOrRight
+      ? (parameters.lrpw ?? parameters.pw)
+      : parameters.pw
+    let padHeight = isLeftOrRight
+      ? (parameters.lrpl ?? parameters.pl)
+      : parameters.pl
     if (orientation === "vert") {
       ;[padWidth, padHeight] = [padHeight, padWidth]
     }
@@ -253,7 +263,7 @@ export const quad = (
         parameters.pw
       const ibh =
         (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
-        parameters.pw
+        (parameters.lrpw ?? parameters.pw)
       padOuterHalfX = Math.max(
         padOuterHalfX,
         Math.abs(thermalPadOffset.x) + ibw / 2,
@@ -427,7 +437,8 @@ export const quad = (
     (horizontalSidePinCount - 1) * (parameters.px ?? parameters.p) +
     parameters.pw
   const pinRowSpanY =
-    (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) + parameters.pw
+    (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) +
+    (parameters.lrpw ?? parameters.pw)
   const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25
   const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
   const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25
