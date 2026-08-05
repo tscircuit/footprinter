@@ -27,7 +27,11 @@ export const bga_def = base_def
     ball: length.optional().describe("ball diameter"),
     pad: length.optional().describe("pad width/height"),
 
-    circularpads: z.boolean().optional().describe("use circular pads"),
+    circularpads: z
+      .boolean()
+      .optional()
+      .default(true)
+      .describe("use circular pads"),
 
     tlorigin: z.boolean().optional(),
     blorigin: z.boolean().optional(),
@@ -77,7 +81,7 @@ export const bga = (
 
   ball ??= (0.75 / 1.27) * p
 
-  pad ??= ball * 0.8
+  pad ??= parameters.ball === undefined ? p * 0.5 : ball * 0.8
 
   const pads: PcbSmtPad[] = []
 
