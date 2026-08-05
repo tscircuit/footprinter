@@ -136,6 +136,8 @@ export type Footprinter = {
     | "pl"
     | "lrpw"
     | "lrpl"
+    | "leftrightpadwidth"
+    | "leftrightpadlength"
     | "leftpins"
     | "toppins"
     | "rightpins"
