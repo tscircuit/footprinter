@@ -38940,14 +38940,24 @@ var base_quad_def = base_def.extend({
   py: length.optional().describe("left and right side pad pitch"),
   pw: length.optional(),
   pl: length.optional(),
-  lrpw: length.optional().describe("left and right side pad width"),
-  lrpl: length.optional().describe("left and right side pad length"),
+  lrpw: length.optional().describe("alias for leftrightpadwidth"),
+  lrpl: length.optional().describe("alias for leftrightpadlength"),
+  leftrightpadwidth: length.optional().describe("left and right side pad width"),
+  leftrightpadlength: length.optional().describe("left and right side pad length"),
   thermalpad: exports_external.union([exports_external.literal(true), dim2d]).optional(),
   ...thermalPadOffsetFields,
   pillpads: exports_external.boolean().optional().default(false),
   legsoutside: exports_external.boolean().default(false)
 });
 var quadTransform = (v2) => {
+  if (v2.lrpw !== undefined && v2.leftrightpadwidth !== undefined && v2.lrpw !== v2.leftrightpadwidth) {
+    throw new Error(`Conflicting lrpw (${v2.lrpw}) and leftrightpadwidth (${v2.leftrightpadwidth})`);
+  }
+  if (v2.lrpl !== undefined && v2.leftrightpadlength !== undefined && v2.lrpl !== v2.leftrightpadlength) {
+    throw new Error(`Conflicting lrpl (${v2.lrpl}) and leftrightpadlength (${v2.leftrightpadlength})`);
+  }
+  v2.leftrightpadwidth = v2.leftrightpadwidth ?? v2.lrpw;
+  v2.leftrightpadlength = v2.leftrightpadlength ?? v2.lrpl;
   if (v2.w && !v2.h) {
     v2.h = v2.w;
   } else if (!v2.w && v2.h) {
@@ -38984,7 +38994,18 @@ var quadTransform = (v2) => {
 var quad_def = base_quad_def.transform(quadTransform);
 var SIDES_CCW = ["left", "bottom", "right", "top"];
 var getQuadCoords = (params) => {
-  const { sidePinCounts, pn: pn2, w: w3, h, p, px: px2, py: py2, pl: pl2, lrpl, legsoutside } = params;
+  const {
+    sidePinCounts,
+    pn: pn2,
+    w: w3,
+    h,
+    p,
+    px: px2,
+    py: py2,
+    pl: pl2,
+    leftRightPadLength,
+    legsoutside
+  } = params;
   const sidePinCountsCcw = [
     sidePinCounts.left,
     sidePinCounts.bottom,
@@ -39000,7 +39021,7 @@ var getQuadCoords = (params) => {
   const sidePinCount = sidePinCountsCcw[sideIndex];
   const side = SIDES_CCW[sideIndex];
   const sidePitch = side === "left" || side === "right" ? py2 ?? p : px2 ?? p;
-  const padLength = side === "left" || side === "right" ? lrpl ?? pl2 : pl2;
+  const padLength = side === "left" || side === "right" ? leftRightPadLength ?? pl2 : pl2;
   const ibw = sidePitch * (sidePinCount - 1);
   const ibh = sidePitch * (sidePinCount - 1);
   const pcdfe = legsoutside ? padLength / 2 : -padLength / 2;
@@ -39035,6 +39056,8 @@ var getQuadCoords = (params) => {
 };
 var quad = (raw_params) => {
   const parameters = quad_def.parse(raw_params);
+  const leftRightPadWidth = parameters.leftrightpadwidth ?? parameters.lrpw ?? parameters.pw;
+  const leftRightPadLength = parameters.leftrightpadlength ?? parameters.lrpl ?? parameters.pl;
   const sidePinCounts = getQuadSidePinCounts(parameters);
   const pads = [];
   let padOuterHalfX = 0;
@@ -39064,12 +39087,12 @@ var quad = (raw_params) => {
       px: parameters.px,
       py: parameters.py,
       pl: parameters.pl,
-      lrpl: parameters.lrpl,
+      leftRightPadLength,
       legsoutside: parameters.legsoutside
     });
     const isLeftOrRight = orientation2 === "vert";
-    let padWidth = isLeftOrRight ? parameters.lrpw ?? parameters.pw : parameters.pw;
-    let padHeight = isLeftOrRight ? parameters.lrpl ?? parameters.pl : parameters.pl;
+    let padWidth = isLeftOrRight ? leftRightPadWidth : parameters.pw;
+    let padHeight = isLeftOrRight ? leftRightPadLength : parameters.pl;
     if (orientation2 === "vert") {
       [padWidth, padHeight] = [padHeight, padWidth];
     }
@@ -39086,7 +39109,7 @@ var quad = (raw_params) => {
     };
     if (typeof parameters.thermalpad === "boolean") {
       const ibw = (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) + parameters.pw;
-      const ibh = (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) + (parameters.lrpw ?? parameters.pw);
+      const ibh = (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) + leftRightPadWidth;
       padOuterHalfX = Math.max(padOuterHalfX, Math.abs(thermalPadOffset.x) + ibw / 2);
       padOuterHalfY = Math.max(padOuterHalfY, Math.abs(thermalPadOffset.y) + ibh / 2);
       pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset));
@@ -39222,7 +39245,7 @@ var quad = (raw_params) => {
   const silkscreenRefText = silkscreenRef(0, parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5), 0.3);
   const roundUpToCourtyardOuterGrid = (value) => Math.ceil(value / 0.05) * 0.05;
   const pinRowSpanX = (horizontalSidePinCount - 1) * (parameters.px ?? parameters.p) + parameters.pw;
-  const pinRowSpanY = (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) + (parameters.lrpw ?? parameters.pw);
+  const pinRowSpanY = (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) + leftRightPadWidth;
   const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25;
   const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
   const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25;
