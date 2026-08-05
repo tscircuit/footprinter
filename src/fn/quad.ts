@@ -51,8 +51,14 @@ export const base_quad_def = base_def.extend({
   py: length.optional().describe("left and right side pad pitch"),
   pw: length.optional(),
   pl: length.optional(),
-  lrpw: length.optional().describe("left and right side pad width"),
-  lrpl: length.optional().describe("left and right side pad length"),
+  lrpw: length.optional().describe("alias for leftrightpadwidth"),
+  lrpl: length.optional().describe("alias for leftrightpadlength"),
+  leftrightpadwidth: length
+    .optional()
+    .describe("left and right side pad width"),
+  leftrightpadlength: length
+    .optional()
+    .describe("left and right side pad length"),
   thermalpad: z.union([z.literal(true), dim2d]).optional(),
   ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
@@ -62,6 +68,27 @@ export const base_quad_def = base_def.extend({
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v: T,
 ) => {
+  if (
+    v.lrpw !== undefined &&
+    v.leftrightpadwidth !== undefined &&
+    v.lrpw !== v.leftrightpadwidth
+  ) {
+    throw new Error(
+      `Conflicting lrpw (${v.lrpw}) and leftrightpadwidth (${v.leftrightpadwidth})`,
+    )
+  }
+  if (
+    v.lrpl !== undefined &&
+    v.leftrightpadlength !== undefined &&
+    v.lrpl !== v.leftrightpadlength
+  ) {
+    throw new Error(
+      `Conflicting lrpl (${v.lrpl}) and leftrightpadlength (${v.leftrightpadlength})`,
+    )
+  }
+  v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
+  v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
+
   if (v.w && !v.h) {
     v.h = v.w
   } else if (!v.w && v.h) {
@@ -127,10 +154,21 @@ export const getQuadCoords = (params: {
   px?: number // horizontal pitch between top/bottom pins
   py?: number // vertical pitch between left/right pins
   pl: number // length of the pin
-  lrpl?: number // left and right side pin length
+  leftRightPadLength?: number
   legsoutside?: boolean
 }) => {
-  const { sidePinCounts, pn, w, h, p, px, py, pl, lrpl, legsoutside } = params
+  const {
+    sidePinCounts,
+    pn,
+    w,
+    h,
+    p,
+    px,
+    py,
+    pl,
+    leftRightPadLength,
+    legsoutside,
+  } = params
   const sidePinCountsCcw = [
     sidePinCounts.left,
     sidePinCounts.bottom,
@@ -149,7 +187,8 @@ export const getQuadCoords = (params: {
   const sidePinCount = sidePinCountsCcw[sideIndex]
   const side = SIDES_CCW[sideIndex]
   const sidePitch = side === "left" || side === "right" ? (py ?? p) : (px ?? p)
-  const padLength = side === "left" || side === "right" ? (lrpl ?? pl) : pl
+  const padLength =
+    side === "left" || side === "right" ? (leftRightPadLength ?? pl) : pl
 
   /** inner box width */
   const ibw = sidePitch * (sidePinCount - 1)
@@ -193,6 +232,10 @@ export const quad = (
   raw_params: z.input<typeof quad_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = quad_def.parse(raw_params)
+  const leftRightPadWidth =
+    parameters.leftrightpadwidth ?? parameters.lrpw ?? parameters.pw
+  const leftRightPadLength =
+    parameters.leftrightpadlength ?? parameters.lrpl ?? parameters.pl
   const sidePinCounts = getQuadSidePinCounts(parameters)
   const pads: AnyCircuitElement[] = []
   let padOuterHalfX = 0
@@ -226,17 +269,13 @@ export const quad = (
       px: parameters.px,
       py: parameters.py,
       pl: parameters.pl,
-      lrpl: parameters.lrpl,
+      leftRightPadLength,
       legsoutside: parameters.legsoutside,
     })
 
     const isLeftOrRight = orientation === "vert"
-    let padWidth = isLeftOrRight
-      ? (parameters.lrpw ?? parameters.pw)
-      : parameters.pw
-    let padHeight = isLeftOrRight
-      ? (parameters.lrpl ?? parameters.pl)
-      : parameters.pl
+    let padWidth = isLeftOrRight ? leftRightPadWidth : parameters.pw
+    let padHeight = isLeftOrRight ? leftRightPadLength : parameters.pl
     if (orientation === "vert") {
       ;[padWidth, padHeight] = [padHeight, padWidth]
     }
@@ -263,7 +302,7 @@ export const quad = (
         parameters.pw
       const ibh =
         (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
-        (parameters.lrpw ?? parameters.pw)
+        leftRightPadWidth
       padOuterHalfX = Math.max(
         padOuterHalfX,
         Math.abs(thermalPadOffset.x) + ibw / 2,
@@ -438,7 +477,7 @@ export const quad = (
     parameters.pw
   const pinRowSpanY =
     (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) +
-    (parameters.lrpw ?? parameters.pw)
+    leftRightPadWidth
   const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25
   const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
   const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25
