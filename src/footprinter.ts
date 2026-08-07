@@ -353,7 +353,7 @@ export type Footprinter = {
   potentiometer: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
   >
-  smdpotentiometer: () => FootprinterParamsBuilder<
+  smdgdt3: () => FootprinterParamsBuilder<
     "p" | "outerpadwidth" | "centerpadwidth" | "padheight" | "w" | "h"
   >
   electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">

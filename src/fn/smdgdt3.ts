@@ -6,21 +6,23 @@ import { silkscreenRef } from "../helpers/silkscreenRef"
 import { silkscreenpath } from "../helpers/silkscreenpath"
 import { base_def } from "../helpers/zod/base_def"
 
-export const smdpotentiometer_def = base_def.extend({
-  fn: z.literal("smdpotentiometer"),
+export const smdgdt3_def = base_def.extend({
+  fn: z.literal("smdgdt3"),
   num_pins: z.literal(3).default(3),
-  p: length.default("3.3mm"),
-  outerpadwidth: length.default("1.8mm"),
-  centerpadwidth: length.default("2.4mm"),
-  padheight: length.default("5.8mm"),
-  w: length.default("6.6mm"),
-  h: length.default("5mm"),
+  p: length.default("3.3mm").describe("electrode pitch"),
+  outerpadwidth: length.default("1.8mm").describe("outer electrode pad width"),
+  centerpadwidth: length
+    .default("2.4mm")
+    .describe("center electrode pad width"),
+  padheight: length.default("5.8mm").describe("electrode pad height"),
+  w: length.default("7.2mm").describe("GDT body width"),
+  h: length.default("5mm").describe("GDT body height"),
 })
 
-export const smdpotentiometer = (
-  rawParams: z.input<typeof smdpotentiometer_def>,
+export const smdgdt3 = (
+  rawParams: z.input<typeof smdgdt3_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = smdpotentiometer_def.parse(rawParams)
+  const parameters = smdgdt3_def.parse(rawParams)
   const { p, outerpadwidth, centerpadwidth, padheight, w, h } = parameters
   const pads = [
     rectpad(1, -p, 0, outerpadwidth, padheight),
