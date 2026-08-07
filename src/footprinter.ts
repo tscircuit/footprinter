@@ -84,6 +84,16 @@ export type Footprinter = {
   led2835: () => FootprinterParamsBuilder<
     "p1w" | "p2w" | "ph" | "p1x" | "p2x" | "w" | "h"
   >
+  led3510: () => FootprinterParamsBuilder<
+    | "outerpadcenterx"
+    | "outerpadwidth"
+    | "innerpadpitch"
+    | "innerpadcenteroffsetx"
+    | "innerpadwidth"
+    | "padheight"
+    | "w"
+    | "h"
+  >
   led5050: () => FootprinterParamsBuilder<
     "p" | "rowspan" | "pl" | "pw" | "w" | "h"
   >
