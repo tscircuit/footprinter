@@ -515,6 +515,9 @@ export type Footprinter = {
   platedhole: () => FootprinterParamsBuilder<
     "d" | "hd" | "r" | "hr" | "pd" | "pr"
   >
+  smdpads: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"p" | "pw" | "ph" | "centerpadwidth">
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
     params: () => any
     soup: () => AnySoupElement[]
