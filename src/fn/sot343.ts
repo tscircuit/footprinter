@@ -31,6 +31,9 @@ export const sot343_def = base_def.extend({
   pl: z.string().default("1.05mm"),
   pw: z.string().default("0.45mm"),
   p: z.string().default("0.55mm"),
+  rowspan: z.string().default("1.3mm"),
+  pin2padlength: z.string().optional(),
+  pin2padcenteroffsetx: z.string().default("0mm"),
   string: z.string().optional(),
 })
 
@@ -62,12 +65,23 @@ export const getCcwSot343Coords = (parameters: {
   h: number
   pl: number
   p: number
+  rowspan: number
+  pin2padcenteroffsetx: number
 }) => {
-  const { pn, p } = parameters
-  if (pn === 1) return { x: -p * 1.92, y: -0.65 }
-  if (pn === 2) return { x: -p * 1.92, y: 0.65 }
-  if (pn === 3) return { x: p, y: 0.65 }
-  if (pn === 4) return { x: p, y: -0.65 }
+  const { pn, p, rowspan, pin2padcenteroffsetx } = parameters
+  const leftPadX = -p * 1.92
+  const rightPadX = p
+  const halfRowSpan = rowspan / 2
+
+  if (pn === 1) return { x: leftPadX, y: -halfRowSpan }
+  if (pn === 2) {
+    return {
+      x: rightPadX + pin2padcenteroffsetx,
+      y: -halfRowSpan,
+    }
+  }
+  if (pn === 3) return { x: rightPadX, y: halfRowSpan }
+  if (pn === 4) return { x: leftPadX, y: halfRowSpan }
   return { x: 0, y: 0 }
 }
 
@@ -79,7 +93,14 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const rowspan = Number.parseFloat(parameters.rowspan)
+  const pin2PadLength = Number.parseFloat(
+    parameters.pin2padlength ?? parameters.pl,
+  )
+  const pin2PadCenterOffsetX = Number.parseFloat(
+    parameters.pin2padcenteroffsetx,
+  )
+  const cornerRadius = parameters.rounded ?? Math.min(pl, pw) / 8
 
   let minX = Infinity
   let maxX = -Infinity
@@ -94,8 +115,11 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       h,
       pl,
       p,
+      rowspan,
+      pin2padcenteroffsetx: pin2PadCenterOffsetX,
     })
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    const padLength = i === 1 ? pin2PadLength : pl
+    pads.push(rectpad(i + 1, x, y, padLength, pw, cornerRadius))
 
     if (x < minX) minX = x
     if (x > maxX) maxX = x
