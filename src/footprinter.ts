@@ -309,6 +309,9 @@ export type Footprinter = {
   sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot25: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
   sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sot143: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "px" | "pw" | "ph" | "pin1padwidth" | "pin1centeroffsetx"
+  >
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
   sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
