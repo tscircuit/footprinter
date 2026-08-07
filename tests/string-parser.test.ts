@@ -29,14 +29,3 @@ test("pin-indexed parameters do not change grid value parsing", () => {
   expect(parameters.grid).toEqual({ x: 3, y: 3 })
   expect(parameters.p).toBe(1)
 })
-
-test("string builder parses full pin-indexed parameter names", () => {
-  const parameters = fp
-    .string("sot343_pin2padlength0.9mm_pin2padcenteroffsetx-0.15mm")
-    .json()
-
-  expect(parameters).toMatchObject({
-    pin2padlength: "0.9mm",
-    pin2padcenteroffsetx: "-0.15mm",
-  })
-})

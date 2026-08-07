@@ -321,8 +321,22 @@ export type Footprinter = {
     | "pl"
     | "pw"
     | "rowspan"
-    | "pin2padlength"
-    | "pin2padcenteroffsetx"
+    | "p1w"
+    | "p1h"
+    | "p1x"
+    | "p1y"
+    | "p2w"
+    | "p2h"
+    | "p2x"
+    | "p2y"
+    | "p3w"
+    | "p3h"
+    | "p3x"
+    | "p3y"
+    | "p4w"
+    | "p4h"
+    | "p4x"
+    | "p4y"
   >
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -614,11 +628,11 @@ export const string = (def: string): Footprinter => {
           v: pin1LocationMatch[2],
         }
       }
-      // Pin-indexed parameters such as p1w, p2x, and pin2padlength contain a
+      // Pin-indexed parameters such as p1w and p2x contain a
       // digit in the parameter name. Require another value token after that
       // name so a normal pitch such as p1mm is still parsed as p + 1mm.
       const m = s.match(
-        /((?:p(?:in)?\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
+        /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
       )
       if (!m) return null
       const [, rawFn, v] = m
