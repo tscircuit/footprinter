@@ -218,6 +218,7 @@ export type Footprinter = {
     | "rightangle"
     | "pw"
     | "pl"
+    | "centerpadwidth"
     | "pinlabeltextalignleft"
     | "pinlabeltextaligncenter"
     | "pinlabeltextalignright"
@@ -352,9 +353,6 @@ export type Footprinter = {
   smbf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   potentiometer: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
-  >
-  smdgdt3: () => FootprinterParamsBuilder<
-    "p" | "outerpadwidth" | "centerpadwidth" | "padheight" | "w" | "h"
   >
   electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">

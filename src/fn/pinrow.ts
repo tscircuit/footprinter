@@ -48,6 +48,9 @@ export const pinrow_def = base_def
     rightangle: z.boolean().optional().describe("right angle"),
     pw: length.optional().default("1.0mm").describe("pad width for SMD"),
     pl: length.optional().default("2.0mm").describe("pad length for SMD"),
+    centerpadwidth: length
+      .optional()
+      .describe("width of the center pad in an odd single-row SMD pin row"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -110,6 +113,21 @@ export const pinrow_def = base_def
         message:
           "'male' and 'female' cannot both be true; it should be male or female.",
         path: ["male", "female"],
+      })
+    }
+    if (
+      data.centerpadwidth !== undefined &&
+      (!data.smd ||
+        data.rows !== 1 ||
+        data.num_pins % 2 === 0 ||
+        data.cols !== undefined ||
+        data.missing.length > 0)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message:
+          "'centerpadwidth' requires an odd, non-sparse, single-row SMD pinrow",
+        path: ["centerpadwidth"],
       })
     }
     if (
@@ -250,9 +268,14 @@ export const pinrow = (
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
     if (pinNumber === 1) pin1Position = { x: xoff, y: yoff }
+    const smdPadWidth =
+      parameters.centerpadwidth !== undefined &&
+      pinNumber === Math.ceil(num_pins / 2)
+        ? parameters.centerpadwidth
+        : parameters.pw
     if (parameters.smd) {
       // SMD pads
-      holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
+      holes.push(rectpad(pinNumber, xoff, yoff, smdPadWidth, parameters.pl))
     } else {
       // Through-hole
       if (pinNumber === 1 && !parameters.nosquareplating) {
@@ -278,7 +301,7 @@ export const pinrow = (
       od,
       anchorSide: pinlabelAnchorSide,
       smd: parameters.smd,
-      pw: parameters.pw,
+      pw: smdPadWidth,
       pl: parameters.pl,
     })
     if (!nopinlabels) {
@@ -529,7 +552,13 @@ export const pinrow = (
       }
     : silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
 
-  const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth
+  const centerPadHalfWidth = parameters.centerpadwidth
+    ? parameters.centerpadwidth / 2
+    : 0
+  const padOuterHalfWidth = Math.max(
+    pinRowSpanX / 2 + padHalfWidth,
+    centerPadHalfWidth,
+  )
   const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
   const bodyHalfWidth = pinRowSpanX / 2 + p / 2
   const bodyHalfHeight = pinRowSpanY / 2 + p / 2
