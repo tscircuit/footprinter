@@ -28,12 +28,9 @@ export const sot343_def = base_def.extend({
   num_pins: z.number().default(4),
   w: z.string().default("3.2mm"),
   h: z.string().default("2.6mm"),
-  pl: z.string().default("0.7mm"),
-  pw: z.string().default("0.7mm"),
-  p: z.string().default("2mm"),
-  px: z.string().default("1.3mm"),
-  pin2padwidth: z.string().default("0.9mm"),
-  pin2centeroffsetx: z.string().default("-0.15mm"),
+  pl: z.string().default("1.05mm"),
+  pw: z.string().default("0.45mm"),
+  p: z.string().default("0.55mm"),
   string: z.string().optional(),
 })
 
@@ -41,7 +38,7 @@ export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot343_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 4
+  const numPins = match ? Number.parseInt(match[1]!, 4) : 4
 
   const parameters = sot343_def.parse({
     ...raw_params,
@@ -65,14 +62,12 @@ export const getCcwSot343Coords = (parameters: {
   h: number
   pl: number
   p: number
-  px: number
-  pin2centeroffsetx: number
 }) => {
-  const { pn, p, px, pin2centeroffsetx } = parameters
-  if (pn === 1) return { x: -px / 2, y: -p / 2 }
-  if (pn === 2) return { x: px / 2 + pin2centeroffsetx, y: -p / 2 }
-  if (pn === 3) return { x: px / 2, y: p / 2 }
-  if (pn === 4) return { x: -px / 2, y: p / 2 }
+  const { pn, p } = parameters
+  if (pn === 1) return { x: -p * 1.92, y: -0.65 }
+  if (pn === 2) return { x: -p * 1.92, y: 0.65 }
+  if (pn === 3) return { x: p, y: 0.65 }
+  if (pn === 4) return { x: p, y: -0.65 }
   return { x: 0, y: 0 }
 }
 
@@ -84,9 +79,6 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
-  const px = Number.parseFloat(parameters.px)
-  const pin2PadWidth = Number.parseFloat(parameters.pin2padwidth)
-  const pin2CenterOffsetX = Number.parseFloat(parameters.pin2centeroffsetx)
   const cornerRadius = Math.min(pl, pw) / 8
 
   let minX = Infinity
@@ -102,12 +94,8 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       h,
       pl,
       p,
-      px,
-      pin2centeroffsetx: pin2CenterOffsetX,
     })
-    pads.push(
-      rectpad(i + 1, x, y, i === 1 ? pin2PadWidth : pl, pw, cornerRadius),
-    )
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
 
     if (x < minX) minX = x
     if (x > maxX) maxX = x
