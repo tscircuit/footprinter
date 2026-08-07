@@ -263,6 +263,7 @@ export type Footprinter = {
   radial: () => FootprinterParamsBuilder<
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
   >
+  relayg5nb: () => FootprinterParamsBuilder<never>
   rj45: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
