@@ -457,6 +457,9 @@ export type Footprinter = {
     | "mpw"
     | "mpl"
   >
+  fuseclip: () => FootprinterParamsBuilder<
+    "p" | "holewidth" | "holeheight" | "outerwidth" | "outerheight"
+  >
   stampboard: () => FootprinterParamsBuilder<
     | "w"
     | "h"
