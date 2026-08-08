@@ -290,6 +290,7 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  toll: (num_pins?: number) => FootprinterParamsBuilder<never>
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
