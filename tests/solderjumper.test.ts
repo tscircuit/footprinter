@@ -86,3 +86,36 @@ test("solderjumper 2-pin custom pad size", () => {
     "solderjumper2bridged12pw2ph0.5",
   )
 })
+
+test("solderjumper without a pin count defaults to 2 pins (no NaN geometry)", () => {
+  const circuitJson = fp.string("solderjumper").circuitJson()
+
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads.length).toBe(2)
+
+  const courtyard = circuitJson.find(
+    (e) => e.type === "pcb_courtyard_rect",
+  ) as any
+  expect(courtyard).toBeDefined()
+  expect(Number.isFinite(courtyard.width)).toBe(true)
+  expect(Number.isFinite(courtyard.height)).toBe(true)
+  expect(Number.isFinite(courtyard.center.x)).toBe(true)
+  expect(Number.isFinite(courtyard.center.y)).toBe(true)
+
+  const silkscreenText = circuitJson.find(
+    (e) => e.type === "pcb_silkscreen_text",
+  ) as any
+  expect(silkscreenText).toBeDefined()
+  expect(Number.isFinite(silkscreenText.anchor_position.x)).toBe(true)
+  expect(Number.isFinite(silkscreenText.anchor_position.y)).toBe(true)
+
+  // a bare solderjumper renders the same pad count as the explicit solderjumper2
+  const twoPin = fp.string("solderjumper2").circuitJson()
+  expect(pads.length).toBe(twoPin.filter((e) => e.type === "pcb_smtpad").length)
+})
+
+test("solderjumper default snapshot", () => {
+  const circuitJson = fp.string("solderjumper").circuitJson()
+  const svg = convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true })
+  expect(svg).toMatchSvgSnapshot(import.meta.path, "solderjumper_default")
+})
