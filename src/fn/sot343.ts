@@ -8,11 +8,6 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
-import { function_call } from "../helpers/zod/function-call"
-
-const sot343PadOverride = function_call.pipe(
-  z.tuple([z.coerce.number().int(), length, length, length, length]),
-)
 
 const sot343CourtyardOutline = [
   { x: -1.703, y: 0.98 },
@@ -38,14 +33,30 @@ export const sot343_def = base_def
     pl: z.string().default("1.05mm"),
     pw: z.string().default("0.45mm"),
     p: z.string().default("0.55mm"),
-    rowspan: z.string().default("1.3mm"),
-    padoverride: sot343PadOverride
+    rowspan: length.default("1.3mm"),
+    padoverride: z.coerce
+      .number()
+      .int()
       .optional()
-      .describe("pin number, width, height, center x, and center y"),
+      .describe("pin number of the pad whose geometry is overridden"),
+    padoverridewidth: length.optional().describe("selected pad width"),
+    padoverrideheight: length.optional().describe("selected pad height"),
+    padoverridecenteroffsetx: length
+      .optional()
+      .describe("selected pad center x offset from its generated position"),
+    padoverridecenteroffsety: length
+      .optional()
+      .describe("selected pad center y offset from its generated position"),
     string: z.string().optional(),
   })
   .superRefine((parameters, ctx) => {
-    const pinNumber = parameters.padoverride?.[0]
+    const pinNumber = parameters.padoverride
+    const hasGeometryOverride = [
+      parameters.padoverridewidth,
+      parameters.padoverrideheight,
+      parameters.padoverridecenteroffsetx,
+      parameters.padoverridecenteroffsety,
+    ].some((value) => value !== undefined)
     if (
       pinNumber !== undefined &&
       (pinNumber < 1 || pinNumber > parameters.num_pins)
@@ -53,7 +64,21 @@ export const sot343_def = base_def
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: `'padoverride' pin number must be between 1 and ${parameters.num_pins}`,
-        path: ["padoverride", 0],
+        path: ["padoverride"],
+      })
+    }
+    if (pinNumber === undefined && hasGeometryOverride) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "pad override geometry requires a 'padoverride' pin number",
+        path: ["padoverride"],
+      })
+    }
+    if (pinNumber !== undefined && !hasGeometryOverride) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'padoverride' requires at least one geometry override",
+        path: ["padoverride"],
       })
     }
   })
@@ -108,16 +133,7 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pl = Number.parseFloat(parameters.pl)
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
-  const rowspan = Number.parseFloat(parameters.rowspan)
-  const padOverride = parameters.padoverride
-    ? {
-        pinNumber: parameters.padoverride[0],
-        width: parameters.padoverride[1],
-        height: parameters.padoverride[2],
-        x: parameters.padoverride[3],
-        y: parameters.padoverride[4],
-      }
-    : undefined
+  const rowspan = parameters.rowspan
 
   let minX = Infinity
   let maxX = -Infinity
@@ -134,11 +150,21 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       p,
       rowspan,
     })
-    const override = padOverride?.pinNumber === i + 1 ? padOverride : undefined
-    const x = override?.x ?? defaultCenter.x
-    const y = override?.y ?? defaultCenter.y
-    const padWidth = override?.width ?? pl
-    const padHeight = override?.height ?? pw
+    const isOverridePad = parameters.padoverride === i + 1
+    const x =
+      defaultCenter.x +
+      (isOverridePad ? (parameters.padoverridecenteroffsetx ?? 0) : 0)
+    const y =
+      defaultCenter.y +
+      (isOverridePad ? (parameters.padoverridecenteroffsety ?? 0) : 0)
+    const padWidth =
+      isOverridePad && parameters.padoverridewidth !== undefined
+        ? parameters.padoverridewidth
+        : pl
+    const padHeight =
+      isOverridePad && parameters.padoverrideheight !== undefined
+        ? parameters.padoverrideheight
+        : pw
     const cornerRadius = parameters.rounded ?? Math.min(padWidth, padHeight) / 8
     pads.push(rectpad(i + 1, x, y, padWidth, padHeight, cornerRadius))
 

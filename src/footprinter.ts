@@ -33,17 +33,9 @@ export type FootprinterParamsBuilder<K extends string> = {
     ? Footprinter[P]
     : P extends "pin1location"
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
-      : P extends "padoverride"
-        ? (
-            pinNumber: number,
-            width: number | string,
-            height: number | string,
-            x: number | string,
-            y: number | string,
-          ) => FootprinterParamsBuilder<K>
-        : P extends "rounded"
-          ? (radius: number | string) => FootprinterParamsBuilder<K>
-          : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+      : P extends "rounded"
+        ? (radius: number | string) => FootprinterParamsBuilder<K>
+        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -323,7 +315,17 @@ export type Footprinter = {
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
   sot343: () => FootprinterParamsBuilder<
-    "w" | "h" | "p" | "pl" | "pw" | "rowspan" | "padoverride"
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "rowspan"
+    | "padoverride"
+    | "padoverridewidth"
+    | "padoverrideheight"
+    | "padoverridecenteroffsetx"
+    | "padoverridecenteroffsety"
   >
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -741,12 +743,9 @@ export const footprinter = (): Footprinter & {
           }
         }
         return (...values: any[]) => {
-          const normalizedValues = values.map((value) =>
-            typeof value === "string"
-              ? normalizeMicrometerLengths(value)
-              : value,
-          )
-          const v = normalizedValues[0]
+          const v = values[0]
+          const normalizedValue =
+            typeof v === "string" ? normalizeMicrometerLengths(v) : v
           if (Object.keys(target).length === 0) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
@@ -779,7 +778,9 @@ export const footprinter = (): Footprinter & {
               // ignore
             } else {
               target[prop] =
-                normalizedValues.length > 1 ? normalizedValues : (v ?? true)
+                prop === "pin1location" && values.length > 1
+                  ? values
+                  : (normalizedValue ?? true)
             }
           }
           return proxy

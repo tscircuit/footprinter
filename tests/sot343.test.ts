@@ -20,7 +20,7 @@ test("sot343_pl1.2_pw0.9_p2_w5.2_h5", () => {
 test("sot343 parameters reproduce C151520", () => {
   const circuitJson = fp
     .string(
-      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_padoverride(2,0.8999982mm,0.6999986mm,0.2953358904109589mm,-0.999744mm)_rounded0",
+      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_padoverride2_padoverridewidth0.8999982mm_padoverrideheight0.6999986mm_padoverridecenteroffsetx-0.14986mm_padoverridecenteroffsety0.000254mm_rounded0",
     )
     .circuitJson()
   const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
@@ -37,7 +37,6 @@ test("sot343 parameters reproduce C151520", () => {
     {
       port_hints: ["2"],
       x: 0.2953358904109589,
-      y: -0.999744,
       width: 0.8999982,
       height: 0.6999986,
     },
@@ -56,6 +55,7 @@ test("sot343 parameters reproduce C151520", () => {
       height: 0.6999986,
     },
   ])
+  expect((pads[1] as { y: number }).y).toBeCloseTo(-0.999744, 12)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
@@ -66,7 +66,11 @@ test("sot343 parameters reproduce C151520", () => {
 test("sot343 padoverride selects a pad by pin number", () => {
   const pads = fp()
     .sot343()
-    .padoverride(4, "0.64mm", "0.74mm", "-1.4mm", "0.9mm")
+    .padoverride(4)
+    .padoverridewidth("0.64mm")
+    .padoverrideheight("0.74mm")
+    .padoverridecenteroffsetx("-0.344mm")
+    .padoverridecenteroffsety("0.25mm")
     .circuitJson()
     .filter((element) => element.type === "pcb_smtpad")
 
@@ -80,6 +84,12 @@ test("sot343 padoverride selects a pad by pin number", () => {
 
 test("sot343 rejects a padoverride pin outside its pin range", () => {
   expect(() =>
-    fp.string("sot343_padoverride(5,1mm,1mm,0mm,0mm)").circuitJson(),
+    fp.string("sot343_padoverride5_padoverridewidth1mm").circuitJson(),
   ).toThrow("pin number must be between 1 and 4")
+})
+
+test("sot343 pad override geometry requires a selected pin", () => {
+  expect(() => fp.string("sot343_padoverridewidth1mm").circuitJson()).toThrow(
+    "requires a 'padoverride' pin number",
+  )
 })
