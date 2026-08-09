@@ -20,7 +20,7 @@ test("sot343_pl1.2_pw0.9_p2_w5.2_h5", () => {
 test("sot343 parameters reproduce C151520", () => {
   const circuitJson = fp
     .string(
-      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_padoverride2_padoverridewidth0.8999982mm_padoverrideheight0.6999986mm_padoverridecenteroffsetx-0.14986mm_padoverridecenteroffsety0.000254mm_rounded0",
+      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_p2w0.8999982mm_p2h0.6999986mm_p2x0.2953358904109589mm_p2y-0.999744mm_rounded0",
     )
     .circuitJson()
   const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
@@ -55,7 +55,7 @@ test("sot343 parameters reproduce C151520", () => {
       height: 0.6999986,
     },
   ])
-  expect((pads[1] as { y: number }).y).toBeCloseTo(-0.999744, 12)
+  expect((pads[1] as { y: number }).y).toBe(-0.999744)
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
@@ -63,33 +63,41 @@ test("sot343 parameters reproduce C151520", () => {
   )
 })
 
-test("sot343 padoverride selects a pad by pin number", () => {
-  const pads = fp()
-    .sot343()
-    .padoverride(4)
-    .padoverridewidth("0.64mm")
-    .padoverrideheight("0.74mm")
-    .padoverridecenteroffsetx("-0.344mm")
-    .padoverridecenteroffsety("0.25mm")
+test("sot343 supports compact geometry parameters for every pad", () => {
+  const pads = fp
+    .string(
+      "sot343_p1w0.61mm_p1h0.71mm_p1x-1.1mm_p1y-0.9mm_p2w0.62mm_p2h0.72mm_p2x1.2mm_p2y-0.8mm_p3w0.63mm_p3h0.73mm_p3x1.3mm_p3y0.8mm_p4w0.64mm_p4h0.74mm_p4x-1.4mm_p4y0.9mm",
+    )
     .circuitJson()
     .filter((element) => element.type === "pcb_smtpad")
 
   expect(pads).toMatchObject([
-    { port_hints: ["1"], width: 1.05, height: 0.45 },
-    { port_hints: ["2"], width: 1.05, height: 0.45 },
-    { port_hints: ["3"], width: 1.05, height: 0.45 },
+    { port_hints: ["1"], x: -1.1, y: -0.9, width: 0.61, height: 0.71 },
+    { port_hints: ["2"], x: 1.2, y: -0.8, width: 0.62, height: 0.72 },
+    { port_hints: ["3"], x: 1.3, y: 0.8, width: 0.63, height: 0.73 },
     { port_hints: ["4"], x: -1.4, y: 0.9, width: 0.64, height: 0.74 },
   ])
 })
 
-test("sot343 rejects a padoverride pin outside its pin range", () => {
-  expect(() =>
-    fp.string("sot343_padoverride5_padoverridewidth1mm").circuitJson(),
-  ).toThrow("pin number must be between 1 and 4")
+test("sot343 full pad aliases reproduce C151520", () => {
+  const compactPads = fp
+    .string(
+      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_p2w0.8999982mm_p2h0.6999986mm_p2x0.2953358904109589mm_p2y-0.999744mm_rounded0",
+    )
+    .circuitJson()
+    .filter((element) => element.type === "pcb_smtpad")
+  const fullAliasPads = fp
+    .string(
+      "sot343_p0.4451958904109589mm_rowspan1.999996mm_pl0.6999986mm_pw0.6999986mm_pad2width0.8999982mm_pad2height0.6999986mm_pad2centerx0.2953358904109589mm_pad2centery-0.999744mm_rounded0",
+    )
+    .circuitJson()
+    .filter((element) => element.type === "pcb_smtpad")
+
+  expect(fullAliasPads).toEqual(compactPads)
 })
 
-test("sot343 pad override geometry requires a selected pin", () => {
-  expect(() => fp.string("sot343_padoverridewidth1mm").circuitJson()).toThrow(
-    "requires a 'padoverride' pin number",
+test("sot343 rejects conflicting compact and full pad parameters", () => {
+  expect(() => fp.string("sot343_p2w0.9mm_pad2width1mm").circuitJson()).toThrow(
+    "Conflicting p2w (0.9) and pad2width (1)",
   )
 })

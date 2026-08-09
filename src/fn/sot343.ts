@@ -9,6 +9,25 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
+const resolvePadParameter = (
+  parameters: Record<string, number | undefined>,
+  compactName: string,
+  fullName: string,
+) => {
+  const compactValue = parameters[compactName]
+  const fullValue = parameters[fullName]
+  if (
+    compactValue !== undefined &&
+    fullValue !== undefined &&
+    compactValue !== fullValue
+  ) {
+    throw new Error(
+      `Conflicting ${compactName} (${compactValue}) and ${fullName} (${fullValue})`,
+    )
+  }
+  return fullValue ?? compactValue
+}
+
 const sot343CourtyardOutline = [
   { x: -1.703, y: 0.98 },
   { x: -0.983, y: 0.98 },
@@ -24,64 +43,49 @@ const sot343CourtyardOutline = [
   { x: -1.703, y: -0.98 },
 ]
 
-export const sot343_def = base_def
-  .extend({
-    fn: z.string(),
-    num_pins: z.number().default(4),
-    w: z.string().default("3.2mm"),
-    h: z.string().default("2.6mm"),
-    pl: z.string().default("1.05mm"),
-    pw: z.string().default("0.45mm"),
-    p: z.string().default("0.55mm"),
-    rowspan: length.default("1.3mm"),
-    padoverride: z.coerce
-      .number()
-      .int()
-      .optional()
-      .describe("pin number of the pad whose geometry is overridden"),
-    padoverridewidth: length.optional().describe("selected pad width"),
-    padoverrideheight: length.optional().describe("selected pad height"),
-    padoverridecenteroffsetx: length
-      .optional()
-      .describe("selected pad center x offset from its generated position"),
-    padoverridecenteroffsety: length
-      .optional()
-      .describe("selected pad center y offset from its generated position"),
-    string: z.string().optional(),
-  })
-  .superRefine((parameters, ctx) => {
-    const pinNumber = parameters.padoverride
-    const hasGeometryOverride = [
-      parameters.padoverridewidth,
-      parameters.padoverrideheight,
-      parameters.padoverridecenteroffsetx,
-      parameters.padoverridecenteroffsety,
-    ].some((value) => value !== undefined)
-    if (
-      pinNumber !== undefined &&
-      (pinNumber < 1 || pinNumber > parameters.num_pins)
-    ) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: `'padoverride' pin number must be between 1 and ${parameters.num_pins}`,
-        path: ["padoverride"],
-      })
-    }
-    if (pinNumber === undefined && hasGeometryOverride) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "pad override geometry requires a 'padoverride' pin number",
-        path: ["padoverride"],
-      })
-    }
-    if (pinNumber !== undefined && !hasGeometryOverride) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "'padoverride' requires at least one geometry override",
-        path: ["padoverride"],
-      })
-    }
-  })
+export const sot343_def = base_def.extend({
+  fn: z.string(),
+  num_pins: z.number().default(4),
+  w: z.string().default("3.2mm"),
+  h: z.string().default("2.6mm"),
+  pl: z.string().default("1.05mm"),
+  pw: z.string().default("0.45mm"),
+  p: z.string().default("0.55mm"),
+  rowspan: length.default("1.3mm"),
+  p1w: length.optional().describe("compact alias for pad1width"),
+  p1h: length.optional().describe("compact alias for pad1height"),
+  p1x: length.optional().describe("compact alias for pad1centerx"),
+  p1y: length.optional().describe("compact alias for pad1centery"),
+  p2w: length.optional().describe("compact alias for pad2width"),
+  p2h: length.optional().describe("compact alias for pad2height"),
+  p2x: length.optional().describe("compact alias for pad2centerx"),
+  p2y: length.optional().describe("compact alias for pad2centery"),
+  p3w: length.optional().describe("compact alias for pad3width"),
+  p3h: length.optional().describe("compact alias for pad3height"),
+  p3x: length.optional().describe("compact alias for pad3centerx"),
+  p3y: length.optional().describe("compact alias for pad3centery"),
+  p4w: length.optional().describe("compact alias for pad4width"),
+  p4h: length.optional().describe("compact alias for pad4height"),
+  p4x: length.optional().describe("compact alias for pad4centerx"),
+  p4y: length.optional().describe("compact alias for pad4centery"),
+  pad1width: length.optional().describe("pad 1 width"),
+  pad1height: length.optional().describe("pad 1 height"),
+  pad1centerx: length.optional().describe("pad 1 center x"),
+  pad1centery: length.optional().describe("pad 1 center y"),
+  pad2width: length.optional().describe("pad 2 width"),
+  pad2height: length.optional().describe("pad 2 height"),
+  pad2centerx: length.optional().describe("pad 2 center x"),
+  pad2centery: length.optional().describe("pad 2 center y"),
+  pad3width: length.optional().describe("pad 3 width"),
+  pad3height: length.optional().describe("pad 3 height"),
+  pad3centerx: length.optional().describe("pad 3 center x"),
+  pad3centery: length.optional().describe("pad 3 center y"),
+  pad4width: length.optional().describe("pad 4 width"),
+  pad4height: length.optional().describe("pad 4 height"),
+  pad4centerx: length.optional().describe("pad 4 center x"),
+  pad4centery: length.optional().describe("pad 4 center y"),
+  string: z.string().optional(),
+})
 
 export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
@@ -134,6 +138,10 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
   const rowspan = parameters.rowspan
+  const padParameters = parameters as unknown as Record<
+    string,
+    number | undefined
+  >
 
   let minX = Infinity
   let maxX = -Infinity
@@ -150,21 +158,31 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       p,
       rowspan,
     })
-    const isOverridePad = parameters.padoverride === i + 1
+    const pinNumber = i + 1
     const x =
-      defaultCenter.x +
-      (isOverridePad ? (parameters.padoverridecenteroffsetx ?? 0) : 0)
+      resolvePadParameter(
+        padParameters,
+        `p${pinNumber}x`,
+        `pad${pinNumber}centerx`,
+      ) ?? defaultCenter.x
     const y =
-      defaultCenter.y +
-      (isOverridePad ? (parameters.padoverridecenteroffsety ?? 0) : 0)
+      resolvePadParameter(
+        padParameters,
+        `p${pinNumber}y`,
+        `pad${pinNumber}centery`,
+      ) ?? defaultCenter.y
     const padWidth =
-      isOverridePad && parameters.padoverridewidth !== undefined
-        ? parameters.padoverridewidth
-        : pl
+      resolvePadParameter(
+        padParameters,
+        `p${pinNumber}w`,
+        `pad${pinNumber}width`,
+      ) ?? pl
     const padHeight =
-      isOverridePad && parameters.padoverrideheight !== undefined
-        ? parameters.padoverrideheight
-        : pw
+      resolvePadParameter(
+        padParameters,
+        `p${pinNumber}h`,
+        `pad${pinNumber}height`,
+      ) ?? pw
     const cornerRadius = parameters.rounded ?? Math.min(padWidth, padHeight) / 8
     pads.push(rectpad(i + 1, x, y, padWidth, padHeight, cornerRadius))
 

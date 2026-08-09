@@ -23,9 +23,24 @@ test("string builder parses pin-indexed parameter names", () => {
   })
 })
 
-test("pin-indexed parameters do not change grid value parsing", () => {
-  const parameters = fp.string("bga8_grid3x3_p1mm").json()
+test("string builder parses full pin-indexed parameter aliases", () => {
+  const parameters = fp
+    .string(
+      "sot343_pad2width0.9mm_pad2height0.7mm_pad2centerx0.3mm_pad2centery-1mm",
+    )
+    .json()
 
-  expect(parameters.grid).toEqual({ x: 3, y: 3 })
+  expect(parameters).toMatchObject({
+    pad2width: 0.9,
+    pad2height: 0.7,
+    pad2centerx: 0.3,
+    pad2centery: -1,
+  })
+})
+
+test("pin-indexed parameters do not change grid value parsing", () => {
+  const parameters = fp.string("bga15_grid5x3_p1mm").json()
+
+  expect(parameters.grid).toEqual({ x: 5, y: 3 })
   expect(parameters.p).toBe(1)
 })

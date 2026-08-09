@@ -321,11 +321,38 @@ export type Footprinter = {
     | "pl"
     | "pw"
     | "rowspan"
-    | "padoverride"
-    | "padoverridewidth"
-    | "padoverrideheight"
-    | "padoverridecenteroffsetx"
-    | "padoverridecenteroffsety"
+    | "p1w"
+    | "p1h"
+    | "p1x"
+    | "p1y"
+    | "p2w"
+    | "p2h"
+    | "p2x"
+    | "p2y"
+    | "p3w"
+    | "p3h"
+    | "p3x"
+    | "p3y"
+    | "p4w"
+    | "p4h"
+    | "p4x"
+    | "p4y"
+    | "pad1width"
+    | "pad1height"
+    | "pad1centerx"
+    | "pad1centery"
+    | "pad2width"
+    | "pad2height"
+    | "pad2centerx"
+    | "pad2centery"
+    | "pad3width"
+    | "pad3height"
+    | "pad3centerx"
+    | "pad3centery"
+    | "pad4width"
+    | "pad4height"
+    | "pad4centerx"
+    | "pad4centery"
   >
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -617,11 +644,11 @@ export const string = (def: string): Footprinter => {
           v: pin1LocationMatch[2],
         }
       }
-      // Pin-indexed parameters such as p1w and p2x contain a digit in the
-      // parameter name. Require another value token after that name so a
-      // normal pitch such as p1mm is still parsed as p + 1mm.
+      // Supported pin-indexed parameters contain a digit in the parameter
+      // name. Keep this list narrow so values such as grid5x3 and p1mm retain
+      // their normal parsing.
       const m = s.match(
-        /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
+        /((?:(?:p\d+[whxy]|pad\d+(?:width|height|centerx|centery))(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
       )
       if (!m) return null
       const [, rawFn, v] = m
