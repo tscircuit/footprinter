@@ -33,9 +33,17 @@ export type FootprinterParamsBuilder<K extends string> = {
     ? Footprinter[P]
     : P extends "pin1location"
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
-      : P extends "rounded"
-        ? (radius: number | string) => FootprinterParamsBuilder<K>
-        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+      : P extends "padoverride"
+        ? (
+            pinNumber: number,
+            width: number | string,
+            height: number | string,
+            x: number | string,
+            y: number | string,
+          ) => FootprinterParamsBuilder<K>
+        : P extends "rounded"
+          ? (radius: number | string) => FootprinterParamsBuilder<K>
+          : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -315,28 +323,7 @@ export type Footprinter = {
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
   sot343: () => FootprinterParamsBuilder<
-    | "w"
-    | "h"
-    | "p"
-    | "pl"
-    | "pw"
-    | "rowspan"
-    | "p1w"
-    | "p1h"
-    | "p1x"
-    | "p1y"
-    | "p2w"
-    | "p2h"
-    | "p2x"
-    | "p2y"
-    | "p3w"
-    | "p3h"
-    | "p3x"
-    | "p3y"
-    | "p4w"
-    | "p4h"
-    | "p4x"
-    | "p4y"
+    "w" | "h" | "p" | "pl" | "pw" | "rowspan" | "padoverride"
   >
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -628,9 +615,9 @@ export const string = (def: string): Footprinter => {
           v: pin1LocationMatch[2],
         }
       }
-      // Pin-indexed parameters such as p1w and p2x contain a
-      // digit in the parameter name. Require another value token after that
-      // name so a normal pitch such as p1mm is still parsed as p + 1mm.
+      // Pin-indexed parameters such as p1w and p2x contain a digit in the
+      // parameter name. Require another value token after that name so a
+      // normal pitch such as p1mm is still parsed as p + 1mm.
       const m = s.match(
         /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
       )
@@ -754,9 +741,12 @@ export const footprinter = (): Footprinter & {
           }
         }
         return (...values: any[]) => {
-          const v = values[0]
-          const normalizedValue =
-            typeof v === "string" ? normalizeMicrometerLengths(v) : v
+          const normalizedValues = values.map((value) =>
+            typeof value === "string"
+              ? normalizeMicrometerLengths(value)
+              : value,
+          )
+          const v = normalizedValues[0]
           if (Object.keys(target).length === 0) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
               target[`${prop}${v}`] = true
@@ -789,9 +779,7 @@ export const footprinter = (): Footprinter & {
               // ignore
             } else {
               target[prop] =
-                prop === "pin1location" && values.length > 1
-                  ? values
-                  : (normalizedValue ?? true)
+                normalizedValues.length > 1 ? normalizedValues : (v ?? true)
             }
           }
           return proxy

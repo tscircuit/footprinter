@@ -8,6 +8,11 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
+import { function_call } from "../helpers/zod/function-call"
+
+const sot343PadOverride = function_call.pipe(
+  z.tuple([z.coerce.number().int(), length, length, length, length]),
+)
 
 const sot343CourtyardOutline = [
   { x: -1.703, y: 0.98 },
@@ -24,33 +29,34 @@ const sot343CourtyardOutline = [
   { x: -1.703, y: -0.98 },
 ]
 
-export const sot343_def = base_def.extend({
-  fn: z.string(),
-  num_pins: z.number().default(4),
-  w: z.string().default("3.2mm"),
-  h: z.string().default("2.6mm"),
-  pl: z.string().default("1.05mm"),
-  pw: z.string().default("0.45mm"),
-  p: z.string().default("0.55mm"),
-  rowspan: z.string().default("1.3mm"),
-  p1w: length.optional().describe("pin 1 pad width"),
-  p1h: length.optional().describe("pin 1 pad height"),
-  p1x: length.optional().describe("pin 1 pad center x"),
-  p1y: length.optional().describe("pin 1 pad center y"),
-  p2w: length.optional().describe("pin 2 pad width"),
-  p2h: length.optional().describe("pin 2 pad height"),
-  p2x: length.optional().describe("pin 2 pad center x"),
-  p2y: length.optional().describe("pin 2 pad center y"),
-  p3w: length.optional().describe("pin 3 pad width"),
-  p3h: length.optional().describe("pin 3 pad height"),
-  p3x: length.optional().describe("pin 3 pad center x"),
-  p3y: length.optional().describe("pin 3 pad center y"),
-  p4w: length.optional().describe("pin 4 pad width"),
-  p4h: length.optional().describe("pin 4 pad height"),
-  p4x: length.optional().describe("pin 4 pad center x"),
-  p4y: length.optional().describe("pin 4 pad center y"),
-  string: z.string().optional(),
-})
+export const sot343_def = base_def
+  .extend({
+    fn: z.string(),
+    num_pins: z.number().default(4),
+    w: z.string().default("3.2mm"),
+    h: z.string().default("2.6mm"),
+    pl: z.string().default("1.05mm"),
+    pw: z.string().default("0.45mm"),
+    p: z.string().default("0.55mm"),
+    rowspan: z.string().default("1.3mm"),
+    padoverride: sot343PadOverride
+      .optional()
+      .describe("pin number, width, height, center x, and center y"),
+    string: z.string().optional(),
+  })
+  .superRefine((parameters, ctx) => {
+    const pinNumber = parameters.padoverride?.[0]
+    if (
+      pinNumber !== undefined &&
+      (pinNumber < 1 || pinNumber > parameters.num_pins)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `'padoverride' pin number must be between 1 and ${parameters.num_pins}`,
+        path: ["padoverride", 0],
+      })
+    }
+  })
 
 export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
@@ -103,32 +109,15 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pw = Number.parseFloat(parameters.pw)
   const p = Number.parseFloat(parameters.p)
   const rowspan = Number.parseFloat(parameters.rowspan)
-  const padOverrides = [
-    {
-      w: parameters.p1w,
-      h: parameters.p1h,
-      x: parameters.p1x,
-      y: parameters.p1y,
-    },
-    {
-      w: parameters.p2w,
-      h: parameters.p2h,
-      x: parameters.p2x,
-      y: parameters.p2y,
-    },
-    {
-      w: parameters.p3w,
-      h: parameters.p3h,
-      x: parameters.p3x,
-      y: parameters.p3y,
-    },
-    {
-      w: parameters.p4w,
-      h: parameters.p4h,
-      x: parameters.p4x,
-      y: parameters.p4y,
-    },
-  ]
+  const padOverride = parameters.padoverride
+    ? {
+        pinNumber: parameters.padoverride[0],
+        width: parameters.padoverride[1],
+        height: parameters.padoverride[2],
+        x: parameters.padoverride[3],
+        y: parameters.padoverride[4],
+      }
+    : undefined
 
   let minX = Infinity
   let maxX = -Infinity
@@ -145,11 +134,11 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
       p,
       rowspan,
     })
-    const override = padOverrides[i]!
-    const x = override.x ?? defaultCenter.x
-    const y = override.y ?? defaultCenter.y
-    const padWidth = override.w ?? pl
-    const padHeight = override.h ?? pw
+    const override = padOverride?.pinNumber === i + 1 ? padOverride : undefined
+    const x = override?.x ?? defaultCenter.x
+    const y = override?.y ?? defaultCenter.y
+    const padWidth = override?.width ?? pl
+    const padHeight = override?.height ?? pw
     const cornerRadius = parameters.rounded ?? Math.min(padWidth, padHeight) / 8
     pads.push(rectpad(i + 1, x, y, padWidth, padHeight, cornerRadius))
 
