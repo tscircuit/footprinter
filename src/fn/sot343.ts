@@ -9,11 +9,49 @@ import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 
+const sot343PadNumbers = [1, 2, 3, 4] as const
+const compactPadProperties = ["w", "h", "x", "y"] as const
+const fullPadProperties = {
+  w: "width",
+  h: "height",
+  x: "centerx",
+  y: "centery",
+} as const
+
+type Sot343PadNumber = (typeof sot343PadNumbers)[number]
+type CompactPadProperty = (typeof compactPadProperties)[number]
+type FullPadProperty = (typeof fullPadProperties)[CompactPadProperty]
+
+export type Sot343PadParameter =
+  | `p${Sot343PadNumber}${CompactPadProperty}`
+  | `pad${Sot343PadNumber}${FullPadProperty}`
+
+const sot343PadParameterShape = {} as Record<
+  Sot343PadParameter,
+  z.ZodOptional<typeof length>
+>
+
+for (const pinNumber of sot343PadNumbers) {
+  for (const compactProperty of compactPadProperties) {
+    const fullProperty = fullPadProperties[compactProperty]
+    const compactName = `p${pinNumber}${compactProperty}` as const
+    const fullName = `pad${pinNumber}${fullProperty}` as const
+    sot343PadParameterShape[compactName] = length
+      .optional()
+      .describe(`compact alias for ${fullName}`)
+    sot343PadParameterShape[fullName] = length
+      .optional()
+      .describe(`pad ${pinNumber} ${fullProperty}`)
+  }
+}
+
 const resolvePadParameter = (
   parameters: Record<string, number | undefined>,
-  compactName: string,
-  fullName: string,
+  pinNumber: Sot343PadNumber,
+  compactProperty: CompactPadProperty,
 ) => {
+  const compactName = `p${pinNumber}${compactProperty}`
+  const fullName = `pad${pinNumber}${fullPadProperties[compactProperty]}`
   const compactValue = parameters[compactName]
   const fullValue = parameters[fullName]
   if (
@@ -52,44 +90,29 @@ export const sot343_def = base_def.extend({
   pw: z.string().default("0.45mm"),
   p: z.string().default("0.55mm"),
   rowspan: length.default("1.3mm"),
-  p1w: length.optional().describe("compact alias for pad1width"),
-  p1h: length.optional().describe("compact alias for pad1height"),
-  p1x: length.optional().describe("compact alias for pad1centerx"),
-  p1y: length.optional().describe("compact alias for pad1centery"),
-  p2w: length.optional().describe("compact alias for pad2width"),
-  p2h: length.optional().describe("compact alias for pad2height"),
-  p2x: length.optional().describe("compact alias for pad2centerx"),
-  p2y: length.optional().describe("compact alias for pad2centery"),
-  p3w: length.optional().describe("compact alias for pad3width"),
-  p3h: length.optional().describe("compact alias for pad3height"),
-  p3x: length.optional().describe("compact alias for pad3centerx"),
-  p3y: length.optional().describe("compact alias for pad3centery"),
-  p4w: length.optional().describe("compact alias for pad4width"),
-  p4h: length.optional().describe("compact alias for pad4height"),
-  p4x: length.optional().describe("compact alias for pad4centerx"),
-  p4y: length.optional().describe("compact alias for pad4centery"),
-  pad1width: length.optional().describe("pad 1 width"),
-  pad1height: length.optional().describe("pad 1 height"),
-  pad1centerx: length.optional().describe("pad 1 center x"),
-  pad1centery: length.optional().describe("pad 1 center y"),
-  pad2width: length.optional().describe("pad 2 width"),
-  pad2height: length.optional().describe("pad 2 height"),
-  pad2centerx: length.optional().describe("pad 2 center x"),
-  pad2centery: length.optional().describe("pad 2 center y"),
-  pad3width: length.optional().describe("pad 3 width"),
-  pad3height: length.optional().describe("pad 3 height"),
-  pad3centerx: length.optional().describe("pad 3 center x"),
-  pad3centery: length.optional().describe("pad 3 center y"),
-  pad4width: length.optional().describe("pad 4 width"),
-  pad4height: length.optional().describe("pad 4 height"),
-  pad4centerx: length.optional().describe("pad 4 center x"),
-  pad4centery: length.optional().describe("pad 4 center y"),
+  ...sot343PadParameterShape,
   string: z.string().optional(),
 })
 
 export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  for (const parameterName of Object.keys(raw_params)) {
+    const padParameterMatch = parameterName.match(
+      /^(?:p|pad)(\d+)(?:[whxy]|width|height|centerx|centery)$/,
+    )
+    if (
+      padParameterMatch &&
+      !sot343PadNumbers.includes(
+        Number(padParameterMatch[1]) as Sot343PadNumber,
+      )
+    ) {
+      throw new Error(
+        `SOT-343 pad parameter "${parameterName}" references invalid pin ${padParameterMatch[1]}`,
+      )
+    }
+  }
+
   const match = raw_params.string?.match(/^sot343_(\d+)/)
   const numPins = match ? Number.parseInt(match[1]!, 4) : 4
 
@@ -149,40 +172,22 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   let maxY = -Infinity
 
   for (let i = 0; i < parameters.num_pins; i++) {
+    const pinNumber = (i + 1) as Sot343PadNumber
     const defaultCenter = getCcwSot343Coords({
       num_pins: parameters.num_pins,
-      pn: i + 1,
+      pn: pinNumber,
       w,
       h,
       pl,
       p,
       rowspan,
     })
-    const pinNumber = i + 1
     const x =
-      resolvePadParameter(
-        padParameters,
-        `p${pinNumber}x`,
-        `pad${pinNumber}centerx`,
-      ) ?? defaultCenter.x
+      resolvePadParameter(padParameters, pinNumber, "x") ?? defaultCenter.x
     const y =
-      resolvePadParameter(
-        padParameters,
-        `p${pinNumber}y`,
-        `pad${pinNumber}centery`,
-      ) ?? defaultCenter.y
-    const padWidth =
-      resolvePadParameter(
-        padParameters,
-        `p${pinNumber}w`,
-        `pad${pinNumber}width`,
-      ) ?? pl
-    const padHeight =
-      resolvePadParameter(
-        padParameters,
-        `p${pinNumber}h`,
-        `pad${pinNumber}height`,
-      ) ?? pw
+      resolvePadParameter(padParameters, pinNumber, "y") ?? defaultCenter.y
+    const padWidth = resolvePadParameter(padParameters, pinNumber, "w") ?? pl
+    const padHeight = resolvePadParameter(padParameters, pinNumber, "h") ?? pw
     const cornerRadius = parameters.rounded ?? Math.min(padWidth, padHeight) / 8
     pads.push(rectpad(i + 1, x, y, padWidth, padHeight, cornerRadius))
 

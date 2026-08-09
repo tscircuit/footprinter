@@ -101,3 +101,9 @@ test("sot343 rejects conflicting compact and full pad parameters", () => {
     "Conflicting p2w (0.9) and pad2width (1)",
   )
 })
+
+test("sot343 rejects pad parameters for pins outside the package", () => {
+  expect(() => fp.string("sot343_p5y1mm").circuitJson()).toThrow(
+    'SOT-343 pad parameter "p5y" references invalid pin 5',
+  )
+})

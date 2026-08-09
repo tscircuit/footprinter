@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
+import type { Sot343PadParameter } from "./fn/sot343"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -315,44 +316,7 @@ export type Footprinter = {
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
   sot343: () => FootprinterParamsBuilder<
-    | "w"
-    | "h"
-    | "p"
-    | "pl"
-    | "pw"
-    | "rowspan"
-    | "p1w"
-    | "p1h"
-    | "p1x"
-    | "p1y"
-    | "p2w"
-    | "p2h"
-    | "p2x"
-    | "p2y"
-    | "p3w"
-    | "p3h"
-    | "p3x"
-    | "p3y"
-    | "p4w"
-    | "p4h"
-    | "p4x"
-    | "p4y"
-    | "pad1width"
-    | "pad1height"
-    | "pad1centerx"
-    | "pad1centery"
-    | "pad2width"
-    | "pad2height"
-    | "pad2centerx"
-    | "pad2centery"
-    | "pad3width"
-    | "pad3height"
-    | "pad3centerx"
-    | "pad3centery"
-    | "pad4width"
-    | "pad4height"
-    | "pad4centerx"
-    | "pad4centery"
+    "w" | "h" | "p" | "pl" | "pw" | "rowspan" | Sot343PadParameter
   >
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
