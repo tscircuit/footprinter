@@ -8,6 +8,12 @@ export const lcc = (
   parameters: z.input<typeof lcc_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   parameters.legsoutside = false
+  // LCC and PLCC packages are a 1.27mm pitch family (JEDEC MO-047 / MS-034).
+  // Without this, lcc falls back to the generic quad 0.5mm pitch, which makes
+  // the 0.6mm-wide pads overlap their neighbors.
+  if (!parameters.p) {
+    parameters.p = 1.27
+  }
   if (!parameters.pl) {
     parameters.pl = 1.0
   }
