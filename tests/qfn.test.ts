@@ -58,6 +58,38 @@ test("qfn thermal pad supports independent x and y offsets", () => {
   )
 })
 
+test("qfn64 thermal pad supports a configurable 4x4 via grid", () => {
+  const soup = fp
+    .string(
+      "qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm_pillpads_h9.67mm_pw0.28mm_pl0.66mm",
+    )
+    .circuitJson()
+  const pads = soup.filter((element) => element.type === "pcb_smtpad")
+  const vias = soup.filter((element) => element.type === "pcb_via")
+
+  expect(pads).toHaveLength(65)
+  expect(vias).toHaveLength(16)
+  expect(vias.map(({ x, y }) => [x, y])).toEqual(
+    [-1.5, -0.5, 0.5, 1.5].flatMap((y) =>
+      [-1.5, -0.5, 0.5, 1.5].map((x) => [x, y]),
+    ),
+  )
+  expect(
+    vias.every(
+      (via) =>
+        via.hole_diameter === 0.3048 &&
+        via.outer_diameter === 0.6096 &&
+        via.layers[0] === "top" &&
+        via.layers[1] === "bottom",
+    ),
+  ).toBe(true)
+
+  expect(convertCircuitJsonToPcbSvg(soup)).toMatchSvgSnapshot(
+    import.meta.path,
+    "qfn64_thermalpad_4x4_thermalvias",
+  )
+})
+
 test("qfn20 supports explicit and shared side pin counts", () => {
   const soup = fp
     .string(
