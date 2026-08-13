@@ -149,6 +149,10 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
+    | "thermalvias"
+    | "thermalviapitch"
+    | "thermalviaid"
+    | "thermalviaod"
     | "pillpads"
   >
   tqfp: (

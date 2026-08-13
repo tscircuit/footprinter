@@ -27,6 +27,7 @@ smdpinheader6
 tssop20_p0.5mm
 sot23
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
+qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
 ```
 
