@@ -220,7 +220,22 @@ const createCourtyardRect = (
 })
 
 // Assembly clearance applied per side, matching the repository standard.
-const PASSIVE_COURTYARD_CLEARANCE_MM = 0.25
+export const PASSIVE_COURTYARD_CLEARANCE_MM = 0.25
+
+export type PassiveCourtyardContext = {
+  explicitCourtyard?: { width: number; height: number }
+  copperWidth: number
+  copperHeight: number
+  bodyWidth: number
+  bodyHeight: number
+  silkscreenWidth: number
+  silkscreenHeight: number
+}
+
+export type PassiveCourtyardDefiner = (context: PassiveCourtyardContext) => {
+  width: number
+  height: number
+}
 
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
@@ -240,7 +255,10 @@ export const passive_def = base_def.extend({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-export const passive = (params: PassiveDef): AnyCircuitElement[] => {
+export const passive = (
+  params: PassiveDef,
+  defineCourtyard: PassiveCourtyardDefiner,
+): AnyCircuitElement[] => {
   let {
     fn,
     tht,
@@ -350,15 +368,39 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const copperHeight = tht ? platedHoleOuterDiameter : ph
   const [bodyWidth, bodyHeight] =
     w !== undefined && h !== undefined ? [w, h] : [0, 0]
-  const fallbackEnvelopeWidth = Math.max(copperWidth, bodyWidth)
-  const fallbackEnvelopeHeight = Math.max(copperHeight, bodyHeight)
-  const courtyard =
+  const silkscreenPoints = silkscreenLines.flatMap(({ route }) => route)
+  const silkscreenWidth =
+    2 * Math.max(0, ...silkscreenPoints.map(({ x }) => Math.abs(x)))
+  const silkscreenHeight =
+    2 * Math.max(0, ...silkscreenPoints.map(({ y }) => Math.abs(y)))
+  const explicitCourtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : createCourtyardRect(
-          fallbackEnvelopeWidth + 2 * PASSIVE_COURTYARD_CLEARANCE_MM,
-          fallbackEnvelopeHeight + 2 * PASSIVE_COURTYARD_CLEARANCE_MM,
-        )
+      ? {
+          width: sz.courtyard_width_mm,
+          height: sz.courtyard_height_mm,
+        }
+      : undefined
+  const courtyardDimensions = defineCourtyard({
+    explicitCourtyard,
+    copperWidth,
+    copperHeight,
+    bodyWidth,
+    bodyHeight,
+    silkscreenWidth,
+    silkscreenHeight,
+  })
+  if (
+    !Number.isFinite(courtyardDimensions.width) ||
+    !Number.isFinite(courtyardDimensions.height) ||
+    courtyardDimensions.width <= 0 ||
+    courtyardDimensions.height <= 0
+  ) {
+    throw new Error("Passive courtyard dimensions must be finite and positive")
+  }
+  const courtyard = createCourtyardRect(
+    courtyardDimensions.width,
+    courtyardDimensions.height,
+  )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)

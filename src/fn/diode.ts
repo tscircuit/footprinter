@@ -1,6 +1,29 @@
 import type { AnySoupElement } from "circuit-json"
-import { type PassiveDef, passive } from "src/helpers/passive-fn"
+import {
+  type PassiveCourtyardDefiner,
+  type PassiveDef,
+  passive,
+  PASSIVE_COURTYARD_CLEARANCE_MM,
+} from "src/helpers/passive-fn"
 import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
+
+const defineDiodeCourtyard: PassiveCourtyardDefiner = ({
+  explicitCourtyard,
+  copperWidth,
+  copperHeight,
+  bodyWidth,
+  bodyHeight,
+  silkscreenWidth,
+  silkscreenHeight,
+}) =>
+  explicitCourtyard ?? {
+    width:
+      Math.max(copperWidth, bodyWidth, silkscreenWidth) +
+      2 * PASSIVE_COURTYARD_CLEARANCE_MM,
+    height:
+      Math.max(copperHeight, bodyHeight, silkscreenHeight) +
+      2 * PASSIVE_COURTYARD_CLEARANCE_MM,
+  }
 
 const getCopperBounds = (circuitJson: AnySoupElement[]) => {
   let minX = Number.POSITIVE_INFINITY
@@ -39,7 +62,10 @@ const getCopperBounds = (circuitJson: AnySoupElement[]) => {
 export const diode = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  const circuitJson = passive({ ...parameters, roundedPads: true })
+  const circuitJson = passive(
+    { ...parameters, roundedPads: true },
+    defineDiodeCourtyard,
+  )
 
   return {
     circuitJson: circuitJson.concat(

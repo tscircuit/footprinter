@@ -26,14 +26,14 @@ type CopperGeometry =
       outer_diameter: number
     }
 
-type FallbackCase = {
+type DimensionedCase = {
   name: string
   footprint: string
   expectedCopper: CopperGeometry[]
   body?: { width: number; height: number }
 }
 
-const fallbackCases: FallbackCase[] = [
+const dimensionedCases: DimensionedCase[] = [
   {
     name: "dimensioned resistor 0.8656 mm pitch",
     footprint: "res_p0.8656mm_pw0.5657mm_ph0.54mm",
@@ -225,6 +225,16 @@ const getCopperBounds = (copper: CopperGeometry[]) => {
   }
 }
 
+const getSilkscreenEnvelope = (circuitJson: AnyCircuitElement[]) => {
+  const points = circuitJson.flatMap((element) =>
+    element.type === "pcb_silkscreen_path" ? element.route : [],
+  )
+  return {
+    width: 2 * Math.max(0, ...points.map(({ x }) => Math.abs(x))),
+    height: 2 * Math.max(0, ...points.map(({ y }) => Math.abs(y))),
+  }
+}
+
 const getOnlyCourtyard = (
   circuitJson: AnyCircuitElement[],
 ): PcbCourtyardRect => {
@@ -236,16 +246,25 @@ const getOnlyCourtyard = (
   return courtyards[0] as PcbCourtyardRect
 }
 
-for (const testCase of fallbackCases) {
-  test(`fallback courtyard: ${testCase.name}`, () => {
+for (const testCase of dimensionedCases) {
+  test(`dimensioned courtyard: ${testCase.name}`, () => {
     const circuitJson = fp.string(testCase.footprint).circuitJson()
     const copper = getCopperGeometry(circuitJson)
     const courtyard = getOnlyCourtyard(circuitJson)
     const copperBounds = getCopperBounds(copper)
     const copperWidth = copperBounds.maxX - copperBounds.minX
     const copperHeight = copperBounds.maxY - copperBounds.minY
-    const envelopeWidth = Math.max(copperWidth, testCase.body?.width ?? 0)
-    const envelopeHeight = Math.max(copperHeight, testCase.body?.height ?? 0)
+    const silkscreenEnvelope = getSilkscreenEnvelope(circuitJson)
+    const envelopeWidth = Math.max(
+      copperWidth,
+      testCase.body?.width ?? 0,
+      silkscreenEnvelope.width,
+    )
+    const envelopeHeight = Math.max(
+      copperHeight,
+      testCase.body?.height ?? 0,
+      silkscreenEnvelope.height,
+    )
     const portHints = circuitJson
       .filter(
         (element): element is PcbSmtPad | PcbPlatedHole =>

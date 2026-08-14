@@ -1,5 +1,10 @@
 import type { AnySoupElement } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
+import {
+  passive,
+  PASSIVE_COURTYARD_CLEARANCE_MM,
+  type PassiveCourtyardDefiner,
+  type PassiveDef,
+} from "../helpers/passive-fn"
 import { res0402Array2 } from "../helpers/res0402-array2"
 import { res0402Array4 } from "../helpers/res0402-array4"
 import { res0603Array2 } from "../helpers/res0603-array2"
@@ -11,6 +16,24 @@ type ResArrayParams = PassiveDef & {
   array?: number | string
   x?: number | string
 }
+
+const defineResCourtyard: PassiveCourtyardDefiner = ({
+  explicitCourtyard,
+  copperWidth,
+  copperHeight,
+  bodyWidth,
+  bodyHeight,
+  silkscreenWidth,
+  silkscreenHeight,
+}) =>
+  explicitCourtyard ?? {
+    width:
+      Math.max(copperWidth, bodyWidth, silkscreenWidth) +
+      2 * PASSIVE_COURTYARD_CLEARANCE_MM,
+    height:
+      Math.max(copperHeight, bodyHeight, silkscreenHeight) +
+      2 * PASSIVE_COURTYARD_CLEARANCE_MM,
+  }
 
 const getArrayCount = (parameters: ResArrayParams): number | undefined => {
   const arrayValue = parameters.array ?? parameters.x
@@ -87,5 +110,8 @@ export const res = (
     }
   }
 
-  return { circuitJson: passive(rawParameters), parameters: rawParameters }
+  return {
+    circuitJson: passive(rawParameters, defineResCourtyard),
+    parameters: rawParameters,
+  }
 }
