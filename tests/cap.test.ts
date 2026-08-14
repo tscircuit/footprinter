@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -32,6 +32,12 @@ test("cap 0201", () => {
 
 test("cap 0504", () => {
   const soup = fp.string("0504").circuitJson()
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(courtyard).toMatchObject({ width: 2.25, height: 1.8 })
+
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "cap_0504")
 })

@@ -1,6 +1,14 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
+import { footprintSizes } from "../src/helpers/passive-fn"
+
+test("all standard passive sizes define courtyards", () => {
+  for (const size of footprintSizes) {
+    expect(size.courtyard_width_mm).toBeGreaterThan(0)
+    expect(size.courtyard_height_mm).toBeGreaterThan(0)
+  }
+})
 
 test("0402", () => {
   const soup = fp.string("0402").circuitJson()

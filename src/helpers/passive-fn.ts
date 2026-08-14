@@ -1,13 +1,13 @@
+import mm from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
+import { distance, length } from "circuit-json"
 import { z } from "zod"
-import { length, distance } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
@@ -19,8 +19,8 @@ type StandardSize = {
   pw_mm_min: number // pad width
   h_mm_min: number // body height
   w_mm_min: number // body width
-  courtyard_width_mm?: number
-  courtyard_height_mm?: number
+  courtyard_width_mm: number
+  courtyard_height_mm: number
   rounded_pads?: boolean
   nonpolarizedSilkscreen?: {
     line_half_length_mm?: number
@@ -50,6 +50,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 1.3,
     w_mm_min: 0.58,
     h_mm_min: 0.21,
+    courtyard_width_mm: 2.25,
+    courtyard_height_mm: 1.8,
   },
   {
     imperial: "1812",
@@ -342,10 +344,9 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-  const courtyard =
-    sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : null
+  const courtyard = sz
+    ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
+    : null
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
