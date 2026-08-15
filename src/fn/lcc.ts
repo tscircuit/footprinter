@@ -8,6 +8,9 @@ export const lcc = (
   parameters: z.input<typeof lcc_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   parameters.legsoutside = false
+  if (!parameters.p) {
+    parameters.p = 1.27
+  }
   if (!parameters.pl) {
     parameters.pl = 1.0
   }
