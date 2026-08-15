@@ -342,8 +342,24 @@ export const quad = (
     let arrow_x = corner_x
     let arrow_y = corner_y
 
-    /** corner size */
-    const csz = parameters.pw * 2
+    /** corner size bounded to avoid overlapping outermost pads */
+    const horiz_p = parameters.px ?? parameters.p
+    const vert_p = parameters.py ?? parameters.p
+    const maxPadX =
+      horizontalSidePinCount > 0
+        ? ((horizontalSidePinCount - 1) / 2) * horiz_p + parameters.pw / 2
+        : 0
+    const maxPadY =
+      verticalSidePinCount > 0
+        ? ((verticalSidePinCount - 1) / 2) * vert_p + leftRightPadWidth / 2
+        : 0
+    const availX = Math.abs(corner_x) - maxPadX
+    const availY = Math.abs(corner_y) - maxPadY
+    const maxSafeCsz = Math.min(availX, availY) - 0.2
+    const csz =
+      maxSafeCsz > 0
+        ? Math.max(0.1, Math.min(parameters.pw * 2, maxSafeCsz))
+        : parameters.pw * 2
 
     if (pin_map[1] === 1 && corner === "top-left") {
       arrow = "in1"
