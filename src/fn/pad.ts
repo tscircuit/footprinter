@@ -20,9 +20,7 @@ export type PadDef = z.input<typeof pad_def>
 export const pad = (
   params: PadDef,
 ): { circuitJson: AnySoupElement[]; parameters: PadDef } => {
-  const width = mm(
-    params.w ?? params.width ?? params.s ?? params.size ?? "1mm",
-  )
+  const width = mm(params.w ?? params.width ?? params.s ?? params.size ?? "1mm")
   const height = mm(
     params.h ?? params.height ?? params.s ?? params.size ?? "1mm",
   )
