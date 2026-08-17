@@ -209,40 +209,15 @@ const imperialMap = Object.fromEntries(
 const createCourtyardRect = (
   width: number,
   height: number,
-  center = { x: 0, y: 0 },
 ): PcbCourtyardRect => ({
   type: "pcb_courtyard_rect",
   pcb_courtyard_rect_id: "",
   pcb_component_id: "",
-  center,
+  center: { x: 0, y: 0 },
   width,
   height,
   layer: "top",
 })
-
-export type PassiveBounds = {
-  minX: number
-  maxX: number
-  minY: number
-  maxY: number
-}
-
-export type PassiveCourtyardDefinition = {
-  center?: { x: number; y: number }
-  width: number
-  height: number
-}
-
-export type PassiveCourtyardContext = {
-  bodyBounds?: PassiveBounds
-  copperBounds: PassiveBounds
-  explicitCourtyard?: PassiveCourtyardDefinition
-  silkscreenBounds: PassiveBounds
-}
-
-export type PassiveCourtyardDefiner = (
-  context: PassiveCourtyardContext,
-) => PassiveCourtyardDefinition
 
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
@@ -262,10 +237,7 @@ export const passive_def = base_def.extend({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-export const passive = (
-  params: PassiveDef,
-  defineCourtyard?: PassiveCourtyardDefiner,
-): AnyCircuitElement[] => {
+export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   let {
     fn,
     tht,
@@ -370,67 +342,13 @@ export const passive = (
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-  const explicitCourtyard: PassiveCourtyardDefinition | undefined =
-    sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? {
-          width: sz.courtyard_width_mm,
-          height: sz.courtyard_height_mm,
-        }
-      : undefined
   const platedHoleOuterDiameter = pw / 0.8
-  const copperHalfWidth = p / 2 + (tht ? platedHoleOuterDiameter : pw) / 2
-  const copperHalfHeight = (tht ? platedHoleOuterDiameter : ph) / 2
-  const copperBounds: PassiveBounds = {
-    minX: -copperHalfWidth,
-    maxX: copperHalfWidth,
-    minY: -copperHalfHeight,
-    maxY: copperHalfHeight,
-  }
-  const silkscreenBounds: PassiveBounds = {
-    minX: Math.min(
-      ...silkscreenLines.flatMap(({ route, stroke_width }) =>
-        route.map(({ x }) => x - stroke_width / 2),
-      ),
-    ),
-    maxX: Math.max(
-      ...silkscreenLines.flatMap(({ route, stroke_width }) =>
-        route.map(({ x }) => x + stroke_width / 2),
-      ),
-    ),
-    minY: Math.min(
-      ...silkscreenLines.flatMap(({ route, stroke_width }) =>
-        route.map(({ y }) => y - stroke_width / 2),
-      ),
-    ),
-    maxY: Math.max(
-      ...silkscreenLines.flatMap(({ route, stroke_width }) =>
-        route.map(({ y }) => y + stroke_width / 2),
-      ),
-    ),
-  }
-  const bodyBounds =
-    w !== undefined && h !== undefined
-      ? { minX: -w / 2, maxX: w / 2, minY: -h / 2, maxY: h / 2 }
-      : undefined
-  const courtyardDefinition = defineCourtyard?.({
-    bodyBounds,
-    copperBounds,
-    explicitCourtyard,
-    silkscreenBounds,
-  })
-  const courtyard = courtyardDefinition
-    ? createCourtyardRect(
-        courtyardDefinition.width,
-        courtyardDefinition.height,
-        courtyardDefinition.center,
-      )
-    : explicitCourtyard
-      ? createCourtyardRect(
-          explicitCourtyard.width,
-          explicitCourtyard.height,
-          explicitCourtyard.center,
-        )
-      : null
+  const padWidth = tht ? platedHoleOuterDiameter : pw
+  const padHeight = tht ? platedHoleOuterDiameter : ph
+  const courtyard = createCourtyardRect(
+    sz?.courtyard_width_mm ?? Math.max(p + padWidth, w ?? 0),
+    sz?.courtyard_height_mm ?? Math.max(padHeight, h ?? 0),
+  )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
@@ -442,7 +360,7 @@ export const passive = (
       platedhole(2, p / 2, 0, pw, platedHoleOuterDiameter),
       ...silkscreenLines,
       silkscreenRefText,
-      ...(courtyard ? [courtyard] : []),
+      courtyard,
     ]
   }
   return [
@@ -450,6 +368,6 @@ export const passive = (
     rectpad(["2", "right"], p / 2, 0, pw, ph, cornerRadius),
     ...silkscreenLines,
     silkscreenRefText,
-    ...(courtyard ? [courtyard] : []),
+    courtyard,
   ]
 }

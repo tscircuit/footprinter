@@ -68,15 +68,15 @@ test("1206_x4", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "1206_x4")
 })
 
-test("custom resistor footprint defines its courtyard", () => {
+test("custom resistor footprint derives its courtyard from pad dimensions", () => {
   const soup = fp.string("res_p1.9324mm_pw1.1325mm_ph1.377mm").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
   )
 
-  expect(courtyard?.center).toEqual({ x: -0.125, y: 0 })
-  expect(courtyard?.width).toBeCloseTo(3.8149)
-  expect(courtyard?.height).toBeCloseTo(2.777)
+  expect(courtyard?.center).toEqual({ x: 0, y: 0 })
+  expect(courtyard?.width).toBeCloseTo(1.9324 + 1.1325)
+  expect(courtyard?.height).toBeCloseTo(1.377)
 
   const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
   expect(svgContent).toMatchSvgSnapshot(
