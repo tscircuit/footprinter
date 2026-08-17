@@ -1,5 +1,10 @@
 import type { AnySoupElement } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
+import {
+  type PassiveBounds,
+  type PassiveCourtyardDefiner,
+  type PassiveDef,
+  passive,
+} from "../helpers/passive-fn"
 import { res0402Array2 } from "../helpers/res0402-array2"
 import { res0402Array4 } from "../helpers/res0402-array4"
 import { res0603Array2 } from "../helpers/res0603-array2"
@@ -10,6 +15,31 @@ import { res1206Array4 } from "../helpers/res1206-array4"
 type ResArrayParams = PassiveDef & {
   array?: number | string
   x?: number | string
+}
+
+const COURTYARD_CLEARANCE_MM = 0.25
+
+const defineResCourtyard: PassiveCourtyardDefiner = ({
+  bodyBounds,
+  copperBounds,
+  explicitCourtyard,
+  silkscreenBounds,
+}) => {
+  if (explicitCourtyard) return explicitCourtyard
+
+  const bounds: PassiveBounds[] = [copperBounds, silkscreenBounds]
+  if (bodyBounds) bounds.push(bodyBounds)
+
+  const minX = Math.min(...bounds.map((bound) => bound.minX))
+  const maxX = Math.max(...bounds.map((bound) => bound.maxX))
+  const minY = Math.min(...bounds.map((bound) => bound.minY))
+  const maxY = Math.max(...bounds.map((bound) => bound.maxY))
+
+  return {
+    center: { x: (minX + maxX) / 2, y: (minY + maxY) / 2 },
+    width: maxX - minX + 2 * COURTYARD_CLEARANCE_MM,
+    height: maxY - minY + 2 * COURTYARD_CLEARANCE_MM,
+  }
 }
 
 const getArrayCount = (parameters: ResArrayParams): number | undefined => {
@@ -87,5 +117,8 @@ export const res = (
     }
   }
 
-  return { circuitJson: passive(rawParameters), parameters: rawParameters }
+  return {
+    circuitJson: passive(rawParameters, defineResCourtyard),
+    parameters: rawParameters,
+  }
 }
