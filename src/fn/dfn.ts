@@ -11,7 +11,10 @@ import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { function_call } from "src/helpers/zod/function-call"
-import { createThermalPad, resolveThermalPadNotches } from "src/helpers/create-thermal-pad"
+import {
+  createThermalPad,
+  resolveThermalPadNotches,
+} from "src/helpers/create-thermal-pad"
 import { polygonpad } from "src/helpers/polygonpad"
 
 export const dfn_def = extendSoicDef({})
