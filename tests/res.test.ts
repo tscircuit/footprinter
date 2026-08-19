@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -68,12 +68,21 @@ test("1206_x4", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "1206_x4")
 })
 
-test("custom passive footprints do not get implicit courtyards", () => {
-  const soup = fp().res().p("1.1mm").pw("0.5mm").ph("0.7mm").circuitJson()
+test("custom resistor footprint derives its courtyard from pad dimensions", () => {
+  const soup = fp.string("res_p1.9324mm_pw1.1325mm_ph1.377mm").circuitJson()
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
 
-  expect(
-    soup.some((element) => String(element.type).startsWith("pcb_courtyard")),
-  ).toBe(false)
+  expect(courtyard?.center).toEqual({ x: 0, y: 0 })
+  expect(courtyard?.width).toBeCloseTo(1.9324 + 1.1325)
+  expect(courtyard?.height).toBeCloseTo(1.377)
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "res_p1.9324mm_pw1.1325mm_ph1.377mm",
+  )
 })
 
 test("0402 uses the explicit KiCad courtyard", () => {

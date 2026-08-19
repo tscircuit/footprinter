@@ -46,3 +46,16 @@ test("cap 2512", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "cap_2512")
 })
+
+test("custom capacitor footprint derives its courtyard from pad dimensions", () => {
+  const soup = fp.string("cap_p2mm_pw0.8mm_ph1.2mm").circuitJson()
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(courtyard).toMatchObject({
+    center: { x: 0, y: 0 },
+    width: 2.8,
+    height: 1.2,
+  })
+})

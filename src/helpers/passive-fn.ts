@@ -1,13 +1,13 @@
+import mm from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
+import { distance, length } from "circuit-json"
 import { z } from "zod"
-import { length, distance } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
@@ -342,10 +342,13 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-  const courtyard =
-    sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : null
+  const platedHoleOuterDiameter = pw / 0.8
+  const padWidth = tht ? platedHoleOuterDiameter : pw
+  const padHeight = tht ? platedHoleOuterDiameter : ph
+  const courtyard = createCourtyardRect(
+    sz?.courtyard_width_mm ?? Math.max(p + padWidth, w ?? 0),
+    sz?.courtyard_height_mm ?? Math.max(padHeight, h ?? 0),
+  )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
@@ -353,11 +356,11 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   if (tht) {
     return [
-      platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
-      platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      platedhole(1, -p / 2, 0, pw, platedHoleOuterDiameter),
+      platedhole(2, p / 2, 0, pw, platedHoleOuterDiameter),
       ...silkscreenLines,
       silkscreenRefText,
-      ...(courtyard ? [courtyard] : []),
+      courtyard,
     ]
   }
   return [
@@ -365,6 +368,6 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     rectpad(["2", "right"], p / 2, 0, pw, ph, cornerRadius),
     ...silkscreenLines,
     silkscreenRefText,
-    ...(courtyard ? [courtyard] : []),
+    courtyard,
   ]
 }
