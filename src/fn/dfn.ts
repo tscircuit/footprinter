@@ -12,9 +12,10 @@ import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { function_call } from "src/helpers/zod/function-call"
 import { createThermalPad } from "src/helpers/create-thermal-pad"
+import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
 import { polygonpad } from "src/helpers/polygonpad"
 
-export const dfn_def = extendSoicDef({})
+export const dfn_def = extendSoicDef({}).and(thermalViaDef)
 export type DfnInput = z.input<typeof dfn_def> & {
   /** Replace the four rectangular DFN pads with chamfered corner pads. */
   cornerpads?: boolean
@@ -214,13 +215,15 @@ export const dfn = (
     layer: "top",
   }
 
+  const circuitJson = [
+    ...pads,
+    silkscreenRefText,
+    ...silkscreenPaths,
+    courtyard,
+  ] as AnyCircuitElement[]
+
   return {
-    circuitJson: [
-      ...pads,
-      silkscreenRefText,
-      ...silkscreenPaths,
-      courtyard,
-    ] as AnyCircuitElement[],
+    circuitJson: addThermalVias(circuitJson, parameters),
     parameters,
   }
 }
