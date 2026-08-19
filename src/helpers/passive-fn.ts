@@ -19,8 +19,8 @@ type StandardSize = {
   pw_mm_min: number // pad width
   h_mm_min: number // body height
   w_mm_min: number // body width
-  courtyard_width_mm?: number
-  courtyard_height_mm?: number
+  courtyard_width_mm: number
+  courtyard_height_mm: number
   rounded_pads?: boolean
   nonpolarizedSilkscreen?: {
     line_half_length_mm?: number
@@ -50,6 +50,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 1.3,
     w_mm_min: 0.58,
     h_mm_min: 0.21,
+    courtyard_width_mm: 1.75,
+    courtyard_height_mm: 1.3,
   },
   {
     imperial: "1812",
@@ -220,8 +222,6 @@ const createCourtyardRect = (
   layer: "top",
 })
 
-const PASSIVE_COURTYARD_CLEARANCE_MM = 0.25
-
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
   string: z.string().optional(),
@@ -273,12 +273,16 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   if (metric) sz = metricMap[metric]
   if (imperial) sz = imperialMap[imperial]
 
+  let minimumEnvelopeWidth = 0
+  let minimumEnvelopeHeight = 0
   if (sz) {
     w = sz.w_mm_min
     h = sz.h_mm_min
     p = sz.p_mm_min
     pw = sz.pw_mm_min
     ph = sz.ph_mm_min
+    minimumEnvelopeWidth = sz.courtyard_width_mm
+    minimumEnvelopeHeight = sz.courtyard_height_mm
   }
 
   if (p === undefined || pw === undefined || ph === undefined) {
@@ -326,18 +330,27 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     ]
   } else {
     // Polarized-style 3-sided outline to indicate orientation/polarity.
+    const strokeWidth = 0.1
+    const rightX = sz ? sz.courtyard_width_mm / 2 - strokeWidth / 2 : p / 2
+    const leftX = sz
+      ? -sz.courtyard_width_mm / 2 + strokeWidth / 2
+      : -p / 2 - pw / 2 - 0.2
+    const topY = sz
+      ? sz.courtyard_height_mm / 2 - strokeWidth / 2
+      : ph / 2 + 0.4
+    const bottomY = -topY
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: p / 2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
-          { x: p / 2, y: -ph / 2 - 0.4 },
+          { x: rightX, y: topY },
+          { x: leftX, y: topY },
+          { x: leftX, y: bottomY },
+          { x: rightX, y: bottomY },
         ],
-        stroke_width: 0.1,
+        stroke_width: strokeWidth,
         pcb_silkscreen_path_id: "",
       },
     ]
@@ -371,34 +384,35 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const derivedMinX = Math.min(
     -copperHalfWidth,
     silkscreenMinX,
+    -minimumEnvelopeWidth / 2,
     w === undefined ? Number.POSITIVE_INFINITY : -w / 2,
   )
   const derivedMaxX = Math.max(
     copperHalfWidth,
     silkscreenMaxX,
+    minimumEnvelopeWidth / 2,
     w === undefined ? Number.NEGATIVE_INFINITY : w / 2,
   )
   const derivedMinY = Math.min(
     -copperHalfHeight,
     silkscreenMinY,
+    -minimumEnvelopeHeight / 2,
     h === undefined ? Number.POSITIVE_INFINITY : -h / 2,
   )
   const derivedMaxY = Math.max(
     copperHalfHeight,
     silkscreenMaxY,
+    minimumEnvelopeHeight / 2,
     h === undefined ? Number.NEGATIVE_INFINITY : h / 2,
   )
-  const courtyard =
-    sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : createCourtyardRect(
-          derivedMaxX - derivedMinX + 2 * PASSIVE_COURTYARD_CLEARANCE_MM,
-          derivedMaxY - derivedMinY + 2 * PASSIVE_COURTYARD_CLEARANCE_MM,
-          {
-            x: (derivedMinX + derivedMaxX) / 2,
-            y: (derivedMinY + derivedMaxY) / 2,
-          },
-        )
+  const courtyard = createCourtyardRect(
+    derivedMaxX - derivedMinX,
+    derivedMaxY - derivedMinY,
+    {
+      x: (derivedMinX + derivedMaxX) / 2,
+      y: (derivedMinY + derivedMaxY) / 2,
+    },
+  )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)

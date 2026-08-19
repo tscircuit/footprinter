@@ -77,12 +77,12 @@ test("custom passive footprints get a derived courtyard", () => {
   expect(courtyard).toMatchObject({
     type: "pcb_courtyard_rect",
     center: { x: -0.125, y: 0 },
-    width: 2.35,
-    height: 2.1,
+    width: 1.85,
+    height: 1.6,
   })
 })
 
-test("0402 uses the explicit KiCad courtyard", () => {
+test("0402 keeps its authored minimum in the unified passive envelope", () => {
   const soup = fp.string("0402").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
@@ -93,9 +93,11 @@ test("0402 uses the explicit KiCad courtyard", () => {
     width: 1.86,
     height: 0.94,
   })
+  expect(courtyard?.center.x).toBeCloseTo(0)
+  expect(courtyard?.center.y).toBeCloseTo(0)
 })
 
-test("0603 uses the explicit KiCad courtyard", () => {
+test("0603 keeps its authored minimum in the unified passive envelope", () => {
   const soup = fp.string("0603").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
@@ -103,6 +105,7 @@ test("0603 uses the explicit KiCad courtyard", () => {
 
   expect(courtyard).toMatchObject({
     type: "pcb_courtyard_rect",
+    center: { x: 0, y: 0 },
     width: 2.96,
     height: 1.46,
   })

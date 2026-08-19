@@ -2,40 +2,38 @@ import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
-const COURTYARD_CLEARANCE_MM = 0.25
-
 const passiveCourtyardCases = [
   {
     component: "resistor",
     reference: "R1",
     footprint: "res_p0.8656mm_pw0.5657mm_ph0.54mm",
     expectedCenterX: -0.125,
-    expectedWidth: 2.1813,
-    expectedHeight: 1.94,
+    expectedWidth: 1.6813,
+    expectedHeight: 1.44,
   },
   {
     component: "capacitor",
     reference: "C1",
     footprint: "cap_p0.8402mm_pw0.5mm_ph0.54mm",
     expectedCenterX: -0.125,
-    expectedWidth: 2.0902,
-    expectedHeight: 1.94,
+    expectedWidth: 1.5902,
+    expectedHeight: 1.44,
   },
   {
     component: "diode",
     reference: "D1",
     footprint: "diode_p1.4mm_pw0.5mm_ph0.8mm",
     expectedCenterX: -0.125,
-    expectedWidth: 2.65,
-    expectedHeight: 2.2,
+    expectedWidth: 2.15,
+    expectedHeight: 1.7,
   },
   {
     component: "led",
     reference: "LED1",
     footprint: "led_p1.6mm_pw0.6mm_ph0.9mm",
     expectedCenterX: 0.125,
-    expectedWidth: 2.95,
-    expectedHeight: 2.3,
+    expectedWidth: 2.45,
+    expectedHeight: 1.8,
   },
 ] as const
 
@@ -69,16 +67,16 @@ for (const testCase of passiveCourtyardCases) {
       const halfStroke = path.stroke_width / 2
       for (const point of path.route) {
         expect(point.x - halfStroke - courtyardLeft).toBeGreaterThanOrEqual(
-          COURTYARD_CLEARANCE_MM - 1e-12,
+          -1e-12,
         )
         expect(courtyardRight - (point.x + halfStroke)).toBeGreaterThanOrEqual(
-          COURTYARD_CLEARANCE_MM - 1e-12,
+          -1e-12,
         )
         expect(point.y - halfStroke - courtyardBottom).toBeGreaterThanOrEqual(
-          COURTYARD_CLEARANCE_MM - 1e-12,
+          -1e-12,
         )
         expect(courtyardTop - (point.y + halfStroke)).toBeGreaterThanOrEqual(
-          COURTYARD_CLEARANCE_MM - 1e-12,
+          -1e-12,
         )
       }
     }
