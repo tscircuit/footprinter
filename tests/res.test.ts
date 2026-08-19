@@ -82,7 +82,7 @@ test("custom passive footprints get a derived courtyard", () => {
   })
 })
 
-test("0402 keeps its authored minimum in the unified passive envelope", () => {
+test("0402 keeps its authored courtyard", () => {
   const soup = fp.string("0402").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
@@ -97,7 +97,7 @@ test("0402 keeps its authored minimum in the unified passive envelope", () => {
   expect(courtyard?.center.y).toBeCloseTo(0)
 })
 
-test("0603 keeps its authored minimum in the unified passive envelope", () => {
+test("0603 keeps its authored courtyard", () => {
   const soup = fp.string("0603").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",

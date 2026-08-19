@@ -273,16 +273,12 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   if (metric) sz = metricMap[metric]
   if (imperial) sz = imperialMap[imperial]
 
-  let minimumEnvelopeWidth = 0
-  let minimumEnvelopeHeight = 0
   if (sz) {
     w = sz.w_mm_min
     h = sz.h_mm_min
     p = sz.p_mm_min
     pw = sz.pw_mm_min
     ph = sz.ph_mm_min
-    minimumEnvelopeWidth = sz.courtyard_width_mm
-    minimumEnvelopeHeight = sz.courtyard_height_mm
   }
 
   if (p === undefined || pw === undefined || ph === undefined) {
@@ -331,13 +327,9 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   } else {
     // Polarized-style 3-sided outline to indicate orientation/polarity.
     const strokeWidth = 0.1
-    const rightX = sz ? sz.courtyard_width_mm / 2 - strokeWidth / 2 : p / 2
-    const leftX = sz
-      ? -sz.courtyard_width_mm / 2 + strokeWidth / 2
-      : -p / 2 - pw / 2 - 0.2
-    const topY = sz
-      ? sz.courtyard_height_mm / 2 - strokeWidth / 2
-      : ph / 2 + 0.4
+    const rightX = p / 2
+    const leftX = -p / 2 - pw / 2 - 0.2
+    const topY = ph / 2 + 0.4
     const bottomY = -topY
     silkscreenLines = [
       {
@@ -384,34 +376,35 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const derivedMinX = Math.min(
     -copperHalfWidth,
     silkscreenMinX,
-    -minimumEnvelopeWidth / 2,
     w === undefined ? Number.POSITIVE_INFINITY : -w / 2,
   )
   const derivedMaxX = Math.max(
     copperHalfWidth,
     silkscreenMaxX,
-    minimumEnvelopeWidth / 2,
     w === undefined ? Number.NEGATIVE_INFINITY : w / 2,
   )
   const derivedMinY = Math.min(
     -copperHalfHeight,
     silkscreenMinY,
-    -minimumEnvelopeHeight / 2,
     h === undefined ? Number.POSITIVE_INFINITY : -h / 2,
   )
   const derivedMaxY = Math.max(
     copperHalfHeight,
     silkscreenMaxY,
-    minimumEnvelopeHeight / 2,
     h === undefined ? Number.NEGATIVE_INFINITY : h / 2,
   )
+  const courtyardWidth = sz?.courtyard_width_mm ?? derivedMaxX - derivedMinX
+  const courtyardHeight = sz?.courtyard_height_mm ?? derivedMaxY - derivedMinY
+  const courtyardCenter = sz
+    ? { x: 0, y: 0 }
+    : {
+        x: (derivedMinX + derivedMaxX) / 2,
+        y: (derivedMinY + derivedMaxY) / 2,
+      }
   const courtyard = createCourtyardRect(
-    derivedMaxX - derivedMinX,
-    derivedMaxY - derivedMinY,
-    {
-      x: (derivedMinX + derivedMaxX) / 2,
-      y: (derivedMinY + derivedMaxY) / 2,
-    },
+    courtyardWidth,
+    courtyardHeight,
+    courtyardCenter,
   )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
