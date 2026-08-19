@@ -2,6 +2,10 @@
   "name": "@tscircuit/footprinter",
   "type": "module",
   "version": "0.0.419",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tscircuit/footprinter.git"
+  },
   "description": "",
   "main": "dist/index.js",
   "files": [
