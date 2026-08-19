@@ -15,7 +15,9 @@ import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
+  resolveThermalPadNotches,
   thermalPadOffsetFields,
+  thermalPadShapeFields,
 } from "src/helpers/create-thermal-pad"
 
 export const extendSoicDef = (newDefaults: {
@@ -45,7 +47,26 @@ export const extendSoicDef = (newDefaults: {
         .default(newDefaults.pillpads ?? false),
       thermalpad: dim2d.optional(),
       ...thermalPadOffsetFields,
+      ...thermalPadShapeFields,
       silkscreen_stroke_width: z.number().optional().default(0.1),
+    })
+    .superRefine((value, context) => {
+      const hasTopBottomNotch = Boolean(value.thermalpadnotchtopbottom)
+      const hasLeftRightNotch = Boolean(value.thermalpadnotchleftright)
+
+      if (hasTopBottomNotch && hasLeftRightNotch) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message:
+            "thermalpadnotchtopbottom and thermalpadnotchleftright cannot be combined",
+        })
+      }
+      if ((hasTopBottomNotch || hasLeftRightNotch) && !value.thermalpad) {
+        context.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "thermalpad notch dimensions require thermalpad dimensions",
+        })
+      }
     })
     .transform((v) => {
       // Default inner diameter and outer diameter
@@ -148,10 +169,14 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        resolveThermalPadNotches(parameters),
+      ),
     )
   }
 

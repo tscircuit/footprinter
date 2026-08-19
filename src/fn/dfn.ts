@@ -11,7 +11,7 @@ import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { function_call } from "src/helpers/zod/function-call"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
+import { createThermalPad, resolveThermalPadNotches } from "src/helpers/create-thermal-pad"
 import { polygonpad } from "src/helpers/polygonpad"
 
 export const dfn_def = extendSoicDef({})
@@ -133,10 +133,14 @@ export const dfn = (
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        resolveThermalPadNotches(parameters),
+      ),
     )
   }
 
