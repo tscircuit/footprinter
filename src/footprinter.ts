@@ -209,6 +209,10 @@ export type Footprinter = {
     | "thermalpadcenteroffsety"
     | "thermalpadnotchtopbottom"
     | "thermalpadnotchleftright"
+    | "thermalvias"
+    | "thermalviapitch"
+    | "thermalviaid"
+    | "thermalviaod"
     | "cornerpads"
     | "cornerpadcutlength"
   >
