@@ -59,13 +59,20 @@ export const jst_def = base_def.extend({
       "JST ZH (Through-hole) connector family. 1.5mm pitch wire-to-board.",
     ),
 
+  xh: z
+    .boolean()
+    .optional()
+    .describe(
+      "JST XH (Through-hole) connector family. 2.5mm pitch wire-to-board.",
+    ),
+
   string: z.string().optional(),
 })
 
 export type jstDef = z.input<typeof jst_def>
 
 // Variant type
-type JstVariant = "ph" | "sh" | "smd" | "zh"
+type JstVariant = "ph" | "sh" | "smd" | "zh" | "xh"
 
 type Bounds = {
   minX: number
@@ -137,6 +144,10 @@ const variantDefaults: Record<JstVariant, any> = {
     w: length.parse("3mm"),
     h: length.parse("3.5mm"),
   },
+  xh: {
+    p: length.parse("2.5mm"),
+    pw: length.parse("1.7mm"),
+  },
 }
 
 function getVariant(params: jstDef): JstVariant {
@@ -144,6 +155,7 @@ function getVariant(params: jstDef): JstVariant {
   if (params.sh) return "sh"
   if (params.ph) return "ph"
   if (params.zh) return "zh"
+  if (params.xh) return "xh"
   return "ph"
 }
 
@@ -259,6 +271,34 @@ function generatePads({
       })
       maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
     }
+  } else if (variant === "xh") {
+    const startX = -((numPins - 1) / 2) * p
+    for (let i = 0; i < numPins; i++) {
+      const x = startX + i * p
+      if (i === 0) {
+        pads.push(
+          platedHoleWithRectPad({
+            pn: i + 1,
+            x,
+            y: 0,
+            holeDiameter: id,
+            rectPadWidth: pw,
+            rectPadHeight: pl,
+            rectBorderRadius: 0.12500015,
+          }),
+        )
+      } else {
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+      }
+      modifyBoundsToIncludeRect({
+        bounds: padBounds,
+        centerX: x,
+        centerY: 0,
+        width: pw,
+        height: pl,
+      })
+      maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
+    }
   } else {
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
@@ -309,37 +349,38 @@ function generateSilkscreenBody({
   h: number
   numPins?: number
   p?: number
-}): PcbSilkscreenPath {
+}): PcbSilkscreenPath[] {
+  const makeSilkscreenPath = (
+    route: { x: number; y: number }[],
+  ): PcbSilkscreenPath => ({
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    route,
+    stroke_width: 0.1,
+    pcb_silkscreen_path_id: "",
+  })
+
   if (variant === "smd") {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
+    return [
+      makeSilkscreenPath([
         { x: -w / 2, y: -h / 2 },
         { x: w / 2, y: -h / 2 },
         { x: w / 2, y: h / 2 },
         { x: -w / 2, y: h / 2 },
         { x: -w / 2, y: -h / 2 },
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
+      ]),
+    ]
   } else if (variant === "ph") {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
+    return [
+      makeSilkscreenPath([
         { x: -3, y: 3 },
         { x: 3, y: 3 },
         { x: 3, y: -2 },
         { x: -3, y: -2 },
         { x: -3, y: 3 },
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
+      ]),
+    ]
   } else if (variant === "zh" && numPins && p) {
     const pinSpan = (numPins - 1) * p
     const bodyLeft = -pinSpan / 2 - 1.5
@@ -347,29 +388,77 @@ function generateSilkscreenBody({
     const bodyTop = -h / 2
     const bodyBottom = h / 2
 
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [
+    return [
+      makeSilkscreenPath([
         { x: bodyLeft, y: bodyTop },
         { x: bodyRight, y: bodyTop },
         { x: bodyRight, y: bodyBottom },
         { x: bodyLeft, y: bodyBottom },
         { x: bodyLeft, y: bodyTop },
-      ],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
+      ]),
+    ]
+  } else if (variant === "xh" && numPins && p) {
+    const startX = -((numPins - 1) / 2) * p
+    const pinXs = Array.from({ length: numPins }, (_, i) => startX + i * p)
+    const x1 = pinXs[0]
+    const xN = pinXs[numPins - 1]
+    const mid = (x1 + xN) / 2
+
+    const TOP_INNER = -2.75
+    const TOP_OUTER = -3.51
+    const BOT_OUTER = 2.46
+    const BOT_EAR = 2.75
+    const EAR_TOP = 1.5
+    const STEP_Y = 0.2
+
+    const makeRectPath = (x0: number, y0: number, x1r: number, y1r: number) =>
+      makeSilkscreenPath([
+        { x: x0, y: y0 },
+        { x: x1r, y: y0 },
+        { x: x1r, y: y1r },
+        { x: x0, y: y1r },
+        { x: x0, y: y0 },
+      ])
+
+    const paths: PcbSilkscreenPath[] = []
+
+    paths.push(makeRectPath(x1 - 2.56, BOT_OUTER, xN + 2.56, TOP_OUTER))
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: x1 - 1.6, y: BOT_EAR },
+        { x: x1 - 2.85, y: BOT_EAR },
+        { x: x1 - 2.85, y: EAR_TOP },
+      ]),
+    )
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: x1 - 2.55, y: STEP_Y },
+        { x: x1 - 1.8, y: STEP_Y },
+        { x: x1 - 1.8, y: TOP_INNER },
+        { x: mid, y: TOP_INNER },
+      ]),
+    )
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: xN + 2.55, y: STEP_Y },
+        { x: xN + 1.8, y: STEP_Y },
+        { x: xN + 1.8, y: TOP_INNER },
+        { x: mid, y: TOP_INNER },
+      ]),
+    )
+
+    paths.push(makeRectPath(x1 - 2.55, 2.45, x1 - 0.75, 1.7))
+    if (xN - 0.75 > x1 + 0.75) {
+      paths.push(makeRectPath(x1 + 0.75, 2.45, xN - 0.75, 1.7))
     }
+    paths.push(makeRectPath(xN + 0.75, 2.45, xN + 2.55, 1.7))
+
+    return paths
   } else {
-    return {
-      type: "pcb_silkscreen_path",
-      layer: "top",
-      pcb_component_id: "",
-      route: [],
-      stroke_width: 0.1,
-      pcb_silkscreen_path_id: "",
-    }
+    return []
   }
 }
 
@@ -379,13 +468,6 @@ export const jst = (
   const params = jst_def.parse(raw_params)
   const variant = getVariant(params)
   const defaults = variantDefaults[variant]
-
-  const p = params.p ?? defaults.p
-  const id = params.id ?? defaults.id
-  const pw = params.pw ?? defaults.pw
-  const pl = params.pl ?? defaults.pl
-  const w = params.w ?? defaults.w
-  const h = params.h ?? defaults.h
 
   let numPins: number | undefined
 
@@ -417,6 +499,16 @@ export const jst = (
       }`,
     )
   }
+
+  const p = params.p ?? defaults.p
+  const id =
+    params.id ?? (variant === "xh" ? (numPins === 2 ? 1.0 : 0.95) : defaults.id)
+  const pw = params.pw ?? defaults.pw
+  const pl =
+    params.pl ?? (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl)
+  const w =
+    params.w ?? (variant === "xh" ? (numPins - 1) * p + 5.12 : defaults.w)
+  const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h)
 
   const mpx = params.mpx ?? (numPins - 1) * p + 3.4
   const mpy = params.mpy ?? defaults.mpy ?? 0
@@ -453,7 +545,7 @@ export const jst = (
             0.4,
         )
       : h
-  const silkscreenBody = generateSilkscreenBody({
+  const silkscreenBodies = generateSilkscreenBody({
     variant,
     w: silkscreenWidth,
     h: silkscreenHeight,
@@ -466,8 +558,9 @@ export const jst = (
     0.5,
   )
 
-  const silkscreenXs = silkscreenBody.route.map((point) => point.x)
-  const silkscreenYs = silkscreenBody.route.map((point) => point.y)
+  const allSilkscreenPoints = silkscreenBodies.flatMap((path) => path.route)
+  const silkscreenXs = allSilkscreenPoints.map((point) => point.x)
+  const silkscreenYs = allSilkscreenPoints.map((point) => point.y)
   const hasSilkscreenGeometry =
     silkscreenXs.length > 0 && silkscreenYs.length > 0
 
@@ -492,20 +585,31 @@ export const jst = (
   const crtMinY = featureMinY - courtyardRearClearanceY
   const crtMaxY = featureMaxY + courtyardFrontClearanceY
 
-  const courtyard: PcbCourtyardRect = {
-    type: "pcb_courtyard_rect",
-    pcb_courtyard_rect_id: "",
-    pcb_component_id: "",
-    center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-    width: crtMaxX - crtMinX,
-    height: crtMaxY - crtMinY,
-    layer: "top",
-  }
+  const courtyard: PcbCourtyardRect =
+    variant === "xh"
+      ? {
+          type: "pcb_courtyard_rect",
+          pcb_courtyard_rect_id: "",
+          pcb_component_id: "",
+          center: { x: 0, y: -0.525 },
+          width: (numPins - 1) * p + 5.9,
+          height: 6.75,
+          layer: "top",
+        }
+      : {
+          type: "pcb_courtyard_rect",
+          pcb_courtyard_rect_id: "",
+          pcb_component_id: "",
+          center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+          width: crtMaxX - crtMinX,
+          height: crtMaxY - crtMinY,
+          layer: "top",
+        }
 
   return {
     circuitJson: [
       ...pads,
-      silkscreenBody,
+      ...(silkscreenBodies as AnyCircuitElement[]),
       silkscreenRefText as AnyCircuitElement,
       courtyard as AnyCircuitElement,
     ],
@@ -522,6 +626,7 @@ export const jst = (
       ph: variant === "ph",
       smd: variant === "smd",
       zh: variant === "zh",
+      xh: variant === "xh",
       ...(variant === "smd"
         ? {
             mpx,
