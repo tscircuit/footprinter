@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -68,15 +68,21 @@ test("1206_x4", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "1206_x4")
 })
 
-test("custom passive footprints do not get implicit courtyards", () => {
+test("custom passive footprints get a derived courtyard", () => {
   const soup = fp().res().p("1.1mm").pw("0.5mm").ph("0.7mm").circuitJson()
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
 
-  expect(
-    soup.some((element) => String(element.type).startsWith("pcb_courtyard")),
-  ).toBe(false)
+  expect(courtyard).toMatchObject({
+    type: "pcb_courtyard_rect",
+    center: { x: -0.125, y: 0 },
+    width: 1.85,
+    height: 1.6,
+  })
 })
 
-test("0402 uses the explicit KiCad courtyard", () => {
+test("0402 keeps its authored courtyard", () => {
   const soup = fp.string("0402").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
@@ -87,9 +93,11 @@ test("0402 uses the explicit KiCad courtyard", () => {
     width: 1.86,
     height: 0.94,
   })
+  expect(courtyard?.center.x).toBeCloseTo(0)
+  expect(courtyard?.center.y).toBeCloseTo(0)
 })
 
-test("0603 uses the explicit KiCad courtyard", () => {
+test("0603 keeps its authored courtyard", () => {
   const soup = fp.string("0603").circuitJson()
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
@@ -97,6 +105,7 @@ test("0603 uses the explicit KiCad courtyard", () => {
 
   expect(courtyard).toMatchObject({
     type: "pcb_courtyard_rect",
+    center: { x: 0, y: 0 },
     width: 2.96,
     height: 1.46,
   })

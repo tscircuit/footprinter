@@ -1,13 +1,13 @@
+import mm from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
+import { distance, length } from "circuit-json"
 import { z } from "zod"
-import { length, distance } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
@@ -19,8 +19,8 @@ type StandardSize = {
   pw_mm_min: number // pad width
   h_mm_min: number // body height
   w_mm_min: number // body width
-  courtyard_width_mm?: number
-  courtyard_height_mm?: number
+  courtyard_width_mm: number
+  courtyard_height_mm: number
   rounded_pads?: boolean
   nonpolarizedSilkscreen?: {
     line_half_length_mm?: number
@@ -50,6 +50,8 @@ export const footprintSizes: StandardSize[] = [
     ph_mm_min: 1.3,
     w_mm_min: 0.58,
     h_mm_min: 0.21,
+    courtyard_width_mm: 1.75,
+    courtyard_height_mm: 1.3,
   },
   {
     imperial: "1812",
@@ -209,11 +211,12 @@ const imperialMap = Object.fromEntries(
 const createCourtyardRect = (
   width: number,
   height: number,
+  center = { x: 0, y: 0 },
 ): PcbCourtyardRect => ({
   type: "pcb_courtyard_rect",
   pcb_courtyard_rect_id: "",
   pcb_component_id: "",
-  center: { x: 0, y: 0 },
+  center,
   width,
   height,
   layer: "top",
@@ -323,18 +326,23 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     ]
   } else {
     // Polarized-style 3-sided outline to indicate orientation/polarity.
+    const strokeWidth = 0.1
+    const rightX = p / 2
+    const leftX = -p / 2 - pw / 2 - 0.2
+    const topY = ph / 2 + 0.4
+    const bottomY = -topY
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: p / 2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
-          { x: p / 2, y: -ph / 2 - 0.4 },
+          { x: rightX, y: topY },
+          { x: leftX, y: topY },
+          { x: leftX, y: bottomY },
+          { x: rightX, y: bottomY },
         ],
-        stroke_width: 0.1,
+        stroke_width: strokeWidth,
         pcb_silkscreen_path_id: "",
       },
     ]
@@ -342,10 +350,62 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-  const courtyard =
-    sz?.courtyard_width_mm && sz.courtyard_height_mm
-      ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : null
+  const platedHoleOuterDiameter = pw / 0.8
+  const copperHalfWidth = p / 2 + (tht ? platedHoleOuterDiameter : pw) / 2
+  const copperHalfHeight = (tht ? platedHoleOuterDiameter : ph) / 2
+  const silkscreenMinX = Math.min(
+    ...silkscreenLines.flatMap(({ route, stroke_width }) =>
+      route.map(({ x }) => x - stroke_width / 2),
+    ),
+  )
+  const silkscreenMaxX = Math.max(
+    ...silkscreenLines.flatMap(({ route, stroke_width }) =>
+      route.map(({ x }) => x + stroke_width / 2),
+    ),
+  )
+  const silkscreenMinY = Math.min(
+    ...silkscreenLines.flatMap(({ route, stroke_width }) =>
+      route.map(({ y }) => y - stroke_width / 2),
+    ),
+  )
+  const silkscreenMaxY = Math.max(
+    ...silkscreenLines.flatMap(({ route, stroke_width }) =>
+      route.map(({ y }) => y + stroke_width / 2),
+    ),
+  )
+  const derivedMinX = Math.min(
+    -copperHalfWidth,
+    silkscreenMinX,
+    w === undefined ? Number.POSITIVE_INFINITY : -w / 2,
+  )
+  const derivedMaxX = Math.max(
+    copperHalfWidth,
+    silkscreenMaxX,
+    w === undefined ? Number.NEGATIVE_INFINITY : w / 2,
+  )
+  const derivedMinY = Math.min(
+    -copperHalfHeight,
+    silkscreenMinY,
+    h === undefined ? Number.POSITIVE_INFINITY : -h / 2,
+  )
+  const derivedMaxY = Math.max(
+    copperHalfHeight,
+    silkscreenMaxY,
+    h === undefined ? Number.NEGATIVE_INFINITY : h / 2,
+  )
+  const courtyardWidth = sz?.courtyard_width_mm ?? derivedMaxX - derivedMinX
+  const courtyardHeight = sz?.courtyard_height_mm ?? derivedMaxY - derivedMinY
+  const courtyardCenter = sz
+    ? { x: 0, y: 0 }
+    : {
+        x: (derivedMinX + derivedMaxX) / 2,
+        y: (derivedMinY + derivedMaxY) / 2,
+      }
+  const courtyard = createCourtyardRect(
+    courtyardWidth,
+    courtyardHeight,
+    courtyardCenter,
+  )
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
@@ -353,11 +413,11 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   if (tht) {
     return [
-      platedhole(1, -p / 2, 0, pw, (pw * 1) / 0.8),
-      platedhole(2, p / 2, 0, pw, (pw * 1) / 0.8),
+      platedhole(1, -p / 2, 0, pw, platedHoleOuterDiameter),
+      platedhole(2, p / 2, 0, pw, platedHoleOuterDiameter),
       ...silkscreenLines,
       silkscreenRefText,
-      ...(courtyard ? [courtyard] : []),
+      courtyard,
     ]
   }
   return [
@@ -365,6 +425,6 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     rectpad(["2", "right"], p / 2, 0, pw, ph, cornerRadius),
     ...silkscreenLines,
     silkscreenRefText,
-    ...(courtyard ? [courtyard] : []),
+    courtyard,
   ]
 }
