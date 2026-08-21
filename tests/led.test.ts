@@ -71,19 +71,19 @@ test("led_hole testing .parameters for .json", async () => {
 })
 
 test("led0402", () => {
-  const soup = fp.string("0402").circuitJson()
+  const soup = fp.string("led0402").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0402")
 })
 
 test("led0603", () => {
-  const soup = fp.string("0603").circuitJson()
+  const soup = fp.string("led0603").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0603")
 })
 
 test("led0805", () => {
-  const soup = fp.string("0805").circuitJson()
+  const soup = fp.string("led0805").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0805")
 })

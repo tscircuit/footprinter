@@ -63,15 +63,27 @@ export const led5050 = (
     height: Math.max(h, 2 * p + pw) + 0.5,
     layer: "top",
   }
-  const fabricationNote = createFabricationNoteDiode({
-    minX: -rowspan / 2 - pl / 2,
-    maxX: rowspan / 2 + pl / 2,
-    minY: -p - pw / 2,
-    maxY: p + pw / 2,
-  })
+  // The 5060BRG4 package contains three independent dies across pin pairs
+  // 1-6 (green), 2-5 (red), and 3-4 (blue).
+  const diodeRows = [
+    { color: "green", y: p },
+    { color: "red", y: 0 },
+    { color: "blue", y: -p },
+  ]
+  const fabricationNotes = diodeRows.flatMap(({ color, y }) =>
+    createFabricationNoteDiode(
+      {
+        minX: -rowspan / 2 - pl / 2,
+        maxX: rowspan / 2 + pl / 2,
+        minY: y - pw / 2,
+        maxY: y + pw / 2,
+      },
+      { idSuffix: color },
+    ),
+  )
 
   return {
-    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
+    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNotes],
     parameters,
   }
 }

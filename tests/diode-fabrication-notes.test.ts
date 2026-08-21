@@ -42,7 +42,15 @@ test.each(diodeLikeFootprints)(
         : [],
     )
 
-    expect(fabricationNoteIds).toContain("diode_fabrication_note_triangle")
-    expect(fabricationNoteIds).toContain("diode_fabrication_note_cathode")
+    expect(
+      fabricationNoteIds.some((id) =>
+        id.startsWith("diode_fabrication_note_triangle"),
+      ),
+    ).toBeTrue()
+    expect(
+      fabricationNoteIds.some((id) =>
+        id.startsWith("diode_fabrication_note_cathode"),
+      ),
+    ).toBeTrue()
   },
 )

@@ -18,6 +18,7 @@ type DiodeCopperPadBoundsParams = {
 type DiodeFabricationNoteOptions = {
   cathodePin?: number
   anodePin?: number
+  idSuffix?: string
 }
 
 export const getCopperBounds = (
@@ -147,11 +148,15 @@ export const createFabricationNoteDiode = (
   const cathodeX = symbolMaxX - legLength
   const strokeWidth = Math.max(Math.min(width, height) * 0.035, 0.01)
   const fontSize = Math.max(Math.min(width, height) * 0.25, 0.1)
+  const getNoteId = (baseId: string) =>
+    options.idSuffix ? `${baseId}_${options.idSuffix}` : baseId
 
   elms.push(
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_anode_leg",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_anode_leg",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -162,7 +167,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_triangle",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_triangle",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -175,7 +182,7 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_cathode",
+      pcb_fabrication_note_path_id: getNoteId("diode_fabrication_note_cathode"),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -186,7 +193,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_cathode_leg",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_cathode_leg",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -197,7 +206,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_text",
-      pcb_fabrication_note_text_id: "diode_fabrication_note_positive",
+      pcb_fabrication_note_text_id: getNoteId(
+        "diode_fabrication_note_positive",
+      ),
       pcb_component_id: "",
       layer: "top",
       font: "tscircuit2024",
@@ -211,7 +222,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_text",
-      pcb_fabrication_note_text_id: "diode_fabrication_note_negative",
+      pcb_fabrication_note_text_id: getNoteId(
+        "diode_fabrication_note_negative",
+      ),
       pcb_component_id: "",
       layer: "top",
       font: "tscircuit2024",
