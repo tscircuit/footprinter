@@ -85,8 +85,7 @@ test("smdpads2 uses body dimensions for its courtyard", () => {
     width: 8.628,
     height: 4.056,
   })
-  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
-    import.meta.path,
-    footprintString,
-  )
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path, footprintString)
 })

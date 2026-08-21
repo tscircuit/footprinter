@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -79,7 +79,9 @@ test("custom passive footprints do not get implicit courtyards", () => {
 test("custom resistor footprint string uses body dimensions for its courtyard", () => {
   const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w10mm_h5mm"
   const soup = fp.string(footprintString).circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const svgContent = convertCircuitJsonToPcbSvg(soup, {
+    showCourtyards: true,
+  })
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
   )
@@ -95,7 +97,9 @@ test("custom resistor footprint string uses body dimensions for its courtyard", 
 test("custom resistor courtyard includes pads extending beyond the body", () => {
   const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w6mm_h2mm"
   const soup = fp.string(footprintString).circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const svgContent = convertCircuitJsonToPcbSvg(soup, {
+    showCourtyards: true,
+  })
   const courtyard = soup.find(
     (element) => element.type === "pcb_courtyard_rect",
   )
