@@ -1,13 +1,14 @@
+import mm from "@tscircuit/mm"
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
+import { distance, length } from "circuit-json"
 import { z } from "zod"
-import { length, distance } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { getBodyBasedCourtyardSize } from "./get-body-based-courtyard-size"
+import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
@@ -219,8 +220,6 @@ const createCourtyardRect = (
   layer: "top",
 })
 
-const CUSTOM_COURTYARD_CLEARANCE_MM = 0.25
-
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
   string: z.string().optional(),
@@ -346,13 +345,22 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
   const padWidth = tht ? pw / 0.8 : pw
   const padHeight = tht ? pw / 0.8 : ph
+  const bodyBasedCourtyardSize =
+    w !== undefined && h !== undefined
+      ? getBodyBasedCourtyardSize({
+          bodyWidth: w,
+          bodyHeight: h,
+          padEnvelopeWidth: p + padWidth,
+          padEnvelopeHeight: padHeight,
+        })
+      : null
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : w !== undefined && h !== undefined
+      : bodyBasedCourtyardSize
         ? createCourtyardRect(
-            Math.max(w, p + padWidth) + 2 * CUSTOM_COURTYARD_CLEARANCE_MM,
-            Math.max(h, padHeight) + 2 * CUSTOM_COURTYARD_CLEARANCE_MM,
+            bodyBasedCourtyardSize.width,
+            bodyBasedCourtyardSize.height,
           )
         : null
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
