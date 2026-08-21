@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 const getPadGeometry = (footprint: string) =>
   fp
@@ -13,12 +13,12 @@ const getPadGeometry = (footprint: string) =>
       width,
       height,
       port_hints,
-    }))
+    }));
 
 test("smdslideswitch7 represents MINI MSK12CO2", () => {
   const footprint =
-    "smdslideswitch7_p1mm_pw0.7mm_pl1.5mm_mounty-1.800098mm_mpx5.500116mm_mpy2.200148mm_mpw1mm_mpl0.8mm_holex1.499997mm_holed0.900024mm"
-  const circuitJson = fp.string(footprint).circuitJson()
+    "smdslideswitch7_p1mm_pw0.7mm_pl1.5mm_mounty-1.800098mm_mpx5.500116mm_mpy2.200148mm_mpw1mm_mpl0.8mm_holex1.499997mm_holed0.900024mm";
+  const circuitJson = fp.string(footprint).circuitJson();
 
   expect(getPadGeometry(footprint)).toEqual([
     { x: -1, y: 0, width: 0.7, height: 1.5, port_hints: ["1"] },
@@ -52,7 +52,7 @@ test("smdslideswitch7 represents MINI MSK12CO2", () => {
       height: 0.8,
       port_hints: ["7"],
     },
-  ])
+  ]);
   expect(
     circuitJson
       .filter((element) => element.type === "pcb_hole")
@@ -60,17 +60,17 @@ test("smdslideswitch7 represents MINI MSK12CO2", () => {
   ).toEqual([
     { x: -1.499997, y: -1.800098, hole_diameter: 0.900024 },
     { x: 1.499997, y: -1.800098, hole_diameter: 0.900024 },
-  ])
+  ]);
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "mini_msk12co2",
-  )
-})
+  );
+});
 
 test("smdslideswitch7 supports a missing signal position", () => {
   const footprint =
-    "smdslideswitch7_signalcols4_missing(2)_p1.5mm_pw0.6mm_pl1.524mm_mounty-2.250059mm_mpx7.199884mm_mpy2.29997mm_mpw1.2mm_mpl0.7mm_holex1.499997mm_holey-2.250186mm_holed0.900024mm"
-  const circuitJson = fp.string(footprint).circuitJson()
+    "smdslideswitch7_signalcols4_missing(2)_p1.5mm_pw0.6mm_pl1.524mm_mounty-2.250059mm_mpx7.199884mm_mpy2.29997mm_mpw1.2mm_mpl0.7mm_holex1.499997mm_holey-2.250186mm_holed0.900024mm";
+  const circuitJson = fp.string(footprint).circuitJson();
 
   expect(getPadGeometry(footprint)).toEqual([
     { x: -2.25, y: 0, width: 0.6, height: 1.524, port_hints: ["1"] },
@@ -104,15 +104,15 @@ test("smdslideswitch7 supports a missing signal position", () => {
       height: 0.7,
       port_hints: ["7"],
     },
-  ])
+  ]);
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "msk12c02",
-  )
-})
+  );
+});
 
 test("smdslideswitch7 rejects the wrong signal-pad count", () => {
   expect(() => fp.string("smdslideswitch7_signalcols4").circuitJson()).toThrow(
     "needs 3 signal pads",
-  )
-})
+  );
+});

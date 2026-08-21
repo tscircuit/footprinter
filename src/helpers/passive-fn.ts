@@ -2,32 +2,32 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import mm from "@tscircuit/mm"
-import { platedhole } from "./platedhole"
-import { z } from "zod"
-import { length, distance } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
-import { base_def } from "./zod/base_def"
+} from "circuit-json";
+import { rectpad } from "../helpers/rectpad";
+import mm from "@tscircuit/mm";
+import { platedhole } from "./platedhole";
+import { z } from "zod";
+import { length, distance } from "circuit-json";
+import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef";
+import { base_def } from "./zod/base_def";
 
 type StandardSize = {
-  imperial: string
-  metric: string
-  p_mm_min: number // pad-to-pad spacing
-  ph_mm_min: number // pad height
-  pw_mm_min: number // pad width
-  h_mm_min: number // body height
-  w_mm_min: number // body width
-  courtyard_width_mm?: number
-  courtyard_height_mm?: number
-  rounded_pads?: boolean
+  imperial: string;
+  metric: string;
+  p_mm_min: number; // pad-to-pad spacing
+  ph_mm_min: number; // pad height
+  pw_mm_min: number; // pad width
+  h_mm_min: number; // body height
+  w_mm_min: number; // body width
+  courtyard_width_mm?: number;
+  courtyard_height_mm?: number;
+  rounded_pads?: boolean;
   nonpolarizedSilkscreen?: {
-    line_half_length_mm?: number
-    line_y_mm?: number
-    stroke_width_mm?: number
-  }
-}
+    line_half_length_mm?: number;
+    line_y_mm?: number;
+    stroke_width_mm?: number;
+  };
+};
 
 // Updated footprint sizes
 export const footprintSizes: StandardSize[] = [
@@ -199,12 +199,12 @@ export const footprintSizes: StandardSize[] = [
       stroke_width_mm: 0.12,
     },
   },
-]
+];
 
-const metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]))
+const metricMap = Object.fromEntries(footprintSizes.map((s) => [s.metric, s]));
 const imperialMap = Object.fromEntries(
   footprintSizes.map((s) => [s.imperial, s]),
-)
+);
 
 const createCourtyardRect = (
   width: number,
@@ -217,7 +217,7 @@ const createCourtyardRect = (
   width,
   height,
   layer: "top",
-})
+});
 
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
@@ -233,9 +233,9 @@ export const passive_def = base_def.extend({
   nonpolarized: z.boolean().optional(),
   textbottom: z.boolean().optional(),
   roundedPads: z.boolean().optional(),
-})
+});
 
-export type PassiveDef = z.input<typeof passive_def>
+export type PassiveDef = z.input<typeof passive_def>;
 
 export const passive = (params: PassiveDef): AnyCircuitElement[] => {
   let {
@@ -252,51 +252,51 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     textbottom,
     roundedPads,
     string: footprintString,
-  } = params
+  } = params;
 
-  if (typeof w === "string") w = mm(w)
-  if (typeof h === "string") h = mm(h)
-  if (typeof p === "string") p = mm(p)
-  if (typeof pw === "string") pw = mm(pw)
-  if (typeof ph === "string") ph = mm(ph)
+  if (typeof w === "string") w = mm(w);
+  if (typeof h === "string") h = mm(h);
+  if (typeof p === "string") p = mm(p);
+  if (typeof pw === "string") pw = mm(pw);
+  if (typeof ph === "string") ph = mm(ph);
 
   if (h !== undefined && w !== undefined && h > w) {
     throw new Error(
       "height cannot be greater than width (rotated footprint not yet implemented)",
-    )
+    );
   }
 
-  let sz: StandardSize | undefined
-  if (metric) sz = metricMap[metric]
-  if (imperial) sz = imperialMap[imperial]
+  let sz: StandardSize | undefined;
+  if (metric) sz = metricMap[metric];
+  if (imperial) sz = imperialMap[imperial];
 
   if (sz) {
-    w = sz.w_mm_min
-    h = sz.h_mm_min
-    p = sz.p_mm_min
-    pw = sz.pw_mm_min
-    ph = sz.ph_mm_min
+    w = sz.w_mm_min;
+    h = sz.h_mm_min;
+    p = sz.p_mm_min;
+    pw = sz.pw_mm_min;
+    ph = sz.ph_mm_min;
   }
 
   if (p === undefined || pw === undefined || ph === undefined) {
-    throw new Error("Could not determine required pad dimensions (p, pw, ph)")
+    throw new Error("Could not determine required pad dimensions (p, pw, ph)");
   }
 
-  let silkscreenLines: PcbSilkscreenPath[] = []
+  let silkscreenLines: PcbSilkscreenPath[] = [];
   const nonpolarizedSilkscreen =
     fn === "res" &&
     (nonpolarized === true ||
       typeof footprintString !== "string" ||
       /^res(?:\d{4}|\d{5})(?:_|$)/i.test(footprintString))
       ? sz?.nonpolarizedSilkscreen
-      : undefined
+      : undefined;
 
   if (nonpolarizedSilkscreen?.stroke_width_mm) {
     const {
       line_half_length_mm = 0,
       line_y_mm = 0,
       stroke_width_mm,
-    } = nonpolarizedSilkscreen
+    } = nonpolarizedSilkscreen;
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
@@ -320,7 +320,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
         stroke_width: stroke_width_mm,
         pcb_silkscreen_path_id: "",
       },
-    ]
+    ];
   } else {
     // Polarized-style 3-sided outline to indicate orientation/polarity.
     silkscreenLines = [
@@ -337,19 +337,19 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
         stroke_width: 0.1,
         pcb_silkscreen_path_id: "",
       },
-    ]
+    ];
   }
 
-  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
+  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9;
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2);
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : null
-  const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
+      : null;
+  const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false;
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
-    : undefined
+    : undefined;
 
   if (tht) {
     return [
@@ -358,7 +358,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
       ...silkscreenLines,
       silkscreenRefText,
       ...(courtyard ? [courtyard] : []),
-    ]
+    ];
   }
   return [
     rectpad(["1", "left"], -p / 2, 0, pw, ph, cornerRadius),
@@ -366,5 +366,5 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     ...silkscreenLines,
     silkscreenRefText,
     ...(courtyard ? [courtyard] : []),
-  ]
-}
+  ];
+};

@@ -1,9 +1,9 @@
-import type { AnyCircuitElement } from "circuit-json"
-import { length } from "circuit-json"
-import { chipArray } from "./chipArray"
-import { z } from "zod"
-import { base_def } from "./zod/base_def"
-import mm from "@tscircuit/mm"
+import type { AnyCircuitElement } from "circuit-json";
+import { length } from "circuit-json";
+import { chipArray } from "./chipArray";
+import { z } from "zod";
+import { base_def } from "./zod/base_def";
+import mm from "@tscircuit/mm";
 
 export const res1206Array4_def = base_def.extend({
   pw: length.default("0.9mm"),
@@ -12,21 +12,21 @@ export const res1206Array4_def = base_def.extend({
   textbottom: z.boolean().optional(),
   convex: z.boolean().optional(),
   concave: z.boolean().optional(),
-})
+});
 
-export type Res1206Array4Params = z.input<typeof res1206Array4_def>
+export type Res1206Array4Params = z.input<typeof res1206Array4_def>;
 
-const padSpacing = 3.0 // Horizontal spacing between columns (KiCad: 3.0mm)
+const padSpacing = 3.0; // Horizontal spacing between columns (KiCad: 3.0mm)
 
 export const res1206Array4 = (
   rawParams: Res1206Array4Params,
 ): AnyCircuitElement[] => {
-  const params = res1206Array4_def.parse(rawParams)
+  const params = res1206Array4_def.parse(rawParams);
 
   // Convert string values to numbers
-  const padWidth = mm(params.pw)
-  const padHeight = mm(params.ph)
-  const padPitch = mm(params.p)
+  const padWidth = mm(params.pw);
+  const padHeight = mm(params.ph);
+  const padPitch = mm(params.p);
 
   return chipArray({
     padSpacing,
@@ -43,5 +43,5 @@ export const res1206Array4 = (
       { x: 2.2, y: -2.85 },
       { x: 2.2, y: 2.85 },
     ],
-  })
-}
+  });
+};

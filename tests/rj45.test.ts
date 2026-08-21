@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 const variants = [
   {
@@ -43,44 +43,44 @@ const variants = [
     pin1: { x: -4.445, y: -1.27 },
     shieldPins: [["13"], ["14"]],
   },
-] as const
+] as const;
 
 for (const variant of variants) {
   test(`rj45 represents ${variant.name}`, () => {
-    const circuitJson = fp.string(variant.footprint).circuitJson()
+    const circuitJson = fp.string(variant.footprint).circuitJson();
     const platedHoles = circuitJson.filter(
       (element) => element.type === "pcb_plated_hole",
-    )
+    );
     const locatorHoles = circuitJson.filter(
       (element) => element.type === "pcb_hole",
-    )
+    );
 
-    expect(platedHoles).toHaveLength(variant.platedHoleCount)
+    expect(platedHoles).toHaveLength(variant.platedHoleCount);
     expect({
       x: platedHoles[0]!.x,
       y: platedHoles[0]!.y,
-    }).toEqual(variant.pin1)
+    }).toEqual(variant.pin1);
     expect(platedHoles.slice(-2).map(({ port_hints }) => port_hints)).toEqual(
       variant.shieldPins,
-    )
-    expect(locatorHoles).toHaveLength(2)
+    );
+    expect(locatorHoles).toHaveLength(2);
     expect(locatorHoles.map(({ x, y }) => ({ x, y }))).toEqual([
       { x: -variant.locatorX, y: variant.locatorY },
       { x: variant.locatorX, y: variant.locatorY },
-    ])
+    ]);
 
     expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
       import.meta.path,
       variant.name,
-    )
-  })
+    );
+  });
 }
 
 test("rj45 uses the expected staggered signal and optional LED geometry", () => {
-  const circuitJson = fp.string("rj45_ledpins").circuitJson()
+  const circuitJson = fp.string("rj45_ledpins").circuitJson();
   const platedHoles = circuitJson.filter(
     (element) => element.type === "pcb_plated_hole",
-  )
+  );
 
   expect(
     platedHoles.slice(0, 8).map(({ x, y, port_hints }) => ({
@@ -97,17 +97,17 @@ test("rj45 uses the expected staggered signal and optional LED geometry", () => 
     { x: -1.53, y: 0.89, port_hints: ["6"] },
     { x: -2.55, y: -0.89, port_hints: ["7"] },
     { x: -3.57, y: 0.89, port_hints: ["8"] },
-  ])
+  ]);
   expect(platedHoles.slice(8, 12).map(({ x, y }) => ({ x, y }))).toEqual([
     { x: -6.86, y: 5.7 },
     { x: -4.57, y: 5.7 },
     { x: 4.57, y: 5.7 },
     { x: 6.86, y: 5.7 },
-  ])
+  ]);
   expect(
     fp()
       .rj45(14)
       .circuitJson()
       .filter((element) => element.type === "pcb_plated_hole"),
-  ).toHaveLength(14)
-})
+  ).toHaveLength(14);
+});

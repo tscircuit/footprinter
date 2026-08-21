@@ -1,23 +1,23 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/to92_inline", async () => {
   const { combinedFootprintElements, booleanDifferenceSvg } =
     await compareFootprinterVsKicad(
       "to92_inline_id0.75_od1.05",
       "Package_TO_SOT_THT.pretty/TO-92_Inline.circuit.json",
-    )
+    );
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
+  });
   // The courtyard is intentionally centered for tscircuit component placement,
   // so it no longer matches KiCad's offset courtyard. Copper parity remains
   // covered by the boolean-difference snapshot below.
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92_inline")
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92_inline");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "to92_inline_boolean_difference",
-  )
-})
+  );
+});

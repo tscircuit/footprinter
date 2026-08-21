@@ -1,9 +1,9 @@
-import { test, expect } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { test, expect } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 test("sod523", () => {
-  const soup = fp.string("sod523").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true })
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod523")
-})
+  const soup = fp.string("sod523").circuitJson();
+  const svgContent = convertCircuitJsonToPcbSvg(soup, { showCourtyards: true });
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod523");
+});

@@ -2,19 +2,19 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { length } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { length } from "circuit-json";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 const sot963CourtyardOutline = [
   { x: -0.8, y: 0.75 },
   { x: 0.8, y: 0.75 },
   { x: 0.8, y: -0.75 },
   { x: -0.8, y: -0.75 },
-]
+];
 
 export const sot963_def = base_def.extend({
   fn: z.string(),
@@ -25,24 +25,24 @@ export const sot963_def = base_def.extend({
   pl: z.string().default("0.2mm"),
   pw: z.string().default("0.2mm"),
   string: z.string().optional(),
-})
+});
 
 export const sot963 = (
   raw_params: z.input<typeof sot963_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sot963_def.parse({ ...raw_params, fn: "sot963" })
+  const parameters = sot963_def.parse({ ...raw_params, fn: "sot963" });
 
-  const w = length.parse(parameters.w)
-  const h = length.parse(parameters.h)
-  const p = length.parse(parameters.p)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const w = length.parse(parameters.w);
+  const h = length.parse(parameters.h);
+  const p = length.parse(parameters.p);
+  const pl = length.parse(parameters.pl);
+  const pw = length.parse(parameters.pw);
+  const cornerRadius = Math.min(pl, pw) / 8;
 
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
   for (let i = 0; i < 6; i++) {
-    const { x, y } = getSot963PadCoord(i + 1, w, p, pl)
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    const { x, y } = getSot963PadCoord(i + 1, w, p, pl);
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius));
   }
 
   const silkscreenTopLine: PcbSilkscreenPath = {
@@ -55,7 +55,7 @@ export const sot963 = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenBottomLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -67,9 +67,9 @@ export const sot963 = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const pin1Position = getSot963PadCoord(1, w, p, pl)
+  const pin1Position = getSot963PadCoord(1, w, p, pl);
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -82,9 +82,9 @@ export const sot963 = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "pin_marker_1",
-  }
+  };
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.4, 0.25)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.4, 0.25);
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -92,7 +92,7 @@ export const sot963 = (
     pcb_component_id: "",
     outline: sot963CourtyardOutline,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -104,8 +104,8 @@ export const sot963 = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};
 
 export const getSot963PadCoord = (
   pn: number,
@@ -113,9 +113,9 @@ export const getSot963PadCoord = (
   p: number,
   pl: number,
 ) => {
-  const padCenterOffset = w / 2 - pl / 2
+  const padCenterOffset = w / 2 - pl / 2;
   if (pn <= 3) {
-    return { x: -padCenterOffset, y: p - (pn - 1) * p }
+    return { x: -padCenterOffset, y: p - (pn - 1) * p };
   }
-  return { x: padCenterOffset, y: -p + (pn - 4) * p }
-}
+  return { x: padCenterOffset, y: -p + (pn - 4) * p };
+};

@@ -3,12 +3,12 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardOutline,
   type PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { createCapsuleOutline } from "src/helpers/capsule-outline"
+} from "circuit-json";
+import { z } from "zod";
+import { platedhole } from "src/helpers/platedhole";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
+import { createCapsuleOutline } from "src/helpers/capsule-outline";
 
 const generate_u_curve = (
   centerX: number,
@@ -17,13 +17,13 @@ const generate_u_curve = (
   direction: "left" | "right",
 ) => {
   return Array.from({ length: 25 }, (_, i) => {
-    const theta = (i / 24) * Math.PI - Math.PI / 2
+    const theta = (i / 24) * Math.PI - Math.PI / 2;
     return {
       x: centerX + (direction === "right" ? 1 : -1) * Math.cos(theta) * radius,
       y: centerY + Math.sin(theta) * radius,
-    }
-  })
-}
+    };
+  });
+};
 
 export const hc49_def = base_def.extend({
   fn: z.string(),
@@ -32,25 +32,25 @@ export const hc49_def = base_def.extend({
   od: length.optional().default("1.5mm"),
   w: length.optional().default("5.6mm"),
   h: length.optional().default("3.5mm"),
-})
+});
 
-export type Hc49Def = z.input<typeof hc49_def>
+export type Hc49Def = z.input<typeof hc49_def>;
 
 export const hc49 = (
   raw_params: Hc49Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = hc49_def.parse(raw_params)
+  const parameters = hc49_def.parse(raw_params);
 
-  const { p, id, od, w, h } = parameters
-  const radius = h / 2
+  const { p, id, od, w, h } = parameters;
+  const radius = h / 2;
 
   const plated_holes = [
     platedhole(1, -p / 2, 0, id, od),
     platedhole(2, p / 2, 0, id, od),
-  ]
+  ];
 
-  const leftCurve = generate_u_curve(-w / 2, 0, radius, "left")
-  const rightCurve = generate_u_curve(w / 2, 0, radius, "right")
+  const leftCurve = generate_u_curve(-w / 2, 0, radius, "left");
+  const rightCurve = generate_u_curve(w / 2, 0, radius, "right");
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -67,13 +67,13 @@ export const hc49 = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, p / 4, 0.5);
 
-  const padRowHalfWidth = p / 2 + od / 2
-  const courtyardCapsuleStraightHalfLength = padRowHalfWidth
-  const courtyardCapsuleRadius = Math.max(h / 2 + 0.25, w / 2 + 0.03)
+  const padRowHalfWidth = p / 2 + od / 2;
+  const courtyardCapsuleStraightHalfLength = padRowHalfWidth;
+  const courtyardCapsuleRadius = Math.max(h / 2 + 0.25, w / 2 + 0.03);
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -87,7 +87,7 @@ export const hc49 = (
       arcSegmentCount: 9,
     }),
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -97,5 +97,5 @@ export const hc49 = (
       courtyard as AnyCircuitElement,
     ],
     parameters,
-  }
-}
+  };
+};

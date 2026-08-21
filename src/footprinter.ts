@@ -2,17 +2,17 @@ import {
   type AnyCircuitElement,
   type AnySoupElement,
   length,
-} from "circuit-json"
-import * as FOOTPRINT_FN from "./fn"
-import { applyNoRefDes } from "./helpers/apply-norefdes"
-import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
-import { applyOrigin } from "./helpers/apply-origin"
-import { applyPin1Location } from "./helpers/apply-pin1-location"
-import { applyRounded } from "./helpers/apply-rounded"
-import { isNotNull } from "./helpers/is-not-null"
-import { footprintSizes } from "./helpers/passive-fn"
-import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
-import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
+} from "circuit-json";
+import * as FOOTPRINT_FN from "./fn";
+import { applyNoRefDes } from "./helpers/apply-norefdes";
+import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen";
+import { applyOrigin } from "./helpers/apply-origin";
+import { applyPin1Location } from "./helpers/apply-pin1-location";
+import { applyRounded } from "./helpers/apply-rounded";
+import { isNotNull } from "./helpers/is-not-null";
+import { footprintSizes } from "./helpers/passive-fn";
+import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput";
+import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location";
 
 type BaseOptionKey =
   | "anodepin"
@@ -23,20 +23,18 @@ type BaseOptionKey =
   | "faceup"
   | "nosilkscreen"
   | "rounded"
-  | "pin1location"
+  | "pin1location";
 
 export type FootprinterParamsBuilder<K extends string> = {
   [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
-    | "params"
-    | "soup"
-    | "circuitJson"
+    "params" | "soup" | "circuitJson"
     ? Footprinter[P]
     : P extends "pin1location"
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
       : P extends "rounded"
         ? (radius: number | string) => FootprinterParamsBuilder<K>
-        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
-}
+        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>;
+};
 
 type CommonPassiveOptionKey =
   | "metric"
@@ -48,51 +46,51 @@ type CommonPassiveOptionKey =
   | "w"
   | "h"
   | "nonpolarized"
-  | "textbottom"
+  | "textbottom";
 
 export type Footprinter = {
   dip: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">;
   dpak: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
-  >
+  >;
   d2pak: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
-  >
+  >;
   to252: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
-  >
+  >;
   to263: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
-  >
-  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  >;
+  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>;
   crystal: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
-  res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
-  diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
-  led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">;
+  res: () => FootprinterParamsBuilder<CommonPassiveOptionKey>;
+  diode: () => FootprinterParamsBuilder<CommonPassiveOptionKey>;
+  led: () => FootprinterParamsBuilder<CommonPassiveOptionKey>;
   led2835: () => FootprinterParamsBuilder<
     "p1w" | "p2w" | "ph" | "p1x" | "p2x" | "w" | "h"
-  >
+  >;
   led5050: () => FootprinterParamsBuilder<
     "p" | "rowspan" | "pl" | "pw" | "w" | "h"
-  >
-  lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">
+  >;
+  lr: (num_pins?: number) => FootprinterParamsBuilder<"w" | "l" | "pl" | "pr">;
   qfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "p" | "id" | "od" | "wide" | "narrow" | "pillpads"
-  >
+  >;
   quad: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -107,7 +105,7 @@ export type Footprinter = {
     | "pw"
     | "ph"
     | "pillpads"
-  >
+  >;
   bga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -123,7 +121,7 @@ export type Footprinter = {
     | "trorigin"
     | "brorigin"
     | "circularpads"
-  >
+  >;
   qfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -154,10 +152,10 @@ export type Footprinter = {
     | "thermalviaid"
     | "thermalviaod"
     | "pillpads"
-  >
+  >;
   tqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">;
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -171,10 +169,10 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
-  >
+  >;
   mlp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">;
   ssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -183,7 +181,7 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
-  >
+  >;
   tssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -192,7 +190,7 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
-  >
+  >;
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -211,7 +209,7 @@ export type Footprinter = {
     | "thermalviaod"
     | "cornerpads"
     | "cornerpadcutlength"
-  >
+  >;
   pinrow: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -237,7 +235,7 @@ export type Footprinter = {
     | "bottomsidepinlabel"
     | "silkscreenborder"
     | "silkscreenlabel"
-  >
+  >;
   headermodule: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -263,14 +261,14 @@ export type Footprinter = {
     | "bottomsidepinlabel"
     | "silkscreenborder"
     | "silkscreenlabel"
-  >
+  >;
   smdpinheader: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"p" | "py" | "pw" | "ph" | "bh">
-  axial: () => FootprinterParamsBuilder<"p" | "id" | "od">
+  ) => FootprinterParamsBuilder<"p" | "py" | "pw" | "ph" | "bh">;
+  axial: () => FootprinterParamsBuilder<"p" | "id" | "od">;
   radial: () => FootprinterParamsBuilder<
     "p" | "id" | "od" | "ceramic" | "electrolytic" | "polarized"
-  >
+  >;
   rj45: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -294,12 +292,12 @@ export type Footprinter = {
     | "w"
     | "h"
     | "bodyy"
-  >
-  hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
-  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  >;
+  hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">;
+  to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">;
+  to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">;
+  sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
   sot457: () => FootprinterParamsBuilder<
     | "w"
     | "p"
@@ -311,22 +309,22 @@ export type Footprinter = {
     | "pillr"
     | "pillh"
     | "pillw"
-  >
-  sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">
-  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "p">
-  sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
-  sot25: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">
-  sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  >;
+  sot563: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw">;
+  sot723: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "p">;
+  sot23: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">;
+  sot25: () => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw">;
+  sot: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
   sot143: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "px" | "pw" | "ph" | "pin1padwidth" | "pin1centeroffsetx"
-  >
-  sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
-  sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
-  minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
-  melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
+  >;
+  sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">;
+  sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">;
+  minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">;
+  melf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">;
   jst: () => FootprinterParamsBuilder<
     | "w"
     | "h"
@@ -342,63 +340,65 @@ export type Footprinter = {
     | "mpw"
     | "mpl"
     | "mounttop"
-  >
-  micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
-  ms013: () => FootprinterParamsBuilder<"w" | "p">
-  ms012: () => FootprinterParamsBuilder<"w" | "p">
+  >;
+  micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">;
+  ms013: () => FootprinterParamsBuilder<"w" | "p">;
+  ms012: () => FootprinterParamsBuilder<"w" | "p">;
   lqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
+  ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">;
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "grid" | "p" | "w" | "h" | "pl" | "pw" | "pillpads"
-  >
-  sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  smbf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  >;
+  sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  smbf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
   potentiometer: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
-  >
-  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
-  sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod323fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod123fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
-  to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  >;
+  electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">;
+  sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod723: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod523: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod323f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod323fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod123fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
+  to92: () => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "id" | "od" | "inline"
+  >;
+  to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">;
+  to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">;
   sot223: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "tabpl" | "tabpw" | "taboffset"
-  >
-  m2host: () => FootprinterParamsBuilder<never>
+  >;
+  m2host: () => FootprinterParamsBuilder<never>;
   son: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
-  >
+  >;
   vson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "w" | "grid" | "ep" | "epx" | "pinw" | "pinh"
-  >
+  >;
   wson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     "p" | "rowspan" | "pl" | "pw" | "ep" | "epw" | "eph" | "w" | "h"
-  >
+  >;
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -410,7 +410,7 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
-  >
+  >;
   msop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -422,14 +422,14 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
-  >
-  sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  >;
+  sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">;
   pushbutton: () => FootprinterParamsBuilder<
     "tllabel" | "trlabel" | "bllabel" | "brlabel"
-  >
+  >;
   smdpushbutton: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
+  ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">;
   smdslideswitch: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -447,7 +447,7 @@ export type Footprinter = {
     | "holey"
     | "holed"
     | "noholes"
-  >
+  >;
   fpc: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -464,7 +464,7 @@ export type Footprinter = {
     | "mounttop"
     | "mpw"
     | "mpl"
-  >
+  >;
   stampboard: () => FootprinterParamsBuilder<
     | "w"
     | "h"
@@ -479,7 +479,7 @@ export type Footprinter = {
     | "innerholeedgedistance"
     | "silkscreenlabels"
     | "silkscreenlabelmargin"
-  >
+  >;
   stampreceiver: () => FootprinterParamsBuilder<
     | "w"
     | "h"
@@ -492,10 +492,10 @@ export type Footprinter = {
     | "pl"
     | "innerhole"
     | "innerholeedgedistance"
-  >
+  >;
   breakoutheaders: () => FootprinterParamsBuilder<
     "w" | "h" | "left" | "right" | "top" | "bottom" | "p" | "id" | "od"
-  >
+  >;
   smtpad: () => FootprinterParamsBuilder<
     | "circle"
     | "rect"
@@ -516,24 +516,24 @@ export type Footprinter = {
     | "s"
     | "size"
   > & {
-    params: () => any
-    soup: () => AnySoupElement[]
-    circuitJson: () => AnyCircuitElement[]
-  }
+    params: () => any;
+    soup: () => AnySoupElement[];
+    circuitJson: () => AnyCircuitElement[];
+  };
   platedhole: () => FootprinterParamsBuilder<
     "d" | "hd" | "r" | "hr" | "pd" | "pr"
-  >
+  >;
   smdpads: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"p" | "pw" | "ph" | "centerpadwidth">
+  ) => FootprinterParamsBuilder<"p" | "pw" | "ph" | "centerpadwidth">;
   pad: () => FootprinterParamsBuilder<"w" | "h"> & {
-    params: () => any
-    soup: () => AnySoupElement[]
-    circuitJson: () => AnyCircuitElement[]
-  }
+    params: () => any;
+    soup: () => AnySoupElement[];
+    circuitJson: () => AnyCircuitElement[];
+  };
   solderjumper: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
+  ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">;
   usbcmidmount: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -559,15 +559,15 @@ export type Footprinter = {
     | "holey"
     | "holed"
     | "bodybottom"
-  >
+  >;
 
-  params: () => any
+  params: () => any;
   /** @deprecated use circuitJson() instead */
-  soup: () => AnySoupElement[]
-  circuitJson: () => AnyCircuitElement[]
-  json: () => AnyFootprinterDefinitionOutput[]
-  getFootprintNames: () => string[]
-}
+  soup: () => AnySoupElement[];
+  circuitJson: () => AnyCircuitElement[];
+  json: () => AnyFootprinterDefinitionOutput[];
+  getFootprintNames: () => string[];
+};
 
 const normalizeDefinition = (def: string): string => {
   return def
@@ -586,92 +586,92 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
-    .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
-}
+    .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1");
+};
 
 const normalizeMicrometerLengths = (value: string): string =>
   value.replace(
     /([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(?:um|µm)(?=$|[x,() ])/gi,
     (micrometerLength) =>
       `${Number(length.parse(micrometerLength).toPrecision(12))}mm`,
-  )
+  );
 
 export const string = (def: string): Footprinter => {
-  let fp = footprinter()
-  const normalizedDef = normalizeDefinition(def)
+  let fp = footprinter();
+  const normalizedDef = normalizeDefinition(def);
 
   // The regex below automatically inserts a "res" prefix so forms like
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
   const modifiedDef = normalizedDef
     .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
-    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
+    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh");
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
-      const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i)
+      const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i);
       if (pin1LocationMatch) {
         return {
           fn: pin1LocationMatch[1]!.toLowerCase(),
           v: pin1LocationMatch[2],
-        }
+        };
       }
       // Pin-indexed parameters such as p1w and p2x contain a digit in the
       // parameter name. Require another value token after that name so a
       // normal pitch such as p1mm is still parsed as p + 1mm.
       const m = s.match(
         /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
-      )
-      if (!m) return null
-      const [, rawFn, v] = m
-      if (!rawFn) return null
-      const fn = rawFn.toLowerCase()
-      if (v?.includes("?")) return null
-      return { fn, v }
+      );
+      if (!m) return null;
+      const [, rawFn, v] = m;
+      if (!rawFn) return null;
+      const fn = rawFn.toLowerCase();
+      if (v?.includes("?")) return null;
+      return { fn, v };
     })
-    .filter(isNotNull)
+    .filter(isNotNull);
 
   for (const { fn, v } of def_parts) {
-    fp = fp[fn](v)
+    fp = fp[fn](v);
   }
 
-  fp.setString(normalizedDef)
+  fp.setString(normalizedDef);
 
-  return fp
-}
+  return fp;
+};
 
 export const getFootprintNames = (): string[] => {
-  return Object.keys(FOOTPRINT_FN)
-}
+  return Object.keys(FOOTPRINT_FN);
+};
 
 export const getFootprintSizes = (): typeof footprintSizes => {
-  return footprintSizes
-}
+  return footprintSizes;
+};
 
 export const getFootprintNamesByType = (): {
-  passiveFootprintNames: string[]
-  normalFootprintNames: string[]
+  passiveFootprintNames: string[];
+  normalFootprintNames: string[];
 } => {
-  const allFootprintNames = Object.keys(FOOTPRINT_FN)
+  const allFootprintNames = Object.keys(FOOTPRINT_FN);
 
   const passiveFootprintNames = allFootprintNames.filter((name) => {
-    const fn = FOOTPRINT_FN[name]
+    const fn = FOOTPRINT_FN[name];
 
-    return fn.toString().includes("passive(")
-  })
+    return fn.toString().includes("passive(");
+  });
 
   return {
     passiveFootprintNames,
     normalFootprintNames: allFootprintNames.filter(
       (name) => !passiveFootprintNames.includes(name),
     ),
-  }
-}
+  };
+};
 
 export const footprinter = (): Footprinter & {
-  string: typeof string
-  getFootprintNames: string[]
-  setString: (string) => void
+  string: typeof string;
+  getFootprintNames: string[];
+  setString: (string) => void;
 } => {
   const proxy = new Proxy(
     {},
@@ -680,27 +680,27 @@ export const footprinter = (): Footprinter & {
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
-              const { circuitJson } = FOOTPRINT_FN[target.fn](target)
+              const { circuitJson } = FOOTPRINT_FN[target.fn](target);
               const circuitWithoutSilkscreen = applyNoSilkscreen(
                 circuitJson,
                 target,
-              )
+              );
               const circuitWithoutRefDes = applyNoRefDes(
                 circuitWithoutSilkscreen,
                 target,
-              )
+              );
               const circuitWithPin1Location = applyPin1Location(
                 circuitWithoutRefDes,
                 target.pin1location
                   ? pin1_location.parse(target.pin1location)
                   : undefined,
-              )
+              );
               const circuitWithRoundedPads = applyRounded(
                 circuitWithPin1Location,
                 target.rounded,
-              )
-              return applyOrigin(circuitWithRoundedPads, target.origin)
-            }
+              );
+              return applyOrigin(circuitWithRoundedPads, target.origin);
+            };
           }
 
           if (!FOOTPRINT_FN[target.fn]) {
@@ -708,15 +708,15 @@ export const footprinter = (): Footprinter & {
               `Invalid footprint function, got "${target.fn}"${
                 target.string ? `, from string "${target.string}"` : ""
               }`,
-            )
+            );
           }
 
           return () => {
             // TODO improve error
             throw new Error(
               `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
-            )
-          }
+            );
+          };
         }
         if (prop === "json") {
           if (!FOOTPRINT_FN[target.fn]) {
@@ -724,34 +724,34 @@ export const footprinter = (): Footprinter & {
               `Invalid footprint function, got "${target.fn}"${
                 target.string ? `, from string "${target.string}"` : ""
               }`,
-            )
+            );
           }
-          return () => FOOTPRINT_FN[target.fn](target).parameters
+          return () => FOOTPRINT_FN[target.fn](target).parameters;
         }
         if (prop === "getFootprintNames") {
-          return () => Object.keys(FOOTPRINT_FN)
+          return () => Object.keys(FOOTPRINT_FN);
         }
         if (prop === "params") {
           // TODO
-          return () => target
+          return () => target;
         }
         if (prop === "setString") {
           return (v: string) => {
-            target.string = v
-            return proxy
-          }
+            target.string = v;
+            return proxy;
+          };
         }
         return (...values: any[]) => {
-          const v = values[0]
+          const v = values[0];
           const normalizedValue =
-            typeof v === "string" ? normalizeMicrometerLengths(v) : v
+            typeof v === "string" ? normalizeMicrometerLengths(v) : v;
           if (Object.keys(target).length === 0) {
             if (`${prop}${v}` in FOOTPRINT_FN) {
-              target[`${prop}${v}`] = true
-              target.fn = `${prop}${v}`
+              target[`${prop}${v}`] = true;
+              target.fn = `${prop}${v}`;
             } else {
-              target[prop] = true
-              target.fn = prop
+              target[prop] = true;
+              target.fn = prop;
               if (
                 prop === "res" ||
                 prop === "cap" ||
@@ -760,15 +760,15 @@ export const footprinter = (): Footprinter & {
               ) {
                 if (v) {
                   if (typeof v === "string" && v.includes("_metric")) {
-                    target.metric = v.split("_metric")[0]
+                    target.metric = v.split("_metric")[0];
                   } else {
-                    target.imperial = v // e.g., res0402, cap0603 etc.
+                    target.imperial = v; // e.g., res0402, cap0603 etc.
                   }
                 }
               } else {
                 target.num_pins = Number.isNaN(Number.parseFloat(v))
                   ? undefined
-                  : Number.parseFloat(v)
+                  : Number.parseFloat(v);
               }
             }
           } else {
@@ -779,17 +779,17 @@ export const footprinter = (): Footprinter & {
               target[prop] =
                 prop === "pin1location" && values.length > 1
                   ? values
-                  : (normalizedValue ?? true)
+                  : (normalizedValue ?? true);
             }
           }
-          return proxy
-        }
+          return proxy;
+        };
       },
     },
-  )
-  return proxy as any
-}
-footprinter.string = string
-footprinter.getFootprintNames = getFootprintNames
+  );
+  return proxy as any;
+};
+footprinter.string = string;
+footprinter.getFootprintNames = getFootprintNames;
 
-export const fp = footprinter
+export const fp = footprinter;

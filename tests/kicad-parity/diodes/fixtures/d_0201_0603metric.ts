@@ -117,4 +117,4 @@ export const d02010603MetricCircuitJson = [
     ],
     stroke_width: 0.1,
   },
-]
+];

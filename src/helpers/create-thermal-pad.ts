@@ -1,20 +1,20 @@
-import type { PcbSmtPad } from "circuit-json"
-import { length } from "circuit-json"
-import { rectpad } from "./rectpad"
+import type { PcbSmtPad } from "circuit-json";
+import { length } from "circuit-json";
+import { rectpad } from "./rectpad";
 
 export const thermalPadOffsetFields = {
   thermalpadcenteroffsetx: length.optional().default(0),
   thermalpadcenteroffsety: length.optional().default(0),
-}
+};
 
 export const createThermalPad = (
   dimensions: {
-    x: number
-    y: number
+    x: number;
+    y: number;
   },
   offset: {
-    x: number
-    y: number
+    x: number;
+    y: number;
   },
 ): PcbSmtPad =>
-  rectpad(["thermalpad"], offset.x, offset.y, dimensions.x, dimensions.y)
+  rectpad(["thermalpad"], offset.x, offset.y, dimensions.x, dimensions.y);

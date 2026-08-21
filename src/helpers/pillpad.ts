@@ -1,4 +1,4 @@
-import type { PcbSmtPad } from "circuit-json"
+import type { PcbSmtPad } from "circuit-json";
 
 export const pillpad = (
   pn: number | Array<string | number>,
@@ -20,5 +20,5 @@ export const pillpad = (
     port_hints: Array.isArray(pn)
       ? pn.map((item) => item.toString())
       : [pn.toString()],
-  }
-}
+  };
+};

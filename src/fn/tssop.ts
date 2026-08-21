@@ -2,19 +2,19 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { length } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { u_curve } from "../helpers/u-curve"
-import { dim2d } from "src/helpers/zod/dim-2d"
+} from "circuit-json";
+import { length } from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
+import { u_curve } from "../helpers/u-curve";
+import { dim2d } from "src/helpers/zod/dim-2d";
 import {
   createThermalPad,
   thermalPadOffsetFields,
-} from "src/helpers/create-thermal-pad"
+} from "src/helpers/create-thermal-pad";
 
 export const tssop_def = base_def.extend({
   fn: z.string(),
@@ -27,49 +27,49 @@ export const tssop_def = base_def.extend({
   thermalpad: dim2d.optional(),
   ...thermalPadOffsetFields,
   silkscreen_stroke_width: z.number().optional().default(0.1),
-})
+});
 
-export type TssopInput = z.infer<typeof tssop_def>
+export type TssopInput = z.infer<typeof tssop_def>;
 
 const getTssopCoords = (parameters: {
-  num_pins: number
-  pn: number
-  w: number
-  p: number
-  pl: number
-  legsoutside: boolean
+  num_pins: number;
+  pn: number;
+  w: number;
+  p: number;
+  pl: number;
+  legsoutside: boolean;
 }) => {
-  const { num_pins, pn, w, p, pl, legsoutside } = parameters
-  const ph = num_pins / 2
-  const isLeft = pn <= ph
-  const leftPinGaps = ph - 1
-  const h = p * leftPinGaps
-  const legoffset = legsoutside ? pl / 2 : -pl / 2
+  const { num_pins, pn, w, p, pl, legsoutside } = parameters;
+  const ph = num_pins / 2;
+  const isLeft = pn <= ph;
+  const leftPinGaps = ph - 1;
+  const h = p * leftPinGaps;
+  const legoffset = legsoutside ? pl / 2 : -pl / 2;
 
   if (isLeft) {
-    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * p }
+    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * p };
   }
-  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * p }
-}
+  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * p };
+};
 
 export const tssop = (
   raw_params: TssopInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: TssopInput } => {
-  const params: Record<string, unknown> = { ...raw_params }
-  const pRaw = params.p
+  const params: Record<string, unknown> = { ...raw_params };
+  const pRaw = params.p;
   const pValue =
     typeof pRaw === "string" || typeof pRaw === "number"
       ? length.parse(pRaw)
-      : undefined
-  const isFinePitch = pValue != null && pValue <= length.parse("0.5mm")
+      : undefined;
+  const isFinePitch = pValue != null && pValue <= length.parse("0.5mm");
 
-  const parameters = tssop_def.parse(params)
-  const pads: AnyCircuitElement[] = []
+  const parameters = tssop_def.parse(params);
+  const pads: AnyCircuitElement[] = [];
   const cornerRadius =
-    parameters.rounded ?? Math.min(parameters.pl, parameters.pw) / 8
+    parameters.rounded ?? Math.min(parameters.pl, parameters.pw) / 8;
   const wForPads = isFinePitch
     ? parameters.w - length.parse("0.15mm")
-    : parameters.w
+    : parameters.w;
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getTssopCoords({
@@ -79,8 +79,8 @@ export const tssop = (
       p: parameters.p,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
-    })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
+    });
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius));
   }
 
   if (parameters.thermalpad) {
@@ -89,18 +89,18 @@ export const tssop = (
         x: parameters.thermalpadcenteroffsetx,
         y: parameters.thermalpadcenteroffsety,
       }),
-    )
+    );
   }
 
-  const m = Math.min(1, parameters.p / 2)
+  const m = Math.min(1, parameters.p / 2);
   const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2;
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m;
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
     sh / 12,
-  )
+  );
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -118,15 +118,15 @@ export const tssop = (
       { x: sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: -sh / 2 },
     ],
-  }
+  };
   const pinRowSpanY =
-    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
   const pinToeHalfSpanX =
-    parameters.w / 2 + (parameters.legsoutside ? parameters.pl : 0)
-  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25
-  const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.18
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.35
+    parameters.w / 2 + (parameters.legsoutside ? parameters.pl : 0);
+  const courtyardStepInnerHalfWidth = parameters.w / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinToeHalfSpanX + 0.18;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = courtyardStepInnerHalfHeight + 0.35;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -146,10 +146,10 @@ export const tssop = (
         maxY: courtyardStepOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return {
     circuitJson: [...pads, silkscreenBorder, silkscreenRefText, courtyard],
     parameters,
-  }
-}
+  };
+};

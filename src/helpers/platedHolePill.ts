@@ -1,5 +1,5 @@
-import { mm } from "@tscircuit/mm"
-import type { AnyCircuitElement } from "circuit-json"
+import { mm } from "@tscircuit/mm";
+import type { AnyCircuitElement } from "circuit-json";
 
 export const platedHolePill = (
   pn: number,
@@ -23,5 +23,5 @@ export const platedHolePill = (
     layers: ["top", "bottom"],
     port_hints: [pn.toString()],
     ccw_rotation: 0,
-  }
-}
+  };
+};

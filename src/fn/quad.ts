@@ -2,28 +2,28 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { length } from "circuit-json"
-import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
+} from "circuit-json";
+import { length } from "circuit-json";
+import { getQuadPinMap } from "src/helpers/get-quad-pin-map";
 import {
   getQuadSidePinCounts,
   type QuadSidePinCounts,
-} from "src/helpers/get-quad-side-pin-counts"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
-import { optional, z } from "zod"
-import { pillpad } from "../helpers/pillpad"
-import { rectpad } from "../helpers/rectpad"
+} from "src/helpers/get-quad-side-pin-counts";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { dim2d } from "src/helpers/zod/dim-2d";
+import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier";
+import { optional, z } from "zod";
+import { pillpad } from "../helpers/pillpad";
+import { rectpad } from "../helpers/rectpad";
 import {
   createThermalPad,
   thermalPadOffsetFields,
-} from "../helpers/create-thermal-pad"
-import { base_def } from "../helpers/zod/base_def"
-import type { NowDefined } from "../helpers/zod/now-defined"
+} from "../helpers/create-thermal-pad";
+import { base_def } from "../helpers/zod/base_def";
+import type { NowDefined } from "../helpers/zod/now-defined";
 
-const side_pin_count = z.coerce.number().int().positive().optional()
+const side_pin_count = z.coerce.number().int().positive().optional();
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -63,7 +63,7 @@ export const base_quad_def = base_def.extend({
   ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
   legsoutside: z.boolean().default(false),
-})
+});
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v: T,
@@ -75,7 +75,7 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   ) {
     throw new Error(
       `Conflicting lrpw (${v.lrpw}) and leftrightpadwidth (${v.leftrightpadwidth})`,
-    )
+    );
   }
   if (
     v.lrpl !== undefined &&
@@ -84,78 +84,78 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   ) {
     throw new Error(
       `Conflicting lrpl (${v.lrpl}) and leftrightpadlength (${v.leftrightpadlength})`,
-    )
+    );
   }
-  v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
-  v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
+  v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw;
+  v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl;
 
   if (v.w && !v.h) {
-    v.h = v.w
+    v.h = v.w;
   } else if (!v.w && v.h) {
-    v.w = v.h
+    v.w = v.h;
   }
 
-  const sidePinCounts = getQuadSidePinCounts(v)
+  const sidePinCounts = getQuadSidePinCounts(v);
   const horizontal_side_pin_count = Math.max(
     sidePinCounts.top,
     sidePinCounts.bottom,
-  )
+  );
   const vertical_side_pin_count = Math.max(
     sidePinCounts.left,
     sidePinCounts.right,
-  )
-  const horizontal_pitch = v.px ?? v.p
-  const vertical_pitch = v.py ?? v.p
+  );
+  const horizontal_pitch = v.px ?? v.p;
+  const vertical_pitch = v.py ?? v.p;
 
   if (!v.p && !v.pw && !v.pl && v.w) {
     // HACK: This is wayyy underspecified
-    const approx_pin_size_of_side = horizontal_side_pin_count + 4
-    v.p = v.w / approx_pin_size_of_side
+    const approx_pin_size_of_side = horizontal_side_pin_count + 4;
+    v.p = v.w / approx_pin_size_of_side;
   }
 
   if (!v.p && v.w && v.h && v.pw && v.pl) {
     // HACK: This is wayyy underspecified
     const horizontalPitch =
-      (v.w - v.pl * 2) / Math.max(horizontal_side_pin_count - 1, 1)
+      (v.w - v.pl * 2) / Math.max(horizontal_side_pin_count - 1, 1);
     const verticalPitch =
-      (v.h - v.pl * 2) / Math.max(vertical_side_pin_count - 1, 1)
-    v.p = (horizontalPitch + verticalPitch) / 2
+      (v.h - v.pl * 2) / Math.max(vertical_side_pin_count - 1, 1);
+    v.p = (horizontalPitch + verticalPitch) / 2;
   }
 
   if (!v.w && !v.h && v.p) {
     // HACK: underspecified
-    v.w = horizontal_pitch * (horizontal_side_pin_count + 4)
-    v.h = vertical_pitch * (vertical_side_pin_count + 4)
+    v.w = horizontal_pitch * (horizontal_side_pin_count + 4);
+    v.h = vertical_pitch * (vertical_side_pin_count + 4);
   }
 
   if (v.p && !v.pw && !v.pl) {
-    v.pw = v.p / 2
-    v.pl = v.p / 2
+    v.pw = v.p / 2;
+    v.pl = v.p / 2;
   } else if (!v.pw) {
-    v.pw = v.pl! * (0.6 / 1.0)
+    v.pw = v.pl! * (0.6 / 1.0);
   } else if (!v.pl) {
-    v.pl = v.pw! * (1.0 / 0.6)
+    v.pl = v.pw! * (1.0 / 0.6);
   }
 
-  return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
-}
+  return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">;
+};
 
-export const quad_def = base_quad_def.transform(quadTransform)
+export const quad_def = base_quad_def.transform(quadTransform);
 
-const SIDES_CCW = ["left", "bottom", "right", "top"] as const
+const SIDES_CCW = ["left", "bottom", "right", "top"] as const;
 
 export const getQuadCoords = (params: {
-  sidePinCounts: QuadSidePinCounts
-  pin_count: number
-  pn: number // pin number
-  w: number // width of the package
-  h: number // height (length) of the package
-  p: number // pitch between pins
-  px?: number // horizontal pitch between top/bottom pins
-  py?: number // vertical pitch between left/right pins
-  pl: number // length of the pin
-  leftRightPadLength?: number
-  legsoutside?: boolean
+  sidePinCounts: QuadSidePinCounts;
+  pin_count: number;
+  pn: number; // pin number
+  w: number; // width of the package
+  h: number; // height (length) of the package
+  p: number; // pitch between pins
+  px?: number; // horizontal pitch between top/bottom pins
+  py?: number; // vertical pitch between left/right pins
+  pl: number; // length of the pin
+  leftRightPadLength?: number;
+  legsoutside?: boolean;
 }) => {
   const {
     sidePinCounts,
@@ -168,35 +168,35 @@ export const getQuadCoords = (params: {
     pl,
     leftRightPadLength,
     legsoutside,
-  } = params
+  } = params;
   const sidePinCountsCcw = [
     sidePinCounts.left,
     sidePinCounts.bottom,
     sidePinCounts.right,
     sidePinCounts.top,
-  ]
-  let sideIndex = 0
-  let pos = pn - 1
+  ];
+  let sideIndex = 0;
+  let pos = pn - 1;
   while (
     sideIndex < sidePinCountsCcw.length - 1 &&
     pos >= sidePinCountsCcw[sideIndex]
   ) {
-    pos -= sidePinCountsCcw[sideIndex]
-    sideIndex += 1
+    pos -= sidePinCountsCcw[sideIndex];
+    sideIndex += 1;
   }
-  const sidePinCount = sidePinCountsCcw[sideIndex]
-  const side = SIDES_CCW[sideIndex]
-  const sidePitch = side === "left" || side === "right" ? (py ?? p) : (px ?? p)
+  const sidePinCount = sidePinCountsCcw[sideIndex];
+  const side = SIDES_CCW[sideIndex];
+  const sidePitch = side === "left" || side === "right" ? (py ?? p) : (px ?? p);
   const padLength =
-    side === "left" || side === "right" ? (leftRightPadLength ?? pl) : pl
+    side === "left" || side === "right" ? (leftRightPadLength ?? pl) : pl;
 
   /** inner box width */
-  const ibw = sidePitch * (sidePinCount - 1)
+  const ibw = sidePitch * (sidePinCount - 1);
   /** inner box height */
-  const ibh = sidePitch * (sidePinCount - 1)
+  const ibh = sidePitch * (sidePinCount - 1);
 
   /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? padLength / 2 : -padLength / 2
+  const pcdfe = legsoutside ? padLength / 2 : -padLength / 2;
 
   switch (side) {
     case "left":
@@ -204,56 +204,59 @@ export const getQuadCoords = (params: {
         x: -w / 2 - pcdfe + 0.1,
         y: ibh / 2 - pos * sidePitch,
         o: "vert",
-      }
+      };
     case "bottom":
       return {
         x: -ibw / 2 + pos * sidePitch,
         y: -h / 2 - pcdfe + 0.1,
         o: "horz",
-      }
+      };
     case "right":
       return {
         x: w / 2 + pcdfe - 0.1,
         y: -ibh / 2 + pos * sidePitch,
         o: "vert",
-      }
+      };
     case "top":
       return {
         x: ibw / 2 - pos * sidePitch,
         y: h / 2 + pcdfe - 0.1,
         o: "horz",
-      }
+      };
     default:
-      throw new Error("Invalid pin number")
+      throw new Error("Invalid pin number");
   }
-}
+};
 
 export const quad = (
   raw_params: z.input<typeof quad_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = quad_def.parse(raw_params)
+  const parameters = quad_def.parse(raw_params);
   const leftRightPadWidth =
-    parameters.leftrightpadwidth ?? parameters.lrpw ?? parameters.pw
+    parameters.leftrightpadwidth ?? parameters.lrpw ?? parameters.pw;
   const leftRightPadLength =
-    parameters.leftrightpadlength ?? parameters.lrpl ?? parameters.pl
-  const sidePinCounts = getQuadSidePinCounts(parameters)
-  const pads: AnyCircuitElement[] = []
-  let padOuterHalfX = 0
-  let padOuterHalfY = 0
-  const pin_map = getQuadPinMap({ ...parameters, sidePinCounts })
-  const verticalSidePinCount = Math.max(sidePinCounts.left, sidePinCounts.right)
+    parameters.leftrightpadlength ?? parameters.lrpl ?? parameters.pl;
+  const sidePinCounts = getQuadSidePinCounts(parameters);
+  const pads: AnyCircuitElement[] = [];
+  let padOuterHalfX = 0;
+  let padOuterHalfY = 0;
+  const pin_map = getQuadPinMap({ ...parameters, sidePinCounts });
+  const verticalSidePinCount = Math.max(
+    sidePinCounts.left,
+    sidePinCounts.right,
+  );
   const horizontalSidePinCount = Math.max(
     sidePinCounts.top,
     sidePinCounts.bottom,
-  )
-  const leftBottomPin = sidePinCounts.left
-  const bottomLeftPin = leftBottomPin + 1
-  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom
-  const rightBottomPin = bottomRightPin + 1
+  );
+  const leftBottomPin = sidePinCounts.left;
+  const bottomLeftPin = leftBottomPin + 1;
+  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom;
+  const rightBottomPin = bottomRightPin + 1;
   const rightTopPin =
-    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right
-  const topRightPin = rightTopPin + 1
-  const topLeftPin = parameters.num_pins
+    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right;
+  const topRightPin = rightTopPin + 1;
+  const topLeftPin = parameters.num_pins;
   for (let i = 0; i < parameters.num_pins; i++) {
     const {
       x,
@@ -271,62 +274,62 @@ export const quad = (
       pl: parameters.pl,
       leftRightPadLength,
       legsoutside: parameters.legsoutside,
-    })
+    });
 
-    const isLeftOrRight = orientation === "vert"
-    let padWidth = isLeftOrRight ? leftRightPadWidth : parameters.pw
-    let padHeight = isLeftOrRight ? leftRightPadLength : parameters.pl
+    const isLeftOrRight = orientation === "vert";
+    let padWidth = isLeftOrRight ? leftRightPadWidth : parameters.pw;
+    let padHeight = isLeftOrRight ? leftRightPadLength : parameters.pl;
     if (orientation === "vert") {
-      ;[padWidth, padHeight] = [padHeight, padWidth]
+      [padWidth, padHeight] = [padHeight, padWidth];
     }
-    const cornerRadius = Math.min(padWidth, padHeight) / 8
+    const cornerRadius = Math.min(padWidth, padHeight) / 8;
 
-    const pn = pin_map[i + 1]!
-    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
-    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
+    const pn = pin_map[i + 1]!;
+    padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2);
+    padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2);
     pads.push(
       parameters.pillpads
         ? pillpad(pn, x, y, padWidth, padHeight)
         : rectpad(pn, x, y, padWidth, padHeight, cornerRadius),
-    )
+    );
   }
 
   if (parameters.thermalpad) {
     const thermalPadOffset = {
       x: parameters.thermalpadcenteroffsetx,
       y: parameters.thermalpadcenteroffsety,
-    }
+    };
     if (typeof parameters.thermalpad === "boolean") {
       const ibw =
         (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) +
-        parameters.pw
+        parameters.pw;
       const ibh =
         (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
-        leftRightPadWidth
+        leftRightPadWidth;
       padOuterHalfX = Math.max(
         padOuterHalfX,
         Math.abs(thermalPadOffset.x) + ibw / 2,
-      )
+      );
       padOuterHalfY = Math.max(
         padOuterHalfY,
         Math.abs(thermalPadOffset.y) + ibh / 2,
-      )
-      pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset))
+      );
+      pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset));
     } else {
       padOuterHalfX = Math.max(
         padOuterHalfX,
         Math.abs(thermalPadOffset.x) + parameters.thermalpad.x / 2,
-      )
+      );
       padOuterHalfY = Math.max(
         padOuterHalfY,
         Math.abs(thermalPadOffset.y) + parameters.thermalpad.y / 2,
-      )
-      pads.push(createThermalPad(parameters.thermalpad, thermalPadOffset))
+      );
+      pads.push(createThermalPad(parameters.thermalpad, thermalPadOffset));
     }
   }
 
   // Silkscreen corners
-  const silkscreen_corners: PcbSilkscreenPath[] = []
+  const silkscreen_corners: PcbSilkscreenPath[] = [];
   for (const [corner, dx, dy] of [
     ["top-left", -1, 1],
     ["bottom-left", -1, -1],
@@ -335,40 +338,40 @@ export const quad = (
   ] as const) {
     // const dx = Math.floor(corner_index / 2) * 2 - 1
     // const dy = 1 - (corner_index % 2) * 2
-    const corner_x = (parameters.w / 2) * dx
-    const corner_y = (parameters.h / 2) * dy
-    let arrow: "none" | "in1" | "in2" = "none"
+    const corner_x = (parameters.w / 2) * dx;
+    const corner_y = (parameters.h / 2) * dy;
+    let arrow: "none" | "in1" | "in2" = "none";
 
-    let arrow_x = corner_x
-    let arrow_y = corner_y
+    let arrow_x = corner_x;
+    let arrow_y = corner_y;
 
     /** corner size */
-    const csz = parameters.pw * 2
+    const csz = parameters.pw * 2;
 
     if (pin_map[1] === 1 && corner === "top-left") {
-      arrow = "in1"
+      arrow = "in1";
     } else if (pin_map[topLeftPin] === 1 && corner === "top-left") {
-      arrow = "in2"
+      arrow = "in2";
     } else if (pin_map[topRightPin] === 1 && corner === "top-right") {
-      arrow = "in2"
+      arrow = "in2";
     } else if (pin_map[rightTopPin] === 1 && corner === "top-right") {
-      arrow = "in1"
+      arrow = "in1";
     } else if (pin_map[leftBottomPin] === 1 && corner === "bottom-left") {
-      arrow = "in1"
+      arrow = "in1";
     } else if (pin_map[bottomLeftPin] === 1 && corner === "bottom-left") {
-      arrow = "in2"
+      arrow = "in2";
     } else if (pin_map[bottomRightPin] === 1 && corner === "bottom-right") {
-      arrow = "in1"
+      arrow = "in1";
     } else if (pin_map[rightBottomPin] === 1 && corner === "bottom-right") {
-      arrow = "in2"
+      arrow = "in2";
     }
 
-    const rotate_arrow = arrow === "in1" ? 1 : -1
+    const rotate_arrow = arrow === "in1" ? 1 : -1;
     if (parameters.legsoutside) {
-      const arrow_dx = arrow === "in1" ? parameters.pl / 2 : parameters.pw / 2
-      const arrow_dy = arrow === "in1" ? parameters.pw / 2 : parameters.pl / 2
-      arrow_x += arrow_dx * dx * rotate_arrow
-      arrow_y -= arrow_dy * dy * rotate_arrow
+      const arrow_dx = arrow === "in1" ? parameters.pl / 2 : parameters.pw / 2;
+      const arrow_dy = arrow === "in1" ? parameters.pw / 2 : parameters.pl / 2;
+      arrow_x += arrow_dx * dx * rotate_arrow;
+      arrow_y -= arrow_dy * dy * rotate_arrow;
     }
 
     // Normal Corner
@@ -393,7 +396,7 @@ export const quad = (
         ],
         type: "pcb_silkscreen_path",
         stroke_width: 0.1,
-      })
+      });
     }
 
     // Two lines nearly forming a corner, used when the arrow needs to overlap
@@ -434,7 +437,7 @@ export const quad = (
           type: "pcb_silkscreen_path",
           stroke_width: 0.1,
         },
-      )
+      );
     }
     if (arrow === "in1" || arrow === "in2") {
       silkscreen_corners.push({
@@ -461,36 +464,36 @@ export const quad = (
         ],
         type: "pcb_silkscreen_path",
         stroke_width: 0.1,
-      })
+      });
     }
   }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     parameters.h / 2 + (parameters.legsoutside ? parameters.pl * 1.2 : 0.5),
     0.3,
-  )
+  );
   const roundUpToCourtyardOuterGrid = (value: number) =>
-    Math.ceil(value / 0.05) * 0.05
+    Math.ceil(value / 0.05) * 0.05;
 
   const pinRowSpanX =
     (horizontalSidePinCount - 1) * (parameters.px ?? parameters.p) +
-    parameters.pw
+    parameters.pw;
   const pinRowSpanY =
     (verticalSidePinCount - 1) * (parameters.py ?? parameters.p) +
-    leftRightPadWidth
-  const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25
-  const courtyardStepOuterHalfHeight = parameters.h / 2 + 0.25
+    leftRightPadWidth;
+  const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = parameters.h / 2 + 0.25;
 
   const courtyardOuterHalfWidth = Math.max(
     courtyardStepOuterHalfWidth,
     roundUpToCourtyardOuterGrid(padOuterHalfX + 0.25),
-  )
+  );
   const courtyardOuterHalfHeight = Math.max(
     courtyardStepOuterHalfHeight,
     roundUpToCourtyardOuterGrid(padOuterHalfY + 0.25),
-  )
+  );
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -517,7 +520,7 @@ export const quad = (
         maxY: courtyardOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return {
     circuitJson: [
@@ -527,5 +530,5 @@ export const quad = (
       courtyard,
     ] as AnyCircuitElement[],
     parameters,
-  }
-}
+  };
+};

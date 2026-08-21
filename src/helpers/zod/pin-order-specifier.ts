@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "zod";
 export const pin_order_specifier = z.enum([
   "leftside",
   "topside",
@@ -8,6 +8,6 @@ export const pin_order_specifier = z.enum([
   "bottompin",
   "leftpin",
   "rightpin",
-])
+]);
 
-export type PinOrderSpecifier = z.infer<typeof pin_order_specifier>
+export type PinOrderSpecifier = z.infer<typeof pin_order_specifier>;

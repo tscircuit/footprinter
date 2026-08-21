@@ -1,6 +1,6 @@
-import type { AnySoupElement } from "circuit-json"
+import type { AnySoupElement } from "circuit-json";
 
-export { getTestFixture } from "./get-test-fixture"
+export { getTestFixture } from "./get-test-fixture";
 
 export const toPinPositionString = (soup: AnySoupElement[]) => {
   return soup
@@ -10,13 +10,13 @@ export const toPinPositionString = (soup: AnySoupElement[]) => {
           x: e.x,
           y: e.y,
           pn: e.port_hints?.[0],
-        }
+        };
       } else if (e.type === "pcb_smtpad") {
         return {
           x: e.x,
           y: e.y,
           pn: e.port_hints?.[0],
-        }
+        };
       }
       // TODO other types
     })
@@ -28,5 +28,5 @@ export const toPinPositionString = (soup: AnySoupElement[]) => {
           .toFixed(2)
           .padStart(5)}`,
     )
-    .join("\n")
-}
+    .join("\n");
+};

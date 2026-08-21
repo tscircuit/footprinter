@@ -1,3 +1,3 @@
 export function isNotNull<T>(value: T | null | undefined): value is T {
-  return value !== null && value !== undefined
+  return value !== null && value !== undefined;
 }

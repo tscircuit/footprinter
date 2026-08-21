@@ -2,13 +2,13 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { length } from "circuit-json";
+import { base_def } from "../helpers/zod/base_def";
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode";
 
 export const sod123FL_def = base_def.extend({
   fn: z.string(),
@@ -18,19 +18,19 @@ export const sod123FL_def = base_def.extend({
   pl: z.string().default("0.91mm"),
   pw: z.string().default("1.22mm"),
   p: z.string().default("3.146mm"),
-})
+});
 
 export const sod123fl = (
   raw_params: z.input<typeof sod123FL_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sod123FL_def.parse(raw_params)
+  const parameters = sod123FL_def.parse(raw_params);
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h),
     0.3,
-  )
+  );
 
   // Define silkscreen path that goes till half of the second pad
   const silkscreenLine: PcbSilkscreenPath = {
@@ -57,10 +57,10 @@ export const sod123fl = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const courtyardWidthMm = 4.9
-  const courtyardHeightMm = 2.7
+  const courtyardWidthMm = 4.9;
+  const courtyardHeightMm = 2.7;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -69,7 +69,7 @@ export const sod123fl = (
     width: courtyardWidthMm,
     height: courtyardHeightMm,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
@@ -79,33 +79,30 @@ export const sod123fl = (
       courtyard as AnyCircuitElement,
     ),
     parameters,
-  }
-}
+  };
+};
 
 // Get coordinates for SOD pads
-export const getSodCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
-  const { pn, p } = parameters
+export const getSodCoords = (parameters: { pn: number; p: number }) => {
+  const { pn, p } = parameters;
 
   if (pn === 1) {
-    return { x: -p / 2, y: 0 }
+    return { x: -p / 2, y: 0 };
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: p / 2, y: 0 }
+    return { x: p / 2, y: 0 };
   }
-}
+};
 
 // Function to generate SOD pads
 export const sodWithoutParsing = (parameters: z.infer<typeof sod123FL_def>) => {
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
       p: Number.parseFloat(parameters.p),
-    })
+    });
     pads.push(
       rectpad(
         i,
@@ -114,7 +111,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod123FL_def>) => {
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
       ),
-    )
+    );
   }
-  return pads
-}
+  return pads;
+};

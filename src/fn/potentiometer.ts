@@ -1,12 +1,12 @@
-import { string, z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
+import { string, z } from "zod";
+import { platedhole } from "src/helpers/platedhole";
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const potentiometer_def = base_def.extend({
   fn: z.string(),
@@ -23,39 +23,39 @@ export const potentiometer_def = base_def.extend({
   w: z.string().default("5.35mm"),
   h: z.string().default("4mm"),
   string: z.string().optional(),
-})
+});
 
 export const potentiometer_acp = (
   parameters: z.infer<typeof potentiometer_def>,
 ) => {
-  const { p, id, od, h } = parameters
-  const x = Number.parseFloat(h)
-  const y = Number.parseFloat(p)
+  const { p, id, od, h } = parameters;
+  const x = Number.parseFloat(h);
+  const y = Number.parseFloat(p);
   return [
     platedhole(1, 0, y, id, od),
     platedhole(2, x, 0, id, od),
     platedhole(3, 0, -y, id, od),
-  ]
-}
+  ];
+};
 export const potentiometer = (
   raw_params: z.input<typeof potentiometer_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const match = raw_params.string?.match(/^potentiometer_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const match = raw_params.string?.match(/^potentiometer_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3;
   const parameters = potentiometer_def.parse({
     ...raw_params,
     num_pins: numPins,
-  })
+  });
 
-  let platedHoles: AnyCircuitElement[] = []
+  let platedHoles: AnyCircuitElement[] = [];
 
   if (parameters.num_pins === 3) {
-    platedHoles = potentiometer_acp(parameters)
+    platedHoles = potentiometer_acp(parameters);
   }
 
-  const y = Number.parseFloat(parameters.ca) / 2 + 0.15
-  const x = Number.parseFloat(parameters.w)
-  const od = Number.parseFloat(parameters.od) / 2 + 0.35
+  const y = Number.parseFloat(parameters.ca) / 2 + 0.15;
+  const x = Number.parseFloat(parameters.w);
+  const od = Number.parseFloat(parameters.od) / 2 + 0.35;
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -68,7 +68,7 @@ export const potentiometer = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
   const silkscreenBody2: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -81,16 +81,16 @@ export const potentiometer = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
-  const W = Number.parseFloat(parameters.w) / 2
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5)
+  };
+  const W = Number.parseFloat(parameters.w) / 2;
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5);
 
-  const padRadius = Number.parseFloat(parameters.od) / 2
-  const pinRowSpanX = Number.parseFloat(parameters.h)
-  const pinRowSpanY = Number.parseFloat(parameters.ca) / 2
-  const courtyardMinX = -(padRadius + 0.25)
-  const courtyardMaxX = pinRowSpanX + padRadius + 0.25
-  const courtyardHalfHeight = pinRowSpanY + 0.25
+  const padRadius = Number.parseFloat(parameters.od) / 2;
+  const pinRowSpanX = Number.parseFloat(parameters.h);
+  const pinRowSpanY = Number.parseFloat(parameters.ca) / 2;
+  const courtyardMinX = -(padRadius + 0.25);
+  const courtyardMaxX = pinRowSpanX + padRadius + 0.25;
+  const courtyardHalfHeight = pinRowSpanY + 0.25;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -99,7 +99,7 @@ export const potentiometer = (
     width: courtyardMaxX - courtyardMinX,
     height: 2 * courtyardHalfHeight,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -110,5 +110,5 @@ export const potentiometer = (
       courtyard as AnyCircuitElement,
     ],
     parameters,
-  }
-}
+  };
+};

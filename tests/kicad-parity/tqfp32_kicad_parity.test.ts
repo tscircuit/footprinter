@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/tqfp32", async () => {
   const {
@@ -11,15 +11,15 @@ test("parity/tqfp32", async () => {
   } = await compareFootprinterVsKicad(
     "tqfp32_w7",
     "Package_QFP.pretty/TQFP-32_7x7mm_P0.8mm.circuit.json",
-  )
+  );
 
-  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(courtyardDiffPercent).toBeLessThan(0.5);
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tqfp32")
+  });
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tqfp32");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "tqfp32_boolean_difference",
-  )
-}, 10000)
+  );
+}, 10000);

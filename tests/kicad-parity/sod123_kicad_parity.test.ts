@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/sod123", async () => {
   const {
@@ -11,15 +11,15 @@ test("parity/sod123", async () => {
   } = await compareFootprinterVsKicad(
     "sod123",
     "Diode_SMD.pretty/D_SOD-123.circuit.json",
-  )
+  );
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(courtyardDiffPercent).toBeLessThan(5)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod123")
+  });
+  expect(courtyardDiffPercent).toBeLessThan(5);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sod123");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "sod123_boolean_difference",
-  )
-}, 10000)
+  );
+}, 10000);

@@ -2,30 +2,30 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { u_curve } from "../helpers/u-curve"
-import { rectpad } from "src/helpers/rectpad"
-import { pillpad } from "src/helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { dim2d } from "src/helpers/zod/dim-2d"
+} from "circuit-json";
+import { z } from "zod";
+import { length } from "circuit-json";
+import type { NowDefined } from "../helpers/zod/now-defined";
+import { u_curve } from "../helpers/u-curve";
+import { rectpad } from "src/helpers/rectpad";
+import { pillpad } from "src/helpers/pillpad";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
+import { dim2d } from "src/helpers/zod/dim-2d";
 import {
   createThermalPad,
   thermalPadOffsetFields,
-} from "src/helpers/create-thermal-pad"
+} from "src/helpers/create-thermal-pad";
 
 export const extendSoicDef = (newDefaults: {
-  w?: string
-  p?: string
-  pw?: string
-  pl?: string
-  num_pins?: number
-  legsoutside?: boolean
-  pillpads?: boolean
+  w?: string;
+  p?: string;
+  pw?: string;
+  pl?: string;
+  num_pins?: number;
+  legsoutside?: boolean;
+  pillpads?: boolean;
 }) =>
   base_def
     .extend({
@@ -50,82 +50,82 @@ export const extendSoicDef = (newDefaults: {
     .transform((v) => {
       // Default inner diameter and outer diameter
       if (!v.pw && !v.pl) {
-        v.pw = length.parse("0.6mm")
-        v.pl = length.parse("1.0mm")
+        v.pw = length.parse("0.6mm");
+        v.pl = length.parse("1.0mm");
       } else if (!v.pw) {
-        v.pw = v.pl! * (0.6 / 1.0)
+        v.pw = v.pl! * (0.6 / 1.0);
       } else if (!v.pl) {
-        v.pl = v.pw! * (1.0 / 0.6)
+        v.pl = v.pw! * (1.0 / 0.6);
       }
 
       return v as NowDefined<
         typeof v,
         "w" | "p" | "pw" | "pl" | "pillpads" | "silkscreen_stroke_width"
-      >
-    })
+      >;
+    });
 
-export const soic_def = extendSoicDef({})
-export type SoicInput = z.infer<typeof soic_def>
+export const soic_def = extendSoicDef({});
+export type SoicInput = z.infer<typeof soic_def>;
 
 export const getCcwSoicCoords = (parameters: {
-  num_pins: number
-  pn: number
-  w: number
-  p: number
-  pl: number
-  legsoutside?: boolean
-  widthincludeslegs?: boolean
+  num_pins: number;
+  pn: number;
+  w: number;
+  p: number;
+  pl: number;
+  legsoutside?: boolean;
+  widthincludeslegs?: boolean;
 }) => {
   if (parameters.widthincludeslegs !== undefined) {
-    parameters.legsoutside = !parameters.widthincludeslegs
+    parameters.legsoutside = !parameters.widthincludeslegs;
   }
-  const { num_pins, pn, w, p, pl, legsoutside } = parameters
+  const { num_pins, pn, w, p, pl, legsoutside } = parameters;
   /** pin height */
-  const ph = num_pins / 2
-  const isLeft = pn <= ph
+  const ph = num_pins / 2;
+  const isLeft = pn <= ph;
 
   /** Number of gaps between pins on each side, e.g. 4 pins = 3 spaces */
-  const leftPinGaps = ph - 1
+  const leftPinGaps = ph - 1;
 
   /** gap size (pitch) */
-  const gs = p
+  const gs = p;
 
-  const h = gs * leftPinGaps
+  const h = gs * leftPinGaps;
 
-  const legoffset = legsoutside ? pl / 2 : -pl / 2
+  const legoffset = legsoutside ? pl / 2 : -pl / 2;
 
   if (isLeft) {
     // The y position starts at h/2, then goes down by gap size
     // for each pin
-    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs }
+    return { x: -w / 2 - legoffset, y: h / 2 - (pn - 1) * gs };
   }
   // The y position starts at -h/2, then goes up by gap size
-  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs }
-}
+  return { x: w / 2 + legoffset, y: -h / 2 + (pn - ph - 1) * gs };
+};
 
 /**
  * Returns the plated holes for a SOIC package.
  */
 export const soic = (raw_params: {
-  soic: true
-  num_pins: number
-  w: number
-  p?: number
-  id?: string | number
-  od?: string | number
+  soic: true;
+  num_pins: number;
+  w: number;
+  p?: number;
+  id?: string | number;
+  od?: string | number;
 }): { circuitJson: AnyCircuitElement[]; parameters: SoicInput } => {
-  const parameters = soic_def.parse(raw_params)
+  const parameters = soic_def.parse(raw_params);
   return {
     circuitJson: soicWithoutParsing(parameters) as AnyCircuitElement[],
     parameters,
-  }
-}
+  };
+};
 
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
-  const pads: AnyCircuitElement[] = []
-  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
-  let maxPadExtentX = 0
-  let maxPadExtentY = 0
+  const pads: AnyCircuitElement[] = [];
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8;
+  let maxPadExtentX = 0;
+  let maxPadExtentY = 0;
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
       num_pins: parameters.num_pins,
@@ -134,15 +134,15 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       p: parameters.p,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
-    })
-    maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + parameters.pl / 2)
-    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
+    });
+    maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + parameters.pl / 2);
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2);
     if (parameters.pillpads) {
-      pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw))
+      pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw));
     } else {
       pads.push(
         rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius),
-      )
+      );
     }
   }
 
@@ -152,19 +152,19 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
         x: parameters.thermalpadcenteroffsetx,
         y: parameters.thermalpadcenteroffsety,
       }),
-    )
+    );
   }
 
   /** silkscreen width */
-  const m = Math.min(1, parameters.p / 2)
+  const m = Math.min(1, parameters.p / 2);
   const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
+    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2;
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m;
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
     sh / 12,
-  )
+  );
   const silkscreenBorder: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -183,20 +183,20 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       { x: sw / 2, y: -sh / 2 },
       { x: -sw / 2, y: -sh / 2 },
     ],
-  }
-  const bodyHalfWidth = parameters.w / 2
-  const bodyHalfHeight = sh / 2
+  };
+  const bodyHalfWidth = parameters.w / 2;
+  const bodyHalfHeight = sh / 2;
 
   // Outer rect: wide (pad tips in X), short (pin span in Y)
   const courtyardStepOuterHalfWidth =
-    Math.max(maxPadExtentX, bodyHalfWidth) + 0.25
+    Math.max(maxPadExtentX, bodyHalfWidth) + 0.25;
   const courtyardStepInnerHalfHeight =
-    Math.min(maxPadExtentY, bodyHalfHeight) + 0.25
+    Math.min(maxPadExtentY, bodyHalfHeight) + 0.25;
   // Inner rect: narrow (body width in X), tall (body height in Y)
   const courtyardStepInnerHalfWidth =
-    Math.min(maxPadExtentX, bodyHalfWidth) + 0.25
+    Math.min(maxPadExtentX, bodyHalfWidth) + 0.25;
   const courtyardStepOuterHalfHeight =
-    Math.max(maxPadExtentY, bodyHalfHeight) + 0.25
+    Math.max(maxPadExtentY, bodyHalfHeight) + 0.25;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -216,12 +216,12 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
         maxY: courtyardStepOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return [
     ...pads,
     silkscreenBorder,
     silkscreenRefText,
     courtyard,
-  ] as AnyCircuitElement[]
-}
+  ] as AnyCircuitElement[];
+};

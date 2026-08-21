@@ -1,14 +1,14 @@
-import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 test("smdpads3 reproduces C78322", () => {
   const circuitJson = fp
     .string(
       "smdpads3_p3.299968mm_pw1.7999964mm_ph5.7999884mm_centerpadwidth2.3999952mm_rounded0",
     )
-    .circuitJson()
-  const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
+    .circuitJson();
+  const pads = circuitJson.filter((element) => element.type === "pcb_smtpad");
 
   expect(pads).toMatchObject([
     {
@@ -29,13 +29,13 @@ test("smdpads3 reproduces C78322", () => {
       width: 1.7999964,
       height: 5.7999884,
     },
-  ])
+  ]);
 
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     "smdpads3_c78322",
-  )
-})
+  );
+});
 
 test("smdpads3 reproduces C7464756", () => {
   const pads = fp
@@ -43,7 +43,7 @@ test("smdpads3 reproduces C7464756", () => {
       "smdpads3_p1.299972mm_pw0.3999992mm_ph3.0999938mm_centerpadwidth1.1999976mm_rounded0",
     )
     .circuitJson()
-    .filter((element) => element.type === "pcb_smtpad")
+    .filter((element) => element.type === "pcb_smtpad");
 
   expect(pads).toMatchObject([
     {
@@ -64,11 +64,11 @@ test("smdpads3 reproduces C7464756", () => {
       width: 0.3999992,
       height: 3.0999938,
     },
-  ])
-})
+  ]);
+});
 
 test("smdpads requires an odd pad count for a center pad width", () => {
   expect(() => fp.string("smdpads4_centerpadwidth2mm").circuitJson()).toThrow(
     "requires an odd number of SMD pads",
-  )
-})
+  );
+});

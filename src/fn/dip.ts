@@ -3,31 +3,31 @@ import type {
   PcbCourtyardOutline,
   PcbFabricationNoteText,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
-import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { z } from "zod";
+import { platedhole } from "../helpers/platedhole";
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad";
 
-import { u_curve } from "../helpers/u-curve"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { u_curve } from "../helpers/u-curve";
+import type { NowDefined } from "../helpers/zod/now-defined";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
 
 function convertMilToMm(value: string | number): number {
   if (typeof value === "string") {
     if (value.trim().toLowerCase().endsWith("mil")) {
-      return parseFloat(value) * 0.0254
+      return parseFloat(value) * 0.0254;
     }
-    return parseFloat(value)
+    return parseFloat(value);
   }
-  return Number(value)
+  return Number(value);
 }
 
 const lengthInMm = z
   .union([z.string(), z.number()])
-  .transform((val) => convertMilToMm(val))
+  .transform((val) => convertMilToMm(val));
 
 export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
   base_def
@@ -49,31 +49,31 @@ export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
     .transform((v) => {
       if (!v.id && !v.od) {
         if (Math.abs(v.p - 1.27) < 0.01) {
-          v.id = convertMilToMm("0.55mm")
-          v.od = convertMilToMm("0.95mm")
+          v.id = convertMilToMm("0.55mm");
+          v.od = convertMilToMm("0.95mm");
         } else {
-          v.id = convertMilToMm("0.8mm")
-          v.od = convertMilToMm("1.6mm")
+          v.id = convertMilToMm("0.8mm");
+          v.od = convertMilToMm("1.6mm");
         }
       } else if (!v.id) {
-        v.id = v.od! * (1.0 / 1.5)
+        v.id = v.od! * (1.0 / 1.5);
       } else if (!v.od) {
-        v.od = v.id! * (1.5 / 1.0)
+        v.od = v.id! * (1.5 / 1.0);
       }
 
       if (!v.w) {
         if (v.wide) {
-          v.w = convertMilToMm("600mil")
+          v.w = convertMilToMm("600mil");
         } else if (v.narrow) {
-          v.w = convertMilToMm("300mil")
+          v.w = convertMilToMm("300mil");
         } else {
-          v.w = convertMilToMm(newDefaults.w ?? "300mil")
+          v.w = convertMilToMm(newDefaults.w ?? "300mil");
         }
       }
-      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">
-    })
+      return v as NowDefined<typeof v, "w" | "p" | "id" | "od">;
+    });
 
-export const dip_def = extendDipDef({})
+export const dip_def = extendDipDef({});
 
 export const getCcwDipCoords = (
   pinCount: number,
@@ -82,32 +82,32 @@ export const getCcwDipCoords = (
   p: number,
   nosquareplating: boolean,
 ) => {
-  const ph = pinCount / 2
-  const isLeft = pn <= ph
-  const leftPinGaps = ph - 1
-  const gs = p
-  const h = gs * leftPinGaps
+  const ph = pinCount / 2;
+  const isLeft = pn <= ph;
+  const leftPinGaps = ph - 1;
+  const gs = p;
+  const h = gs * leftPinGaps;
 
   if (isLeft) {
-    return { x: -w / 2, y: h / 2 - (pn - 1) * gs }
+    return { x: -w / 2, y: h / 2 - (pn - 1) * gs };
   }
-  return { x: w / 2, y: -h / 2 + (pn - ph - 1) * gs }
-}
+  return { x: w / 2, y: -h / 2 + (pn - ph - 1) * gs };
+};
 
 /**
  * DIP footprint with silk line **outside** the holes and pads.
  */
 export const dip = (raw_params: {
-  dip: true
-  num_pins: number
-  w: number
-  p?: number
-  id?: string | number
-  od?: string | number
+  dip: true;
+  num_pins: number;
+  w: number;
+  p?: number;
+  id?: string | number;
+  od?: string | number;
 }): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = dip_def.parse(raw_params)
+  const parameters = dip_def.parse(raw_params);
 
-  const platedHoles: AnyCircuitElement[] = []
+  const platedHoles: AnyCircuitElement[] = [];
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwDipCoords(
       parameters.num_pins,
@@ -115,7 +115,7 @@ export const dip = (raw_params: {
       parameters.w,
       parameters.p ?? 2.54,
       parameters.nosquareplating,
-    )
+    );
     if (i === 0 && !parameters.nosquareplating) {
       platedHoles.push(
         platedHoleWithRectPad({
@@ -126,24 +126,24 @@ export const dip = (raw_params: {
           rectPadWidth: parameters.od ?? "1mm",
           rectPadHeight: parameters.od ?? "1mm",
         }),
-      )
-      continue
+      );
+      continue;
     }
     platedHoles.push(
       platedhole(i + 1, x, y, parameters.id ?? "0.8mm", parameters.od ?? "1mm"),
-    )
+    );
   }
 
   const padEdgeHeight =
-    (parameters.num_pins / 2 - 1) * parameters.p + parameters.od
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.od;
 
   // Gap between rows (inner edge to inner edge)
-  const innerGap = parameters.w - parameters.od
+  const innerGap = parameters.w - parameters.od;
   // Silk width (small box between rows)
-  const sw = innerGap - 1 // clearance
+  const sw = innerGap - 1; // clearance
 
   // Silk height still spans the whole row length
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.od + 0.4
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.od + 0.4;
 
   const silkscreenBorder: PcbSilkscreenPath = {
     layer: "top",
@@ -163,25 +163,25 @@ export const dip = (raw_params: {
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
-  }
+  };
 
   /** Pin labels placed outside their corresponding pin rows */
-  const silkscreenPins: PcbFabricationNoteText[] = []
+  const silkscreenPins: PcbFabricationNoteText[] = [];
   for (let i = 0; i < parameters.num_pins; i++) {
-    const pinNumber = i + 1
-    const isLeft = pinNumber <= parameters.num_pins / 2
+    const pinNumber = i + 1;
+    const isLeft = pinNumber <= parameters.num_pins / 2;
     const pinCenter = getCcwDipCoords(
       parameters.num_pins,
       pinNumber,
       parameters.w,
       parameters.p ?? 2.54,
       parameters.nosquareplating,
-    )
-    const clearance = 0.6
+    );
+    const clearance = 0.6;
     const pinLabelX = isLeft
       ? pinCenter.x - parameters.od / 2 - clearance
-      : pinCenter.x + parameters.od / 2 + clearance
-    const fontSize = 0.3
+      : pinCenter.x + parameters.od / 2 + clearance;
+    const fontSize = 0.3;
     silkscreenPins.push({
       type: "pcb_fabrication_note_text",
       pcb_fabrication_note_text_id: `pin_${pinNumber}`,
@@ -192,17 +192,17 @@ export const dip = (raw_params: {
       font_size: fontSize,
       font: "tscircuit2024",
       anchor_alignment: isLeft ? "top_right" : "top_left",
-    })
+    });
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4);
 
-  const pinRowSpanX = parameters.w + parameters.od
-  const pinRowSpanY = padEdgeHeight
-  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
-  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth
-  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.72
-  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight
+  const pinRowSpanX = parameters.w + parameters.od;
+  const pinRowSpanY = padEdgeHeight;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfWidth = courtyardStepOuterHalfWidth;
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.72;
+  const courtyardStepInnerHalfHeight = courtyardStepOuterHalfHeight;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -222,7 +222,7 @@ export const dip = (raw_params: {
       },
     ]),
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -233,5 +233,5 @@ export const dip = (raw_params: {
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};

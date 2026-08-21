@@ -1,11 +1,11 @@
-import type { AnySoupElement } from "circuit-json"
-import { type PassiveDef, passive } from "src/helpers/passive-fn"
-import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
+import type { AnySoupElement } from "circuit-json";
+import { type PassiveDef, passive } from "src/helpers/passive-fn";
+import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode";
 
 export const diode = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  const circuitJson = passive({ ...parameters, roundedPads: true })
+  const circuitJson = passive({ ...parameters, roundedPads: true });
 
   return {
     circuitJson: circuitJson.concat(
@@ -15,5 +15,5 @@ export const diode = (
       }),
     ),
     parameters,
-  }
-}
+  };
+};

@@ -2,12 +2,12 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
   length,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const fpc_def = base_def.extend({
   fn: z.literal("fpc"),
@@ -36,44 +36,44 @@ export const fpc_def = base_def.extend({
     .describe("place the mounting pads above the contact-row center"),
   mpw: length.default("2mm").describe("mounting pad width"),
   mpl: length.default("2.5mm").describe("mounting pad length"),
-})
+});
 
 type PadBounds = {
-  maxX: number
-  maxY: number
-  minX: number
-  minY: number
-}
+  maxX: number;
+  maxY: number;
+  minX: number;
+  minY: number;
+};
 
 type RectangularPad = ReturnType<typeof rectpad> & {
-  height: number
-  width: number
-  x: number
-  y: number
-}
+  height: number;
+  width: number;
+  x: number;
+  y: number;
+};
 
 const rectangularPad = (
   ...parameters: Parameters<typeof rectpad>
-): RectangularPad => rectpad(...parameters) as RectangularPad
+): RectangularPad => rectpad(...parameters) as RectangularPad;
 
 const getPadBounds = (
   pads: Array<{
-    height: number
-    width: number
-    x: number
-    y: number
+    height: number;
+    width: number;
+    x: number;
+    y: number;
   }>,
 ): PadBounds => ({
   maxX: Math.max(...pads.map((pad) => pad.x + pad.width / 2)),
   maxY: Math.max(...pads.map((pad) => pad.y + pad.height / 2)),
   minX: Math.min(...pads.map((pad) => pad.x - pad.width / 2)),
   minY: Math.min(...pads.map((pad) => pad.y - pad.height / 2)),
-})
+});
 
 export const fpc = (
   rawParams: z.input<typeof fpc_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parsedParameters = fpc_def.parse(rawParams)
+  const parsedParameters = fpc_def.parse(rawParams);
   const {
     num_pins: numPins,
     p,
@@ -87,31 +87,31 @@ export const fpc = (
     mounttop,
     mpw,
     mpl,
-  } = parsedParameters
-  const contactSpan = (numPins - 1) * p
-  const mpx = parsedParameters.mpx ?? contactSpan + (staggered ? 3.5 : 3.38)
-  const mpy = parsedParameters.mpy ?? (staggered ? 0 : 2.575)
-  const mountY = mpy === 0 ? 0 : (mounttop ? 1 : -1) * mpy
-  const startX = -contactSpan / 2
+  } = parsedParameters;
+  const contactSpan = (numPins - 1) * p;
+  const mpx = parsedParameters.mpx ?? contactSpan + (staggered ? 3.5 : 3.38);
+  const mpy = parsedParameters.mpy ?? (staggered ? 0 : 2.575);
+  const mountY = mpy === 0 ? 0 : (mounttop ? 1 : -1) * mpy;
+  const startX = -contactSpan / 2;
 
   const contactPads = Array.from({ length: numPins }, (_, index) => {
-    const isUpperRow = staggered && (index % 2 === 1) !== reverse
-    const y = staggered ? (isUpperRow ? py / 2 : -py / 2) : 0
-    const padLength = isUpperRow ? (toppl ?? pl) : (bottompl ?? pl)
-    return rectangularPad(index + 1, startX + index * p, y, pw, padLength)
-  })
+    const isUpperRow = staggered && (index % 2 === 1) !== reverse;
+    const y = staggered ? (isUpperRow ? py / 2 : -py / 2) : 0;
+    const padLength = isUpperRow ? (toppl ?? pl) : (bottompl ?? pl);
+    return rectangularPad(index + 1, startX + index * p, y, pw, padLength);
+  });
   const mountingPads = [
     rectangularPad(numPins + 1, mpx / 2, mountY, mpw, mpl),
     rectangularPad(numPins + 2, -mpx / 2, mountY, mpw, mpl),
-  ]
-  const pads = [...contactPads, ...mountingPads]
-  const bounds = getPadBounds(pads)
-  const silkInsetX = Math.min(contactSpan / 2 + pw / 2, mpx / 2 - mpw / 2)
-  const topSilkY = bounds.maxY + 0.2
-  const bottomSilkY = bounds.minY - 0.2
-  const pinOne = contactPads[0]!
-  const pinMarkerX = pinOne.x - pinOne.width / 2 - 0.2
-  const pinMarkerY = pinOne.y
+  ];
+  const pads = [...contactPads, ...mountingPads];
+  const bounds = getPadBounds(pads);
+  const silkInsetX = Math.min(contactSpan / 2 + pw / 2, mpx / 2 - mpw / 2);
+  const topSilkY = bounds.maxY + 0.2;
+  const bottomSilkY = bounds.minY - 0.2;
+  const pinOne = contactPads[0]!;
+  const pinMarkerX = pinOne.x - pinOne.width / 2 - 0.2;
+  const pinMarkerY = pinOne.y;
   const silkscreen = [
     silkscreenpath([
       { x: -silkInsetX, y: topSilkY },
@@ -126,8 +126,8 @@ export const fpc = (
       { x: pinMarkerX, y: pinMarkerY },
       { x: pinMarkerX - 0.25, y: pinMarkerY + 0.25 },
     ]),
-  ]
-  const ref: SilkscreenRef = silkscreenRef(0, topSilkY + 0.7, 0.5)
+  ];
+  const ref: SilkscreenRef = silkscreenRef(0, topSilkY + 0.7, 0.5);
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -139,7 +139,7 @@ export const fpc = (
     width: bounds.maxX - bounds.minX + 0.5,
     height: bounds.maxY - bounds.minY + 0.5,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [...pads, ...silkscreen, ref, courtyard],
@@ -150,5 +150,5 @@ export const fpc = (
       toppl: toppl ?? pl,
       bottompl: bottompl ?? pl,
     },
-  }
-}
+  };
+};

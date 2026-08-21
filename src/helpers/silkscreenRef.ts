@@ -1,4 +1,4 @@
-import type { PcbSilkscreenText } from "circuit-json"
+import type { PcbSilkscreenText } from "circuit-json";
 
 export const silkscreenRef: (
   x: number,
@@ -15,6 +15,6 @@ export const silkscreenRef: (
     layer: "top",
     anchor_position: { x: x, y: y },
     anchor_alignment: "center",
-  }
-}
-export type SilkscreenRef = ReturnType<typeof silkscreenRef>
+  };
+};
+export type SilkscreenRef = ReturnType<typeof silkscreenRef>;

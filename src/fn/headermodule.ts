@@ -1,5 +1,5 @@
-import type { z } from "zod"
-import { pinrow, pinrow_def } from "./pinrow"
+import type { z } from "zod";
+import { pinrow, pinrow_def } from "./pinrow";
 
 /**
  * A pluggable board module made from a female pin header.
@@ -8,8 +8,8 @@ import { pinrow, pinrow_def } from "./pinrow"
  * distinct footprint name so consumers can tell a module interface from an
  * ordinary pin header.
  */
-export const headermodule_def = pinrow_def
+export const headermodule_def = pinrow_def;
 
 export const headermodule = (
   raw_params: z.input<typeof headermodule_def>,
-): ReturnType<typeof pinrow> => pinrow({ ...raw_params, fn: "headermodule" })
+): ReturnType<typeof pinrow> => pinrow({ ...raw_params, fn: "headermodule" });

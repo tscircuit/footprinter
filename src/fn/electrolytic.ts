@@ -3,12 +3,12 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardCircle,
   type PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { platedhole } from "src/helpers/platedhole";
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 const electrolytic_def = base_def.extend({
   fn: z.string(),
@@ -16,10 +16,10 @@ const electrolytic_def = base_def.extend({
   id: length.optional().default("1mm"),
   od: length.optional().default("2mm"),
   d: length.optional().default("10.5mm"),
-})
+});
 
-export default electrolytic_def
-export type ElectrolyticDef = z.input<typeof electrolytic_def>
+export default electrolytic_def;
+export type ElectrolyticDef = z.input<typeof electrolytic_def>;
 
 const generate_circle_arcs = (
   centerX: number,
@@ -28,51 +28,51 @@ const generate_circle_arcs = (
   cut: number,
   cutHeight: number,
 ): {
-  topArc: { x: number; y: number }[]
-  bottomArc: { x: number; y: number }[]
+  topArc: { x: number; y: number }[];
+  bottomArc: { x: number; y: number }[];
 } => {
-  const topArc: { x: number; y: number }[] = []
-  const bottomArc: { x: number; y: number }[] = []
+  const topArc: { x: number; y: number }[] = [];
+  const bottomArc: { x: number; y: number }[] = [];
 
   for (let i = 0; i <= 50; i++) {
-    const theta = (i / 50) * Math.PI
-    const x = centerX + Math.cos(theta) * radius
-    const y = centerY + Math.sin(theta) * radius
+    const theta = (i / 50) * Math.PI;
+    const x = centerX + Math.cos(theta) * radius;
+    const y = centerY + Math.sin(theta) * radius;
 
     if (
       x < centerX - cut &&
       y >= centerY - cutHeight / 2 &&
       y <= centerY + cutHeight / 2
     ) {
-      continue
+      continue;
     }
-    topArc.push({ x, y })
+    topArc.push({ x, y });
   }
 
   for (let i = 0; i <= 50; i++) {
-    const theta = Math.PI + (i / 50) * Math.PI
-    const x = centerX + Math.cos(theta) * radius
-    const y = centerY + Math.sin(theta) * radius
+    const theta = Math.PI + (i / 50) * Math.PI;
+    const x = centerX + Math.cos(theta) * radius;
+    const y = centerY + Math.sin(theta) * radius;
 
     if (
       x < centerX - cut &&
       y >= centerY - cutHeight / 2 &&
       y <= centerY + cutHeight / 2
     ) {
-      continue
+      continue;
     }
-    bottomArc.push({ x, y })
+    bottomArc.push({ x, y });
   }
 
-  return { topArc, bottomArc }
-}
+  return { topArc, bottomArc };
+};
 
 export const electrolytic = (
   raw_params: ElectrolyticDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = electrolytic_def.parse(raw_params)
+  const parameters = electrolytic_def.parse(raw_params);
 
-  const { p, id, od, d } = parameters
+  const { p, id, od, d } = parameters;
 
   const plated_holes = [
     platedHoleWithRectPad({
@@ -84,7 +84,7 @@ export const electrolytic = (
       rectPadHeight: od,
     }),
     platedhole(2, p / 2, 0, id, od),
-  ]
+  ];
 
   const { topArc, bottomArc } = generate_circle_arcs(
     0,
@@ -92,7 +92,7 @@ export const electrolytic = (
     d / 2 + 0.1,
     od / 2,
     od,
-  )
+  );
 
   const silkscreenBody2: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -101,7 +101,7 @@ export const electrolytic = (
     route: topArc,
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenBody3: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -110,7 +110,7 @@ export const electrolytic = (
     route: bottomArc,
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -122,11 +122,11 @@ export const electrolytic = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const X = -(d / 2 + 0.5)
-  const plusY = od / 2 + 1.5
-  const Size = 0.5
+  const X = -(d / 2 + 0.5);
+  const plusY = od / 2 + 1.5;
+  const Size = 0.5;
 
   const silkscreenpath: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -138,7 +138,7 @@ export const electrolytic = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenline: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -150,15 +150,15 @@ export const electrolytic = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5);
 
-  const bodyOuterRadius = d / 2
-  const pinOuterRadius = p / 2 + od / 2
-  const courtyardClearance = 0.25
+  const bodyOuterRadius = d / 2;
+  const pinOuterRadius = p / 2 + od / 2;
+  const courtyardClearance = 0.25;
   const courtyardRadius =
-    Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance
+    Math.max(bodyOuterRadius, pinOuterRadius) + courtyardClearance;
   const courtyard: PcbCourtyardCircle = {
     type: "pcb_courtyard_circle",
     pcb_courtyard_circle_id: "",
@@ -166,7 +166,7 @@ export const electrolytic = (
     center: { x: 0, y: 0 },
     radius: courtyardRadius,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -180,5 +180,5 @@ export const electrolytic = (
       courtyard as AnyCircuitElement,
     ],
     parameters,
-  }
-}
+  };
+};

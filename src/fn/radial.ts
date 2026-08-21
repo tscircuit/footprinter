@@ -3,12 +3,12 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardCircle,
   type PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { generateCircleArcs } from "../helpers/generateCircleArcs"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { generateCircleArcs } from "../helpers/generateCircleArcs";
+import { platedhole } from "src/helpers/platedhole";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const radial_def = base_def.extend({
   fn: z.string(),
@@ -20,28 +20,28 @@ export const radial_def = base_def.extend({
   ceramic: z.boolean().optional(),
   electrolytic: z.boolean().optional(),
   polarized: z.boolean().optional(),
-})
+});
 
-export type RadialDef = z.input<typeof radial_def>
+export type RadialDef = z.input<typeof radial_def>;
 
 export const radial = (
   raw_params: RadialDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = radial_def.parse(raw_params)
+  const parameters = radial_def.parse(raw_params);
 
-  const { p, id, od } = parameters
+  const { p, id, od } = parameters;
 
   if (id === 0.8 && od === 1.6) {
-    parameters.id = p === 5 ? 0.8 : p * 0.25
-    parameters.od = p === 5 ? 1.6 : p * 0.5
+    parameters.id = p === 5 ? 0.8 : p * 0.25;
+    parameters.od = p === 5 ? 1.6 : p * 0.5;
   }
 
   const plated_holes = [
     platedhole(1, -p / 2, 0, parameters.id, parameters.od),
     platedhole(2, p / 2, 0, parameters.id, parameters.od),
-  ]
+  ];
 
-  const bodyR = p + 0.1
+  const bodyR = p + 0.1;
 
   const { topArc, bottomArc } = generateCircleArcs(
     0,
@@ -49,9 +49,9 @@ export const radial = (
     bodyR,
     parameters.od / 2,
     parameters.od,
-  )
+  );
 
-  const strokeWidth = 0.02 * p
+  const strokeWidth = 0.02 * p;
 
   const silkscreenBodyTop: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -60,7 +60,7 @@ export const radial = (
     route: topArc,
     stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenBodyBottom: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -69,7 +69,7 @@ export const radial = (
     route: bottomArc,
     stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenCenterLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -81,11 +81,11 @@ export const radial = (
     ],
     stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const plusSize = 0.1 * p
-  const plusX = -(p + plusSize + 0.04 * p)
-  const plusY = bodyR - plusSize - 0.08 * p
+  const plusSize = 0.1 * p;
+  const plusX = -(p + plusSize + 0.04 * p);
+  const plusY = bodyR - plusSize - 0.08 * p;
 
   const plusHoriz: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -97,7 +97,7 @@ export const radial = (
     ],
     stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const plusVert: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -109,13 +109,13 @@ export const radial = (
     ],
     stroke_width: strokeWidth,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     bodyR + 0.12 * p,
     0.1 * p,
-  )
+  );
 
   const circuitJson: AnyCircuitElement[] = [
     ...plated_holes,
@@ -123,15 +123,15 @@ export const radial = (
     silkscreenBodyBottom,
     silkscreenCenterLine,
     silkscreenRefText as AnyCircuitElement,
-  ]
+  ];
 
   const hasPolarity =
-    parameters.electrolytic === true || parameters.polarized === true
+    parameters.electrolytic === true || parameters.polarized === true;
   if (hasPolarity) {
-    circuitJson.push(plusHoriz, plusVert)
+    circuitJson.push(plusHoriz, plusVert);
   }
 
-  const courtyardRadiusMm = p + 0.25
+  const courtyardRadiusMm = p + 0.25;
   const courtyard: PcbCourtyardCircle = {
     type: "pcb_courtyard_circle",
     pcb_courtyard_circle_id: "",
@@ -139,11 +139,11 @@ export const radial = (
     center: { x: 0, y: 0 },
     radius: courtyardRadiusMm,
     layer: "top",
-  }
-  circuitJson.push(courtyard as AnyCircuitElement)
+  };
+  circuitJson.push(courtyard as AnyCircuitElement);
 
   return {
     circuitJson,
     parameters,
-  }
-}
+  };
+};

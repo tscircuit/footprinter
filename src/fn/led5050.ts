@@ -2,13 +2,13 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
   length,
-} from "circuit-json"
-import { z } from "zod"
-import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
-import { rectpad } from "../helpers/rectpad"
-import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode";
+import { rectpad } from "../helpers/rectpad";
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
 
 export const led5050_def = base_def.extend({
   fn: z.literal("led5050"),
@@ -19,24 +19,24 @@ export const led5050_def = base_def.extend({
   pw: length.default("1.1mm").describe("pad width along the pin column"),
   w: length.default("5mm").describe("package body width"),
   h: length.default("5mm").describe("package body height"),
-})
+});
 
 export const led5050 = (
   rawParams: z.input<typeof led5050_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = led5050_def.parse(rawParams)
-  const { p, rowspan, pl, pw, w, h } = parameters
+  const parameters = led5050_def.parse(rawParams);
+  const { p, rowspan, pl, pw, w, h } = parameters;
 
   // 6 pads in counter-clockwise order starting from top-left, matching
   // the KiCad LED_RGB_5050-6 land pattern
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
   for (let i = 0; i < 3; i++) {
-    pads.push(rectpad(i + 1, -rowspan / 2, p - i * p, pl, pw))
-    pads.push(rectpad(6 - i, rowspan / 2, p - i * p, pl, pw))
+    pads.push(rectpad(i + 1, -rowspan / 2, p - i * p, pl, pw));
+    pads.push(rectpad(6 - i, rowspan / 2, p - i * p, pl, pw));
   }
 
-  const bodyEdgeX = w / 2
-  const bodyEdgeY = h / 2 + 0.2
+  const bodyEdgeX = w / 2;
+  const bodyEdgeY = h / 2 + 0.2;
   const silkscreen = [
     silkscreenpath([
       { x: -bodyEdgeX, y: bodyEdgeY },
@@ -51,9 +51,9 @@ export const led5050 = (
       { x: -rowspan / 2 - pl / 2 - 0.4, y: p + pw / 2 },
       { x: -rowspan / 2 - pl / 2 - 0.4, y: p - pw / 2 },
     ]),
-  ]
+  ];
 
-  const ref: SilkscreenRef = silkscreenRef(0, bodyEdgeY + 0.8, 0.5)
+  const ref: SilkscreenRef = silkscreenRef(0, bodyEdgeY + 0.8, 0.5);
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -62,14 +62,14 @@ export const led5050 = (
     width: rowspan + pl + 0.5,
     height: Math.max(h, 2 * p + pw) + 0.5,
     layer: "top",
-  }
+  };
   // The 5060BRG4 package contains three independent dies across pin pairs
   // 1-6 (green), 2-5 (red), and 3-4 (blue).
   const diodeRows = [
     { color: "green", y: p },
     { color: "red", y: 0 },
     { color: "blue", y: -p },
-  ]
+  ];
   const fabricationNotes = diodeRows.flatMap(({ color, y }) =>
     createFabricationNoteDiode(
       {
@@ -80,10 +80,10 @@ export const led5050 = (
       },
       { idSuffix: color },
     ),
-  )
+  );
 
   return {
     circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNotes],
     parameters,
-  }
-}
+  };
+};

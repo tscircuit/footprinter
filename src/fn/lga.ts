@@ -2,14 +2,14 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { length } from "circuit-json"
-import { z } from "zod"
-import { pillpad } from "../helpers/pillpad"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { dim2d } from "../helpers/zod/dim-2d"
+} from "circuit-json";
+import { length } from "circuit-json";
+import { z } from "zod";
+import { pillpad } from "../helpers/pillpad";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
+import { dim2d } from "../helpers/zod/dim-2d";
 
 export const lga_def = base_def.extend({
   fn: z.string(),
@@ -21,23 +21,23 @@ export const lga_def = base_def.extend({
   pw: length.default(length.parse("0.28mm")),
   pl: length.default(length.parse("0.7mm")),
   pillpads: z.boolean().optional().default(false),
-})
+});
 
-export type LgaInput = z.input<typeof lga_def>
+export type LgaInput = z.input<typeof lga_def>;
 
 export const lga = (
   rawParameters: LgaInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = lga_def.parse(rawParameters)
-  const halfPinCount = parameters.num_pins / 2
+  const parameters = lga_def.parse(rawParameters);
+  const halfPinCount = parameters.num_pins / 2;
   if (!Number.isInteger(halfPinCount)) {
-    throw new Error("LGA footprints require an even number of perimeter pads")
+    throw new Error("LGA footprints require an even number of perimeter pads");
   }
 
   const grid = parameters.grid ?? {
     x: Math.ceil(halfPinCount / 2),
     y: Math.floor(halfPinCount / 2),
-  }
+  };
   if (
     !Number.isInteger(grid.x) ||
     !Number.isInteger(grid.y) ||
@@ -48,14 +48,15 @@ export const lga = (
   ) {
     throw new Error(
       `LGA grid ${grid.x}x${grid.y} requires ${2 * (grid.x + grid.y)} pads, got ${parameters.num_pins}`,
-    )
+    );
   }
 
-  const width = parameters.w ?? (grid.y - 1) * parameters.p + 2 * parameters.pl
-  const height = parameters.h ?? (grid.x - 1) * parameters.p + 2 * parameters.pl
-  const leftRightX = (width - parameters.pl) / 2
-  const topBottomY = (height - parameters.pl) / 2
-  const pads: AnyCircuitElement[] = []
+  const width = parameters.w ?? (grid.y - 1) * parameters.p + 2 * parameters.pl;
+  const height =
+    parameters.h ?? (grid.x - 1) * parameters.p + 2 * parameters.pl;
+  const leftRightX = (width - parameters.pl) / 2;
+  const topBottomY = (height - parameters.pl) / 2;
+  const pads: AnyCircuitElement[] = [];
   const addPad = (
     pin: number,
     x: number,
@@ -67,10 +68,10 @@ export const lga = (
       parameters.pillpads
         ? pillpad(pin, x, y, padWidth, padHeight)
         : rectpad(pin, x, y, padWidth, padHeight),
-    )
-  }
+    );
+  };
 
-  let pin = 1
+  let pin = 1;
   for (let index = 0; index < grid.x; index += 1) {
     addPad(
       pin++,
@@ -78,7 +79,7 @@ export const lga = (
       ((grid.x - 1) / 2 - index) * parameters.p,
       parameters.pl,
       parameters.pw,
-    )
+    );
   }
   for (let index = 0; index < grid.y; index += 1) {
     addPad(
@@ -87,7 +88,7 @@ export const lga = (
       -topBottomY,
       parameters.pw,
       parameters.pl,
-    )
+    );
   }
   for (let index = 0; index < grid.x; index += 1) {
     addPad(
@@ -96,7 +97,7 @@ export const lga = (
       (index - (grid.x - 1) / 2) * parameters.p,
       parameters.pl,
       parameters.pw,
-    )
+    );
   }
   for (let index = 0; index < grid.y; index += 1) {
     addPad(
@@ -105,10 +106,10 @@ export const lga = (
       topBottomY,
       parameters.pw,
       parameters.pl,
-    )
+    );
   }
 
-  const markerSize = Math.max(parameters.pw, 0.15)
+  const markerSize = Math.max(parameters.pw, 0.15);
   const pin1Marker: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -120,8 +121,8 @@ export const lga = (
       { x: -width / 2, y: height / 2 },
       { x: -width / 2 + markerSize, y: height / 2 },
     ],
-  }
-  const courtyardClearance = 0.25
+  };
+  const courtyardClearance = 0.25;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -149,7 +150,7 @@ export const lga = (
         y: -height / 2 - courtyardClearance,
       },
     ],
-  }
+  };
 
   return {
     circuitJson: [
@@ -159,5 +160,5 @@ export const lga = (
       courtyard,
     ],
     parameters: { ...parameters, grid, w: width, h: height },
-  }
-}
+  };
+};

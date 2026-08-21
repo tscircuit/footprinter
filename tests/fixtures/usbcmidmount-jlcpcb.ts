@@ -1,34 +1,34 @@
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement } from "circuit-json";
 
 // Copper dimensions below come from EasyEDA footprints imported with
 // `tsci import --jlcpcb <part number>` on 2026-07-13.
 
 type RectCopper = {
-  kind: "rect"
-  x: number
-  y: number
-  width: number
-  height: number
-}
+  kind: "rect";
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
 
 type PillRingCopper = {
-  kind: "pill-ring"
-  x: number
-  y: number
-  holeWidth: number
-  holeHeight: number
-  outerWidth: number
-  outerHeight: number
-}
+  kind: "pill-ring";
+  x: number;
+  y: number;
+  holeWidth: number;
+  holeHeight: number;
+  outerWidth: number;
+  outerHeight: number;
+};
 
-export type CopperShape = RectCopper | PillRingCopper
+export type CopperShape = RectCopper | PillRingCopper;
 
 const rect = (
   x: number,
   y: number,
   width: number,
   height: number,
-): RectCopper => ({ kind: "rect", x, y, width, height })
+): RectCopper => ({ kind: "rect", x, y, width, height });
 
 const pillRing = (
   x: number,
@@ -45,7 +45,7 @@ const pillRing = (
   holeHeight,
   outerWidth,
   outerHeight,
-})
+});
 
 const symmetricShell = ({
   x,
@@ -60,17 +60,17 @@ const symmetricShell = ({
   bottomOuterWidth,
   bottomOuterHeight,
 }: {
-  x: number
-  topY: number
-  bottomY: number
-  topHoleWidth: number
-  topHoleHeight: number
-  topOuterWidth: number
-  topOuterHeight: number
-  bottomHoleWidth: number
-  bottomHoleHeight: number
-  bottomOuterWidth: number
-  bottomOuterHeight: number
+  x: number;
+  topY: number;
+  bottomY: number;
+  topHoleWidth: number;
+  topHoleHeight: number;
+  topOuterWidth: number;
+  topOuterHeight: number;
+  bottomHoleWidth: number;
+  bottomHoleHeight: number;
+  bottomOuterWidth: number;
+  bottomOuterHeight: number;
 }): PillRingCopper[] => [
   pillRing(
     -x,
@@ -97,31 +97,31 @@ const symmetricShell = ({
     bottomOuterWidth,
     bottomOuterHeight,
   ),
-]
+];
 
 const contactRow = (
   xs: number[],
   y: number,
   widths: number[],
   height: number,
-): RectCopper[] => xs.map((x, index) => rect(x, y, widths[index]!, height))
+): RectCopper[] => xs.map((x, index) => rect(x, y, widths[index]!, height));
 
 const mergedXs = [
   -3.2, -2.4, -1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25, 1.75, 2.4, 3.2,
-]
+];
 const mergedWidths55 = [
   0.55, 0.55, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.55, 0.55,
-]
+];
 const splitXs = [
   -3.35, -3.05, -2.55, -2.25, -1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25,
   1.75, 2.25, 2.55, 3.05, 3.35,
-]
+];
 
 export const jlcpcbUsbCMidMountVariants: Array<{
-  part: string
-  manufacturerPartNumber: string
-  definition: string
-  targetCopper: CopperShape[]
+  part: string;
+  manufacturerPartNumber: string;
+  definition: string;
+  targetCopper: CopperShape[];
 }> = [
   {
     part: "C2765186",
@@ -261,14 +261,14 @@ export const jlcpcbUsbCMidMountVariants: Array<{
       ),
     ],
   },
-]
+];
 
 export const circuitJsonToCopperShapes = (
   circuitJson: AnyCircuitElement[],
 ): CopperShape[] =>
   circuitJson.flatMap((element): CopperShape[] => {
     if (element.type === "pcb_smtpad" && element.shape === "rect") {
-      return [rect(element.x, element.y, element.width, element.height)]
+      return [rect(element.x, element.y, element.width, element.height)];
     }
     if (element.type === "pcb_plated_hole" && element.shape === "pill") {
       return [
@@ -280,10 +280,10 @@ export const circuitJsonToCopperShapes = (
           element.outer_width,
           element.outer_height,
         ),
-      ]
+      ];
     }
-    return []
-  })
+    return [];
+  });
 
 const containsPill = (
   x: number,
@@ -293,59 +293,59 @@ const containsPill = (
   width: number,
   height: number,
 ) => {
-  const radius = width / 2
-  const straightHalfHeight = Math.max((height - width) / 2, 0)
-  const dx = Math.abs(x - centerX)
-  const dy = Math.max(Math.abs(y - centerY) - straightHalfHeight, 0)
-  return dx * dx + dy * dy <= radius * radius
-}
+  const radius = width / 2;
+  const straightHalfHeight = Math.max((height - width) / 2, 0);
+  const dx = Math.abs(x - centerX);
+  const dy = Math.max(Math.abs(y - centerY) - straightHalfHeight, 0);
+  return dx * dx + dy * dy <= radius * radius;
+};
 
 const containsCopper = (shape: CopperShape, x: number, y: number) => {
   if (shape.kind === "rect") {
     return (
       Math.abs(x - shape.x) <= shape.width / 2 &&
       Math.abs(y - shape.y) <= shape.height / 2
-    )
+    );
   }
   return (
     containsPill(x, y, shape.x, shape.y, shape.outerWidth, shape.outerHeight) &&
     !containsPill(x, y, shape.x, shape.y, shape.holeWidth, shape.holeHeight)
-  )
-}
+  );
+};
 
 const shapeBounds = (shape: CopperShape) => {
-  const width = shape.kind === "rect" ? shape.width : shape.outerWidth
-  const height = shape.kind === "rect" ? shape.height : shape.outerHeight
+  const width = shape.kind === "rect" ? shape.width : shape.outerWidth;
+  const height = shape.kind === "rect" ? shape.height : shape.outerHeight;
   return {
     left: shape.x - width / 2,
     right: shape.x + width / 2,
     bottom: shape.y - height / 2,
     top: shape.y + height / 2,
-  }
-}
+  };
+};
 
 export const calculateCopperIou = (
   actual: CopperShape[],
   target: CopperShape[],
   resolution = 0.01,
 ) => {
-  const allShapes = [...actual, ...target]
-  const bounds = allShapes.map(shapeBounds)
-  const left = Math.min(...bounds.map((bound) => bound.left))
-  const right = Math.max(...bounds.map((bound) => bound.right))
-  const bottom = Math.min(...bounds.map((bound) => bound.bottom))
-  const top = Math.max(...bounds.map((bound) => bound.top))
-  let intersectionSamples = 0
-  let unionSamples = 0
+  const allShapes = [...actual, ...target];
+  const bounds = allShapes.map(shapeBounds);
+  const left = Math.min(...bounds.map((bound) => bound.left));
+  const right = Math.max(...bounds.map((bound) => bound.right));
+  const bottom = Math.min(...bounds.map((bound) => bound.bottom));
+  const top = Math.max(...bounds.map((bound) => bound.top));
+  let intersectionSamples = 0;
+  let unionSamples = 0;
 
   for (let y = bottom + resolution / 2; y < top; y += resolution) {
     for (let x = left + resolution / 2; x < right; x += resolution) {
-      const inActual = actual.some((shape) => containsCopper(shape, x, y))
-      const inTarget = target.some((shape) => containsCopper(shape, x, y))
-      if (inActual || inTarget) unionSamples += 1
-      if (inActual && inTarget) intersectionSamples += 1
+      const inActual = actual.some((shape) => containsCopper(shape, x, y));
+      const inTarget = target.some((shape) => containsCopper(shape, x, y));
+      if (inActual || inTarget) unionSamples += 1;
+      if (inActual && inTarget) intersectionSamples += 1;
     }
   }
 
-  return intersectionSamples / unionSamples
-}
+  return intersectionSamples / unionSamples;
+};

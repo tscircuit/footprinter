@@ -1,14 +1,14 @@
-import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHolePill } from "src/helpers/platedHolePill"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { z } from "zod";
+import { platedhole } from "src/helpers/platedhole";
+import { platedHolePill } from "src/helpers/platedHolePill";
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad";
 import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const to92s_def = base_def.extend({
   fn: z.string(),
@@ -19,28 +19,28 @@ export const to92s_def = base_def.extend({
   w: z.string().default("2.5mm"),
   h: z.string().default("4.2mm"),
   string: z.string().optional(),
-})
+});
 
 export const to92s_3 = (parameters: z.infer<typeof to92s_def>) => {
-  const { p, id, od, w, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
+  const { p, id, od, w, h } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
 
   return [
     platedhole(1, -padSpacing, holeY - padSpacing, id, od),
     platedhole(2, 0, holeY - padSpacing, id, od),
 
     platedhole(3, padSpacing, holeY - padSpacing, id, od),
-  ]
-}
+  ];
+};
 
 export const to92s_2 = (parameters: z.infer<typeof to92s_def>) => {
-  const { p, id, od, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
-  const holeDiameter = Number.parseFloat(id)
-  const padWidth = Number.parseFloat(od)
-  const padHeight = padWidth * (1.5 / 1.05)
+  const { p, id, od, h } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
+  const holeDiameter = Number.parseFloat(id);
+  const padWidth = Number.parseFloat(od);
+  const padHeight = padWidth * (1.5 / 1.05);
 
   return [
     platedHoleWithRectPad({
@@ -59,32 +59,32 @@ export const to92s_2 = (parameters: z.infer<typeof to92s_def>) => {
       padWidth,
       padHeight,
     ),
-  ]
-}
+  ];
+};
 
 export const to92s = (
   raw_params: z.input<typeof to92s_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const match = raw_params.string?.match(/^to92s_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const match = raw_params.string?.match(/^to92s_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3;
 
   const parameters = to92s_def.parse({
     ...raw_params,
     num_pins: numPins,
-  })
+  });
 
-  let platedHoles: AnyCircuitElement[] = []
+  let platedHoles: AnyCircuitElement[] = [];
 
   if (parameters.num_pins === 3) {
-    platedHoles = to92s_3(parameters)
+    platedHoles = to92s_3(parameters);
   } else if (parameters.num_pins === 2) {
-    platedHoles = to92s_2(parameters)
+    platedHoles = to92s_2(parameters);
   } else {
-    throw new Error("Invalid number of pins for TO-92")
+    throw new Error("Invalid number of pins for TO-92");
   }
 
-  const holeY = Number.parseFloat(parameters.h) / 2
-  const padSpacing = Number.parseFloat(parameters.p)
+  const holeY = Number.parseFloat(parameters.h) / 2;
+  const padSpacing = Number.parseFloat(parameters.p);
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -101,24 +101,24 @@ export const to92s = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5);
 
-  const padOuterDiameter = Number.parseFloat(parameters.od)
-  const padCenterY = holeY - padSpacing
-  const padMinX = -padSpacing - padOuterDiameter / 2
-  const padMaxX = padSpacing + padOuterDiameter / 2
-  const padMinY = padCenterY - padOuterDiameter / 2
-  const padMaxY = padCenterY + padOuterDiameter / 2
-  const bodyMinX = -holeY
-  const bodyMaxX = holeY
-  const bodyMinY = 0
-  const bodyMaxY = holeY + 0.5
-  const courtyardMinX = Math.min(padMinX, bodyMinX) - 0.25
-  const courtyardMaxX = Math.max(padMaxX, bodyMaxX) + 0.25
-  const courtyardMinY = Math.min(padMinY, bodyMinY) - 0.25
-  const courtyardMaxY = Math.max(padMaxY, bodyMaxY) + 0.25
+  const padOuterDiameter = Number.parseFloat(parameters.od);
+  const padCenterY = holeY - padSpacing;
+  const padMinX = -padSpacing - padOuterDiameter / 2;
+  const padMaxX = padSpacing + padOuterDiameter / 2;
+  const padMinY = padCenterY - padOuterDiameter / 2;
+  const padMaxY = padCenterY + padOuterDiameter / 2;
+  const bodyMinX = -holeY;
+  const bodyMaxX = holeY;
+  const bodyMinY = 0;
+  const bodyMaxY = holeY + 0.5;
+  const courtyardMinX = Math.min(padMinX, bodyMinX) - 0.25;
+  const courtyardMaxX = Math.max(padMaxX, bodyMaxX) + 0.25;
+  const courtyardMinY = Math.min(padMinY, bodyMinY) - 0.25;
+  const courtyardMaxY = Math.max(padMaxY, bodyMaxY) + 0.25;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -130,7 +130,7 @@ export const to92s = (
     width: courtyardMaxX - courtyardMinX,
     height: courtyardMaxY - courtyardMinY,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -140,5 +140,5 @@ export const to92s = (
       courtyard as AnyCircuitElement,
     ],
     parameters,
-  }
-}
+  };
+};

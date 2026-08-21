@@ -1,20 +1,20 @@
-import { mm } from "@tscircuit/mm"
+import { mm } from "@tscircuit/mm";
 import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
   length,
   rotation,
-} from "circuit-json"
-import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { z } from "zod"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { platedhole } from "../helpers/platedhole"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
-import { function_call } from "../helpers/zod/function-call"
+} from "circuit-json";
+import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side";
+import { silkscreenPin } from "src/helpers/silkscreenPin";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { z } from "zod";
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad";
+import { platedhole } from "../helpers/platedhole";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
+import { function_call } from "../helpers/zod/function-call";
 
 export const pinrow_def = base_def
   .extend({
@@ -93,7 +93,7 @@ export const pinrow_def = base_def
       ),
   })
   .transform((data) => {
-    const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
+    const pinlabelAnchorSide = determinePinlabelAnchorSide(data);
     return {
       ...data,
       pinlabelAnchorSide,
@@ -101,7 +101,7 @@ export const pinrow_def = base_def
       female: data.female ?? false,
       smd: data.smd ?? data.surfacemount ?? false,
       rightangle: data.rightangle ?? false,
-    }
+    };
   })
   .superRefine((data, ctx) => {
     if (data.male && data.female) {
@@ -110,7 +110,7 @@ export const pinrow_def = base_def
         message:
           "'male' and 'female' cannot both be true; it should be male or female.",
         path: ["male", "female"],
-      })
+      });
     }
     if (
       data.cols !== undefined &&
@@ -120,21 +120,21 @@ export const pinrow_def = base_def
         code: z.ZodIssueCode.custom,
         message: "'cols' must be a positive integer",
         path: ["cols"],
-      })
+      });
     }
     if (data.missing.some((position) => typeof position !== "number")) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
         message: "'missing' positions must be pad numbers",
         path: ["missing"],
-      })
+      });
     }
-  })
+  });
 
 export const pinrow = (
   raw_params: z.input<typeof pinrow_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = pinrow_def.parse(raw_params)
+  const parameters = pinrow_def.parse(raw_params);
   const {
     p,
     py,
@@ -154,26 +154,26 @@ export const pinrow = (
     bottomsidepinlabel,
     silkscreenborder,
     silkscreenlabel,
-  } = parameters
-  let pinlabelTextAlign: "center" | "left" | "right" = "center"
-  if (pinlabeltextalignleft) pinlabelTextAlign = "left"
-  else if (pinlabeltextalignright) pinlabelTextAlign = "right"
+  } = parameters;
+  let pinlabelTextAlign: "center" | "left" | "right" = "center";
+  if (pinlabeltextalignleft) pinlabelTextAlign = "left";
+  else if (pinlabeltextalignright) pinlabelTextAlign = "right";
 
-  const holes: AnyCircuitElement[] = []
-  let pin1Position: { x: number; y: number } | null = null
-  const missingPositions = missing as number[]
-  const uniqueMissingPositions = new Set(missingPositions)
+  const holes: AnyCircuitElement[] = [];
+  let pin1Position: { x: number; y: number } | null = null;
+  const missingPositions = missing as number[];
+  const uniqueMissingPositions = new Set(missingPositions);
   if (uniqueMissingPositions.size !== missingPositions.length) {
-    throw new Error("Pinrow missing positions must not contain duplicates")
+    throw new Error("Pinrow missing positions must not contain duplicates");
   }
-  const nominalPinCount = num_pins + missingPositions.length
-  const numPinsPerRow = cols ?? Math.ceil(nominalPinCount / rows)
-  const gridPositionCount = numPinsPerRow * rows
-  const usesExplicitGrid = cols !== undefined || missingPositions.length > 0
+  const nominalPinCount = num_pins + missingPositions.length;
+  const numPinsPerRow = cols ?? Math.ceil(nominalPinCount / rows);
+  const gridPositionCount = numPinsPerRow * rows;
+  const usesExplicitGrid = cols !== undefined || missingPositions.length > 0;
   if (usesExplicitGrid && gridPositionCount !== nominalPinCount) {
     throw new Error(
       `Pinrow grid has ${gridPositionCount} positions, but ${nominalPinCount} are required for ${num_pins} pins and ${missingPositions.length} missing positions`,
-    )
+    );
   }
   if (
     missingPositions.some(
@@ -183,12 +183,12 @@ export const pinrow = (
         position > gridPositionCount,
     )
   ) {
-    throw new Error("Pinrow missing position is outside the nominal grid")
+    throw new Error("Pinrow missing position is outside the nominal grid");
   }
-  const rowPitch = py ?? p
-  const pinRowSpanY = (rows - 1) * rowPitch
-  const yStart = pinRowSpanY / 2
-  const ySpacing = -rowPitch
+  const rowPitch = py ?? p;
+  const pinRowSpanY = (rows - 1) * rowPitch;
+  const yStart = pinRowSpanY / 2;
+  const ySpacing = -rowPitch;
 
   const calculateAnchorPosition = ({
     xoff,
@@ -199,60 +199,60 @@ export const pinrow = (
     pw,
     pl,
   }: {
-    xoff: number
-    yoff: number
-    od: number
-    anchorSide: "top" | "bottom" | "left" | "right"
-    smd: boolean
-    pw: number
-    pl: number
+    xoff: number;
+    yoff: number;
+    od: number;
+    anchorSide: "top" | "bottom" | "left" | "right";
+    smd: boolean;
+    pw: number;
+    pl: number;
   }): { anchor_x: number; anchor_y: number } => {
-    let dx = 0
-    let dy = 0
+    let dx = 0;
+    let dy = 0;
     if (smd) {
-      const offset = od / 5
+      const offset = od / 5;
       switch (anchorSide) {
         case "right":
-          dx = pw / 2 + offset
-          break
+          dx = pw / 2 + offset;
+          break;
         case "top":
-          dy = pl / 2 + offset
-          break
+          dy = pl / 2 + offset;
+          break;
         case "bottom":
-          dy = -(pl / 2 + offset)
-          break
+          dy = -(pl / 2 + offset);
+          break;
         case "left":
-          dx = -(pw / 2 + offset)
-          break
+          dx = -(pw / 2 + offset);
+          break;
       }
     } else {
       // Keep through-hole pin labels beyond the outer edge of the plating.
       // A fixed clearance remains effective for every supported pad diameter.
-      const offset = od / 2 + 0.6
+      const offset = od / 2 + 0.6;
       switch (anchorSide) {
         case "right":
-          dx = offset
-          break
+          dx = offset;
+          break;
         case "top":
-          dy = offset
-          break
+          dy = offset;
+          break;
         case "bottom":
-          dy = -offset
-          break
+          dy = -offset;
+          break;
         case "left":
-          dx = -offset
-          break
+          dx = -offset;
+          break;
       }
     }
-    return { anchor_x: xoff + dx, anchor_y: yoff + dy }
-  }
+    return { anchor_x: xoff + dx, anchor_y: yoff + dy };
+  };
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    if (pinNumber === 1) pin1Position = { x: xoff, y: yoff }
+    if (pinNumber === 1) pin1Position = { x: xoff, y: yoff };
     if (parameters.smd) {
       // SMD pads
-      holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
+      holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl));
     } else {
       // Through-hole
       if (pinNumber === 1 && !parameters.nosquareplating) {
@@ -266,10 +266,10 @@ export const pinrow = (
             rectPadWidth: od,
             rectPadHeight: od,
           }),
-        )
+        );
       } else {
         // Other pins with standard circular pad
-        holes.push(platedhole(pinNumber, xoff, yoff, id, od))
+        holes.push(platedhole(pinNumber, xoff, yoff, id, od));
       }
     }
     const { anchor_x, anchor_y } = calculateAnchorPosition({
@@ -280,7 +280,7 @@ export const pinrow = (
       smd: parameters.smd,
       pw: parameters.pw,
       pl: parameters.pl,
-    })
+    });
     if (!nopinlabels) {
       if (!bottomsidepinlabel) {
         holes.push(
@@ -295,7 +295,7 @@ export const pinrow = (
             verticallyinverted: pinlabelverticallyinverted,
             layer: "top",
           }),
-        )
+        );
       } else {
         holes.push(
           silkscreenPin({
@@ -309,7 +309,7 @@ export const pinrow = (
             verticallyinverted: pinlabelverticallyinverted,
             layer: "bottom",
           }),
-        )
+        );
       }
       if (doublesidedpinlabel) {
         holes.push(
@@ -324,122 +324,125 @@ export const pinrow = (
             verticallyinverted: pinlabelverticallyinverted,
             layer: "bottom",
           }),
-        )
+        );
       }
     }
-  }
+  };
 
   // Track used positions to prevent overlaps
-  const usedPositions = new Set<string>()
+  const usedPositions = new Set<string>();
 
   if (usesExplicitGrid) {
     // Explicit grids use row-major nominal positions. Missing positions do not
     // consume output pin numbers, so generated port hints remain contiguous.
-    const xStart = -((numPinsPerRow - 1) / 2) * p
-    let outputPinNumber = 1
+    const xStart = -((numPinsPerRow - 1) / 2) * p;
+    let outputPinNumber = 1;
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < numPinsPerRow; col++) {
-        const nominalPosition = row * numPinsPerRow + col + 1
-        if (uniqueMissingPositions.has(nominalPosition)) continue
-        const xoff = xStart + col * p
-        const yoff = yStart + row * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(outputPinNumber++, xoff, yoff)
+        const nominalPosition = row * numPinsPerRow + col + 1;
+        if (uniqueMissingPositions.has(nominalPosition)) continue;
+        const xoff = xStart + col * p;
+        const yoff = yStart + row * ySpacing;
+        const posKey = `${xoff},${yoff}`;
+        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`);
+        usedPositions.add(posKey);
+        addPin(outputPinNumber++, xoff, yoff);
       }
     }
   } else if (rows === 1) {
     // Single row: left to right, pin 1 to num_pins
-    const xStart = -((num_pins - 1) / 2) * p
+    const xStart = -((num_pins - 1) / 2) * p;
     for (let i = 0; i < num_pins; i++) {
-      const pinNumber = i + 1
-      const xoff = xStart + i * p
-      const posKey = `${xoff},${0}`
-      if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-      usedPositions.add(posKey)
-      addPin(pinNumber, xoff, 0)
+      const pinNumber = i + 1;
+      const xoff = xStart + i * p;
+      const posKey = `${xoff},${0}`;
+      if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`);
+      usedPositions.add(posKey);
+      addPin(pinNumber, xoff, 0);
     }
   } else {
     // Check if BGA-style numbering should be used
-    const useBGAStyle = rows > 2 && numPinsPerRow > 2
+    const useBGAStyle = rows > 2 && numPinsPerRow > 2;
 
     if (useBGAStyle) {
       // BGA-style: row-major numbering (left to right, top to bottom)
-      const xStart = -((numPinsPerRow - 1) / 2) * p
-      let currentPin = 1
+      const xStart = -((numPinsPerRow - 1) / 2) * p;
+      let currentPin = 1;
       for (let row = 0; row < rows && currentPin <= num_pins; row++) {
         for (
           let col = 0;
           col < numPinsPerRow && currentPin <= num_pins;
           col++
         ) {
-          const xoff = xStart + col * p
-          const yoff = yStart + row * ySpacing
-          const posKey = `${xoff},${yoff}`
-          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-          usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
+          const xoff = xStart + col * p;
+          const yoff = yStart + row * ySpacing;
+          const posKey = `${xoff},${yoff}`;
+          if (usedPositions.has(posKey))
+            throw new Error(`Overlap at ${posKey}`);
+          usedPositions.add(posKey);
+          addPin(currentPin++, xoff, yoff);
         }
       }
     } else {
       // Multi-row: counterclockwise spiral traversal
-      const xStart = -((numPinsPerRow - 1) / 2) * p
-      let currentPin = 1
-      let top = 0
-      let bottom = rows - 1
-      let left = 0
-      let right = numPinsPerRow - 1
+      const xStart = -((numPinsPerRow - 1) / 2) * p;
+      let currentPin = 1;
+      let top = 0;
+      let bottom = rows - 1;
+      let left = 0;
+      let right = numPinsPerRow - 1;
 
       while (currentPin <= num_pins && top <= bottom && left <= right) {
         // Left column: top to bottom
         for (let row = top; row <= bottom && currentPin <= num_pins; row++) {
-          const xoff = xStart + left * p
-          const yoff = yStart + row * ySpacing
-          const posKey = `${xoff},${yoff}`
-          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-          usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
+          const xoff = xStart + left * p;
+          const yoff = yStart + row * ySpacing;
+          const posKey = `${xoff},${yoff}`;
+          if (usedPositions.has(posKey))
+            throw new Error(`Overlap at ${posKey}`);
+          usedPositions.add(posKey);
+          addPin(currentPin++, xoff, yoff);
         }
-        left++
+        left++;
 
         // Bottom row: left to right
         for (let col = left; col <= right && currentPin <= num_pins; col++) {
-          const xoff = xStart + col * p
-          const yoff = yStart + bottom * ySpacing
-          const posKey = `${xoff},${yoff}`
-          if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-          usedPositions.add(posKey)
-          addPin(currentPin++, xoff, yoff)
+          const xoff = xStart + col * p;
+          const yoff = yStart + bottom * ySpacing;
+          const posKey = `${xoff},${yoff}`;
+          if (usedPositions.has(posKey))
+            throw new Error(`Overlap at ${posKey}`);
+          usedPositions.add(posKey);
+          addPin(currentPin++, xoff, yoff);
         }
-        bottom--
+        bottom--;
 
         if (left <= right) {
           // Right column: bottom to top
           for (let row = bottom; row >= top && currentPin <= num_pins; row--) {
-            const xoff = xStart + right * p
-            const yoff = yStart + row * ySpacing
-            const posKey = `${xoff},${yoff}`
+            const xoff = xStart + right * p;
+            const yoff = yStart + row * ySpacing;
+            const posKey = `${xoff},${yoff}`;
             if (usedPositions.has(posKey))
-              throw new Error(`Overlap at ${posKey}`)
-            usedPositions.add(posKey)
-            addPin(currentPin++, xoff, yoff)
+              throw new Error(`Overlap at ${posKey}`);
+            usedPositions.add(posKey);
+            addPin(currentPin++, xoff, yoff);
           }
-          right--
+          right--;
         }
 
         if (top <= bottom) {
           // Top row: right to left
           for (let col = right; col >= left && currentPin <= num_pins; col--) {
-            const xoff = xStart + col * p
-            const yoff = yStart + top * ySpacing
-            const posKey = `${xoff},${yoff}`
+            const xoff = xStart + col * p;
+            const yoff = yStart + top * ySpacing;
+            const posKey = `${xoff},${yoff}`;
             if (usedPositions.has(posKey))
-              throw new Error(`Overlap at ${posKey}`)
-            usedPositions.add(posKey)
-            addPin(currentPin++, xoff, yoff)
+              throw new Error(`Overlap at ${posKey}`);
+            usedPositions.add(posKey);
+            addPin(currentPin++, xoff, yoff);
           }
-          top++
+          top++;
         }
       }
 
@@ -447,19 +450,19 @@ export const pinrow = (
       if (currentPin - 1 < num_pins) {
         throw new Error(
           `Missing pins: assigned ${currentPin - 1}, expected ${num_pins}`,
-        )
+        );
       }
     }
   }
 
-  const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2
-  const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2
-  const pinRowSpanX = (numPinsPerRow - 1) * p
-  const silkscreenHalfWidth = pinRowSpanX / 2 + p / 2 + 1
+  const padHalfWidth = parameters.smd ? parameters.pw / 2 : od / 2;
+  const padHalfHeight = parameters.smd ? parameters.pl / 2 : od / 2;
+  const pinRowSpanX = (numPinsPerRow - 1) * p;
+  const silkscreenHalfWidth = pinRowSpanX / 2 + p / 2 + 1;
   const silkscreenHalfHeight = Math.max(
     pinRowSpanY / 2 + padHalfHeight + 1,
     p / 2 + 1,
-  )
+  );
   const silkscreenBorder = silkscreenborder
     ? silkscreenpath([
         { x: -silkscreenHalfWidth, y: -silkscreenHalfHeight },
@@ -468,21 +471,21 @@ export const pinrow = (
         { x: -silkscreenHalfWidth, y: silkscreenHalfHeight },
         { x: -silkscreenHalfWidth, y: -silkscreenHalfHeight },
       ])
-    : null
+    : null;
 
   const pin1Arrow = (() => {
-    if (parameters.fn !== "headermodule" || !pin1Position) return null
+    if (parameters.fn !== "headermodule" || !pin1Position) return null;
 
-    const arrowSize = Math.max(0.3, Math.min(0.6, p / 4))
-    const clearance = 0.15
+    const arrowSize = Math.max(0.3, Math.min(0.6, p / 4));
+    const clearance = 0.15;
     const horizontal =
-      pinlabelAnchorSide === "top" || pinlabelAnchorSide === "bottom"
+      pinlabelAnchorSide === "top" || pinlabelAnchorSide === "bottom";
 
     if (horizontal) {
       const direction =
-        Math.sign(pin1Position.x) || (pinlabelAnchorSide === "top" ? -1 : 1)
-      const tipX = pin1Position.x + direction * (padHalfWidth + clearance)
-      const baseX = tipX + direction * arrowSize
+        Math.sign(pin1Position.x) || (pinlabelAnchorSide === "top" ? -1 : 1);
+      const tipX = pin1Position.x + direction * (padHalfWidth + clearance);
+      const baseX = tipX + direction * arrowSize;
       return silkscreenpath(
         [
           { x: tipX, y: pin1Position.y },
@@ -494,12 +497,12 @@ export const pinrow = (
           pcb_component_id: "pin_marker_1",
           pcb_silkscreen_path_id: "pin_marker_1",
         },
-      )
+      );
     }
 
-    const direction = Math.sign(pin1Position.y) || 1
-    const tipY = pin1Position.y + direction * (padHalfHeight + clearance)
-    const baseY = tipY + direction * arrowSize
+    const direction = Math.sign(pin1Position.y) || 1;
+    const tipY = pin1Position.y + direction * (padHalfHeight + clearance);
+    const baseY = tipY + direction * arrowSize;
     return silkscreenpath(
       [
         { x: pin1Position.x, y: tipY },
@@ -511,8 +514,8 @@ export const pinrow = (
         pcb_component_id: "pin_marker_1",
         pcb_silkscreen_path_id: "pin_marker_1",
       },
-    )
-  })()
+    );
+  })();
 
   // Add centered silkscreen reference text or an explicit module label.
   const refText: SilkscreenRef = silkscreenlabel
@@ -527,20 +530,20 @@ export const pinrow = (
         anchor_position: { x: 0, y: 0 },
         anchor_alignment: "center",
       }
-    : silkscreenRef(0, pinRowSpanY / 2 + p, 0.5)
+    : silkscreenRef(0, pinRowSpanY / 2 + p, 0.5);
 
-  const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth
-  const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight
-  const bodyHalfWidth = pinRowSpanX / 2 + p / 2
-  const bodyHalfHeight = pinRowSpanY / 2 + p / 2
+  const padOuterHalfWidth = pinRowSpanX / 2 + padHalfWidth;
+  const padOuterHalfHeight = pinRowSpanY / 2 + padHalfHeight;
+  const bodyHalfWidth = pinRowSpanX / 2 + p / 2;
+  const bodyHalfHeight = pinRowSpanY / 2 + p / 2;
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
     bodyHalfWidth + 0.5,
-  )
+  );
   const courtyardHalfHeight = Math.max(
     padOuterHalfHeight + 0.25,
     bodyHalfHeight + 0.5,
-  )
+  );
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -549,7 +552,7 @@ export const pinrow = (
     width: 2 * courtyardHalfWidth,
     height: 2 * courtyardHalfHeight,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -560,5 +563,5 @@ export const pinrow = (
       courtyard as AnyCircuitElement,
     ],
     parameters,
-  }
-}
+  };
+};

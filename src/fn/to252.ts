@@ -1,1 +1,1 @@
-export { to252 } from "./dpak"
+export { to252 } from "./dpak";

@@ -1,12 +1,12 @@
-import type { PcbSilkscreenPath } from "circuit-json"
+import type { PcbSilkscreenPath } from "circuit-json";
 
 export const silkscreenpath = (
   route: Array<{ x: number; y: number }>,
   options: {
-    stroke_width?: number
-    layer?: "top" | "bottom"
-    pcb_component_id?: string
-    pcb_silkscreen_path_id?: string
+    stroke_width?: number;
+    layer?: "top" | "bottom";
+    pcb_component_id?: string;
+    pcb_silkscreen_path_id?: string;
   } = {},
 ): PcbSilkscreenPath => {
   return {
@@ -16,5 +16,5 @@ export const silkscreenpath = (
     pcb_silkscreen_path_id: options.pcb_silkscreen_path_id || "",
     route,
     stroke_width: options.stroke_width || 0.1,
-  }
-}
+  };
+};

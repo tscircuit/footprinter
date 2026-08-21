@@ -2,13 +2,13 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { length } from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+} from "circuit-json";
+import { z } from "zod";
+import { length } from "circuit-json";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
 
 export const son_def = base_def.extend({
   fn: z.string(),
@@ -22,47 +22,47 @@ export const son_def = base_def.extend({
   eph: z.string().default("1.60mm"),
   string: z.string().optional(),
   ep: z.boolean().default(false),
-})
+});
 
 export const son = (
   raw_params: z.input<typeof son_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   if (raw_params.string && raw_params.string.includes("_ep")) {
-    raw_params.ep = true
+    raw_params.ep = true;
   }
 
-  const match = raw_params.string?.match(/^son_(\d+)/)
+  const match = raw_params.string?.match(/^son_(\d+)/);
   const numPins = match
     ? Number.parseInt(match[1]!, 10)
-    : raw_params.num_pins || 8
+    : raw_params.num_pins || 8;
 
   const parameters = son_def.parse({
     ...raw_params,
     num_pins: numPins as 6 | 8,
-  })
+  });
 
-  const w = length.parse(parameters.w)
-  const h = length.parse(parameters.h)
-  const p = length.parse(parameters.p)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
-  const epw = length.parse(parameters.epw)
-  const eph = length.parse(parameters.eph)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const w = length.parse(parameters.w);
+  const h = length.parse(parameters.h);
+  const p = length.parse(parameters.p);
+  const pl = length.parse(parameters.pl);
+  const pw = length.parse(parameters.pw);
+  const epw = length.parse(parameters.epw);
+  const eph = length.parse(parameters.eph);
+  const cornerRadius = Math.min(pl, pw) / 8;
 
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
 
   for (let i = 0; i < parameters.num_pins; i++) {
-    const { x, y } = getSonPadCoord(parameters.num_pins, i + 1, w, p)
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    const { x, y } = getSonPadCoord(parameters.num_pins, i + 1, w, p);
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius));
   }
 
   if (parameters.ep) {
-    pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph))
+    pads.push(rectpad(parameters.num_pins + 1, 0, 0, epw, eph));
   }
 
-  const silkscreenBoxWidth = w
-  const silkscreenBoxHeight = h
+  const silkscreenBoxWidth = w;
+  const silkscreenBoxHeight = h;
 
   const silkscreenTopLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -74,7 +74,7 @@ export const son = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const silkscreenBottomLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -86,19 +86,19 @@ export const son = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
   const pin1Position = getSonPadCoord(
     parameters.num_pins,
     1,
     silkscreenBoxWidth,
     p,
-  )
+  );
 
   const pin1MarkerPosition = {
     x: pin1Position.x - 0.4,
     y: pin1Position.y,
-  }
+  };
 
   const pin1Marking: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -112,22 +112,22 @@ export const son = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "pin_marker_1",
-  }
+  };
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     silkscreenBoxHeight / 2 + 0.5,
     0.3,
-  )
+  );
   const pinColumnCenterX = Math.abs(
     getSonPadCoord(parameters.num_pins, 1, w, p).x,
-  )
-  const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw
-  const pinRowSpanX = pinColumnCenterX * 2 + pl
-  const courtyardStepInnerHalfWidth = w / 2 + 0.25
-  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfHeight = h / 2 + 0.25
+  );
+  const pinRowSpanY = (parameters.num_pins / 2 - 1) * p + pw;
+  const pinRowSpanX = pinColumnCenterX * 2 + pl;
+  const courtyardStepInnerHalfWidth = w / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = h / 2 + 0.25;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -147,7 +147,7 @@ export const son = (
         maxY: courtyardStepOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return {
     circuitJson: [
@@ -159,8 +159,8 @@ export const son = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};
 
 export const getSonPadCoord = (
   num_pins: number,
@@ -168,13 +168,13 @@ export const getSonPadCoord = (
   w: number,
   p: number,
 ) => {
-  const half = num_pins / 2
-  const rowIndex = (pn - 1) % half
-  const col = pn <= half ? -1 : 1
-  const row = (half - 1) / 2 - rowIndex
+  const half = num_pins / 2;
+  const rowIndex = (pn - 1) % half;
+  const col = pn <= half ? -1 : 1;
+  const row = (half - 1) / 2 - rowIndex;
 
   return {
     x: col * length.parse("1.4mm"),
     y: row * p,
-  }
-}
+  };
+};

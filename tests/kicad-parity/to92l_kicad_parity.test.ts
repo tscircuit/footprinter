@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/to92l", async () => {
   const {
@@ -10,18 +10,18 @@ test("parity/to92l", async () => {
   } = await compareFootprinterVsKicad(
     "to92l",
     "Package_TO_SOT_THT.pretty/TO-92L.circuit.json",
-  )
+  );
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(courtyardDiffPercent).toBeLessThan(5)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_parity")
+  });
+  expect(courtyardDiffPercent).toBeLessThan(5);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_parity");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "to92l_boolean_difference",
-  )
-})
+  );
+});
 
 test("parity/to92l_inline", async () => {
   const {
@@ -31,15 +31,18 @@ test("parity/to92l_inline", async () => {
   } = await compareFootprinterVsKicad(
     "to92l_inline",
     "Package_TO_SOT_THT.pretty/TO-92L_Inline.circuit.json",
-  )
+  );
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(courtyardDiffPercent).toBeLessThan(5)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "to92l_inline_parity")
+  });
+  expect(courtyardDiffPercent).toBeLessThan(5);
+  expect(svgContent).toMatchSvgSnapshot(
+    import.meta.path,
+    "to92l_inline_parity",
+  );
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "to92l_inline_boolean_difference",
-  )
-})
+  );
+});

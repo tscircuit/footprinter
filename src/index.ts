@@ -1,1 +1,1 @@
-export * from "./footprinter"
+export * from "./footprinter";

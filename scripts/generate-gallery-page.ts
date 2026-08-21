@@ -1,15 +1,15 @@
-import fs from "node:fs"
-import path from "node:path"
+import fs from "node:fs";
+import path from "node:path";
 
-const snapshotsDir = path.join(__dirname, "..", "tests", "__snapshots__")
-const outputDir = path.join(__dirname, "..", "public")
-const outputFile = path.join(outputDir, "gallery.html")
+const snapshotsDir = path.join(__dirname, "..", "tests", "__snapshots__");
+const outputDir = path.join(__dirname, "..", "public");
+const outputFile = path.join(outputDir, "gallery.html");
 
 function generateGalleryPage() {
   const svgFiles = fs
     .readdirSync(snapshotsDir)
     .sort()
-    .filter((file) => file.endsWith(".snap.svg"))
+    .filter((file) => file.endsWith(".snap.svg"));
 
   const htmlContent = `
 <!DOCTYPE html>
@@ -86,27 +86,27 @@ function generateGalleryPage() {
         const svgContent = fs
           .readFileSync(path.join(snapshotsDir, file), "utf-8")
           .replace(/width="\d+"/, 'width="300"')
-          .replace(/height="\d+"/, 'height="225" viewBox="0 0 800 600"')
+          .replace(/height="\d+"/, 'height="225" viewBox="0 0 800 600"');
 
-        const title = file.replace(".snap.svg", "")
+        const title = file.replace(".snap.svg", "");
         return `
     <div class="svg-container">
         ${svgContent}
         <div class="svg-title">${title}</div>
-    </div>`
+    </div>`;
       })
       .join("\n")}
     </div>
 </body>
 </html>
-  `
+  `;
 
   if (!fs.existsSync(outputDir)) {
-    fs.mkdirSync(outputDir, { recursive: true })
+    fs.mkdirSync(outputDir, { recursive: true });
   }
 
-  fs.writeFileSync(outputFile, htmlContent)
-  console.log(`Gallery page generated at ${outputFile}`)
+  fs.writeFileSync(outputFile, htmlContent);
+  console.log(`Gallery page generated at ${outputFile}`);
 }
 
-generateGalleryPage()
+generateGalleryPage();

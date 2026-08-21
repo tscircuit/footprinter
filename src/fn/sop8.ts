@@ -2,25 +2,25 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic"
-import { rectpad } from "src/helpers/rectpad"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+} from "circuit-json";
+import { extendSoicDef, type SoicInput, getCcwSoicCoords } from "./soic";
+import { rectpad } from "src/helpers/rectpad";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
 
 export const sop8_def = extendSoicDef({
   w: "7.05mm",
   p: "1.27mm",
   pw: "0.65mm",
   pl: "1.975mm",
-})
+});
 
 export const sop8 = (
   raw_params: SoicInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sop8_def.parse(raw_params)
-  const pads: AnyCircuitElement[] = []
-  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
+  const parameters = sop8_def.parse(raw_params);
+  const pads: AnyCircuitElement[] = [];
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8;
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSoicCoords({
@@ -30,12 +30,16 @@ export const sop8 = (
       p: parameters.p ?? 1.27,
       pl: parameters.pl,
       widthincludeslegs: true,
-    })
-    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
+    });
+    pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius));
   }
 
-  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 1, sh / 12)
+  const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(
+    0,
+    sh / 2 + 1,
+    sh / 12,
+  );
 
   const silkscreenLine: PcbSilkscreenPath = {
     layer: "top",
@@ -47,13 +51,13 @@ export const sop8 = (
       { x: parameters.w / 3, y: sh / 2 + 0.4 },
     ],
     stroke_width: 0.1,
-  }
+  };
   const pinRowSpanY =
-    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw
-  const courtyardStepInnerHalfWidth = parameters.w / 2 - 1.395
-  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.255
-  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.5
+    (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw;
+  const courtyardStepInnerHalfWidth = parameters.w / 2 - 1.395;
+  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.255;
+  const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25;
+  const courtyardStepOuterHalfHeight = pinRowSpanY / 2 + 0.5;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -73,7 +77,7 @@ export const sop8 = (
         maxY: courtyardStepOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return {
     circuitJson: [
@@ -83,5 +87,5 @@ export const sop8 = (
       courtyard,
     ] as AnyCircuitElement[],
     parameters,
-  }
-}
+  };
+};

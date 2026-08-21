@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { fp } from "src/footprinter"
+import { expect, test } from "bun:test";
+import { fp } from "src/footprinter";
 
 test("nosilkscreen removes all silkscreen elements", () => {
   const baseFootprint = fp()
@@ -8,11 +8,11 @@ test("nosilkscreen removes all silkscreen elements", () => {
     .h("4mm")
     .grid("3x3")
     .p(1)
-    .circuitJson()
+    .circuitJson();
 
   expect(baseFootprint.some((el) => el.type.startsWith("pcb_silkscreen"))).toBe(
     true,
-  )
+  );
 
   const noSilkscreenFootprint = fp()
     .bga(8)
@@ -21,9 +21,9 @@ test("nosilkscreen removes all silkscreen elements", () => {
     .grid("3x3")
     .p(1)
     .nosilkscreen(true)
-    .circuitJson()
+    .circuitJson();
 
   expect(
     noSilkscreenFootprint.some((el) => el.type.startsWith("pcb_silkscreen")),
-  ).toBe(false)
-})
+  ).toBe(false);
+});

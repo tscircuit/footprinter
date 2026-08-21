@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/sop-8", async () => {
   const {
@@ -11,15 +11,15 @@ test("parity/sop-8", async () => {
   } = await compareFootprinterVsKicad(
     "sop8",
     "Package_SO.pretty/SOP-8_3.76x4.96mm_P1.27mm.circuit.json",
-  )
+  );
 
-  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(courtyardDiffPercent).toBeLessThan(0.5);
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sop-8")
+  });
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sop-8");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "sop-8_boolean_difference",
-  )
-})
+  );
+});

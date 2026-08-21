@@ -1,10 +1,10 @@
-import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { length } from "circuit-json";
+import { base_def } from "../helpers/zod/base_def";
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode";
 
 export const sod_def = base_def.extend({
   fn: z.string(),
@@ -14,21 +14,21 @@ export const sod_def = base_def.extend({
   pl: z.string().default("0.9mm"),
   pw: z.string().default("1.2mm"),
   p: z.string().default("3.30mm"),
-})
+});
 
 export const sod123 = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sod_def.parse(raw_params)
-  const bodyHeight = length.parse(parameters.h)
+  const parameters = sod_def.parse(raw_params);
+  const bodyHeight = length.parse(parameters.h);
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     bodyHeight / 4 + 0.4,
     0.3,
-  )
+  );
 
-  const courtyardWidthMm = 4.7
-  const courtyardHeightMm = 2.3
+  const courtyardWidthMm = 4.7;
+  const courtyardHeightMm = 2.3;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -37,7 +37,7 @@ export const sod123 = (
     width: courtyardWidthMm,
     height: courtyardHeightMm,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: sodWithoutParsing(parameters).concat(
@@ -46,31 +46,28 @@ export const sod123 = (
       courtyard as AnyCircuitElement,
     ),
     parameters,
-  }
-}
+  };
+};
 
-export const getSodCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
-  const { pn, p } = parameters
+export const getSodCoords = (parameters: { pn: number; p: number }) => {
+  const { pn, p } = parameters;
 
   if (pn === 1) {
-    return { x: -p / 2, y: 0 }
+    return { x: -p / 2, y: 0 };
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: p / 2, y: 0 }
+    return { x: p / 2, y: 0 };
   }
-}
+};
 
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
       p: Number.parseFloat(parameters.p),
-    })
+    });
     pads.push(
       rectpad(
         i,
@@ -80,7 +77,7 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
         Number.parseFloat(parameters.pw),
         0.1125,
       ),
-    )
+    );
   }
-  return pads
-}
+  return pads;
+};
