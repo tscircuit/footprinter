@@ -77,7 +77,7 @@ test("custom passive footprints do not get implicit courtyards", () => {
 })
 
 test("custom resistor footprint string uses body dimensions for its courtyard", () => {
-  const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w10mm_h5mm"
+  const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w8.128mm_h3.556mm"
   const soup = fp.string(footprintString).circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup, {
     showCourtyards: true,
@@ -89,8 +89,8 @@ test("custom resistor footprint string uses body dimensions for its courtyard", 
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprintString)
   expect(courtyard).toMatchObject({
     type: "pcb_courtyard_rect",
-    width: 10.5,
-    height: 5.5,
+    width: 8.628,
+    height: 4.056,
   })
 })
 
