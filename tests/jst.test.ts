@@ -94,3 +94,29 @@ test("jst_zh_2 (pretransform)", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_zh_2")
 })
+
+test("jst4_xh", () => {
+  const circuitJson = fp.string("jst4_xh").circuitJson()
+  const params = fp.string("jst4_xh").json() as any
+  expect(params.num_pins).toBe(4)
+  expect(params.xh).toBe(true)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4_xh")
+})
+
+test("jst10_xh", () => {
+  const circuitJson = fp.string("jst10_xh").circuitJson()
+  const params = fp.string("jst10_xh").json() as any
+  expect(params.num_pins).toBe(10)
+  expect(params.xh).toBe(true)
+  expect(params.id).toBe(0.95)
+  expect(params.pl).toBe(1.95)
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst10_xh")
+})
+
+test("jst_xh_4 (pretransform)", () => {
+  const params = fp.string("jst_xh_4").json() as any
+  expect(params.num_pins).toBe(4)
+  expect(params.xh).toBe(true)
+})
