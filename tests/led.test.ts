@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { led } from "../src/fn"
 import { fp } from "../src/footprinter"
@@ -98,4 +98,20 @@ test("led0201", () => {
   const soup = fp().led().imperial("0201").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
+})
+
+test("custom LED footprint uses body dimensions for its courtyard", () => {
+  const footprintString = "led_p4.6599mm_pw2.91mm_ph2.9106mm_w8.128mm_h3.556mm"
+  const circuitJson = fp.string(footprintString).circuitJson()
+  const courtyard = circuitJson.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(courtyard).toMatchObject({
+    width: 8.628,
+    height: 4.056,
+  })
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path, footprintString)
 })
