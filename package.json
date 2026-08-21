@@ -1,7 +1,7 @@
 {
   "name": "@tscircuit/footprinter",
   "type": "module",
-  "version": "0.0.422",
+  "version": "0.0.423",
   "repository": {
     "type": "git",
     "url": "https://github.com/tscircuit/footprinter.git"
