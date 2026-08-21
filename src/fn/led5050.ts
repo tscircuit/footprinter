@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
+import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { silkscreenpath } from "../helpers/silkscreenpath"
@@ -62,9 +63,15 @@ export const led5050 = (
     height: Math.max(h, 2 * p + pw) + 0.5,
     layer: "top",
   }
+  const fabricationNote = createFabricationNoteDiode({
+    minX: -rowspan / 2 - pl / 2,
+    maxX: rowspan / 2 + pl / 2,
+    minY: -p - pw / 2,
+    maxY: p + pw / 2,
+  })
 
   return {
-    circuitJson: [...pads, ...silkscreen, ref, courtyard],
+    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
     parameters,
   }
 }
