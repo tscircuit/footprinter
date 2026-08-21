@@ -146,6 +146,55 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     0.3,
   )
 
+  const width = w / 2 - pl / 2
+  const height = h / 2
+  const silkscreenPath1: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_1",
+    route: [
+      { x: -width, y: height },
+      { x: width + 0.2, y: height },
+      { x: width + 0.2, y: height / 2 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+  const silkscreenPath2: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_2",
+    route: [
+      { x: -width, y: -height },
+      { x: width + 0.2, y: -height },
+      { x: width + 0.2, y: -height / 2 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+
+  const pin1Position = getCcwSot23Coords({
+    num_pins: parameters.num_pins,
+    pn: 1,
+    w,
+    h,
+    pl,
+    p,
+  })
+  const pin1Indicator: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      { x: pin1Position.x - pl / 2 - 0.2, y: pin1Position.y + 0.15 },
+      { x: pin1Position.x - pl / 2 - 0.5, y: pin1Position.y },
+      { x: pin1Position.x - pl / 2 - 0.2, y: pin1Position.y - 0.15 },
+      { x: pin1Position.x - pl / 2 - 0.2, y: pin1Position.y + 0.15 },
+    ],
+    stroke_width: 0.05,
+  }
+
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -154,7 +203,14 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     layer: "top",
   }
 
-  return [...pads, silkscreenRefText as AnyCircuitElement, courtyard]
+  return [
+    ...pads,
+    silkscreenPath1,
+    silkscreenPath2,
+    pin1Indicator as AnyCircuitElement,
+    silkscreenRefText as AnyCircuitElement,
+    courtyard,
+  ]
 }
 
 export const getCcwSot235Coords = (parameters: {
