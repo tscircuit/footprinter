@@ -219,6 +219,8 @@ const createCourtyardRect = (
   layer: "top",
 })
 
+const CUSTOM_COURTYARD_CLEARANCE_MM = 0.25
+
 export const passive_def = base_def.extend({
   fn: z.string().optional(),
   string: z.string().optional(),
@@ -342,10 +344,17 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
+  const padWidth = tht ? pw / 0.8 : pw
+  const padHeight = tht ? pw / 0.8 : ph
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : null
+      : w !== undefined && h !== undefined
+        ? createCourtyardRect(
+            Math.max(w, p + padWidth) + 2 * CUSTOM_COURTYARD_CLEARANCE_MM,
+            Math.max(h, padHeight) + 2 * CUSTOM_COURTYARD_CLEARANCE_MM,
+          )
+        : null
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)

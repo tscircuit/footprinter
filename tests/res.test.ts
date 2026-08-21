@@ -76,6 +76,38 @@ test("custom passive footprints do not get implicit courtyards", () => {
   ).toBe(false)
 })
 
+test("custom resistor footprint string uses body dimensions for its courtyard", () => {
+  const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w10mm_h5mm"
+  const soup = fp.string(footprintString).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprintString)
+  expect(courtyard).toMatchObject({
+    type: "pcb_courtyard_rect",
+    width: 10.5,
+    height: 5.5,
+  })
+})
+
+test("custom resistor courtyard includes pads extending beyond the body", () => {
+  const footprintString = "res_p4.6599mm_pw2.91mm_ph2.9106mm_w6mm_h2mm"
+  const soup = fp.string(footprintString).circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const courtyard = soup.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprintString)
+  expect(courtyard).toMatchObject({
+    type: "pcb_courtyard_rect",
+    width: 8.0699,
+    height: 3.4106,
+  })
+})
+
 test("0402 uses the explicit KiCad courtyard", () => {
   const soup = fp.string("0402").circuitJson()
   const courtyard = soup.find(
