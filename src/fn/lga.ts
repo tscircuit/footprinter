@@ -51,8 +51,20 @@ export const lga = (
     )
   }
 
-  const width = parameters.w ?? (grid.y - 1) * parameters.p + 2 * parameters.pl
-  const height = parameters.h ?? (grid.x - 1) * parameters.p + 2 * parameters.pl
+  // The default body size must leave room for the pads on the perpendicular
+  // sides: without the corner allowance, the inner edge of the left/right
+  // pads lands exactly on the center line of the outermost top/bottom pads
+  // (and vice versa), so corner pads overlap. Only needed when pads exist on
+  // adjacent sides.
+  const cornerPadClearance = 0.2
+  const cornerAllowance =
+    grid.x > 0 && grid.y > 0 ? parameters.pw + 2 * cornerPadClearance : 0
+  const width =
+    parameters.w ??
+    (grid.y - 1) * parameters.p + 2 * parameters.pl + cornerAllowance
+  const height =
+    parameters.h ??
+    (grid.x - 1) * parameters.p + 2 * parameters.pl + cornerAllowance
   const leftRightX = (width - parameters.pl) / 2
   const topBottomY = (height - parameters.pl) / 2
   const pads: AnyCircuitElement[] = []
