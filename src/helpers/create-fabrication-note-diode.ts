@@ -18,7 +18,50 @@ type DiodeCopperPadBoundsParams = {
 type DiodeFabricationNoteOptions = {
   cathodePin?: number
   anodePin?: number
+  idSuffix?: string
 }
+
+export const getCopperBounds = (
+  circuitJson: AnyCircuitElement[],
+): RectBounds => {
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
+
+  for (const element of circuitJson) {
+    if (element.type === "pcb_smtpad") {
+      minX = Math.min(minX, element.x - element.width / 2)
+      maxX = Math.max(maxX, element.x + element.width / 2)
+      minY = Math.min(minY, element.y - element.height / 2)
+      maxY = Math.max(maxY, element.y + element.height / 2)
+    }
+
+    if (element.type === "pcb_plated_hole") {
+      minX = Math.min(minX, element.x - element.outer_diameter / 2)
+      maxX = Math.max(maxX, element.x + element.outer_diameter / 2)
+      minY = Math.min(minY, element.y - element.outer_diameter / 2)
+      maxY = Math.max(maxY, element.y + element.outer_diameter / 2)
+    }
+  }
+
+  if (
+    !Number.isFinite(minX) ||
+    !Number.isFinite(maxX) ||
+    !Number.isFinite(minY) ||
+    !Number.isFinite(maxY)
+  ) {
+    throw new Error("Could not determine diode copper bounds")
+  }
+
+  return { minX, maxX, minY, maxY }
+}
+
+export const createFabricationNoteDiodeFromCircuitJson = (
+  circuitJson: AnyCircuitElement[],
+  options: DiodeFabricationNoteOptions = {},
+): AnyCircuitElement[] =>
+  createFabricationNoteDiode(getCopperBounds(circuitJson), options)
 
 const getCathodePin = ({
   anodePin,
@@ -105,11 +148,15 @@ export const createFabricationNoteDiode = (
   const cathodeX = symbolMaxX - legLength
   const strokeWidth = Math.max(Math.min(width, height) * 0.035, 0.01)
   const fontSize = Math.max(Math.min(width, height) * 0.25, 0.1)
+  const getNoteId = (baseId: string) =>
+    options.idSuffix ? `${baseId}_${options.idSuffix}` : baseId
 
   elms.push(
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_anode_leg",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_anode_leg",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -120,7 +167,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_triangle",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_triangle",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -133,7 +182,7 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_cathode",
+      pcb_fabrication_note_path_id: getNoteId("diode_fabrication_note_cathode"),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -144,7 +193,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_path",
-      pcb_fabrication_note_path_id: "diode_fabrication_note_cathode_leg",
+      pcb_fabrication_note_path_id: getNoteId(
+        "diode_fabrication_note_cathode_leg",
+      ),
       pcb_component_id: "",
       layer: "top",
       stroke_width: strokeWidth,
@@ -155,7 +206,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_text",
-      pcb_fabrication_note_text_id: "diode_fabrication_note_positive",
+      pcb_fabrication_note_text_id: getNoteId(
+        "diode_fabrication_note_positive",
+      ),
       pcb_component_id: "",
       layer: "top",
       font: "tscircuit2024",
@@ -169,7 +222,9 @@ export const createFabricationNoteDiode = (
     },
     {
       type: "pcb_fabrication_note_text",
-      pcb_fabrication_note_text_id: "diode_fabrication_note_negative",
+      pcb_fabrication_note_text_id: getNoteId(
+        "diode_fabrication_note_negative",
+      ),
       pcb_component_id: "",
       layer: "top",
       font: "tscircuit2024",
