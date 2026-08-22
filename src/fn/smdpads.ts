@@ -4,7 +4,6 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
-import { getBodyBasedCourtyardSize } from "../helpers/get-body-based-courtyard-size"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -16,8 +15,8 @@ export const smdpads_def = base_def
     p: length.default("1mm").describe("pad center pitch"),
     pw: length.default("1mm").describe("outer pad width"),
     ph: length.default("1mm").describe("pad height"),
-    w: length.optional().describe("physical body width"),
-    h: length.optional().describe("physical body height"),
+    cyw: length.optional().describe("courtyard width"),
+    cyh: length.optional().describe("courtyard height"),
     centerpadwidth: length.optional().describe("center pad width"),
   })
   .superRefine((parameters, ctx) => {
@@ -37,7 +36,7 @@ export const smdpads = (
   rawParams: z.input<typeof smdpads_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = smdpads_def.parse(rawParams)
-  const { num_pins, p, pw, ph, w, h, centerpadwidth } = parameters
+  const { num_pins, p, pw, ph, cyw, cyh, centerpadwidth } = parameters
   const centerPin = Math.ceil(num_pins / 2)
   const xStart = -((num_pins - 1) * p) / 2
   const pads = Array.from({ length: num_pins }, (_, index) => {
@@ -53,13 +52,8 @@ export const smdpads = (
   const centerPadHalfWidth = centerpadwidth ? centerpadwidth / 2 : 0
   const copperHalfWidth = Math.max(outerPadHalfWidth, centerPadHalfWidth)
   const courtyardSize =
-    w !== undefined && h !== undefined
-      ? getBodyBasedCourtyardSize({
-          bodyWidth: w,
-          bodyHeight: h,
-          padEnvelopeWidth: copperHalfWidth * 2,
-          padEnvelopeHeight: ph,
-        })
+    cyw !== undefined && cyh !== undefined
+      ? { width: cyw, height: cyh }
       : { width: copperHalfWidth * 2 + 0.5, height: ph + 0.5 }
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",

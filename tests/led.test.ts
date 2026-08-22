@@ -100,8 +100,9 @@ test("led0201", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
 })
 
-test("custom LED footprint uses body dimensions for its courtyard", () => {
-  const footprintString = "led_p4.6599mm_pw2.91mm_ph2.9106mm_w8.128mm_h3.556mm"
+test("custom LED footprint uses explicit courtyard dimensions", () => {
+  const footprintString =
+    "led_p4.6599mm_pw2.91mm_ph2.9106mm_cyw8.628mm_cyh4.056mm"
   const circuitJson = fp.string(footprintString).circuitJson()
   const courtyard = circuitJson.find(
     (element) => element.type === "pcb_courtyard_rect",

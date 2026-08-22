@@ -7,7 +7,6 @@ import type {
 import { distance, length } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { getBodyBasedCourtyardSize } from "./get-body-based-courtyard-size"
 import { platedhole } from "./platedhole"
 import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
@@ -231,6 +230,8 @@ export const passive_def = base_def.extend({
   imperial: distance.optional(),
   w: length.optional(),
   h: length.optional(),
+  cyw: length.optional().describe("courtyard width"),
+  cyh: length.optional().describe("courtyard height"),
   nonpolarized: z.boolean().optional(),
   textbottom: z.boolean().optional(),
   roundedPads: z.boolean().optional(),
@@ -249,6 +250,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     imperial,
     w,
     h,
+    cyw,
+    cyh,
     nonpolarized,
     textbottom,
     roundedPads,
@@ -257,6 +260,8 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   if (typeof w === "string") w = mm(w)
   if (typeof h === "string") h = mm(h)
+  if (typeof cyw === "string") cyw = mm(cyw)
+  if (typeof cyh === "string") cyh = mm(cyh)
   if (typeof p === "string") p = mm(p)
   if (typeof pw === "string") pw = mm(pw)
   if (typeof ph === "string") ph = mm(ph)
@@ -343,25 +348,11 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
-  const padWidth = tht ? pw / 0.8 : pw
-  const padHeight = tht ? pw / 0.8 : ph
-  const bodyBasedCourtyardSize =
-    w !== undefined && h !== undefined
-      ? getBodyBasedCourtyardSize({
-          bodyWidth: w,
-          bodyHeight: h,
-          padEnvelopeWidth: p + padWidth,
-          padEnvelopeHeight: padHeight,
-        })
-      : null
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
-      : bodyBasedCourtyardSize
-        ? createCourtyardRect(
-            bodyBasedCourtyardSize.width,
-            bodyBasedCourtyardSize.height,
-          )
+      : cyw !== undefined && cyh !== undefined
+        ? createCourtyardRect(cyw, cyh)
         : null
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads

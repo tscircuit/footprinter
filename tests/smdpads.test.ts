@@ -73,9 +73,9 @@ test("smdpads requires an odd pad count for a center pad width", () => {
   )
 })
 
-test("smdpads2 uses body dimensions for its courtyard", () => {
+test("smdpads2 uses explicit courtyard dimensions", () => {
   const footprintString =
-    "smdpads2_p4.6599mm_pw2.91mm_ph2.9106mm_w8.128mm_h3.556mm"
+    "smdpads2_p4.6599mm_pw2.91mm_ph2.9106mm_cyw8.628mm_cyh4.056mm"
   const circuitJson = fp.string(footprintString).circuitJson()
   const courtyard = circuitJson.find(
     (element) => element.type === "pcb_courtyard_rect",

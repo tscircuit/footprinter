@@ -44,9 +44,9 @@ test("diode2512", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "diode2512")
 })
 
-test("custom diode footprint uses body dimensions for its courtyard", () => {
+test("custom diode footprint uses explicit courtyard dimensions", () => {
   const footprintString =
-    "diode_p4.6599mm_pw2.91mm_ph2.9106mm_w8.128mm_h3.556mm"
+    "diode_p4.6599mm_pw2.91mm_ph2.9106mm_cyw8.628mm_cyh4.056mm"
   const circuitJson = fp.string(footprintString).circuitJson()
   const courtyard = circuitJson.find(
     (element) => element.type === "pcb_courtyard_rect",
