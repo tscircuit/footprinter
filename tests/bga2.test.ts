@@ -1,6 +1,6 @@
-import { test, expect } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { test, expect } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 test("bga_footprint_norefdes", () => {
   const soup = fp()
@@ -11,10 +11,10 @@ test("bga_footprint_norefdes", () => {
     .missing("center")
     .p(1)
     .norefdes(true)
-    .soup()
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+    .soup();
+  const svgContent = convertCircuitJsonToPcbSvg(soup);
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "bga_footprint_norefdes",
-  )
-})
+  );
+});

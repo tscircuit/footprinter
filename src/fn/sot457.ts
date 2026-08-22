@@ -3,13 +3,13 @@ import type {
   PcbCourtyardOutline,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { pillpad } from "../helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "src/helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { pillpad } from "../helpers/pillpad";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "src/helpers/zod/base_def";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
 
 // Common schema properties for both SOT-457 configurations
 const commonSchema = {
@@ -22,7 +22,7 @@ const commonSchema = {
   p: z.string(),
   wave: z.boolean().optional(),
   reflow: z.boolean().optional(),
-}
+};
 
 // Default SOT-457 schema
 const sot457DefSchema = base_def.extend({
@@ -32,7 +32,7 @@ const sot457DefSchema = base_def.extend({
   pl: z.string().default("0.8mm"),
   pw: z.string().default("0.55mm"),
   p: z.string().default("0.95mm"),
-})
+});
 
 // Wave soldering SOT-457 schema with transform for wave/reflow defaults
 const sot457WaveSchema = base_def
@@ -49,16 +49,16 @@ const sot457WaveSchema = base_def
     ...data,
     wave: data.wave ?? (data.reflow === undefined ? true : !data.reflow),
     reflow: data.reflow ?? (data.wave === undefined ? false : !data.wave),
-  }))
+  }));
 
 // Type definitions
-type Sot457Params = z.infer<typeof sot457DefSchema>
-type Sot457WaveParams = z.infer<typeof sot457WaveSchema>
+type Sot457Params = z.infer<typeof sot457DefSchema>;
+type Sot457WaveParams = z.infer<typeof sot457WaveSchema>;
 
 // Helper function to parse dimension strings to numbers
 const parseDimension = (value: string): number => {
-  return Number.parseFloat(value.replace("mm", ""))
-}
+  return Number.parseFloat(value.replace("mm", ""));
+};
 
 // Get pin coordinates for counter-clockwise arrangement
 const getCcwSot457Coords = ({
@@ -66,11 +66,11 @@ const getCcwSot457Coords = ({
   width,
   pinNumber,
 }: {
-  pitch: number
-  width: number
-  pinNumber: number
+  pitch: number;
+  width: number;
+  pinNumber: number;
 }): { x: number; y: number } => {
-  const offset = 0.1
+  const offset = 0.1;
   const coords: Record<number, { x: number; y: number }> = {
     1: { x: -width / 2 - offset, y: pitch },
     2: { x: -width / 2 - offset, y: 0 },
@@ -78,26 +78,26 @@ const getCcwSot457Coords = ({
     4: { x: width / 2 + offset, y: -pitch },
     5: { x: width / 2 + offset, y: 0 },
     6: { x: width / 2 + offset, y: pitch },
-  }
+  };
 
-  const coord = coords[pinNumber]
+  const coord = coords[pinNumber];
   if (!coord) {
-    throw new Error(`Invalid pin number: ${pinNumber}`)
+    throw new Error(`Invalid pin number: ${pinNumber}`);
   }
-  return coord
-}
+  return coord;
+};
 
 // Generate circuit elements for SOT-457 package
 const generateSot457Elements = (
   params: Sot457Params | Sot457WaveParams,
 ): AnyCircuitElement[] => {
-  const pads: AnyCircuitElement[] = []
-  const pitch = parseDimension(params.p)
-  const padLength = parseDimension(params.pl)
-  const padWidth = parseDimension(params.pw)
-  const width = parseDimension(params.w)
-  const height = parseDimension(params.h)
-  const cornerRadius = Math.min(padLength, padWidth) / 8
+  const pads: AnyCircuitElement[] = [];
+  const pitch = parseDimension(params.p);
+  const padLength = parseDimension(params.pl);
+  const padWidth = parseDimension(params.pw);
+  const width = parseDimension(params.w);
+  const height = parseDimension(params.h);
+  const cornerRadius = Math.min(padLength, padWidth) / 8;
 
   if (params.wave) {
     const pinConfigs: Record<
@@ -128,18 +128,18 @@ const generateSot457Elements = (
         rectpad(5, pitch, pitch, padHeight, padWidth, cornerRadius),
       6: ({ padWidth, padHeight }) =>
         rectpad(6, pitch, -pitch, padHeight, padWidth, cornerRadius),
-    }
+    };
 
     for (let i = 1; i <= params.num_pins; i++) {
-      const config = pinConfigs[i]
+      const config = pinConfigs[i];
       if (config) {
-        pads.push(config({ padWidth: padLength, padHeight: padWidth }))
+        pads.push(config({ padWidth: padLength, padHeight: padWidth }));
       }
     }
   } else {
     for (let i = 1; i <= params.num_pins; i++) {
-      const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i })
-      pads.push(rectpad(i, x, y, padLength, padWidth, cornerRadius))
+      const { x, y } = getCcwSot457Coords({ pitch, width, pinNumber: i });
+      pads.push(rectpad(i, x, y, padLength, padWidth, cornerRadius));
     }
   }
 
@@ -154,7 +154,7 @@ const generateSot457Elements = (
       { x: width / 3, y: height / 2 + pitch / 1.3 },
     ],
     stroke_width: 0.05,
-  }
+  };
 
   const silkscreenPath2: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -166,16 +166,16 @@ const generateSot457Elements = (
       { x: width / 3, y: -height / 2 - pitch / 1.3 },
     ],
     stroke_width: 0.05,
-  }
+  };
 
   // Silkscreen reference text
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.5, 0.3)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, height + 0.5, 0.3);
 
   // Pin 1 indicator triangle
-  const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 })
-  const triangleHeight = params.wave ? 1 : 0.5
-  const triangleWidth = params.wave ? 0.7 : 0.3
-  pin1Position.x -= params.wave ? padWidth : padWidth * 1.7
+  const pin1Position = getCcwSot457Coords({ pitch, width, pinNumber: 1 });
+  const triangleHeight = params.wave ? 1 : 0.5;
+  const triangleWidth = params.wave ? 0.7 : 0.3;
+  pin1Position.x -= params.wave ? padWidth : padWidth * 1.7;
 
   const pin1Indicator: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -195,16 +195,16 @@ const generateSot457Elements = (
       { x: pin1Position.x + triangleHeight / 2, y: pin1Position.y },
     ],
     stroke_width: 0.05,
-  }
+  };
 
-  let courtyard: PcbCourtyardRect | PcbCourtyardOutline
+  let courtyard: PcbCourtyardRect | PcbCourtyardOutline;
   if (params.wave) {
-    const pinRowSpanX = 2 * pitch
-    const pinRowSpanY = 2 * pitch
-    const padOuterHalfWidth = pinRowSpanX / 2 + padWidth / 2
-    const padOuterHalfHeight = pinRowSpanY / 2 + padLength / 2
-    const courtyardHalfWidth = padOuterHalfWidth + 0.25
-    const courtyardHalfHeight = padOuterHalfHeight + 0.25
+    const pinRowSpanX = 2 * pitch;
+    const pinRowSpanY = 2 * pitch;
+    const padOuterHalfWidth = pinRowSpanX / 2 + padWidth / 2;
+    const padOuterHalfHeight = pinRowSpanY / 2 + padLength / 2;
+    const courtyardHalfWidth = padOuterHalfWidth + 0.25;
+    const courtyardHalfHeight = padOuterHalfHeight + 0.25;
     courtyard = {
       type: "pcb_courtyard_rect",
       pcb_courtyard_rect_id: "",
@@ -213,21 +213,21 @@ const generateSot457Elements = (
       width: 2 * courtyardHalfWidth,
       height: 2 * courtyardHalfHeight,
       layer: "top",
-    }
+    };
   } else {
-    const padCenterX = width / 2 + 0.1
-    const padToeHalfWidth = padCenterX + padLength / 2
-    const pinRowHalfHeight = pitch + padWidth / 2
-    const bodyHalfWidth = width / 2
-    const bodyHalfHeight = height / 2
+    const padCenterX = width / 2 + 0.1;
+    const padToeHalfWidth = padCenterX + padLength / 2;
+    const pinRowHalfHeight = pitch + padWidth / 2;
+    const bodyHalfWidth = width / 2;
+    const bodyHalfHeight = height / 2;
 
-    const courtyardStepOuterHalfWidth = padToeHalfWidth + 0.25
-    const courtyardStepInnerHalfWidth = bodyHalfWidth + 0.08
-    const courtyardStepOuterHalfHeight = pinRowHalfHeight + 0.25
+    const courtyardStepOuterHalfWidth = padToeHalfWidth + 0.25;
+    const courtyardStepInnerHalfWidth = bodyHalfWidth + 0.08;
+    const courtyardStepOuterHalfHeight = pinRowHalfHeight + 0.25;
     const courtyardStepInnerHalfHeight = Math.max(
       bodyHalfHeight + 0.45,
       courtyardStepOuterHalfHeight,
-    )
+    );
 
     courtyard = {
       type: "pcb_courtyard_outline",
@@ -248,7 +248,7 @@ const generateSot457Elements = (
         },
       ]),
       layer: "top",
-    }
+    };
   }
 
   return [
@@ -258,27 +258,27 @@ const generateSot457Elements = (
     pin1Indicator,
     ...pads,
     courtyard,
-  ]
-}
+  ];
+};
 
 // Main SOT-457 function
 export const sot457 = (
   rawParams: z.input<typeof sot457DefSchema>,
 ): {
-  circuitJson: AnyCircuitElement[]
-  parameters: Sot457Params | Sot457WaveParams
+  circuitJson: AnyCircuitElement[];
+  parameters: Sot457Params | Sot457WaveParams;
 } => {
   if (rawParams.wave) {
-    const parameters = sot457WaveSchema.parse({ ...rawParams, fn: "sot457" })
+    const parameters = sot457WaveSchema.parse({ ...rawParams, fn: "sot457" });
     return {
       circuitJson: generateSot457Elements(parameters),
       parameters,
-    }
+    };
   }
 
-  const parameters = sot457DefSchema.parse(rawParams)
+  const parameters = sot457DefSchema.parse(rawParams);
   return {
     circuitJson: generateSot457Elements(parameters),
     parameters,
-  }
-}
+  };
+};

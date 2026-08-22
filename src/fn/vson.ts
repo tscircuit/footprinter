@@ -3,14 +3,14 @@ import type {
   PcbCourtyardOutline,
   PcbSmtPad,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { z } from "zod"
-import { base_def } from "../helpers/zod/base_def"
-import { length, distance } from "circuit-json"
-import { dim2d } from "src/helpers/zod/dim-2d"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+} from "circuit-json";
+import { rectpad } from "../helpers/rectpad";
+import { z } from "zod";
+import { base_def } from "../helpers/zod/base_def";
+import { length, distance } from "circuit-json";
+import { dim2d } from "src/helpers/zod/dim-2d";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { createRectUnionOutline } from "src/helpers/rect-union-outline";
 
 // can't use defaults because there is not a lot of common dimensions.
 export const vson_def = base_def.extend({
@@ -27,23 +27,23 @@ export const vson_def = base_def.extend({
     .describe("x offset of the center of the central exposed thermal pad"),
   pinw: length.describe("width of the pin pads"),
   pinh: length.describe("height of the pin pads"),
-})
+});
 
-export type VsonDefInput = z.input<typeof vson_def>
-export type VsonDef = z.infer<typeof vson_def>
+export type VsonDefInput = z.input<typeof vson_def>;
+export type VsonDef = z.infer<typeof vson_def>;
 
 export const vson = (
   raw_params: VsonDefInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = vson_def.parse(raw_params)
-  const { num_pins, p, w, grid, ep, epx, pinw, pinh } = parameters
+  const parameters = vson_def.parse(raw_params);
+  const { num_pins, p, w, grid, ep, epx, pinw, pinh } = parameters;
 
   if (num_pins % 2 !== 0) {
-    throw new Error("invalid number of pins")
+    throw new Error("invalid number of pins");
   }
 
-  const pads: PcbSmtPad[] = []
-  const cornerRadius = Math.min(pinw, pinh) / 8
+  const pads: PcbSmtPad[] = [];
+  const cornerRadius = Math.min(pinw, pinh) / 8;
 
   // place the 8 or 10 outside pins
   for (let i = 0; i < num_pins; i++) {
@@ -52,36 +52,36 @@ export const vson = (
       pinIndex: i,
       width: w,
       pitch: p,
-    })
-    pads.push(rectpad(i + 1, pinX, pinY, pinw, pinh, cornerRadius))
+    });
+    pads.push(rectpad(i + 1, pinX, pinY, pinw, pinh, cornerRadius));
   }
 
   // place the central exposed pad (ep)
   if (ep.x > 0 && ep.y > 0) {
-    pads.push(rectpad(parameters.num_pins + 1, epx, 0, ep.x, ep.y))
+    pads.push(rectpad(parameters.num_pins + 1, epx, 0, ep.x, ep.y));
   }
 
   // draw silkscreen lines around grid dimensions
-  const silkscreenPaths = getSilkscreenPaths(grid)
+  const silkscreenPaths = getSilkscreenPaths(grid);
 
   // draw the text for the reference designator
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     grid.y / 2 + p,
     grid.y / 6,
-  )
+  );
 
-  const pinRowSpanY = (num_pins / 2 - 1) * p + pinh
-  const pinRowSpanX = w + pinw
-  const courtyardStepInnerHalfWidth = grid.x / 2 + 0.25
-  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25
-  const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25
+  const pinRowSpanY = (num_pins / 2 - 1) * p + pinh;
+  const pinRowSpanX = w + pinw;
+  const courtyardStepInnerHalfWidth = grid.x / 2 + 0.25;
+  const courtyardStepOuterHalfWidth = pinRowSpanX / 2 + 0.25;
+  const pinRowCourtyardHalfY = pinRowSpanY / 2 + 0.25;
   const pinRowExtendedCourtyardHalfY =
-    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p)
+    pinRowSpanY / 2 + 0.45 + Math.max(0, 0.8 - p);
   const courtyardStepOuterHalfHeight = Math.min(
     grid.y / 2 + 0.25,
     pinRowExtendedCourtyardHalfY,
-  )
+  );
   const courtyardStepNotchDepthY = Math.max(
     0,
     0.37 -
@@ -90,11 +90,11 @@ export const vson = (
         courtyardStepOuterHalfWidth - courtyardStepInnerHalfWidth - 0.38,
       ) *
         1.4,
-  )
+  );
   const courtyardStepInnerHalfHeight = Math.max(
     pinRowCourtyardHalfY,
     courtyardStepOuterHalfHeight - courtyardStepNotchDepthY,
-  )
+  );
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -114,38 +114,38 @@ export const vson = (
         maxY: courtyardStepOuterHalfHeight,
       },
     ]),
-  }
+  };
 
   return {
     circuitJson: [...pads, ...silkscreenPaths, silkscreenRefText, courtyard],
     parameters,
-  }
-}
+  };
+};
 
 const getCcwVsonCoords = (params: {
-  pinCount: number
-  pinIndex: number
-  width: number
-  pitch: number
+  pinCount: number;
+  pinIndex: number;
+  width: number;
+  pitch: number;
 }) => {
-  let pinY = 0
-  let pinX = 0
-  const centerY = ((params.pinCount / 2 - 1) * params.pitch) / 2
-  const pinHalf = params.pinCount / 2
+  let pinY = 0;
+  let pinX = 0;
+  const centerY = ((params.pinCount / 2 - 1) * params.pitch) / 2;
+  const pinHalf = params.pinCount / 2;
   if (params.pinIndex + 1 <= pinHalf) {
-    pinY = params.pitch * params.pinIndex - centerY
-    pinX = 0 - params.width / 2
+    pinY = params.pitch * params.pinIndex - centerY;
+    pinX = 0 - params.width / 2;
   } else {
-    pinY = params.pitch * (params.pinCount - params.pinIndex - 1) - centerY
-    pinX = params.width / 2
+    pinY = params.pitch * (params.pinCount - params.pinIndex - 1) - centerY;
+    pinX = params.width / 2;
   }
 
-  return { pinX, pinY }
-}
+  return { pinX, pinY };
+};
 
 const getSilkscreenPaths = (grid: { x: number; y: number }) => {
-  const borderMargin = 0.1
-  const cornerLine = grid.y / 30
+  const borderMargin = 0.1;
+  const cornerLine = grid.y / 30;
   const silkscreenPaths: PcbSilkscreenPath[] = [
     // top silkscreen path
     {
@@ -199,6 +199,6 @@ const getSilkscreenPaths = (grid: { x: number; y: number }) => {
       ],
       stroke_width: grid.y / 30,
     },
-  ]
-  return silkscreenPaths
-}
+  ];
+  return silkscreenPaths;
+};

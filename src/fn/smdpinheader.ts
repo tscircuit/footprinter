@@ -2,12 +2,12 @@ import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
   length,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef } from "../helpers/silkscreenRef"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef } from "../helpers/silkscreenRef";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
 
 export const smdpinheader_def = base_def.extend({
   fn: z.literal("smdpinheader"),
@@ -23,14 +23,14 @@ export const smdpinheader_def = base_def.extend({
   male: z.literal(true).default(true),
   female: z.literal(false).default(false),
   smd: z.literal(true).default(true),
-})
+});
 
 export const smdpinheader = (
   rawParams: z.input<typeof smdpinheader_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = smdpinheader_def.parse(rawParams)
-  const { num_pins, p, py, pw, ph, bh } = parameters
-  const xStart = -((num_pins - 1) * p) / 2
+  const parameters = smdpinheader_def.parse(rawParams);
+  const { num_pins, p, py, pw, ph, bh } = parameters;
+  const xStart = -((num_pins - 1) * p) / 2;
 
   const pads = Array.from({ length: num_pins }, (_, index) =>
     rectpad(
@@ -40,32 +40,32 @@ export const smdpinheader = (
       pw,
       ph,
     ),
-  )
+  );
 
-  const bodyHalfWidth = (num_pins * p) / 2
-  const bodyHalfHeight = bh / 2
-  const pin1Chamfer = Math.min(0.5, bh / 4)
+  const bodyHalfWidth = (num_pins * p) / 2;
+  const bodyHalfHeight = bh / 2;
+  const pin1Chamfer = Math.min(0.5, bh / 4);
   const createHorizontalOutlineSegments = (
     y: number,
     padParity: 0 | 1,
     startX = -bodyHalfWidth,
   ) => {
-    const padClearance = pw / 2 + 0.2
-    const segments: ReturnType<typeof silkscreenpath>[] = []
-    let segmentStart = startX
+    const padClearance = pw / 2 + 0.2;
+    const segments: ReturnType<typeof silkscreenpath>[] = [];
+    let segmentStart = startX;
 
     for (let index = padParity; index < num_pins; index += 2) {
-      const padCenterX = xStart + index * p
-      const segmentEnd = padCenterX - padClearance
+      const padCenterX = xStart + index * p;
+      const segmentEnd = padCenterX - padClearance;
       if (segmentEnd > segmentStart) {
         segments.push(
           silkscreenpath([
             { x: segmentStart, y },
             { x: segmentEnd, y },
           ]),
-        )
+        );
       }
-      segmentStart = padCenterX + padClearance
+      segmentStart = padCenterX + padClearance;
     }
 
     if (segmentStart < bodyHalfWidth) {
@@ -74,10 +74,10 @@ export const smdpinheader = (
           { x: segmentStart, y },
           { x: bodyHalfWidth, y },
         ]),
-      )
+      );
     }
-    return segments
-  }
+    return segments;
+  };
   const bodyOutline = [
     ...createHorizontalOutlineSegments(
       bodyHalfHeight,
@@ -94,13 +94,13 @@ export const smdpinheader = (
       { x: -bodyHalfWidth, y: bodyHalfHeight - pin1Chamfer },
       { x: -bodyHalfWidth + pin1Chamfer, y: bodyHalfHeight },
     ]),
-  ]
+  ];
 
-  const padOuterHalfWidth = ((num_pins - 1) * p) / 2 + pw / 2
-  const padOuterHalfHeight = py / 2 + ph / 2
-  const courtyardHalfWidth = Math.max(bodyHalfWidth, padOuterHalfWidth) + 0.25
+  const padOuterHalfWidth = ((num_pins - 1) * p) / 2 + pw / 2;
+  const padOuterHalfHeight = py / 2 + ph / 2;
+  const courtyardHalfWidth = Math.max(bodyHalfWidth, padOuterHalfWidth) + 0.25;
   const courtyardHalfHeight =
-    Math.max(bodyHalfHeight, padOuterHalfHeight) + 0.25
+    Math.max(bodyHalfHeight, padOuterHalfHeight) + 0.25;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -109,11 +109,11 @@ export const smdpinheader = (
     width: 2 * courtyardHalfWidth,
     height: 2 * courtyardHalfHeight,
     layer: "top",
-  }
-  const ref = silkscreenRef(0, courtyardHalfHeight + 0.6, 0.5)
+  };
+  const ref = silkscreenRef(0, courtyardHalfHeight + 0.6, 0.5);
 
   return {
     circuitJson: [...pads, ...bodyOutline, ref, courtyard],
     parameters,
-  }
-}
+  };
+};

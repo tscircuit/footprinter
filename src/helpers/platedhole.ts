@@ -1,5 +1,5 @@
-import type { PcbPlatedHole } from "circuit-json"
-import { mm } from "@tscircuit/mm"
+import type { PcbPlatedHole } from "circuit-json";
+import { mm } from "@tscircuit/mm";
 
 export const platedhole = (
   pn: number,
@@ -19,5 +19,5 @@ export const platedhole = (
     pcb_port_id: "",
     layers: ["top", "bottom"],
     port_hints: [pn.toString()],
-  }
-}
+  };
+};

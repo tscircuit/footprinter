@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { createBooleanDifferenceVisualization } from "../src/helpers/boolean-difference"
+import { expect, test } from "bun:test";
+import { createBooleanDifferenceVisualization } from "../src/helpers/boolean-difference";
 
 test("boolean difference preserves rounded SMT pad corners", () => {
   const svg = createBooleanDifferenceVisualization(
@@ -25,10 +25,10 @@ test("boolean difference preserves rounded SMT pad corners", () => {
         corner_radius: 0.1,
       },
     ],
-  )
+  );
 
-  expect(svg).toContain("A0.1,0.1")
-})
+  expect(svg).toContain("A0.1,0.1");
+});
 
 test("boolean difference renders circular SMT pads as circles", () => {
   const svg = createBooleanDifferenceVisualization(
@@ -50,7 +50,7 @@ test("boolean difference renders circular SMT pads as circles", () => {
         radius: 0.5,
       },
     ],
-  )
+  );
 
-  expect(svg).toContain("A0.5,0.5")
-})
+  expect(svg).toContain("A0.5,0.5");
+});

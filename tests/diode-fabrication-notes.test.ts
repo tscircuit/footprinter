@@ -1,5 +1,5 @@
-import { expect, test } from "bun:test"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { fp } from "../src/footprinter";
 
 const diodeLikeFootprints = [
   "diode0402",
@@ -30,27 +30,27 @@ const diodeLikeFootprints = [
   "sod882",
   "sod882d",
   "sod923",
-]
+];
 
 test.each(diodeLikeFootprints)(
   "%s includes a diode symbol in its fabrication notes",
   (footprintName) => {
-    const circuitJson = fp.string(footprintName).circuitJson()
+    const circuitJson = fp.string(footprintName).circuitJson();
     const fabricationNoteIds = circuitJson.flatMap((element) =>
       element.type === "pcb_fabrication_note_path"
         ? [element.pcb_fabrication_note_path_id]
         : [],
-    )
+    );
 
     expect(
       fabricationNoteIds.some((id) =>
         id.startsWith("diode_fabrication_note_triangle"),
       ),
-    ).toBeTrue()
+    ).toBeTrue();
     expect(
       fabricationNoteIds.some((id) =>
         id.startsWith("diode_fabrication_note_cathode"),
       ),
-    ).toBeTrue()
+    ).toBeTrue();
   },
-)
+);

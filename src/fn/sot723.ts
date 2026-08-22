@@ -2,11 +2,11 @@ import {
   length,
   type AnyCircuitElement,
   type PcbCourtyardOutline,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const sot723_def = base_def.extend({
   fn: z.string(),
@@ -16,21 +16,21 @@ export const sot723_def = base_def.extend({
   pw: z.string().default("0.40mm"),
   pl: z.string().default("0.45mm"),
   p: z.string().default("0.575mm"),
-})
+});
 
 export const sot723 = (
   raw_params: z.input<typeof sot723_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sot723_def.parse(raw_params)
-  const pad = sot723WithoutParsing(parameters)
+  const parameters = sot723_def.parse(raw_params);
+  const pad = sot723WithoutParsing(parameters);
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h),
     0.2,
-  )
+  );
 
-  const courtyardWidthMm = 1.8
-  const courtyardHeightMm = 1.8
+  const courtyardWidthMm = 1.8;
+  const courtyardHeightMm = 1.8;
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -42,43 +42,43 @@ export const sot723 = (
       { x: -courtyardWidthMm / 2, y: -courtyardHeightMm / 2 },
     ],
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [...pad, silkscreenRefText as AnyCircuitElement, courtyard],
     parameters,
-  }
-}
+  };
+};
 
 export const getCcwSot723Coords = (parameters: {
-  num_pins: number
-  pn: number
-  w: number
-  h: number
-  pl: number
-  p: number
+  num_pins: number;
+  pn: number;
+  w: number;
+  h: number;
+  pl: number;
+  p: number;
 }) => {
-  const { pn, w, h, pl, p } = parameters
+  const { pn, w, h, pl, p } = parameters;
 
   if (pn === 1) {
-    return { x: p, y: 0 }
+    return { x: p, y: 0 };
   }
   if (pn === 2) {
-    return { x: -p, y: -0.4 }
+    return { x: -p, y: -0.4 };
   }
-  return { x: -p, y: 0.4 }
-}
+  return { x: -p, y: 0.4 };
+};
 
 export const sot723WithoutParsing = (
   parameters: z.infer<typeof sot723_def>,
 ) => {
-  const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const pads: AnyCircuitElement[] = [];
+  const w = Number.parseFloat(parameters.w);
+  const h = Number.parseFloat(parameters.h);
+  const pl = Number.parseFloat(parameters.pl);
+  const pw = Number.parseFloat(parameters.pw);
+  const p = Number.parseFloat(parameters.p);
+  const cornerRadius = Math.min(pl, pw) / 8;
 
   for (let i = 0; i < 3; i++) {
     const { x, y } = getCcwSot723Coords({
@@ -88,9 +88,9 @@ export const sot723WithoutParsing = (
       h,
       pl,
       p,
-    })
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    });
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius));
   }
 
-  return pads
-}
+  return pads;
+};

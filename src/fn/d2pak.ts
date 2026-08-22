@@ -1,1 +1,1 @@
-export { d2pak } from "./dpak"
+export { d2pak } from "./dpak";

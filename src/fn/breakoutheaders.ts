@@ -3,12 +3,12 @@ import {
   type AnyCircuitElement,
   type PcbPlatedHole,
   type PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { platedhole } from "src/helpers/platedhole"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { platedhole } from "src/helpers/platedhole";
+import { base_def } from "../helpers/zod/base_def";
 
 export const breakoutheaders_def = base_def.extend({
   fn: z.string(),
@@ -21,31 +21,31 @@ export const breakoutheaders_def = base_def.extend({
   p: length.default(length.parse("2.54mm")),
   id: length.optional().default(length.parse("1mm")),
   od: length.optional().default(length.parse("1.5mm")),
-})
+});
 
-export type breakoutheaders_def = z.input<typeof breakoutheaders_def>
+export type breakoutheaders_def = z.input<typeof breakoutheaders_def>;
 
 const getHeight = (parameters: breakoutheaders_def): number => {
-  const params = breakoutheaders_def.parse(parameters)
+  const params = breakoutheaders_def.parse(parameters);
 
   // Calculate height based on the presence of left and right parameters
   if (params.left && params.right) {
-    return Math.max(params.left, params.right) * params.p
+    return Math.max(params.left, params.right) * params.p;
   }
 
   if (params.left) {
-    return params.left * params.p
+    return params.left * params.p;
   }
 
   if (params.right) {
-    return params.right * params.p
+    return params.right * params.p;
   }
 
-  return 51
-}
+  return 51;
+};
 
-type Point = { x: number; y: number }
-type Direction = "left" | "right" | "top" | "bottom"
+type Point = { x: number; y: number };
+type Direction = "left" | "right" | "top" | "bottom";
 
 const getTrianglePath = (
   x: number,
@@ -54,8 +54,8 @@ const getTrianglePath = (
   triangleHeight = 1,
   triangleWidth = 0.6,
 ): Point[] => {
-  const halfHeight = triangleHeight / 2
-  const halfWidth = triangleWidth / 2
+  const halfHeight = triangleHeight / 2;
+  const halfWidth = triangleWidth / 2;
 
   const silkscreenTriangleRoutes: Record<Direction, Point[]> = {
     left: [
@@ -82,28 +82,28 @@ const getTrianglePath = (
       { x: x + halfWidth, y: y - halfHeight },
       { x, y: y + halfHeight },
     ],
-  }
+  };
 
-  return silkscreenTriangleRoutes[side]
-}
+  return silkscreenTriangleRoutes[side];
+};
 export const breakoutheaders = (
   raw_params: breakoutheaders_def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const params = breakoutheaders_def.parse(raw_params)
-  const height = params.h ?? getHeight(params)
-  const holes: PcbPlatedHole[] = []
-  const innerDiameter = params.id
-  const outerDiameter = params.od
-  let silkscreenTriangleRoutes: { x: number; y: number }[] = []
+  const params = breakoutheaders_def.parse(raw_params);
+  const height = params.h ?? getHeight(params);
+  const holes: PcbPlatedHole[] = [];
+  const innerDiameter = params.id;
+  const outerDiameter = params.od;
+  let silkscreenTriangleRoutes: { x: number; y: number }[] = [];
   if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p
+    const yoff = -((params.right - 1) / 2) * params.p;
     for (let i = 0; i < params.right; i++) {
       if (i === 0 && !params.left && !params.bottom) {
         silkscreenTriangleRoutes = getTrianglePath(
           params.w / 2 + outerDiameter * 1.4,
           yoff + i * params.p,
           "right",
-        )
+        );
       }
       holes.push(
         platedhole(
@@ -113,18 +113,18 @@ export const breakoutheaders = (
           innerDiameter,
           outerDiameter,
         ),
-      )
+      );
     }
   }
   if (params.left) {
-    const yoff = -((params.left - 1) / 2) * params.p
+    const yoff = -((params.left - 1) / 2) * params.p;
     for (let i = 0; i < params.left; i++) {
       if (i === params.left - 1) {
         silkscreenTriangleRoutes = getTrianglePath(
           -params.w / 2 - outerDiameter * 1.4,
           yoff + i * params.p,
           "left",
-        )
+        );
       }
       holes.push(
         platedhole(
@@ -134,11 +134,11 @@ export const breakoutheaders = (
           innerDiameter,
           outerDiameter,
         ),
-      )
+      );
     }
   }
   if (params.top) {
-    const xoff = -((params.top - 1) / 2) * params.p
+    const xoff = -((params.top - 1) / 2) * params.p;
     for (let i = 0; i < params.top; i++) {
       if (
         i === params.top - 1 &&
@@ -150,7 +150,7 @@ export const breakoutheaders = (
           xoff + i * params.p,
           height / 2 + outerDiameter * 1.4,
           "top",
-        )
+        );
       }
       holes.push(
         platedhole(
@@ -160,18 +160,18 @@ export const breakoutheaders = (
           innerDiameter,
           outerDiameter,
         ),
-      )
+      );
     }
   }
   if (params.bottom) {
-    const xoff = -((params.bottom - 1) / 2) * params.p
+    const xoff = -((params.bottom - 1) / 2) * params.p;
     for (let i = 0; i < params.bottom; i++) {
       if (i === 0 && !params.left) {
         silkscreenTriangleRoutes = getTrianglePath(
           xoff + i * params.p,
           -height / 2 - outerDiameter * 1.4,
           "bottom",
-        )
+        );
       }
       holes.push(
         platedhole(
@@ -181,7 +181,7 @@ export const breakoutheaders = (
           innerDiameter,
           outerDiameter,
         ),
-      )
+      );
     }
   }
 
@@ -192,7 +192,7 @@ export const breakoutheaders = (
     layer: "top",
     route: silkscreenTriangleRoutes,
     stroke_width: 0.1,
-  }
+  };
 
   const silkscreenPath: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -222,12 +222,12 @@ export const breakoutheaders = (
     ],
     stroke_width: 0.1,
     layer: "top",
-  }
+  };
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     height / 1.7,
     height / 25,
-  )
+  );
   return {
     circuitJson: [
       ...holes,
@@ -236,5 +236,5 @@ export const breakoutheaders = (
       silkscreenTriangle,
     ],
     parameters: params,
-  }
-}
+  };
+};

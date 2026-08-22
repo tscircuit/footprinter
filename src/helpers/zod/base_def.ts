@@ -1,6 +1,6 @@
-import { length } from "circuit-json"
-import { z } from "zod"
-import { pin1_location } from "./pin1-location"
+import { length } from "circuit-json";
+import { z } from "zod";
+import { pin1_location } from "./pin1-location";
 
 export const base_def = z.object({
   norefdes: z
@@ -42,4 +42,4 @@ export const base_def = z.object({
     .pipe(z.union([z.literal(1), z.literal(2)]))
     .optional()
     .describe("identify which diode pad is the anode"),
-})
+});

@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 const cases = [
   ["soic8_thermalpad2.4x3mm", 2.4, 3],
@@ -9,15 +9,17 @@ const cases = [
   ["ssop8_thermalpad2x2.4mm", 2, 2.4],
   ["msop8_thermalpad1.8x2mm", 1.8, 2],
   ["vssop8_thermalpad1.8x2mm", 1.8, 2],
-] as const
+] as const;
 
 for (const [footprint, width, height] of cases) {
   test(`${footprint} adds a rectangular center thermal pad`, () => {
-    const soup = fp.string(footprint).circuitJson()
-    const pads = soup.filter((element) => element.type === "pcb_smtpad")
-    const thermalPad = pads.find((pad) => pad.port_hints.includes("thermalpad"))
+    const soup = fp.string(footprint).circuitJson();
+    const pads = soup.filter((element) => element.type === "pcb_smtpad");
+    const thermalPad = pads.find((pad) =>
+      pad.port_hints.includes("thermalpad"),
+    );
 
-    expect(pads).toHaveLength(9)
+    expect(pads).toHaveLength(9);
     expect(thermalPad).toMatchObject({
       shape: "rect",
       x: 0,
@@ -25,22 +27,22 @@ for (const [footprint, width, height] of cases) {
       width,
       height,
       port_hints: ["thermalpad"],
-    })
+    });
 
-    const svgContent = convertCircuitJsonToPcbSvg(soup)
-    expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprint)
-  })
+    const svgContent = convertCircuitJsonToPcbSvg(soup);
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, footprint);
+  });
 }
 
 test("dfn thermal pad supports independent x and y offsets", () => {
   const footprint =
-    "dfn8_thermalpad2.4x3mm_thermalpadcenteroffsetx-0.2mm_thermalpadcenteroffsety0.35mm"
-  const soup = fp.string(footprint).circuitJson()
+    "dfn8_thermalpad2.4x3mm_thermalpadcenteroffsetx-0.2mm_thermalpadcenteroffsety0.35mm";
+  const soup = fp.string(footprint).circuitJson();
   const thermalPad = soup.find(
     (element) =>
       element.type === "pcb_smtpad" &&
       element.port_hints.includes("thermalpad"),
-  )
+  );
 
   expect(thermalPad).toMatchObject({
     shape: "rect",
@@ -48,11 +50,11 @@ test("dfn thermal pad supports independent x and y offsets", () => {
     y: 0.35,
     width: 2.4,
     height: 3,
-  })
+  });
 
-  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  const svgContent = convertCircuitJsonToPcbSvg(soup);
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "dfn8_offset_thermalpad",
-  )
-})
+  );
+});

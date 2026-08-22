@@ -4,12 +4,12 @@ import {
   type PcbCourtyardRect,
   type PcbHoleCircle,
   type PcbPlatedHoleOval,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const usbcmidmount_def = base_def.extend({
   fn: z.literal("usbcmidmount"),
@@ -43,7 +43,7 @@ export const usbcmidmount_def = base_def.extend({
   bodybottom: length
     .default("5.225mm")
     .describe("connector body negative y extent"),
-})
+});
 
 const pillPlatedHole = ({
   pin,
@@ -54,13 +54,13 @@ const pillPlatedHole = ({
   outerWidth,
   outerHeight,
 }: {
-  pin: number
-  x: number
-  y: number
-  holeWidth: number
-  holeHeight: number
-  outerWidth: number
-  outerHeight: number
+  pin: number;
+  x: number;
+  y: number;
+  holeWidth: number;
+  holeHeight: number;
+  outerWidth: number;
+  outerHeight: number;
 }): PcbPlatedHoleOval => ({
   type: "pcb_plated_hole",
   shape: "pill",
@@ -76,12 +76,12 @@ const pillPlatedHole = ({
   ccw_rotation: 0,
   layers: ["top", "bottom"],
   port_hints: [pin.toString()],
-})
+});
 
 export const usbcmidmount = (
   rawParams: z.input<typeof usbcmidmount_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = usbcmidmount_def.parse(rawParams)
+  const parameters = usbcmidmount_def.parse(rawParams);
   const {
     pinstart: pinStart,
     split,
@@ -105,7 +105,7 @@ export const usbcmidmount = (
     holey,
     holed,
     bodybottom,
-  } = parameters
+  } = parameters;
 
   const locatorHoles: PcbHoleCircle[] = noholes
     ? []
@@ -117,7 +117,7 @@ export const usbcmidmount = (
         hole_diameter: holed,
         x,
         y: holey,
-      }))
+      }));
   const shellTabs = [
     pillPlatedHole({
       pin: pinStart,
@@ -155,8 +155,8 @@ export const usbcmidmount = (
       outerWidth: bottomhw + 2 * bottomring,
       outerHeight: bottomhh + 2 * bottomring,
     }),
-  ]
-  const innerPowerX = Number((powerx - 0.8).toFixed(12))
+  ];
+  const innerPowerX = Number((powerx - 0.8).toFixed(12));
   const mergedSignalXs = [
     -powerx,
     -innerPowerX,
@@ -170,24 +170,24 @@ export const usbcmidmount = (
     1.75,
     innerPowerX,
     powerx,
-  ]
+  ];
   const splitSignalXs = [
     -3.35, -3.05, -2.55, -2.25, -1.75, -1.25, -0.75, -0.25, 0.25, 0.75, 1.25,
     1.75, 2.25, 2.55, 3.05, 3.35,
-  ]
-  const leftToRightSignalXs = split ? splitSignalXs : mergedSignalXs
+  ];
+  const leftToRightSignalXs = split ? splitSignalXs : mergedSignalXs;
   const signalXs = reverse
     ? leftToRightSignalXs.slice().reverse()
-    : leftToRightSignalXs
+    : leftToRightSignalXs;
   const signalWidths = split
     ? signalXs.map(() => pw)
     : signalXs.map((_, index) =>
         index < 2 || index >= signalXs.length - 2 ? powerpw : pw,
-      )
+      );
   const signalPads = signalXs.map((x, index) =>
     rectpad(pinStart + 4 + index, x, rowy, signalWidths[index], ph),
-  )
-  const silkX = Math.min(shellx - Math.max(tophw, bottomhw) / 2 - 0.2, 4.5)
+  );
+  const silkX = Math.min(shellx - Math.max(tophw, bottomhw) / 2 - 0.2, 4.5);
   const silkscreen = [
     silkscreenpath([
       { x: -silkX, y: -bottomy + bottomhh / 2 + bottomring + 0.2 },
@@ -201,20 +201,20 @@ export const usbcmidmount = (
       { x: -silkX, y: -bodybottom },
       { x: silkX, y: -bodybottom },
     ]),
-  ]
-  const topCopper = Math.max(rowy + ph / 2, topy + tophh / 2 + topring)
+  ];
+  const topCopper = Math.max(rowy + ph / 2, topy + tophh / 2 + topring);
   const bottomCopper = Math.min(
     -bodybottom,
     -bottomy - bottomhh / 2 - bottomring,
-  )
+  );
   const courtyardLeft =
     -shellx -
     Math.max(tophw + 2 * topring, bottomhw + 2 * bottomring) / 2 -
-    0.25
-  const courtyardRight = -courtyardLeft
-  const courtyardTop = topCopper + 0.25
-  const courtyardBottom = bottomCopper - 0.25
-  const ref: SilkscreenRef = silkscreenRef(0, courtyardTop + 0.75, 0.5)
+    0.25;
+  const courtyardRight = -courtyardLeft;
+  const courtyardTop = topCopper + 0.25;
+  const courtyardBottom = bottomCopper - 0.25;
+  const ref: SilkscreenRef = silkscreenRef(0, courtyardTop + 0.75, 0.5);
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -223,7 +223,7 @@ export const usbcmidmount = (
     width: courtyardRight - courtyardLeft,
     height: courtyardTop - courtyardBottom,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -235,5 +235,5 @@ export const usbcmidmount = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};

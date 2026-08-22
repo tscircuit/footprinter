@@ -3,4 +3,4 @@ export const u_curve = Array.from({ length: 9 }, (_, i) =>
 ).map((x) => ({
   x,
   y: -Math.sqrt(1 - x ** 2),
-}))
+}));

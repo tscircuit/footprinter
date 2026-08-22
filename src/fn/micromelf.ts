@@ -2,13 +2,13 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { length } from "circuit-json";
+import { base_def } from "../helpers/zod/base_def";
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode";
 
 export const micromelf_def = base_def.extend({
   fn: z.string(),
@@ -18,19 +18,19 @@ export const micromelf_def = base_def.extend({
   pl: z.string().default("0.80mm"),
   pw: z.string().default("1.20mm"),
   p: z.string().default("1.6mm"),
-})
+});
 
 export const micromelf = (
   raw_params: z.input<typeof micromelf_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = micromelf_def.parse(raw_params)
+  const parameters = micromelf_def.parse(raw_params);
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h),
     0.3,
-  )
+  );
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -56,10 +56,10 @@ export const micromelf = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const courtyardWidthMm = 2.9
-  const courtyardHeightMm = 1.7
+  const courtyardWidthMm = 2.9;
+  const courtyardHeightMm = 1.7;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -68,7 +68,7 @@ export const micromelf = (
     width: courtyardWidthMm,
     height: courtyardHeightMm,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: microMelfWithoutParsing(parameters).concat(
@@ -78,33 +78,30 @@ export const micromelf = (
       courtyard as AnyCircuitElement,
     ),
     parameters,
-  }
-}
+  };
+};
 
-export const getMicroMelfCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
-  const { pn, p } = parameters
+export const getMicroMelfCoords = (parameters: { pn: number; p: number }) => {
+  const { pn, p } = parameters;
 
   if (pn === 1) {
-    return { x: -p / 2, y: 0 }
+    return { x: -p / 2, y: 0 };
     // biome-ignore lint/style/noUselessElse: <explanation>
   } else {
-    return { x: p / 2, y: 0 }
+    return { x: p / 2, y: 0 };
   }
-}
+};
 
 export const microMelfWithoutParsing = (
   parameters: z.infer<typeof micromelf_def>,
 ) => {
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getMicroMelfCoords({
       pn: i,
       p: Number.parseFloat(parameters.p),
-    })
+    });
     pads.push(
       rectpad(
         i,
@@ -114,7 +111,7 @@ export const microMelfWithoutParsing = (
         Number.parseFloat(parameters.pw),
         0.1,
       ),
-    )
+    );
   }
-  return pads
-}
+  return pads;
+};

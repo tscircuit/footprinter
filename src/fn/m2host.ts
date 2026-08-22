@@ -4,48 +4,48 @@ import type {
   PcbSmtPad,
   PcbSmtPadRect,
   PcbCutout,
-} from "circuit-json"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { z } from "zod"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { z } from "zod";
+import { base_def } from "../helpers/zod/base_def";
 
 export const m2host_def = base_def.extend({
   fn: z.string(),
-})
+});
 
 export const m2host = (
   raw_params: z.input<typeof m2host_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = m2host_def.parse(raw_params)
+  const parameters = m2host_def.parse(raw_params);
 
-  const pads: PcbSmtPad[] = []
-  const padWidth = 0.5 - 0.15
-  const padLength = 1.5
-  const pitch = 0.5
-  const halfPitch = pitch / 2
-  const rowOffset = 0.5
-  const numPads = 75
+  const pads: PcbSmtPad[] = [];
+  const padWidth = 0.5 - 0.15;
+  const padLength = 1.5;
+  const pitch = 0.5;
+  const halfPitch = pitch / 2;
+  const rowOffset = 0.5;
+  const numPads = 75;
 
-  const startY = -((numPads - 1) * pitch) / 2
+  const startY = -((numPads - 1) * pitch) / 2;
 
   for (let i = 0; i < numPads; i++) {
-    const pn = i + 1
-    if (pn >= 24 && pn <= 31) continue
-    const y = startY - i * halfPitch
+    const pn = i + 1;
+    if (pn >= 24 && pn <= 31) continue;
+    const y = startY - i * halfPitch;
 
-    const isBottomLayer = pn % 2 === 0
-    const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0)
-    const rightEdgeOffset = 0.5
-    const x = rightEdgeOffset - padLengthWithOffset / 2
-    const pad = rectpad(pn, x, y, padLengthWithOffset, padWidth)
-    pad.layer = isBottomLayer ? "bottom" : "top"
-    pads.push(pad)
+    const isBottomLayer = pn % 2 === 0;
+    const padLengthWithOffset = padLength + (isBottomLayer ? 0.25 : 0);
+    const rightEdgeOffset = 0.5;
+    const x = rightEdgeOffset - padLengthWithOffset / 2;
+    const pad = rectpad(pn, x, y, padLengthWithOffset, padWidth);
+    pad.layer = isBottomLayer ? "bottom" : "top";
+    pads.push(pad);
   }
 
-  const cutoutWidth = 46 * 0.0254
-  const cutoutDepth = 137 * 0.0254
-  const cutoutOffsetFromPin1 = 261 * 0.0254
+  const cutoutWidth = 46 * 0.0254;
+  const cutoutDepth = 137 * 0.0254;
+  const cutoutOffsetFromPin1 = 261 * 0.0254;
   const cutout: PcbCutout = {
     type: "pcb_cutout",
     pcb_cutout_id: "",
@@ -56,12 +56,12 @@ export const m2host = (
     },
     width: cutoutDepth,
     height: cutoutWidth,
-  }
+  };
 
   const pin1MarkerPosition = {
     x: -0.5,
     y: startY,
-  }
+  };
 
   const pin1Marker: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -75,53 +75,53 @@ export const m2host = (
     ],
     stroke_width: 0.05,
     pcb_silkscreen_path_id: "pin_marker_1",
-  }
+  };
 
   // const silkscreenRefText: SilkscreenRef = silkscreenRef(0, padLength, 0.5)
 
   // --- center footprint around (0,0) ---
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Infinity;
+  let maxX = -Infinity;
+  let minY = Infinity;
+  let maxY = -Infinity;
 
   const updateBounds = (x: number, y: number, w = 0, h = 0) => {
-    minX = Math.min(minX, x - w / 2)
-    maxX = Math.max(maxX, x + w / 2)
-    minY = Math.min(minY, y - h / 2)
-    maxY = Math.max(maxY, y + h / 2)
-  }
+    minX = Math.min(minX, x - w / 2);
+    maxX = Math.max(maxX, x + w / 2);
+    minY = Math.min(minY, y - h / 2);
+    maxY = Math.max(maxY, y + h / 2);
+  };
 
   for (const pad of pads) {
-    const rectPad = pad as PcbSmtPadRect
-    updateBounds(rectPad.x, rectPad.y, rectPad.width, rectPad.height)
+    const rectPad = pad as PcbSmtPadRect;
+    updateBounds(rectPad.x, rectPad.y, rectPad.width, rectPad.height);
   }
-  updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height)
+  updateBounds(cutout.center.x, cutout.center.y, cutout.width, cutout.height);
   for (const point of pin1Marker.route) {
-    updateBounds(point.x, point.y)
+    updateBounds(point.x, point.y);
   }
 
-  const centerX = (minX + maxX) / 2
-  const centerY = (minY + maxY) / 2
+  const centerX = (minX + maxX) / 2;
+  const centerY = (minY + maxY) / 2;
 
   const translate = (el: any) => {
-    if (typeof el.x === "number") el.x -= centerX
-    if (typeof el.y === "number") el.y -= centerY
+    if (typeof el.x === "number") el.x -= centerX;
+    if (typeof el.y === "number") el.y -= centerY;
     if (el.center) {
-      el.center.x -= centerX
-      el.center.y -= centerY
+      el.center.x -= centerX;
+      el.center.y -= centerY;
     }
     if (Array.isArray(el.route)) {
       el.route = el.route.map((p: { x: number; y: number }) => ({
         x: p.x - centerX,
         y: p.y - centerY,
-      }))
+      }));
     }
-  }
+  };
 
-  for (const pad of pads) translate(pad)
-  translate(cutout)
-  translate(pin1Marker)
+  for (const pad of pads) translate(pad);
+  translate(cutout);
+  translate(pin1Marker);
 
   return {
     circuitJson: [
@@ -131,5 +131,5 @@ export const m2host = (
       pin1Marker,
     ],
     parameters,
-  }
-}
+  };
+};

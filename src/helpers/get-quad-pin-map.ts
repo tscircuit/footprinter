@@ -1,5 +1,5 @@
-import type { PinOrderSpecifier } from "./zod/pin-order-specifier"
-import type { QuadSidePinCounts } from "./get-quad-side-pin-counts"
+import type { PinOrderSpecifier } from "./zod/pin-order-specifier";
+import type { QuadSidePinCounts } from "./get-quad-side-pin-counts";
 
 /**
  * A counter-clockwise pin map is [1,2,3,4,5,6,7,8] for an 8-pin package
@@ -37,79 +37,79 @@ export const getQuadPinMap = ({
   ccw,
   startingpin,
 }: {
-  num_pins: number
-  sidePinCounts: QuadSidePinCounts
-  cw?: boolean
-  ccw?: boolean
-  startingpin?: PinOrderSpecifier[]
+  num_pins: number;
+  sidePinCounts: QuadSidePinCounts;
+  cw?: boolean;
+  ccw?: boolean;
+  startingpin?: PinOrderSpecifier[];
 }): number[] => {
-  const pin_map: number[] = []
-  const leftBottomPin = sidePinCounts.left
-  const bottomLeftPin = leftBottomPin + 1
-  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom
-  const rightBottomPin = bottomRightPin + 1
+  const pin_map: number[] = [];
+  const leftBottomPin = sidePinCounts.left;
+  const bottomLeftPin = leftBottomPin + 1;
+  const bottomRightPin = sidePinCounts.left + sidePinCounts.bottom;
+  const rightBottomPin = bottomRightPin + 1;
   const rightTopPin =
-    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right
-  const topRightPin = rightTopPin + 1
-  let current_position_ccw_normal = 1
+    sidePinCounts.left + sidePinCounts.bottom + sidePinCounts.right;
+  const topRightPin = rightTopPin + 1;
+  let current_position_ccw_normal = 1;
 
   /** Starting Flag Pins */
-  const sfp: Record<PinOrderSpecifier, boolean> = {} as any
+  const sfp: Record<PinOrderSpecifier, boolean> = {} as any;
   for (const specifier of startingpin ?? []) {
-    sfp[specifier] = true
+    sfp[specifier] = true;
   }
   if (!sfp.leftside && !sfp.topside && !sfp.rightside && !sfp.bottomside) {
-    sfp.leftside = true
+    sfp.leftside = true;
   }
   if (!sfp.bottompin && !sfp.leftpin && !sfp.rightpin && !sfp.toppin) {
     if (sfp.leftside) {
-      sfp.toppin = true
+      sfp.toppin = true;
     } else if (sfp.topside) {
-      sfp.rightpin = true
+      sfp.rightpin = true;
     } else if (sfp.rightside) {
-      sfp.bottompin = true
+      sfp.bottompin = true;
     } else if (sfp.bottomside) {
-      sfp.leftpin = true
+      sfp.leftpin = true;
     }
   }
 
   if (sfp.leftside && sfp.toppin) {
-    current_position_ccw_normal = 1
+    current_position_ccw_normal = 1;
   } else if (sfp.leftside && sfp.bottompin) {
-    current_position_ccw_normal = leftBottomPin
+    current_position_ccw_normal = leftBottomPin;
   } else if (sfp.bottomside && sfp.leftpin) {
-    current_position_ccw_normal = bottomLeftPin
+    current_position_ccw_normal = bottomLeftPin;
   } else if (sfp.bottomside && sfp.rightpin) {
-    current_position_ccw_normal = bottomRightPin
+    current_position_ccw_normal = bottomRightPin;
   } else if (sfp.rightside && sfp.bottompin) {
-    current_position_ccw_normal = rightBottomPin
+    current_position_ccw_normal = rightBottomPin;
   } else if (sfp.rightside && sfp.toppin) {
-    current_position_ccw_normal = rightTopPin
+    current_position_ccw_normal = rightTopPin;
   } else if (sfp.topside && sfp.rightpin) {
-    current_position_ccw_normal = topRightPin
+    current_position_ccw_normal = topRightPin;
   } else if (sfp.topside && sfp.leftpin) {
-    current_position_ccw_normal = num_pins
+    current_position_ccw_normal = num_pins;
   }
 
-  pin_map.push(-1) // the first index is meaningless
+  pin_map.push(-1); // the first index is meaningless
 
   // Each iteration we move the current position to the next pin, if we're
   // going CCW this means incrementing, if we're going CW this means
   // decrementing
   for (let i = 0; i < num_pins; i++) {
-    pin_map[current_position_ccw_normal] = i + 1
+    pin_map[current_position_ccw_normal] = i + 1;
     if (ccw || !cw) {
-      current_position_ccw_normal++
+      current_position_ccw_normal++;
       if (current_position_ccw_normal > num_pins) {
-        current_position_ccw_normal = 1
+        current_position_ccw_normal = 1;
       }
     } else {
-      current_position_ccw_normal--
+      current_position_ccw_normal--;
       if (current_position_ccw_normal < 1) {
-        current_position_ccw_normal = num_pins
+        current_position_ccw_normal = num_pins;
       }
     }
   }
 
-  return pin_map
-}
+  return pin_map;
+};

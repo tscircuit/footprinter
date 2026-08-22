@@ -1,22 +1,22 @@
-import { z } from "zod"
-import { mm } from "@tscircuit/mm"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
+import { z } from "zod";
+import { mm } from "@tscircuit/mm";
+import { platedhole } from "src/helpers/platedhole";
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad";
+import { platedHolePill } from "src/helpers/platedHolePill";
 import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 const to92CourtyardOutline = [
   { x: -2.5, y: 4.75 },
   { x: -2.5, y: -0.25 },
   { x: 2.5, y: -0.25 },
   { x: 2.5, y: 4.75 },
-]
+];
 
 export const to92_def = base_def.extend({
   fn: z.string(),
@@ -28,7 +28,7 @@ export const to92_def = base_def.extend({
   h: z.string().default("4.5mm"),
   inline: z.boolean().default(false),
   string: z.string().optional(),
-})
+});
 
 const generateSemicircle = (
   centerX: number,
@@ -36,18 +36,18 @@ const generateSemicircle = (
   radius: number,
 ): { x: number; y: number }[] => {
   return Array.from({ length: 25 }, (_, i) => {
-    const theta = (i / 24) * Math.PI
+    const theta = (i / 24) * Math.PI;
     return {
       x: centerX + Math.cos(theta) * radius,
       y: centerY + Math.sin(theta) * radius,
-    }
-  })
-}
+    };
+  });
+};
 
 export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
-  const { p, id, od, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
+  const { p, id, od, h } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
 
   return [
     platedHoleWithRectPad({
@@ -59,33 +59,33 @@ export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
       rectPadHeight: od,
     }),
     platedhole(2, padSpacing, holeY - padSpacing, id, od),
-  ]
-}
+  ];
+};
 
 export const to92 = (
   raw_params: z.input<typeof to92_def>,
 ): {
-  circuitJson: AnyCircuitElement[]
-  parameters: z.infer<typeof to92_def>
+  circuitJson: AnyCircuitElement[];
+  parameters: z.infer<typeof to92_def>;
 } => {
-  const match = raw_params.string?.match(/^to92_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const match = raw_params.string?.match(/^to92_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3;
 
   const parameters = to92_def.parse({
     ...raw_params,
     num_pins: numPins,
-  })
+  });
 
-  const { p, id, od, w, h, inline } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
-  const holeDia = Number.parseFloat(id)
-  const padDia = Number.parseFloat(od)
+  const { p, id, od, w, h, inline } = parameters;
+  const holeY = Number.parseFloat(h) / 2;
+  const padSpacing = Number.parseFloat(p);
+  const holeDia = Number.parseFloat(id);
+  const padDia = Number.parseFloat(od);
 
-  const padWidth = padDia
-  const padHeight = padDia * (1.5 / 1.05)
+  const padWidth = padDia;
+  const padHeight = padDia * (1.5 / 1.05);
 
-  let platedHoles: AnyCircuitElement[] = []
+  let platedHoles: AnyCircuitElement[] = [];
 
   if (parameters.num_pins === 3) {
     if (inline) {
@@ -107,7 +107,7 @@ export const to92 = (
           padWidth,
           padHeight,
         ),
-      ]
+      ];
     } else {
       platedHoles = [
         platedHoleWithRectPad({
@@ -120,7 +120,7 @@ export const to92 = (
         }),
         platedhole(2, 0, holeY, holeDia, padDia),
         platedhole(3, padSpacing, holeY - padSpacing, holeDia, padDia),
-      ]
+      ];
     }
   } else if (parameters.num_pins === 2) {
     platedHoles = [
@@ -140,13 +140,13 @@ export const to92 = (
         padWidth,
         padHeight,
       ),
-    ]
+    ];
   } else {
-    throw new Error("Invalid number of pins for TO-92")
+    throw new Error("Invalid number of pins for TO-92");
   }
 
-  const radius = Number.parseFloat(w) / 2
-  const semicircle = generateSemicircle(0, holeY, radius)
+  const radius = Number.parseFloat(w) / 2;
+  const semicircle = generateSemicircle(0, holeY, radius);
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -160,9 +160,9 @@ export const to92 = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5);
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -170,7 +170,7 @@ export const to92 = (
     pcb_component_id: "",
     outline: to92CourtyardOutline,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -180,5 +180,5 @@ export const to92 = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};

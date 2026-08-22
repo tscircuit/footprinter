@@ -3,14 +3,14 @@ import {
   type PcbCourtyardRect,
   type PcbSilkscreenPath,
   length,
-} from "circuit-json"
-import { z } from "zod"
+} from "circuit-json";
+import { z } from "zod";
 
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
-import { rectpad } from "src/helpers/rectpad"
-import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad";
+import { platedHolePill } from "src/helpers/platedHolePill";
+import { rectpad } from "src/helpers/rectpad";
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const jst_def = base_def.extend({
   fn: z.string(),
@@ -67,26 +67,26 @@ export const jst_def = base_def.extend({
     ),
 
   string: z.string().optional(),
-})
+});
 
-export type jstDef = z.input<typeof jst_def>
+export type jstDef = z.input<typeof jst_def>;
 
 // Variant type
-type JstVariant = "ph" | "sh" | "smd" | "zh" | "xh"
+type JstVariant = "ph" | "sh" | "smd" | "zh" | "xh";
 
 type Bounds = {
-  minX: number
-  maxX: number
-  minY: number
-  maxY: number
-}
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+};
 
 const createEmptyBounds = (): Bounds => ({
   minX: Number.POSITIVE_INFINITY,
   maxX: Number.NEGATIVE_INFINITY,
   minY: Number.POSITIVE_INFINITY,
   maxY: Number.NEGATIVE_INFINITY,
-})
+});
 
 const modifyBoundsToIncludeRect = ({
   bounds,
@@ -95,19 +95,19 @@ const modifyBoundsToIncludeRect = ({
   width,
   height,
 }: {
-  bounds: Bounds
-  centerX: number
-  centerY: number
-  width: number
-  height: number
+  bounds: Bounds;
+  centerX: number;
+  centerY: number;
+  width: number;
+  height: number;
 }) => {
-  const halfWidth = width / 2
-  const halfHeight = height / 2
-  bounds.minX = Math.min(bounds.minX, centerX - halfWidth)
-  bounds.maxX = Math.max(bounds.maxX, centerX + halfWidth)
-  bounds.minY = Math.min(bounds.minY, centerY - halfHeight)
-  bounds.maxY = Math.max(bounds.maxY, centerY + halfHeight)
-}
+  const halfWidth = width / 2;
+  const halfHeight = height / 2;
+  bounds.minX = Math.min(bounds.minX, centerX - halfWidth);
+  bounds.maxX = Math.max(bounds.maxX, centerX + halfWidth);
+  bounds.minY = Math.min(bounds.minY, centerY - halfHeight);
+  bounds.maxY = Math.max(bounds.maxY, centerY + halfHeight);
+};
 
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
@@ -148,15 +148,15 @@ const variantDefaults: Record<JstVariant, any> = {
     p: length.parse("2.5mm"),
     pw: length.parse("1.7mm"),
   },
-}
+};
 
 function getVariant(params: jstDef): JstVariant {
-  if (params.smd) return "smd"
-  if (params.sh) return "sh"
-  if (params.ph) return "ph"
-  if (params.zh) return "zh"
-  if (params.xh) return "xh"
-  return "ph"
+  if (params.smd) return "smd";
+  if (params.sh) return "sh";
+  if (params.ph) return "ph";
+  if (params.zh) return "zh";
+  if (params.xh) return "xh";
+  return "ph";
 }
 
 function generatePads({
@@ -172,56 +172,56 @@ function generatePads({
   mpl,
   mounttop,
 }: {
-  variant: JstVariant
-  numPins: number
-  p: number
-  id: number
-  pw: number
-  pl: number
-  mpx: number
-  mpy: number
-  mpw: number
-  mpl: number
-  mounttop: boolean
+  variant: JstVariant;
+  numPins: number;
+  p: number;
+  id: number;
+  pw: number;
+  pl: number;
+  mpx: number;
+  mpy: number;
+  mpw: number;
+  mpl: number;
+  mounttop: boolean;
 }): {
-  pads: AnyCircuitElement[]
-  padBounds: Bounds
-  maxPadHalfY: number
+  pads: AnyCircuitElement[];
+  padBounds: Bounds;
+  maxPadHalfY: number;
 } {
-  const pads: AnyCircuitElement[] = []
-  const padBounds = createEmptyBounds()
-  let maxPadHalfY = 0
+  const pads: AnyCircuitElement[] = [];
+  const padBounds = createEmptyBounds();
+  let maxPadHalfY = 0;
 
   if (variant === "smd") {
-    const startX = -((numPins - 1) / 2) * p
+    const startX = -((numPins - 1) / 2) * p;
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
-      pads.push(rectpad(i + 1, x, 0, pw, pl))
+      const x = startX + i * p;
+      pads.push(rectpad(i + 1, x, 0, pw, pl));
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
         centerY: 0,
         width: pw,
         height: pl,
-      })
+      });
     }
 
-    const mountY = mpy === 0 ? 0 : (mounttop ? 1 : -1) * mpy
+    const mountY = mpy === 0 ? 0 : (mounttop ? 1 : -1) * mpy;
     for (const [index, x] of [-mpx / 2, mpx / 2].entries()) {
-      pads.push(rectpad(numPins + index + 1, x, mountY, mpw, mpl))
+      pads.push(rectpad(numPins + index + 1, x, mountY, mpw, mpl));
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
         centerY: mountY,
         width: mpw,
         height: mpl,
-      })
+      });
     }
-    maxPadHalfY = Math.max(pl / 2, mpl / 2)
+    maxPadHalfY = Math.max(pl / 2, mpl / 2);
   } else if (variant === "ph") {
-    const startX = -((numPins - 1) / 2) * p
+    const startX = -((numPins - 1) / 2) * p;
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
+      const x = startX + i * p;
       pads.push(
         platedHoleWithRectPad({
           pn: i + 1,
@@ -231,20 +231,20 @@ function generatePads({
           rectPadWidth: pw,
           rectPadHeight: pl,
         }),
-      )
+      );
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
         centerY: 2,
         width: pw,
         height: pl,
-      })
-      maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl / 2);
     }
   } else if (variant === "zh") {
-    const startX = -((numPins - 1) / 2) * p
+    const startX = -((numPins - 1) / 2) * p;
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
+      const x = startX + i * p;
       if (i === 0) {
         // Pin 1: roundrect pad (KiCad roundrect_rratio 0.242718)
         pads.push(
@@ -257,10 +257,10 @@ function generatePads({
             rectPadHeight: pl,
             rectBorderRadius: 0.12499977,
           }),
-        )
+        );
       } else {
         // Pins 2+: oval/pill pad
-        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl));
       }
       modifyBoundsToIncludeRect({
         bounds: padBounds,
@@ -268,13 +268,13 @@ function generatePads({
         centerY: 0,
         width: pw,
         height: pl,
-      })
-      maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl / 2);
     }
   } else if (variant === "xh") {
-    const startX = -((numPins - 1) / 2) * p
+    const startX = -((numPins - 1) / 2) * p;
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
+      const x = startX + i * p;
       if (i === 0) {
         pads.push(
           platedHoleWithRectPad({
@@ -286,9 +286,9 @@ function generatePads({
             rectPadHeight: pl,
             rectBorderRadius: 0.12500015,
           }),
-        )
+        );
       } else {
-        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl));
       }
       modifyBoundsToIncludeRect({
         bounds: padBounds,
@@ -296,45 +296,45 @@ function generatePads({
         centerY: 0,
         width: pw,
         height: pl,
-      })
-      maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl / 2);
     }
   } else {
-    const startX = -((numPins - 1) / 2) * p
+    const startX = -((numPins - 1) / 2) * p;
     for (let i = 0; i < numPins; i++) {
-      const x = startX + i * p
-      pads.push(rectpad(i + 1, x, -1.325, pw, pl))
+      const x = startX + i * p;
+      pads.push(rectpad(i + 1, x, -1.325, pw, pl));
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
         centerY: -1.325,
         width: pw,
         height: pl,
-      })
-      maxPadHalfY = Math.max(maxPadHalfY, pl / 2)
+      });
+      maxPadHalfY = Math.max(maxPadHalfY, pl / 2);
     }
 
-    const sideOffset = ((numPins - 1) / 2) * p + 1.3
-    pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8))
-    pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8))
+    const sideOffset = ((numPins - 1) / 2) * p + 1.3;
+    pads.push(rectpad(numPins + 1, -sideOffset, 1.22, 1.2, 1.8));
+    pads.push(rectpad(numPins + 2, sideOffset, 1.22, 1.2, 1.8));
     modifyBoundsToIncludeRect({
       bounds: padBounds,
       centerX: -sideOffset,
       centerY: 1.22,
       width: 1.2,
       height: 1.8,
-    })
+    });
     modifyBoundsToIncludeRect({
       bounds: padBounds,
       centerX: sideOffset,
       centerY: 1.22,
       width: 1.2,
       height: 1.8,
-    })
-    maxPadHalfY = Math.max(maxPadHalfY, 0.9)
+    });
+    maxPadHalfY = Math.max(maxPadHalfY, 0.9);
   }
 
-  return { pads, padBounds, maxPadHalfY }
+  return { pads, padBounds, maxPadHalfY };
 }
 
 function generateSilkscreenBody({
@@ -344,11 +344,11 @@ function generateSilkscreenBody({
   numPins,
   p,
 }: {
-  variant: JstVariant
-  w: number
-  h: number
-  numPins?: number
-  p?: number
+  variant: JstVariant;
+  w: number;
+  h: number;
+  numPins?: number;
+  p?: number;
 }): PcbSilkscreenPath[] {
   const makeSilkscreenPath = (
     route: { x: number; y: number }[],
@@ -359,7 +359,7 @@ function generateSilkscreenBody({
     route,
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  })
+  });
 
   if (variant === "smd") {
     return [
@@ -370,7 +370,7 @@ function generateSilkscreenBody({
         { x: -w / 2, y: h / 2 },
         { x: -w / 2, y: -h / 2 },
       ]),
-    ]
+    ];
   } else if (variant === "ph") {
     return [
       makeSilkscreenPath([
@@ -380,13 +380,13 @@ function generateSilkscreenBody({
         { x: -3, y: -2 },
         { x: -3, y: 3 },
       ]),
-    ]
+    ];
   } else if (variant === "zh" && numPins && p) {
-    const pinSpan = (numPins - 1) * p
-    const bodyLeft = -pinSpan / 2 - 1.5
-    const bodyRight = pinSpan / 2 + 1.5
-    const bodyTop = -h / 2
-    const bodyBottom = h / 2
+    const pinSpan = (numPins - 1) * p;
+    const bodyLeft = -pinSpan / 2 - 1.5;
+    const bodyRight = pinSpan / 2 + 1.5;
+    const bodyTop = -h / 2;
+    const bodyBottom = h / 2;
 
     return [
       makeSilkscreenPath([
@@ -396,20 +396,20 @@ function generateSilkscreenBody({
         { x: bodyLeft, y: bodyBottom },
         { x: bodyLeft, y: bodyTop },
       ]),
-    ]
+    ];
   } else if (variant === "xh" && numPins && p) {
-    const startX = -((numPins - 1) / 2) * p
-    const pinXs = Array.from({ length: numPins }, (_, i) => startX + i * p)
-    const x1 = pinXs[0]
-    const xN = pinXs[numPins - 1]
-    const mid = (x1 + xN) / 2
+    const startX = -((numPins - 1) / 2) * p;
+    const pinXs = Array.from({ length: numPins }, (_, i) => startX + i * p);
+    const x1 = pinXs[0];
+    const xN = pinXs[numPins - 1];
+    const mid = (x1 + xN) / 2;
 
-    const TOP_INNER = -2.75
-    const TOP_OUTER = -3.51
-    const BOT_OUTER = 2.46
-    const BOT_EAR = 2.75
-    const EAR_TOP = 1.5
-    const STEP_Y = 0.2
+    const TOP_INNER = -2.75;
+    const TOP_OUTER = -3.51;
+    const BOT_OUTER = 2.46;
+    const BOT_EAR = 2.75;
+    const EAR_TOP = 1.5;
+    const STEP_Y = 0.2;
 
     const makeRectPath = (x0: number, y0: number, x1r: number, y1r: number) =>
       makeSilkscreenPath([
@@ -418,11 +418,11 @@ function generateSilkscreenBody({
         { x: x1r, y: y1r },
         { x: x0, y: y1r },
         { x: x0, y: y0 },
-      ])
+      ]);
 
-    const paths: PcbSilkscreenPath[] = []
+    const paths: PcbSilkscreenPath[] = [];
 
-    paths.push(makeRectPath(x1 - 2.56, BOT_OUTER, xN + 2.56, TOP_OUTER))
+    paths.push(makeRectPath(x1 - 2.56, BOT_OUTER, xN + 2.56, TOP_OUTER));
 
     paths.push(
       makeSilkscreenPath([
@@ -430,7 +430,7 @@ function generateSilkscreenBody({
         { x: x1 - 2.85, y: BOT_EAR },
         { x: x1 - 2.85, y: EAR_TOP },
       ]),
-    )
+    );
 
     paths.push(
       makeSilkscreenPath([
@@ -439,7 +439,7 @@ function generateSilkscreenBody({
         { x: x1 - 1.8, y: TOP_INNER },
         { x: mid, y: TOP_INNER },
       ]),
-    )
+    );
 
     paths.push(
       makeSilkscreenPath([
@@ -448,47 +448,47 @@ function generateSilkscreenBody({
         { x: xN + 1.8, y: TOP_INNER },
         { x: mid, y: TOP_INNER },
       ]),
-    )
+    );
 
-    paths.push(makeRectPath(x1 - 2.55, 2.45, x1 - 0.75, 1.7))
+    paths.push(makeRectPath(x1 - 2.55, 2.45, x1 - 0.75, 1.7));
     if (xN - 0.75 > x1 + 0.75) {
-      paths.push(makeRectPath(x1 + 0.75, 2.45, xN - 0.75, 1.7))
+      paths.push(makeRectPath(x1 + 0.75, 2.45, xN - 0.75, 1.7));
     }
-    paths.push(makeRectPath(xN + 0.75, 2.45, xN + 2.55, 1.7))
+    paths.push(makeRectPath(xN + 0.75, 2.45, xN + 2.55, 1.7));
 
-    return paths
+    return paths;
   } else {
-    return []
+    return [];
   }
 }
 
 export const jst = (
   raw_params: jstDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const params = jst_def.parse(raw_params)
-  const variant = getVariant(params)
-  const defaults = variantDefaults[variant]
+  const params = jst_def.parse(raw_params);
+  const variant = getVariant(params);
+  const defaults = variantDefaults[variant];
 
-  let numPins: number | undefined
+  let numPins: number | undefined;
 
-  const explicitNumPins = (raw_params as any).num_pins
+  const explicitNumPins = (raw_params as any).num_pins;
   if (typeof explicitNumPins === "number") {
-    numPins = explicitNumPins
+    numPins = explicitNumPins;
   }
 
-  const str = typeof raw_params.string === "string" ? raw_params.string : ""
-  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/)
-  const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/)
+  const str = typeof raw_params.string === "string" ? raw_params.string : "";
+  const match = str.match(/(?:^|_)jst(\d+)(?:_|$)/);
+  const zhMatch = str.match(/(?:^|_)zh(\d+)(?:_|$)/);
   if (match && match[1]) {
-    const parsed = Number.parseInt(match[1], 10)
+    const parsed = Number.parseInt(match[1], 10);
     if (!Number.isNaN(parsed)) {
-      numPins = parsed
+      numPins = parsed;
     }
   }
   if (zhMatch && zhMatch[1]) {
-    const parsed = Number.parseInt(zhMatch[1], 10)
+    const parsed = Number.parseInt(zhMatch[1], 10);
     if (!Number.isNaN(parsed)) {
-      numPins = parsed
+      numPins = parsed;
     }
   }
 
@@ -497,24 +497,26 @@ export const jst = (
       `JST requires an explicit pin count (e.g. jst6_sh or .jst(6))${
         params.string ? `, from string "${params.string}"` : ""
       }`,
-    )
+    );
   }
 
-  const p = params.p ?? defaults.p
+  const p = params.p ?? defaults.p;
   const id =
-    params.id ?? (variant === "xh" ? (numPins === 2 ? 1.0 : 0.95) : defaults.id)
-  const pw = params.pw ?? defaults.pw
+    params.id ??
+    (variant === "xh" ? (numPins === 2 ? 1.0 : 0.95) : defaults.id);
+  const pw = params.pw ?? defaults.pw;
   const pl =
-    params.pl ?? (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl)
+    params.pl ??
+    (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl);
   const w =
-    params.w ?? (variant === "xh" ? (numPins - 1) * p + 5.12 : defaults.w)
-  const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h)
+    params.w ?? (variant === "xh" ? (numPins - 1) * p + 5.12 : defaults.w);
+  const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h);
 
-  const mpx = params.mpx ?? (numPins - 1) * p + 3.4
-  const mpy = params.mpy ?? defaults.mpy ?? 0
-  const mpw = params.mpw ?? defaults.mpw ?? 0
-  const mpl = params.mpl ?? defaults.mpl ?? 0
-  const mounttop = params.mounttop ?? false
+  const mpx = params.mpx ?? (numPins - 1) * p + 3.4;
+  const mpy = params.mpy ?? defaults.mpy ?? 0;
+  const mpw = params.mpw ?? defaults.mpw ?? 0;
+  const mpl = params.mpl ?? defaults.mpl ?? 0;
+  const mounttop = params.mounttop ?? false;
   const padGeometry = generatePads({
     variant,
     numPins,
@@ -527,8 +529,8 @@ export const jst = (
     mpw,
     mpl,
     mounttop,
-  })
-  const { pads, padBounds, maxPadHalfY } = padGeometry
+  });
+  const { pads, padBounds, maxPadHalfY } = padGeometry;
   const silkscreenWidth =
     variant === "smd"
       ? Math.max(
@@ -536,7 +538,7 @@ export const jst = (
           2 * Math.max(Math.abs(padBounds.minX), Math.abs(padBounds.maxX)) +
             0.4,
         )
-      : w
+      : w;
   const silkscreenHeight =
     variant === "smd"
       ? Math.max(
@@ -544,46 +546,46 @@ export const jst = (
           2 * Math.max(Math.abs(padBounds.minY), Math.abs(padBounds.maxY)) +
             0.4,
         )
-      : h
+      : h;
   const silkscreenBodies = generateSilkscreenBody({
     variant,
     w: silkscreenWidth,
     h: silkscreenHeight,
     numPins,
     p,
-  })
+  });
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     silkscreenHeight / 2 + 1,
     0.5,
-  )
+  );
 
-  const allSilkscreenPoints = silkscreenBodies.flatMap((path) => path.route)
-  const silkscreenXs = allSilkscreenPoints.map((point) => point.x)
-  const silkscreenYs = allSilkscreenPoints.map((point) => point.y)
+  const allSilkscreenPoints = silkscreenBodies.flatMap((path) => path.route);
+  const silkscreenXs = allSilkscreenPoints.map((point) => point.x);
+  const silkscreenYs = allSilkscreenPoints.map((point) => point.y);
   const hasSilkscreenGeometry =
-    silkscreenXs.length > 0 && silkscreenYs.length > 0
+    silkscreenXs.length > 0 && silkscreenYs.length > 0;
 
   const featureMinX = hasSilkscreenGeometry
     ? Math.min(padBounds.minX, Math.min(...silkscreenXs))
-    : padBounds.minX
+    : padBounds.minX;
   const featureMaxX = hasSilkscreenGeometry
     ? Math.max(padBounds.maxX, Math.max(...silkscreenXs))
-    : padBounds.maxX
+    : padBounds.maxX;
   const featureMinY = hasSilkscreenGeometry
     ? Math.min(padBounds.minY, Math.min(...silkscreenYs))
-    : padBounds.minY
+    : padBounds.minY;
   const featureMaxY = hasSilkscreenGeometry
     ? Math.max(padBounds.maxY, Math.max(...silkscreenYs))
-    : padBounds.maxY
+    : padBounds.maxY;
 
-  const courtyardSideClearanceX = 0.5
-  const courtyardFrontClearanceY = 0.05
-  const courtyardRearClearanceY = maxPadHalfY + 0.085
-  const crtMinX = featureMinX - courtyardSideClearanceX
-  const crtMaxX = featureMaxX + courtyardSideClearanceX
-  const crtMinY = featureMinY - courtyardRearClearanceY
-  const crtMaxY = featureMaxY + courtyardFrontClearanceY
+  const courtyardSideClearanceX = 0.5;
+  const courtyardFrontClearanceY = 0.05;
+  const courtyardRearClearanceY = maxPadHalfY + 0.085;
+  const crtMinX = featureMinX - courtyardSideClearanceX;
+  const crtMaxX = featureMaxX + courtyardSideClearanceX;
+  const crtMinY = featureMinY - courtyardRearClearanceY;
+  const crtMaxY = featureMaxY + courtyardFrontClearanceY;
 
   const courtyard: PcbCourtyardRect =
     variant === "xh"
@@ -604,7 +606,7 @@ export const jst = (
           width: crtMaxX - crtMinX,
           height: crtMaxY - crtMinY,
           layer: "top",
-        }
+        };
 
   return {
     circuitJson: [
@@ -637,5 +639,5 @@ export const jst = (
           }
         : {}),
     },
-  }
-}
+  };
+};

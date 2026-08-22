@@ -1,16 +1,16 @@
-import { getBoundsCenter, getBoundsFromPoints } from "@tscircuit/math-utils"
+import { getBoundsCenter, getBoundsFromPoints } from "@tscircuit/math-utils";
 import {
   type AnyCircuitElement,
   type PcbCourtyardRect,
   type PcbHoleCircle,
   length,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
-import { function_call } from "../helpers/zod/function-call"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
+import { function_call } from "../helpers/zod/function-call";
 
 export const smdslideswitch_def = base_def.extend({
   fn: z.literal("smdslideswitch"),
@@ -39,12 +39,12 @@ export const smdslideswitch_def = base_def.extend({
     .describe("alignment-hole Y position; defaults to mounty"),
   holed: length.default("0.9mm").describe("alignment-hole diameter"),
   noholes: z.boolean().optional().default(false),
-})
+});
 
 export const smdslideswitch = (
   rawParams: z.input<typeof smdslideswitch_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = smdslideswitch_def.parse(rawParams)
+  const parameters = smdslideswitch_def.parse(rawParams);
   const {
     num_pins,
     signalcols,
@@ -60,55 +60,55 @@ export const smdslideswitch = (
     holex,
     holed,
     noholes,
-  } = parameters
-  const holey = parameters.holey ?? mounty
+  } = parameters;
+  const holey = parameters.holey ?? mounty;
   const invalidMissingColumn = missing.find(
     (column) =>
       typeof column !== "number" ||
       !Number.isInteger(column) ||
       column < 1 ||
       column > signalcols,
-  )
+  );
   if (invalidMissingColumn !== undefined) {
     throw new Error(
       `Invalid missing signal column "${invalidMissingColumn}" for signalcols${signalcols}`,
-    )
+    );
   }
   const missingColumns = new Set(
     missing.filter((column): column is number => typeof column === "number"),
-  )
-  const signalPadCount = signalcols - missingColumns.size
+  );
+  const signalPadCount = signalcols - missingColumns.size;
 
   if (signalPadCount + 4 !== num_pins) {
     throw new Error(
       `smdslideswitch${num_pins} needs ${num_pins - 4} signal pads, but signalcols${signalcols}_missing(${[...missingColumns].join(",")}) creates ${signalPadCount}`,
-    )
+    );
   }
 
-  const clean = (value: number) => Number(value.toFixed(12))
-  const pads: AnyCircuitElement[] = []
-  const signalStartX = -((signalcols - 1) * p) / 2
-  let pinNumber = 1
+  const clean = (value: number) => Number(value.toFixed(12));
+  const pads: AnyCircuitElement[] = [];
+  const signalStartX = -((signalcols - 1) * p) / 2;
+  let pinNumber = 1;
 
   for (let column = 1; column <= signalcols; column++) {
-    if (missingColumns.has(column)) continue
+    if (missingColumns.has(column)) continue;
     pads.push(
       rectpad(pinNumber, clean(signalStartX + (column - 1) * p), 0, pw, pl),
-    )
-    pinNumber++
+    );
+    pinNumber++;
   }
 
-  const mountTopY = mounty + mpy / 2
-  const mountBottomY = mounty - mpy / 2
+  const mountTopY = mounty + mpy / 2;
+  const mountBottomY = mounty - mpy / 2;
   const mountPositions = [
     { x: clean(-mpx / 2), y: clean(mountTopY) },
     { x: clean(mpx / 2), y: clean(mountTopY) },
     { x: clean(-mpx / 2), y: clean(mountBottomY) },
     { x: clean(mpx / 2), y: clean(mountBottomY) },
-  ]
+  ];
   for (const position of mountPositions) {
-    pads.push(rectpad(pinNumber, position.x, position.y, mpw, mpl))
-    pinNumber++
+    pads.push(rectpad(pinNumber, position.x, position.y, mpw, mpl));
+    pinNumber++;
   }
 
   const holes: PcbHoleCircle[] = noholes
@@ -121,11 +121,11 @@ export const smdslideswitch = (
         hole_diameter: holed,
         x,
         y: holey,
-      }))
+      }));
 
-  const bodyHalfWidth = Math.max(mpx / 2 - mpw / 2 - 0.2, p)
-  const bodyTop = -pl / 2 - 0.2
-  const bodyBottom = mountBottomY + mpl / 2 + 0.2
+  const bodyHalfWidth = Math.max(mpx / 2 - mpw / 2 - 0.2, p);
+  const bodyTop = -pl / 2 - 0.2;
+  const bodyBottom = mountBottomY + mpl / 2 + 0.2;
   const silkscreen = [
     silkscreenpath([
       { x: -bodyHalfWidth, y: bodyTop },
@@ -143,9 +143,9 @@ export const smdslideswitch = (
       { x: bodyHalfWidth, y: bodyBottom },
       { x: bodyHalfWidth, y: bodyTop },
     ]),
-  ]
+  ];
 
-  const signalEndX = signalStartX + (signalcols - 1) * p
+  const signalEndX = signalStartX + (signalcols - 1) * p;
   const geometryBounds = getBoundsFromPoints([
     { x: signalStartX - pw / 2, y: -pl / 2 },
     { x: signalEndX + pw / 2, y: pl / 2 },
@@ -157,13 +157,13 @@ export const smdslideswitch = (
           { x: holex + holed / 2, y: holey + holed / 2 },
         ]
       : []),
-  ])
+  ]);
   if (!geometryBounds) {
-    throw new Error("Could not determine SMD slide-switch bounds")
+    throw new Error("Could not determine SMD slide-switch bounds");
   }
 
-  const courtyardMargin = 0.25
-  const courtyardCenter = getBoundsCenter(geometryBounds)
+  const courtyardMargin = 0.25;
+  const courtyardCenter = getBoundsCenter(geometryBounds);
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -172,15 +172,15 @@ export const smdslideswitch = (
     width: geometryBounds.maxX - geometryBounds.minX + courtyardMargin * 2,
     height: geometryBounds.maxY - geometryBounds.minY + courtyardMargin * 2,
     layer: "top",
-  }
+  };
   const ref: SilkscreenRef = silkscreenRef(
     courtyardCenter.x,
     geometryBounds.maxY + 0.6,
     0.5,
-  )
+  );
 
   return {
     circuitJson: [...pads, ...holes, ...silkscreen, ref, courtyard],
     parameters,
-  }
-}
+  };
+};

@@ -2,13 +2,13 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { length } from "circuit-json";
+import { base_def } from "../helpers/zod/base_def";
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode";
 
 export const sod80_def = base_def.extend({
   fn: z.string(),
@@ -18,19 +18,19 @@ export const sod80_def = base_def.extend({
   pl: z.string().default("1.25mm"),
   pw: z.string().default("2mm"),
   p: z.string().default("3.75mm"),
-})
+});
 
 export const sod80 = (
   raw_params: z.input<typeof sod80_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sod80_def.parse(raw_params)
+  const parameters = sod80_def.parse(raw_params);
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h) / 2 + 1,
     0.3,
-  )
+  );
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -56,10 +56,10 @@ export const sod80 = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const courtyardWidthMm = 5.1
-  const courtyardHeightMm = 2.8
+  const courtyardWidthMm = 5.1;
+  const courtyardHeightMm = 2.8;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -68,7 +68,7 @@ export const sod80 = (
     width: courtyardWidthMm,
     height: courtyardHeightMm,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: sod80WithoutParsing(parameters).concat(
@@ -78,26 +78,23 @@ export const sod80 = (
       courtyard as AnyCircuitElement,
     ),
     parameters,
-  }
-}
+  };
+};
 
-export const getsod80Coords = (parameters: {
-  pn: number
-  p: number
-}) => {
-  const { pn, p } = parameters
+export const getsod80Coords = (parameters: { pn: number; p: number }) => {
+  const { pn, p } = parameters;
 
-  return pn === 1 ? { x: -p / 2, y: 0 } : { x: p / 2, y: 0 }
-}
+  return pn === 1 ? { x: -p / 2, y: 0 } : { x: p / 2, y: 0 };
+};
 
 export const sod80WithoutParsing = (parameters: z.infer<typeof sod80_def>) => {
-  const pads: AnyCircuitElement[] = []
+  const pads: AnyCircuitElement[] = [];
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getsod80Coords({
       pn: i,
       p: Number.parseFloat(parameters.p),
-    })
+    });
     pads.push(
       rectpad(
         i,
@@ -106,7 +103,7 @@ export const sod80WithoutParsing = (parameters: z.infer<typeof sod80_def>) => {
         Number.parseFloat(parameters.pl),
         Number.parseFloat(parameters.pw),
       ),
-    )
+    );
   }
-  return pads
-}
+  return pads;
+};

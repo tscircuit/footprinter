@@ -2,11 +2,11 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { base_def } from "../helpers/zod/base_def";
 
 const sot323CourtyardOutline = [
   { x: -1.45, y: 0.98 },
@@ -25,7 +25,7 @@ const sot323CourtyardOutline = [
   { x: -0.73, y: -0.32 },
   { x: -0.73, y: 0.32 },
   { x: -1.45, y: 0.32 },
-]
+];
 
 export const sot323_def = base_def.extend({
   fn: z.string(),
@@ -36,57 +36,57 @@ export const sot323_def = base_def.extend({
   pw: z.string().default("0.45mm"),
   p: z.string().default("0.891mm"),
   string: z.string().optional(),
-})
+});
 
 export const sot323 = (
   raw_params: z.input<typeof sot323_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const match = raw_params.string?.match(/^sot323_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 3) : 3
+  const match = raw_params.string?.match(/^sot323_(\d+)/);
+  const numPins = match ? Number.parseInt(match[1]!, 3) : 3;
 
   const parameters = sot323_def.parse({
     ...raw_params,
     num_pins: numPins,
-  })
+  });
 
   if (parameters.num_pins === 3) {
     return {
       circuitJson: sot323_3(parameters),
       parameters: parameters,
-    }
+    };
   }
 
-  throw new Error("Invalid number of pins")
-}
+  throw new Error("Invalid number of pins");
+};
 
 export const getCcwSot323Coords = (parameters: {
-  num_pins: number
-  pn: number
-  w: number
-  h: number
-  pl: number
-  p: number
+  num_pins: number;
+  pn: number;
+  w: number;
+  h: number;
+  pl: number;
+  p: number;
 }) => {
-  const { pn, w, h, pl, p } = parameters
+  const { pn, w, h, pl, p } = parameters;
 
   if (pn === 1) {
-    return { x: -p, y: 0.65 }
+    return { x: -p, y: 0.65 };
   }
   if (pn === 2) {
-    return { x: -p, y: -0.65 }
+    return { x: -p, y: -0.65 };
   }
 
-  return { x: p, y: 0 }
-}
+  return { x: p, y: 0 };
+};
 
 export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
-  const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
-  const cornerRadius = Math.min(pl, pw) / 8
+  const pads: AnyCircuitElement[] = [];
+  const w = Number.parseFloat(parameters.w);
+  const h = Number.parseFloat(parameters.h);
+  const pl = Number.parseFloat(parameters.pl);
+  const pw = Number.parseFloat(parameters.pw);
+  const p = Number.parseFloat(parameters.p);
+  const cornerRadius = Math.min(pl, pw) / 8;
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot323Coords({
@@ -96,18 +96,18 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
       h,
       pl,
       p,
-    })
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    });
+    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius));
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     Number.parseInt(parameters.h) / 2 + 1,
     0.3,
-  )
+  );
 
-  const width = w / 2 - pl
-  const height = h / 2
+  const width = w / 2 - pl;
+  const height = h / 2;
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -119,7 +119,7 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
-  }
+  };
   const silkscreenPath2: PcbSilkscreenPath = {
     layer: "top",
     pcb_component_id: "",
@@ -131,7 +131,7 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
     ],
     type: "pcb_silkscreen_path",
     stroke_width: 0.1,
-  }
+  };
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -139,7 +139,7 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
     pcb_component_id: "",
     outline: sot323CourtyardOutline,
     layer: "top",
-  }
+  };
 
   return [
     ...pads,
@@ -147,5 +147,5 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
     silkscreenPath2,
     silkscreenRefText as AnyCircuitElement,
     courtyard,
-  ]
-}
+  ];
+};

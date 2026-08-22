@@ -3,45 +3,45 @@ import {
   type PcbFabricationNotePath,
   type PcbFabricationNoteText,
   length,
-} from "circuit-json"
-import type { RectBounds } from "./rect-union-outline"
+} from "circuit-json";
+import type { RectBounds } from "./rect-union-outline";
 
 type DiodeCopperPadBoundsParams = {
-  p?: string | number
-  pad_spacing?: string | number
-  pl?: string | number
-  pw?: string | number
-  cathodepin?: number
-  anodepin?: number
-}
+  p?: string | number;
+  pad_spacing?: string | number;
+  pl?: string | number;
+  pw?: string | number;
+  cathodepin?: number;
+  anodepin?: number;
+};
 
 type DiodeFabricationNoteOptions = {
-  cathodePin?: number
-  anodePin?: number
-  idSuffix?: string
-}
+  cathodePin?: number;
+  anodePin?: number;
+  idSuffix?: string;
+};
 
 export const getCopperBounds = (
   circuitJson: AnyCircuitElement[],
 ): RectBounds => {
-  let minX = Number.POSITIVE_INFINITY
-  let maxX = Number.NEGATIVE_INFINITY
-  let minY = Number.POSITIVE_INFINITY
-  let maxY = Number.NEGATIVE_INFINITY
+  let minX = Number.POSITIVE_INFINITY;
+  let maxX = Number.NEGATIVE_INFINITY;
+  let minY = Number.POSITIVE_INFINITY;
+  let maxY = Number.NEGATIVE_INFINITY;
 
   for (const element of circuitJson) {
     if (element.type === "pcb_smtpad") {
-      minX = Math.min(minX, element.x - element.width / 2)
-      maxX = Math.max(maxX, element.x + element.width / 2)
-      minY = Math.min(minY, element.y - element.height / 2)
-      maxY = Math.max(maxY, element.y + element.height / 2)
+      minX = Math.min(minX, element.x - element.width / 2);
+      maxX = Math.max(maxX, element.x + element.width / 2);
+      minY = Math.min(minY, element.y - element.height / 2);
+      maxY = Math.max(maxY, element.y + element.height / 2);
     }
 
     if (element.type === "pcb_plated_hole") {
-      minX = Math.min(minX, element.x - element.outer_diameter / 2)
-      maxX = Math.max(maxX, element.x + element.outer_diameter / 2)
-      minY = Math.min(minY, element.y - element.outer_diameter / 2)
-      maxY = Math.max(maxY, element.y + element.outer_diameter / 2)
+      minX = Math.min(minX, element.x - element.outer_diameter / 2);
+      maxX = Math.max(maxX, element.x + element.outer_diameter / 2);
+      minY = Math.min(minY, element.y - element.outer_diameter / 2);
+      maxY = Math.max(maxY, element.y + element.outer_diameter / 2);
     }
   }
 
@@ -51,46 +51,46 @@ export const getCopperBounds = (
     !Number.isFinite(minY) ||
     !Number.isFinite(maxY)
   ) {
-    throw new Error("Could not determine diode copper bounds")
+    throw new Error("Could not determine diode copper bounds");
   }
 
-  return { minX, maxX, minY, maxY }
-}
+  return { minX, maxX, minY, maxY };
+};
 
 export const createFabricationNoteDiodeFromCircuitJson = (
   circuitJson: AnyCircuitElement[],
   options: DiodeFabricationNoteOptions = {},
 ): AnyCircuitElement[] =>
-  createFabricationNoteDiode(getCopperBounds(circuitJson), options)
+  createFabricationNoteDiode(getCopperBounds(circuitJson), options);
 
 const getCathodePin = ({
   anodePin,
   cathodePin,
 }: DiodeFabricationNoteOptions): 1 | 2 | undefined => {
   if (anodePin !== undefined && anodePin !== 1 && anodePin !== 2) {
-    throw new Error("Diode anode pin must be 1 or 2")
+    throw new Error("Diode anode pin must be 1 or 2");
   }
   if (cathodePin !== undefined && cathodePin !== 1 && cathodePin !== 2) {
-    throw new Error("Diode cathode pin must be 1 or 2")
+    throw new Error("Diode cathode pin must be 1 or 2");
   }
 
   if (anodePin !== undefined && cathodePin !== undefined) {
     if (anodePin === cathodePin) {
-      throw new Error("Diode anode and cathode cannot use the same pin")
+      throw new Error("Diode anode and cathode cannot use the same pin");
     }
-    return cathodePin
+    return cathodePin;
   }
 
-  if (cathodePin !== undefined) return cathodePin
-  if (anodePin === 1) return 2
-  if (anodePin === 2) return 1
-  return undefined
-}
+  if (cathodePin !== undefined) return cathodePin;
+  if (anodePin === 1) return 2;
+  if (anodePin === 2) return 1;
+  return undefined;
+};
 
 export const createFabricationNoteDiodeFromCopperPads = (
   parameters: DiodeCopperPadBoundsParams,
 ): AnyCircuitElement[] => {
-  const pitch = parameters.p ?? parameters.pad_spacing
+  const pitch = parameters.p ?? parameters.pad_spacing;
 
   if (
     pitch === undefined ||
@@ -99,12 +99,12 @@ export const createFabricationNoteDiodeFromCopperPads = (
   ) {
     throw new Error(
       "Diode fabrication note requires p or pad_spacing, pl, and pw",
-    )
+    );
   }
 
-  const padPitch = length.parse(pitch)
-  const padLength = length.parse(parameters.pl)
-  const padWidth = length.parse(parameters.pw)
+  const padPitch = length.parse(pitch);
+  const padLength = length.parse(parameters.pl);
+  const padWidth = length.parse(parameters.pw);
 
   return createFabricationNoteDiode(
     {
@@ -117,39 +117,39 @@ export const createFabricationNoteDiodeFromCopperPads = (
       anodePin: parameters.anodepin,
       cathodePin: parameters.cathodepin,
     },
-  )
-}
+  );
+};
 
 export const createFabricationNoteDiode = (
   bounds: RectBounds,
   options: DiodeFabricationNoteOptions = {},
 ): AnyCircuitElement[] => {
-  const elms: (PcbFabricationNotePath | PcbFabricationNoteText)[] = []
+  const elms: (PcbFabricationNotePath | PcbFabricationNoteText)[] = [];
 
-  const width = bounds.maxX - bounds.minX
-  const height = bounds.maxY - bounds.minY
-  const centerX = (bounds.minX + bounds.maxX) / 2
-  const centerY = (bounds.minY + bounds.maxY) / 2
-  const cathodePin = getCathodePin(options)
+  const width = bounds.maxX - bounds.minX;
+  const height = bounds.maxY - bounds.minY;
+  const centerX = (bounds.minX + bounds.maxX) / 2;
+  const centerY = (bounds.minY + bounds.maxY) / 2;
+  const cathodePin = getCathodePin(options);
   const orientX =
-    cathodePin === 1 ? (x: number) => 2 * centerX - x : (x: number) => x
-  const symbolHalfHeight = height * 0.28
-  const symbolHeight = symbolHalfHeight * 2
-  const maxSymbolWidth = width * 0.2
-  const maxSymbolWidthToHeightRatio = 1.25
+    cathodePin === 1 ? (x: number) => 2 * centerX - x : (x: number) => x;
+  const symbolHalfHeight = height * 0.28;
+  const symbolHeight = symbolHalfHeight * 2;
+  const maxSymbolWidth = width * 0.2;
+  const maxSymbolWidthToHeightRatio = 1.25;
   const symbolWidth = Math.min(
     maxSymbolWidth,
     symbolHeight * maxSymbolWidthToHeightRatio,
-  )
-  const symbolMinX = centerX - symbolWidth / 2
-  const symbolMaxX = centerX + symbolWidth / 2
-  const legLength = symbolWidth * 0.18
-  const triangleBaseX = symbolMinX + legLength
-  const cathodeX = symbolMaxX - legLength
-  const strokeWidth = Math.max(Math.min(width, height) * 0.035, 0.01)
-  const fontSize = Math.max(Math.min(width, height) * 0.25, 0.1)
+  );
+  const symbolMinX = centerX - symbolWidth / 2;
+  const symbolMaxX = centerX + symbolWidth / 2;
+  const legLength = symbolWidth * 0.18;
+  const triangleBaseX = symbolMinX + legLength;
+  const cathodeX = symbolMaxX - legLength;
+  const strokeWidth = Math.max(Math.min(width, height) * 0.035, 0.01);
+  const fontSize = Math.max(Math.min(width, height) * 0.25, 0.1);
   const getNoteId = (baseId: string) =>
-    options.idSuffix ? `${baseId}_${options.idSuffix}` : baseId
+    options.idSuffix ? `${baseId}_${options.idSuffix}` : baseId;
 
   elms.push(
     {
@@ -236,7 +236,7 @@ export const createFabricationNoteDiode = (
       },
       anchor_alignment: "center",
     },
-  )
+  );
 
-  return elms
-}
+  return elms;
+};

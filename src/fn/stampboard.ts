@@ -4,12 +4,12 @@ import {
   type PcbPlatedHole,
   type PcbSilkscreenPath,
   type PcbSilkscreenText,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { platedhole } from "src/helpers/platedhole";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { base_def } from "../helpers/zod/base_def";
 
 export const stampboard_def = base_def.extend({
   fn: z.string(),
@@ -26,27 +26,27 @@ export const stampboard_def = base_def.extend({
   innerholeedgedistance: length.default(length.parse("1.61mm")),
   silkscreenlabels: z.boolean().default(false),
   silkscreenlabelmargin: length.default(length.parse("0.1mm")),
-})
+});
 
-export type Stampboard_def = z.input<typeof stampboard_def>
+export type Stampboard_def = z.input<typeof stampboard_def>;
 
 const getHeight = (parameters: Stampboard_def) => {
-  const params = stampboard_def.parse(parameters)
+  const params = stampboard_def.parse(parameters);
   if (params.left && params.right) {
-    return Math.max(params.left, params.right) * params.p
+    return Math.max(params.left, params.right) * params.p;
   }
   if (params.left) {
-    return params.left * params.p
+    return params.left * params.p;
   }
   if (params.right) {
-    return params.right * params.p
+    return params.right * params.p;
   }
-  return 51 // Default height if no pins are provided
-}
+  return 51; // Default height if no pins are provided
+};
 const getTriangleDir = (x: number, y: number, side: string) => {
-  let routes: { x: number; y: number }[] = []
-  const triangleHeight = 1 // Adjust triangle size as needed
-  const triangleWidth = 0.6 // Adjust triangle width as needed
+  let routes: { x: number; y: number }[] = [];
+  const triangleHeight = 1; // Adjust triangle size as needed
+  const triangleWidth = 0.6; // Adjust triangle width as needed
   if (side === "right") {
     routes = [
       {
@@ -65,7 +65,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
         x: x + triangleHeight / 2,
         y: y,
       }, // Close the path at the tip
-    ]
+    ];
   }
   if (side === "left") {
     routes = [
@@ -85,7 +85,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
         x: x - triangleHeight / 2,
         y: y,
       }, // Close the path at the tip
-    ]
+    ];
   }
   if (side === "top") {
     routes = [
@@ -105,7 +105,7 @@ const getTriangleDir = (x: number, y: number, side: string) => {
         x: x,
         y: y + triangleHeight / 2,
       }, // Close the path at the tip
-    ]
+    ];
   }
   if (side === "bottom") {
     routes = [
@@ -125,28 +125,28 @@ const getTriangleDir = (x: number, y: number, side: string) => {
         x: x,
         y: y - triangleHeight / 2,
       }, // Close the path at the tip
-    ]
+    ];
   }
-  return routes
-}
+  return routes;
+};
 
 export const stampboard = (
   raw_params: Stampboard_def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const params = stampboard_def.parse(raw_params)
-  const height = params.h ?? getHeight(params)
-  const rectpads: AnyCircuitElement[] = []
-  const holes: PcbPlatedHole[] = []
-  const pinLabels: PcbSilkscreenText[] = []
-  let routes: { x: number; y: number }[] = []
-  const innerDiameter = 1
-  const outerDiameter = innerDiameter
+  const params = stampboard_def.parse(raw_params);
+  const height = params.h ?? getHeight(params);
+  const rectpads: AnyCircuitElement[] = [];
+  const holes: PcbPlatedHole[] = [];
+  const pinLabels: PcbSilkscreenText[] = [];
+  let routes: { x: number; y: number }[] = [];
+  const innerDiameter = 1;
+  const outerDiameter = innerDiameter;
   const totalPadsNumber =
-    params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0)
-  const maxLabelLength = `pin${totalPadsNumber}`.length
-  const textHalf = (maxLabelLength * 0.7) / 2
+    params.left + params.right + (params.bottom ?? 0) + (params.top ?? 0);
+  const maxLabelLength = `pin${totalPadsNumber}`.length;
+  const textHalf = (maxLabelLength * 0.7) / 2;
   if (params.right) {
-    const yoff = -((params.right - 1) / 2) * params.p
+    const yoff = -((params.right - 1) / 2) * params.p;
     for (let i = 0; i < params.right; i++) {
       if (
         i === 0 &&
@@ -158,7 +158,7 @@ export const stampboard = (
           params.w / 2 - params.pl * 1.4,
           yoff + i * params.p,
           "right",
-        )
+        );
       }
       rectpads.push(
         rectpad(
@@ -168,10 +168,10 @@ export const stampboard = (
           params.pl,
           params.pw,
         ),
-      )
+      );
       if (params.silkscreenlabels) {
-        const padIndex = i + 1 + params.left + (params.bottom ?? 0)
-        const label = `pin${padIndex}`
+        const padIndex = i + 1 + params.left + (params.bottom ?? 0);
+        const label = `pin${padIndex}`;
         pinLabels.push({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pin_${padIndex}`,
@@ -188,7 +188,7 @@ export const stampboard = (
           font_size: 0.7,
           font: "tscircuit2024",
           anchor_alignment: "center",
-        })
+        });
       }
       if (params.innerhole) {
         holes.push(
@@ -199,7 +199,7 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
         holes.push(
           platedhole(
             i + 1 + params.left + (params.bottom ?? 0) + totalPadsNumber * 2,
@@ -208,19 +208,19 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
       }
     }
   }
   if (params.left) {
-    const yoff = ((params.left - 1) / 2) * params.p
+    const yoff = ((params.left - 1) / 2) * params.p;
     for (let i = 0; i < params.left; i++) {
       if (i === 0 && !params.silkscreenlabels) {
         routes = getTriangleDir(
           -params.w / 2 + params.pl * 1.4,
           yoff - i * params.p,
           "left",
-        )
+        );
       }
       rectpads.push(
         rectpad(
@@ -230,10 +230,10 @@ export const stampboard = (
           params.pl,
           params.pw,
         ),
-      )
+      );
       if (params.silkscreenlabels) {
-        const padIndex = i + 1
-        const label = `pin${padIndex}`
+        const padIndex = i + 1;
+        const label = `pin${padIndex}`;
         pinLabels.push({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pin_${padIndex}`,
@@ -250,7 +250,7 @@ export const stampboard = (
           font_size: 0.7,
           font: "tscircuit2024",
           anchor_alignment: "center",
-        })
+        });
       }
       if (params.innerhole) {
         holes.push(
@@ -261,7 +261,7 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
         holes.push(
           platedhole(
             i + 1 + totalPadsNumber * 2,
@@ -270,12 +270,12 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
       }
     }
   }
   if (params.top) {
-    const xoff = ((params.top - 1) / 2) * params.p
+    const xoff = ((params.top - 1) / 2) * params.p;
     for (let i = 0; i < params.top; i++) {
       if (
         i === 0 &&
@@ -288,7 +288,7 @@ export const stampboard = (
           xoff - i * params.p,
           height / 2 - params.pl * 1.4,
           "top",
-        )
+        );
       }
       rectpads.push(
         rectpad(
@@ -298,11 +298,11 @@ export const stampboard = (
           params.pw,
           params.pl,
         ),
-      )
+      );
       if (params.silkscreenlabels) {
         const padIndex =
-          i + 1 + params.left + params.right + (params.bottom ?? 0)
-        const label = `pin${padIndex}`
+          i + 1 + params.left + params.right + (params.bottom ?? 0);
+        const label = `pin${padIndex}`;
         pinLabels.push({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pin_${padIndex}`,
@@ -320,7 +320,7 @@ export const stampboard = (
           font: "tscircuit2024",
           anchor_alignment: "center",
           ccw_rotation: 270,
-        })
+        });
       }
       if (params.innerhole) {
         holes.push(
@@ -336,7 +336,7 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
         holes.push(
           platedhole(
             i +
@@ -350,19 +350,19 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
       }
     }
   }
   if (params.bottom) {
-    const xoff = -((params.bottom - 1) / 2) * params.p
+    const xoff = -((params.bottom - 1) / 2) * params.p;
     for (let i = 0; i < params.bottom; i++) {
       if (i === 0 && !params.left && !params.silkscreenlabels) {
         routes = getTriangleDir(
           xoff + i * params.p,
           -height / 2 + params.pl * 1.4,
           "bottom",
-        )
+        );
       }
       rectpads.push(
         rectpad(
@@ -372,10 +372,10 @@ export const stampboard = (
           params.pw,
           params.pl,
         ),
-      )
+      );
       if (params.silkscreenlabels) {
-        const padIndex = i + 1 + params.left
-        const label = `pin${padIndex}`
+        const padIndex = i + 1 + params.left;
+        const label = `pin${padIndex}`;
         pinLabels.push({
           type: "pcb_silkscreen_text",
           pcb_silkscreen_text_id: `pin_${padIndex}`,
@@ -393,7 +393,7 @@ export const stampboard = (
           font: "tscircuit2024",
           anchor_alignment: "center",
           ccw_rotation: 90,
-        })
+        });
       }
       if (params.innerhole) {
         holes.push(
@@ -404,7 +404,7 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
         holes.push(
           platedhole(
             i + 1 + params.left + totalPadsNumber * 2,
@@ -413,7 +413,7 @@ export const stampboard = (
             innerDiameter,
             outerDiameter,
           ),
-        )
+        );
       }
     }
   }
@@ -425,7 +425,7 @@ export const stampboard = (
     route: routes,
     stroke_width: 0.1,
     layer: "top",
-  }
+  };
 
   const silkscreenPath: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -440,12 +440,12 @@ export const stampboard = (
     ],
     stroke_width: 0.1,
     layer: "top",
-  }
+  };
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     height / 1.8,
     height / 25,
-  )
+  );
   return {
     circuitJson: [
       ...rectpads,
@@ -456,5 +456,5 @@ export const stampboard = (
       silkscreenRefText,
     ],
     parameters: params,
-  }
-}
+  };
+};

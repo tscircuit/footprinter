@@ -2,13 +2,13 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
-import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
+} from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef";
+import { length } from "circuit-json";
+import { base_def } from "../helpers/zod/base_def";
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode";
 
 export const smbf_def = base_def.extend({
   fn: z.string(),
@@ -18,19 +18,19 @@ export const smbf_def = base_def.extend({
   pl: z.string().default("1.75mm"),
   pw: z.string().default("2.40mm"),
   p: z.string().default("4.75mm"),
-})
+});
 
 export const smbf = (
   raw_params: z.input<typeof smbf_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = smbf_def.parse(raw_params)
+  const parameters = smbf_def.parse(raw_params);
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h) - 0.5,
     0.3,
-  )
+  );
 
   const silkscreenLine: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -56,10 +56,10 @@ export const smbf = (
     ],
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
-  }
+  };
 
-  const courtyardWidthMm = 7.0
-  const courtyardHeightMm = 3.5
+  const courtyardWidthMm = 7.0;
+  const courtyardHeightMm = 3.5;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -68,7 +68,7 @@ export const smbf = (
     width: courtyardWidthMm,
     height: courtyardHeightMm,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: smbfWithoutParsing(parameters).concat(
@@ -78,36 +78,33 @@ export const smbf = (
       courtyard as AnyCircuitElement,
     ),
     parameters,
-  }
-}
+  };
+};
 
 // Get coordinates for smbf pads
-export const getSmbfCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
-  const { pn, p } = parameters
+export const getSmbfCoords = (parameters: { pn: number; p: number }) => {
+  const { pn, p } = parameters;
 
   if (pn === 1) {
-    return { x: -p / 2, y: 0 }
+    return { x: -p / 2, y: 0 };
   }
-  return { x: p / 2, y: 0 }
-}
+  return { x: p / 2, y: 0 };
+};
 
 // Function to generate smbf pads
 export const smbfWithoutParsing = (parameters: z.infer<typeof smbf_def>) => {
-  const pads: AnyCircuitElement[] = []
-  const p = length.parse(parameters.p)
-  const pl = length.parse(parameters.pl)
-  const pw = length.parse(parameters.pw)
-  const cornerRadius = 0.125
+  const pads: AnyCircuitElement[] = [];
+  const p = length.parse(parameters.p);
+  const pl = length.parse(parameters.pl);
+  const pw = length.parse(parameters.pw);
+  const cornerRadius = 0.125;
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSmbfCoords({
       pn: i,
       p,
-    })
-    pads.push(rectpad(i, x, y, pl, pw, cornerRadius))
+    });
+    pads.push(rectpad(i, x, y, pl, pw, cornerRadius));
   }
-  return pads
-}
+  return pads;
+};

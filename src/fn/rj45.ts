@@ -3,12 +3,12 @@ import {
   type PcbCourtyardRect,
   type PcbHoleCircle,
   length,
-} from "circuit-json"
-import { z } from "zod"
-import { platedhole } from "../helpers/platedhole"
-import { silkscreenRef } from "../helpers/silkscreenRef"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
+} from "circuit-json";
+import { z } from "zod";
+import { platedhole } from "../helpers/platedhole";
+import { silkscreenRef } from "../helpers/silkscreenRef";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
 
 export const rj45_def = base_def.extend({
   fn: z.literal("rj45"),
@@ -56,19 +56,19 @@ export const rj45_def = base_def.extend({
   bodyy: length
     .default("-0.96mm")
     .describe("signed connector body center y offset"),
-})
+});
 
-export type Rj45Def = z.input<typeof rj45_def>
+export type Rj45Def = z.input<typeof rj45_def>;
 
 export const rj45 = (
   rawParams: Rj45Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const hasLedPins = rawParams.ledpins === true || rawParams.num_pins === 14
+  const hasLedPins = rawParams.ledpins === true || rawParams.num_pins === 14;
   const parameters = rj45_def.parse({
     ...rawParams,
     ledpins: hasLedPins,
     num_pins: hasLedPins ? 14 : 10,
-  })
+  });
   const {
     ledpins,
     firstpinleft,
@@ -90,17 +90,17 @@ export const rj45 = (
     w,
     h,
     bodyy,
-  } = parameters
+  } = parameters;
 
-  const clean = (value: number) => Number(value.toFixed(12))
+  const clean = (value: number) => Number(value.toFixed(12));
   const signalPins = Array.from({ length: 8 }, (_, index) => {
-    const pin = index + 1
-    const defaultX = (3.5 - index) * p
-    const defaultY = index % 2 === 0 ? -py / 2 : py / 2
-    const x = clean(firstpinleft ? -defaultX : defaultX)
-    const y = clean(firstpintop ? -defaultY : defaultY)
-    return platedhole(pin, x, y, id, od)
-  })
+    const pin = index + 1;
+    const defaultX = (3.5 - index) * p;
+    const defaultY = index % 2 === 0 ? -py / 2 : py / 2;
+    const x = clean(firstpinleft ? -defaultX : defaultX);
+    const y = clean(firstpintop ? -defaultY : defaultY);
+    return platedhole(pin, x, y, id, od);
+  });
 
   const ledPins = ledpins
     ? [
@@ -109,21 +109,21 @@ export const rj45 = (
         platedhole(11, ledx, ledy, id, od),
         platedhole(12, clean(ledx + ledp), ledy, id, od),
       ]
-    : []
+    : [];
 
-  const defaultLeftShieldPin = ledpins ? 14 : 9
-  const defaultRightShieldPin = ledpins ? 13 : 10
-  const swapShieldPins = firstpinleft !== firstpintop
+  const defaultLeftShieldPin = ledpins ? 14 : 9;
+  const defaultRightShieldPin = ledpins ? 13 : 10;
+  const swapShieldPins = firstpinleft !== firstpintop;
   const leftShieldPin = swapShieldPins
     ? defaultRightShieldPin
-    : defaultLeftShieldPin
+    : defaultLeftShieldPin;
   const rightShieldPin = swapShieldPins
     ? defaultLeftShieldPin
-    : defaultRightShieldPin
+    : defaultRightShieldPin;
   const shieldPins = [
     platedhole(leftShieldPin, -shieldx, shieldy, shieldid, shieldod),
     platedhole(rightShieldPin, shieldx, shieldy, shieldid, shieldod),
-  ]
+  ];
 
   const locatorHoles: PcbHoleCircle[] = [-holex, holex].map((x) => ({
     type: "pcb_hole",
@@ -133,17 +133,17 @@ export const rj45 = (
     hole_diameter: holed,
     x,
     y: holey,
-  }))
+  }));
 
-  const bodyLeft = -w / 2
-  const bodyRight = w / 2
-  const bodyBottom = bodyy - h / 2
-  const bodyTop = bodyy + h / 2
-  const shieldClearance = shieldod / 2 + 0.2
+  const bodyLeft = -w / 2;
+  const bodyRight = w / 2;
+  const bodyBottom = bodyy - h / 2;
+  const bodyTop = bodyy + h / 2;
+  const shieldClearance = shieldod / 2 + 0.2;
   const sideSegments = [
     [bodyBottom, Math.min(bodyTop, shieldy - shieldClearance)],
     [Math.max(bodyBottom, shieldy + shieldClearance), bodyTop],
-  ].filter(([start, end]) => end - start > 0.01)
+  ].filter(([start, end]) => end - start > 0.01);
   const silkscreen = [
     silkscreenpath([
       { x: bodyLeft, y: bodyBottom },
@@ -163,30 +163,30 @@ export const rj45 = (
         { x: bodyRight, y: end },
       ]),
     ]),
-  ]
+  ];
 
   const copperLeft = Math.min(
     -shieldx - shieldod / 2,
     -holex - holed / 2,
     ledpins ? -ledx - ledp - od / 2 : 0,
-  )
-  const copperRight = -copperLeft
+  );
+  const copperRight = -copperLeft;
   const copperBottom = Math.min(
     shieldy - shieldod / 2,
     holey - holed / 2,
     -py / 2 - od / 2,
     ledpins ? ledy - od / 2 : Number.POSITIVE_INFINITY,
-  )
+  );
   const copperTop = Math.max(
     shieldy + shieldod / 2,
     holey + holed / 2,
     py / 2 + od / 2,
     ledpins ? ledy + od / 2 : Number.NEGATIVE_INFINITY,
-  )
-  const courtyardLeft = Math.min(bodyLeft, copperLeft) - 0.25
-  const courtyardRight = Math.max(bodyRight, copperRight) + 0.25
-  const courtyardBottom = Math.min(bodyBottom, copperBottom) - 0.25
-  const courtyardTop = Math.max(bodyTop, copperTop) + 0.25
+  );
+  const courtyardLeft = Math.min(bodyLeft, copperLeft) - 0.25;
+  const courtyardRight = Math.max(bodyRight, copperRight) + 0.25;
+  const courtyardBottom = Math.min(bodyBottom, copperBottom) - 0.25;
+  const courtyardTop = Math.max(bodyTop, copperTop) + 0.25;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -198,7 +198,7 @@ export const rj45 = (
     width: courtyardRight - courtyardLeft,
     height: courtyardTop - courtyardBottom,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -211,5 +211,5 @@ export const rj45 = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};

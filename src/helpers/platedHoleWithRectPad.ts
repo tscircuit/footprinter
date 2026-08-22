@@ -1,16 +1,16 @@
-import { mm } from "@tscircuit/mm"
-import type { PcbHoleCircularWithRectPad } from "circuit-json"
+import { mm } from "@tscircuit/mm";
+import type { PcbHoleCircularWithRectPad } from "circuit-json";
 
 export const platedHoleWithRectPad = (options: {
-  pn: number
-  x: number
-  y: number
-  holeDiameter: number | string
-  rectPadWidth: number | string
-  rectPadHeight: number | string
-  holeOffsetX?: number
-  holeOffsetY?: number
-  rectBorderRadius?: number
+  pn: number;
+  x: number;
+  y: number;
+  holeDiameter: number | string;
+  rectPadWidth: number | string;
+  rectPadHeight: number | string;
+  holeOffsetX?: number;
+  holeOffsetY?: number;
+  rectBorderRadius?: number;
 }): PcbHoleCircularWithRectPad => {
   const {
     pn,
@@ -22,7 +22,7 @@ export const platedHoleWithRectPad = (options: {
     holeOffsetX = 0,
     holeOffsetY = 0,
     rectBorderRadius,
-  } = options
+  } = options;
   return {
     pcb_plated_hole_id: "",
     type: "pcb_plated_hole",
@@ -42,5 +42,5 @@ export const platedHoleWithRectPad = (options: {
     port_hints: [pn.toString()],
     hole_offset_x: holeOffsetX,
     hole_offset_y: holeOffsetY,
-  }
-}
+  };
+};

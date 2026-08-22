@@ -1,6 +1,6 @@
-import { expect, test } from "bun:test"
-import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import { expect, test } from "bun:test";
+import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
 
 test("parity/melf", async () => {
   const {
@@ -10,15 +10,15 @@ test("parity/melf", async () => {
   } = await compareFootprinterVsKicad(
     "melf",
     "Diode_SMD.pretty/D_MELF.circuit.json",
-  )
+  );
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
-  })
-  expect(courtyardDiffPercent).toBeLessThan(5)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "melf")
+  });
+  expect(courtyardDiffPercent).toBeLessThan(5);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "melf");
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,
     "melf_boolean_difference",
-  )
-})
+  );
+});

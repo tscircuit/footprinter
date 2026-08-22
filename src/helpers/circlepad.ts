@@ -1,4 +1,4 @@
-import type { PcbSmtPad } from "circuit-json"
+import type { PcbSmtPad } from "circuit-json";
 
 export const circlepad = (
   pn: number | Array<string | number>,
@@ -15,5 +15,5 @@ export const circlepad = (
     port_hints: Array.isArray(pn)
       ? pn.map((item) => item.toString())
       : [pn.toString()],
-  }
-}
+  };
+};

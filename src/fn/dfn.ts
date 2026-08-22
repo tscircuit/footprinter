@@ -2,28 +2,28 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
-} from "circuit-json"
-import { length } from "circuit-json"
-import { extendSoicDef, getCcwSoicCoords } from "./soic"
-import { rectpad } from "src/helpers/rectpad"
-import { pillpad } from "src/helpers/pillpad"
-import { z } from "zod"
-import { CORNERS } from "src/helpers/corner"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { function_call } from "src/helpers/zod/function-call"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
-import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
-import { polygonpad } from "src/helpers/polygonpad"
+} from "circuit-json";
+import { length } from "circuit-json";
+import { extendSoicDef, getCcwSoicCoords } from "./soic";
+import { rectpad } from "src/helpers/rectpad";
+import { pillpad } from "src/helpers/pillpad";
+import { z } from "zod";
+import { CORNERS } from "src/helpers/corner";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { function_call } from "src/helpers/zod/function-call";
+import { createThermalPad } from "src/helpers/create-thermal-pad";
+import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias";
+import { polygonpad } from "src/helpers/polygonpad";
 
-export const dfn_def = extendSoicDef({}).and(thermalViaDef)
+export const dfn_def = extendSoicDef({}).and(thermalViaDef);
 export type DfnInput = z.input<typeof dfn_def> & {
   /** Replace the four rectangular DFN pads with chamfered corner pads. */
-  cornerpads?: boolean
+  cornerpads?: boolean;
   /** Length of the diagonal cut at each corner pad's inner corner. */
-  cornerpadcutlength?: string | number
+  cornerpadcutlength?: string | number;
   /** Omit nominal pad positions while preserving an even, regular pad grid. */
-  missing?: string | Array<string | number>
-}
+  missing?: string | Array<string | number>;
+};
 
 /**
  * Dual Flat No-lead
@@ -33,18 +33,18 @@ export type DfnInput = z.input<typeof dfn_def> & {
 export const dfn = (
   raw_params: DfnInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const cornerpads = z.boolean().optional().parse(raw_params.cornerpads)
+  const cornerpads = z.boolean().optional().parse(raw_params.cornerpads);
   const cornerpadcutlength =
     raw_params.cornerpadcutlength === undefined
       ? undefined
-      : length.parse(raw_params.cornerpadcutlength)
-  const missing = function_call.parse(raw_params.missing ?? [])
+      : length.parse(raw_params.cornerpadcutlength);
+  const missing = function_call.parse(raw_params.missing ?? []);
   if (missing.some((position) => typeof position !== "number")) {
-    throw new Error("DFN missing positions must be pad numbers")
+    throw new Error("DFN missing positions must be pad numbers");
   }
-  const missingPositions = [...new Set(missing)]
+  const missingPositions = [...new Set(missing)];
   if (missingPositions.length !== missing.length) {
-    throw new Error("DFN missing positions must not contain duplicates")
+    throw new Error("DFN missing positions must not contain duplicates");
   }
 
   const parameters = {
@@ -52,14 +52,14 @@ export const dfn = (
     cornerpads,
     cornerpadcutlength,
     missing: missingPositions,
-  }
-  const nominalPinCount = parameters.num_pins
+  };
+  const nominalPinCount = parameters.num_pins;
   if (
     missingPositions.some(
       (position) => position < 1 || position > nominalPinCount,
     )
   ) {
-    throw new Error("DFN missing position is outside the nominal pad range")
+    throw new Error("DFN missing position is outside the nominal pad range");
   }
   if (cornerpads) {
     if (
@@ -69,28 +69,28 @@ export const dfn = (
     ) {
       throw new Error(
         "DFN corner pads require four nominal pads with none missing",
-      )
+      );
     }
     if (
       cornerpadcutlength === undefined ||
       cornerpadcutlength <= 0 ||
       cornerpadcutlength > Math.min(parameters.pl, parameters.pw)
     ) {
-      throw new Error("DFN corner pads require a valid cornerpadcutlength")
+      throw new Error("DFN corner pads require a valid cornerpadcutlength");
     }
   }
 
-  const missingPositionSet = new Set(missingPositions)
-  const pads: AnyCircuitElement[] = []
-  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
-  let maxPadExtentY = 0
-  let outputPinNumber = 1
+  const missingPositionSet = new Set(missingPositions);
+  const pads: AnyCircuitElement[] = [];
+  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8;
+  let maxPadExtentY = 0;
+  let outputPinNumber = 1;
   for (
     let nominalPinNumber = 1;
     nominalPinNumber <= nominalPinCount;
     nominalPinNumber += 1
   ) {
-    if (missingPositionSet.has(nominalPinNumber)) continue
+    if (missingPositionSet.has(nominalPinNumber)) continue;
 
     const { x, y } = getCcwSoicCoords({
       num_pins: nominalPinCount,
@@ -99,15 +99,15 @@ export const dfn = (
       p: parameters.p ?? 1.27,
       pl: parameters.pl,
       widthincludeslegs: true,
-    })
-    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
+    });
+    maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2);
     if (cornerpads) {
-      const xDirection = Math.sign(x)
-      const yDirection = Math.sign(y)
-      const innerX = x - (xDirection * parameters.pl) / 2
-      const innerY = y - (yDirection * parameters.pw) / 2
-      const outerX = x + (xDirection * parameters.pl) / 2
-      const outerY = y + (yDirection * parameters.pw) / 2
+      const xDirection = Math.sign(x);
+      const yDirection = Math.sign(y);
+      const innerX = x - (xDirection * parameters.pl) / 2;
+      const innerY = y - (yDirection * parameters.pw) / 2;
+      const outerX = x + (xDirection * parameters.pl) / 2;
+      const outerY = y + (yDirection * parameters.pw) / 2;
       pads.push(
         polygonpad(outputPinNumber, [
           { x: innerX, y: innerY + yDirection * cornerpadcutlength! },
@@ -116,7 +116,7 @@ export const dfn = (
           { x: outerX, y: innerY },
           { x: innerX + xDirection * cornerpadcutlength!, y: innerY },
         ]),
-      )
+      );
     } else {
       pads.push(
         (parameters.pillpads ? pillpad : rectpad)(
@@ -127,9 +127,9 @@ export const dfn = (
           parameters.pw ?? "0.6mm",
           cornerRadius,
         ),
-      )
+      );
     }
-    outputPinNumber += 1
+    outputPinNumber += 1;
   }
 
   if (parameters.thermalpad) {
@@ -138,17 +138,17 @@ export const dfn = (
         x: parameters.thermalpadcenteroffsetx,
         y: parameters.thermalpadcenteroffsety,
       }),
-    )
+    );
   }
 
   // The silkscreen is 4 corners and an arrow identifier for pin1
-  const m = Math.min(1, parameters.p / 2)
-  const sw = parameters.w + m
-  const sh = maxPadExtentY * 2 + m
-  const silkscreenPaths: PcbSilkscreenPath[] = []
+  const m = Math.min(1, parameters.p / 2);
+  const sw = parameters.w + m;
+  const sh = maxPadExtentY * 2 + m;
+  const silkscreenPaths: PcbSilkscreenPath[] = [];
 
   for (const corner of CORNERS) {
-    const { dx, dy } = corner
+    const { dx, dy } = corner;
     silkscreenPaths.push({
       layer: "top",
       pcb_component_id: "",
@@ -160,16 +160,16 @@ export const dfn = (
       ],
       type: "pcb_silkscreen_path",
       stroke_width: 0.1,
-    })
+    });
   }
 
   // Arrow
   /** arrow size */
-  const as = parameters.p / 4
+  const as = parameters.p / 4;
   /** Arrow tip x */
-  const atx = -sw / 2 - as / 2
+  const atx = -sw / 2 - as / 2;
   /** Arrow tip y */
-  const aty = sh / 2 - parameters.p / 2
+  const aty = sh / 2 - parameters.p / 2;
 
   silkscreenPaths.push({
     layer: "top",
@@ -195,16 +195,16 @@ export const dfn = (
       },
     ],
     stroke_width: 0.1,
-  })
+  });
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
     sh / 12,
-  )
+  );
   const roundUpToCourtyardGrid = (value: number) =>
-    Math.ceil(value / 0.05) * 0.05
-  const courtyardHalfWidthMm = roundUpToCourtyardGrid(parameters.w / 2 + 0.25)
-  const courtyardHalfHeightMm = roundUpToCourtyardGrid(maxPadExtentY + 0.45)
+    Math.ceil(value / 0.05) * 0.05;
+  const courtyardHalfWidthMm = roundUpToCourtyardGrid(parameters.w / 2 + 0.25);
+  const courtyardHalfHeightMm = roundUpToCourtyardGrid(maxPadExtentY + 0.45);
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -213,17 +213,17 @@ export const dfn = (
     width: courtyardHalfWidthMm * 2,
     height: courtyardHalfHeightMm * 2,
     layer: "top",
-  }
+  };
 
   const circuitJson = [
     ...pads,
     silkscreenRefText,
     ...silkscreenPaths,
     courtyard,
-  ] as AnyCircuitElement[]
+  ] as AnyCircuitElement[];
 
   return {
     circuitJson: addThermalVias(circuitJson, parameters),
     parameters,
-  }
-}
+  };
+};

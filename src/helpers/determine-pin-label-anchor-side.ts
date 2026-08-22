@@ -1,35 +1,35 @@
 type PinlabelAnchorSideParams = {
-  pinlabeltextalignleft: boolean
-  pinlabeltextalignright: boolean
-  pinlabelverticallyinverted: boolean
-  pinlabelorthogonal: boolean
-}
+  pinlabeltextalignleft: boolean;
+  pinlabeltextalignright: boolean;
+  pinlabelverticallyinverted: boolean;
+  pinlabelorthogonal: boolean;
+};
 
 export function determinePinlabelAnchorSide({
   pinlabeltextalignleft,
   pinlabeltextalignright,
   pinlabelorthogonal,
 }: PinlabelAnchorSideParams): "top" | "bottom" | "left" | "right" {
-  let pinlabelAnchorSide: "top" | "bottom" | "left" | "right" = "top"
+  let pinlabelAnchorSide: "top" | "bottom" | "left" | "right" = "top";
   // Default to center if no alignment specified
   if (pinlabelorthogonal) {
-    pinlabelAnchorSide = "left"
+    pinlabelAnchorSide = "left";
   } else {
-    pinlabelAnchorSide = "top"
+    pinlabelAnchorSide = "top";
   }
   if (pinlabeltextalignleft) {
     if (pinlabelorthogonal) {
-      pinlabelAnchorSide = "bottom"
+      pinlabelAnchorSide = "bottom";
     } else {
-      pinlabelAnchorSide = "right"
+      pinlabelAnchorSide = "right";
     }
   }
   if (pinlabeltextalignright) {
     if (pinlabelorthogonal) {
-      pinlabelAnchorSide = "top"
+      pinlabelAnchorSide = "top";
     } else {
-      pinlabelAnchorSide = "left"
+      pinlabelAnchorSide = "left";
     }
   }
-  return pinlabelAnchorSide
+  return pinlabelAnchorSide;
 }

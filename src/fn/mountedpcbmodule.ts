@@ -1,13 +1,13 @@
-import { type AnyCircuitElement, length } from "circuit-json"
-import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side"
-import { silkscreenPin } from "src/helpers/silkscreenPin"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { z } from "zod"
-import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
-import { platedhole } from "../helpers/platedhole"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
+import { type AnyCircuitElement, length } from "circuit-json";
+import { determinePinlabelAnchorSide } from "src/helpers/determine-pin-label-anchor-side";
+import { silkscreenPin } from "src/helpers/silkscreenPin";
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef";
+import { z } from "zod";
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad";
+import { platedhole } from "../helpers/platedhole";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
 
 export const mountedpcbmodule_def = base_def
   .extend({
@@ -83,15 +83,15 @@ export const mountedpcbmodule_def = base_def
       .union([z.string(), z.array(z.string())])
       .optional()
       .transform((val) => {
-        if (!val) return val
-        if (Array.isArray(val)) return val
+        if (!val) return val;
+        if (Array.isArray(val)) return val;
         if (val.startsWith("(") && val.endsWith(")")) {
           return val
             .slice(1, -1)
             .split(",")
-            .map((s) => s.trim())
+            .map((s) => s.trim());
         }
-        return [val]
+        return [val];
       }),
     holeXDist: length.optional(),
     holeYDist: length.optional(),
@@ -119,25 +119,25 @@ export const mountedpcbmodule_def = base_def
     screencenteroffsety: length.optional(),
   })
   .transform((data) => {
-    const pinlabelAnchorSide = determinePinlabelAnchorSide(data)
-    let pinRowSide = data.pinRowSide
-    if (data.pinrowleft) pinRowSide = "left"
-    if (data.pinrowright) pinRowSide = "right"
-    if (data.pinrowtop) pinRowSide = "top"
-    if (data.pinrowbottom) pinRowSide = "bottom"
+    const pinlabelAnchorSide = determinePinlabelAnchorSide(data);
+    let pinRowSide = data.pinRowSide;
+    if (data.pinrowleft) pinRowSide = "left";
+    if (data.pinrowright) pinRowSide = "right";
+    if (data.pinrowtop) pinRowSide = "top";
+    if (data.pinrowbottom) pinRowSide = "bottom";
 
-    let usbposition = data.usbposition
-    if (data.usbleft) usbposition = "left"
-    if (data.usbtop) usbposition = "top"
-    if (data.usbright) usbposition = "right"
-    if (data.usbbottom) usbposition = "bottom"
+    let usbposition = data.usbposition;
+    if (data.usbleft) usbposition = "left";
+    if (data.usbtop) usbposition = "top";
+    if (data.usbright) usbposition = "right";
+    if (data.usbbottom) usbposition = "bottom";
 
-    let usbtype = data.usbtype
-    if (data.usbmicro) usbtype = "micro"
-    if (data.usbc) usbtype = "c"
+    let usbtype = data.usbtype;
+    if (data.usbmicro) usbtype = "micro";
+    if (data.usbc) usbtype = "c";
 
     if (data.pinrow !== undefined) {
-      data.numPins = Number(data.pinrow)
+      data.numPins = Number(data.pinrow);
     }
 
     const sidePinCounts = {
@@ -145,72 +145,72 @@ export const mountedpcbmodule_def = base_def
       right: data.pinrowrightpins,
       top: data.pinrowtoppins,
       bottom: data.pinrowbottompins,
-    }
+    };
     const hasSidePins = Object.values(sidePinCounts).some(
       (value) => value !== undefined && value > 0,
-    )
+    );
     const leftRightBoth =
-      (sidePinCounts.left ?? 0) > 0 && (sidePinCounts.right ?? 0) > 0
+      (sidePinCounts.left ?? 0) > 0 && (sidePinCounts.right ?? 0) > 0;
     const topBottomBoth =
-      (sidePinCounts.top ?? 0) > 0 && (sidePinCounts.bottom ?? 0) > 0
+      (sidePinCounts.top ?? 0) > 0 && (sidePinCounts.bottom ?? 0) > 0;
 
     if (hasSidePins) {
-      if ((sidePinCounts.left ?? 0) > 0) pinRowSide = "left"
-      else if ((sidePinCounts.right ?? 0) > 0) pinRowSide = "right"
-      else if ((sidePinCounts.top ?? 0) > 0) pinRowSide = "top"
-      else if ((sidePinCounts.bottom ?? 0) > 0) pinRowSide = "bottom"
+      if ((sidePinCounts.left ?? 0) > 0) pinRowSide = "left";
+      else if ((sidePinCounts.right ?? 0) > 0) pinRowSide = "right";
+      else if ((sidePinCounts.top ?? 0) > 0) pinRowSide = "top";
+      else if ((sidePinCounts.bottom ?? 0) > 0) pinRowSide = "bottom";
 
       data.numPins =
         (sidePinCounts.left ?? 0) +
         (sidePinCounts.right ?? 0) +
         (sidePinCounts.top ?? 0) +
-        (sidePinCounts.bottom ?? 0)
+        (sidePinCounts.bottom ?? 0);
     }
 
-    const numPinsPerRow = Math.ceil(data.numPins / data.rows)
+    const numPinsPerRow = Math.ceil(data.numPins / data.rows);
     const verticalPins = Math.max(
       sidePinCounts.left ?? 0,
       sidePinCounts.right ?? 0,
-    )
+    );
     const horizontalPins = Math.max(
       sidePinCounts.top ?? 0,
       sidePinCounts.bottom ?? 0,
-    )
-    let calculatedWidth: number
-    let calculatedHeight: number
+    );
+    let calculatedWidth: number;
+    let calculatedHeight: number;
     if (hasSidePins) {
-      const widthGap = leftRightBoth ? data.p : 0
-      const heightGap = topBottomBoth ? data.p : 0
+      const widthGap = leftRightBoth ? data.p : 0;
+      const heightGap = topBottomBoth ? data.p : 0;
       calculatedWidth =
         (horizontalPins > 0 ? (horizontalPins - 1) * data.p : 0) +
         2 * data.pinRowHoleEdgeToEdgeDist +
-        widthGap
+        widthGap;
       calculatedHeight =
         (verticalPins > 0 ? (verticalPins - 1) * data.p : 0) +
         2 * data.pinRowHoleEdgeToEdgeDist +
-        heightGap
+        heightGap;
     } else if (pinRowSide === "left" || pinRowSide === "right") {
       calculatedWidth =
-        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist;
       calculatedHeight =
-        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist;
     } else {
       calculatedHeight =
-        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+        (data.rows - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist;
       calculatedWidth =
-        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist
+        (numPinsPerRow - 1) * data.p + 2 * data.pinRowHoleEdgeToEdgeDist;
     }
     if (data.numPins === 0) {
-      calculatedWidth = 10
-      calculatedHeight = 10
+      calculatedWidth = 10;
+      calculatedHeight = 10;
     }
 
-    const finalWidth = data.width ?? calculatedWidth
-    const finalHeight = data.height ?? calculatedHeight
-    const screenWidth = data.screenwidth ?? finalWidth * 0.95
-    const screenHeight = data.screenheight ?? finalHeight * 0.95
-    const screenCenterOffsetX = data.screencenteroffsetx ?? 0
-    const screenCenterOffsetY = data.screencenteroffsety ?? 0
+    const finalWidth = data.width ?? calculatedWidth;
+    const finalHeight = data.height ?? calculatedHeight;
+    const screenWidth = data.screenwidth ?? finalWidth * 0.95;
+    const screenHeight = data.screenheight ?? finalHeight * 0.95;
+    const screenCenterOffsetX = data.screencenteroffsetx ?? 0;
+    const screenCenterOffsetY = data.screencenteroffsety ?? 0;
 
     return {
       ...data,
@@ -230,7 +230,7 @@ export const mountedpcbmodule_def = base_def
       pinrowrightpins: sidePinCounts.right,
       pinrowtoppins: sidePinCounts.top,
       pinrowbottompins: sidePinCounts.bottom,
-    }
+    };
   })
   .superRefine((data, ctx) => {
     if (data.male && data.female) {
@@ -239,14 +239,14 @@ export const mountedpcbmodule_def = base_def
         message:
           "'male' and 'female' cannot both be true; it should be male or female.",
         path: ["male", "female"],
-      })
+      });
     }
-  })
+  });
 
 export const mountedpcbmodule = (
   raw_params: z.input<typeof mountedpcbmodule_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = mountedpcbmodule_def.parse(raw_params)
+  const parameters = mountedpcbmodule_def.parse(raw_params);
   const {
     p,
     id,
@@ -280,22 +280,22 @@ export const mountedpcbmodule = (
     screenheight,
     screencenteroffsetx,
     screencenteroffsety,
-  } = parameters
-  let pinlabelTextAlign: "center" | "left" | "right" = "center"
-  if (pinlabeltextalignleft) pinlabelTextAlign = "left"
-  else if (pinlabeltextalignright) pinlabelTextAlign = "right"
+  } = parameters;
+  let pinlabelTextAlign: "center" | "left" | "right" = "center";
+  if (pinlabeltextalignleft) pinlabelTextAlign = "left";
+  else if (pinlabeltextalignright) pinlabelTextAlign = "right";
 
-  const elements: AnyCircuitElement[] = []
+  const elements: AnyCircuitElement[] = [];
 
   const sidePinCounts = {
     left: pinrowleftpins,
     right: pinrowrightpins,
     top: pinrowtoppins,
     bottom: pinrowbottompins,
-  }
+  };
   const hasSidePins = Object.values(sidePinCounts).some(
     (value) => value !== undefined && value > 0,
-  )
+  );
 
   const addPin = (
     pinNumber: number,
@@ -306,7 +306,7 @@ export const mountedpcbmodule = (
     if (parameters.smd) {
       elements.push(
         rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
-      )
+      );
     } else if (pinNumber === 1) {
       elements.push(
         platedHoleWithRectPad({
@@ -317,16 +317,16 @@ export const mountedpcbmodule = (
           rectPadWidth: od,
           rectPadHeight: od,
         }),
-      )
+      );
     } else {
-      elements.push(platedhole(pinNumber, xoff, yoff, id, od))
+      elements.push(platedhole(pinNumber, xoff, yoff, id, od));
     }
 
     if (!nopinlabels) {
       const anchor_x =
-        xoff + (anchorSide === "left" ? -od : anchorSide === "right" ? od : 0)
+        xoff + (anchorSide === "left" ? -od : anchorSide === "right" ? od : 0);
       const anchor_y =
-        yoff + (anchorSide === "top" ? od : anchorSide === "bottom" ? -od : 0)
+        yoff + (anchorSide === "top" ? od : anchorSide === "bottom" ? -od : 0);
       if (!bottomsidepinlabel) {
         elements.push(
           silkscreenPin({
@@ -340,7 +340,7 @@ export const mountedpcbmodule = (
             verticallyinverted: pinlabelverticallyinverted,
             layer: "top",
           }),
-        )
+        );
       }
       if (doublesidedpinlabel || bottomsidepinlabel) {
         elements.push(
@@ -355,99 +355,99 @@ export const mountedpcbmodule = (
             verticallyinverted: pinlabelverticallyinverted,
             layer: "bottom",
           }),
-        )
+        );
       }
     }
-  }
+  };
 
   if (hasSidePins) {
-    const pinSpacing = p
-    let pinNumber = 1
-    const leftCount = sidePinCounts.left ?? 0
-    const rightCount = sidePinCounts.right ?? 0
-    const topCount = sidePinCounts.top ?? 0
-    const bottomCount = sidePinCounts.bottom ?? 0
+    const pinSpacing = p;
+    let pinNumber = 1;
+    const leftCount = sidePinCounts.left ?? 0;
+    const rightCount = sidePinCounts.right ?? 0;
+    const topCount = sidePinCounts.top ?? 0;
+    const bottomCount = sidePinCounts.bottom ?? 0;
 
     const addSidePins = (
       side: "left" | "right" | "top" | "bottom",
       count: number,
     ) => {
-      if (count <= 0) return
+      if (count <= 0) return;
       if (side === "left" || side === "right") {
         const xoff =
           side === "left"
             ? -width / 2 + pinRowHoleEdgeToEdgeDist
-            : width / 2 - pinRowHoleEdgeToEdgeDist
-        const startY = ((count - 1) / 2) * pinSpacing
+            : width / 2 - pinRowHoleEdgeToEdgeDist;
+        const startY = ((count - 1) / 2) * pinSpacing;
         for (let i = 0; i < count; i++) {
-          addPin(pinNumber, xoff, startY - i * pinSpacing, side)
-          pinNumber++
+          addPin(pinNumber, xoff, startY - i * pinSpacing, side);
+          pinNumber++;
         }
       } else {
         const yoff =
           side === "top"
             ? height / 2 - pinRowHoleEdgeToEdgeDist
-            : -height / 2 + pinRowHoleEdgeToEdgeDist
-        const startX = -((count - 1) / 2) * pinSpacing
+            : -height / 2 + pinRowHoleEdgeToEdgeDist;
+        const startX = -((count - 1) / 2) * pinSpacing;
         for (let i = 0; i < count; i++) {
-          addPin(pinNumber, startX + i * pinSpacing, yoff, side)
-          pinNumber++
+          addPin(pinNumber, startX + i * pinSpacing, yoff, side);
+          pinNumber++;
         }
       }
-    }
+    };
 
-    addSidePins("left", leftCount)
-    addSidePins("right", rightCount)
-    addSidePins("top", topCount)
-    addSidePins("bottom", bottomCount)
+    addSidePins("left", leftCount);
+    addSidePins("right", rightCount);
+    addSidePins("top", topCount);
+    addSidePins("bottom", bottomCount);
   } else {
     // Calculate pin positions
-    const pinSpacing = p
-    let pinStartX = 0
-    let pinStartY = 0
-    let pinDirectionX = 0
-    let pinDirectionY = 0
-    let rowDirectionX = 0
-    let rowDirectionY = 0
+    const pinSpacing = p;
+    let pinStartX = 0;
+    let pinStartY = 0;
+    let pinDirectionX = 0;
+    let pinDirectionY = 0;
+    let rowDirectionX = 0;
+    let rowDirectionY = 0;
 
-    const numPinsPerRow = Math.ceil(numPins / rows)
+    const numPinsPerRow = Math.ceil(numPins / rows);
 
     // Determine pin row orientation
     if (pinRowSide === "left" || pinRowSide === "right") {
       pinStartX =
         pinRowSide === "left"
           ? -width / 2 + pinRowHoleEdgeToEdgeDist
-          : width / 2 - pinRowHoleEdgeToEdgeDist
-      pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing
-      pinDirectionX = 0
-      pinDirectionY = -pinSpacing
-      rowDirectionX = pinRowSide === "left" ? pinSpacing : -pinSpacing // stack towards center
-      rowDirectionY = 0
+          : width / 2 - pinRowHoleEdgeToEdgeDist;
+      pinStartY = ((numPinsPerRow - 1) / 2) * pinSpacing;
+      pinDirectionX = 0;
+      pinDirectionY = -pinSpacing;
+      rowDirectionX = pinRowSide === "left" ? pinSpacing : -pinSpacing; // stack towards center
+      rowDirectionY = 0;
     } else {
       // top or bottom
-      pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing
+      pinStartX = (-(numPinsPerRow - 1) / 2) * pinSpacing;
       pinStartY =
         pinRowSide === "top"
           ? height / 2 - pinRowHoleEdgeToEdgeDist
-          : -height / 2 + pinRowHoleEdgeToEdgeDist
-      pinDirectionX = pinSpacing
-      pinDirectionY = 0
-      rowDirectionX = 0
-      rowDirectionY = pinRowSide === "top" ? -pinSpacing : pinSpacing // stack towards center
+          : -height / 2 + pinRowHoleEdgeToEdgeDist;
+      pinDirectionX = pinSpacing;
+      pinDirectionY = 0;
+      rowDirectionX = 0;
+      rowDirectionY = pinRowSide === "top" ? -pinSpacing : pinSpacing; // stack towards center
     }
 
     // Add pins
-    let pinNumber = 1
+    let pinNumber = 1;
     for (let row = 0; row < rows && pinNumber <= numPins; row++) {
       for (let col = 0; col < numPinsPerRow && pinNumber <= numPins; col++) {
-        const xoff = pinStartX + col * pinDirectionX + row * rowDirectionX
-        const yoff = pinStartY + col * pinDirectionY + row * rowDirectionY
+        const xoff = pinStartX + col * pinDirectionX + row * rowDirectionX;
+        const yoff = pinStartY + col * pinDirectionY + row * rowDirectionY;
 
         if (parameters.smd) {
           // SMD pads
           elements.push(
             rectpad(pinNumber, xoff, yoff, parameters.od, parameters.od),
-          ) // Assuming pw/pl same as od for simplicity
+          ); // Assuming pw/pl same as od for simplicity
         } else {
           // Through-hole
           if (pinNumber === 1) {
@@ -460,19 +460,19 @@ export const mountedpcbmodule = (
                 rectPadWidth: od,
                 rectPadHeight: od,
               }),
-            )
+            );
           } else {
-            elements.push(platedhole(pinNumber, xoff, yoff, id, od))
+            elements.push(platedhole(pinNumber, xoff, yoff, id, od));
           }
         }
 
         if (!nopinlabels) {
           const anchor_x =
             xoff +
-            (pinRowSide === "left" ? -od : pinRowSide === "right" ? od : 0)
+            (pinRowSide === "left" ? -od : pinRowSide === "right" ? od : 0);
           const anchor_y =
             yoff +
-            (pinRowSide === "top" ? od : pinRowSide === "bottom" ? -od : 0)
+            (pinRowSide === "top" ? od : pinRowSide === "bottom" ? -od : 0);
           if (!bottomsidepinlabel) {
             elements.push(
               silkscreenPin({
@@ -486,7 +486,7 @@ export const mountedpcbmodule = (
                 verticallyinverted: pinlabelverticallyinverted,
                 layer: "top",
               }),
-            )
+            );
           }
           if (doublesidedpinlabel || bottomsidepinlabel) {
             elements.push(
@@ -501,11 +501,11 @@ export const mountedpcbmodule = (
                 verticallyinverted: pinlabelverticallyinverted,
                 layer: "bottom",
               }),
-            )
+            );
           }
         }
 
-        pinNumber++
+        pinNumber++;
       }
     }
   }
@@ -513,30 +513,30 @@ export const mountedpcbmodule = (
   // Add mounting holes
   if (holes) {
     for (const pos of holes) {
-      let hx = 0
-      let hy = 0
+      let hx = 0;
+      let hy = 0;
       if (pos === "topleft") {
-        hx = -width / 2 + holeInset
-        hy = height / 2 - holeInset
+        hx = -width / 2 + holeInset;
+        hy = height / 2 - holeInset;
       } else if (pos === "topright") {
-        hx = width / 2 - holeInset
-        hy = height / 2 - holeInset
+        hx = width / 2 - holeInset;
+        hy = height / 2 - holeInset;
       } else if (pos === "bottomleft") {
-        hx = -width / 2 + holeInset
-        hy = -height / 2 + holeInset
+        hx = -width / 2 + holeInset;
+        hy = -height / 2 + holeInset;
       } else if (pos === "bottomright") {
-        hx = width / 2 - holeInset
-        hy = -height / 2 + holeInset
+        hx = width / 2 - holeInset;
+        hy = -height / 2 + holeInset;
       } else if (pos === "center") {
-        hx = 0
-        hy = 0
+        hx = 0;
+        hy = 0;
       }
       // If hole_x_dist/hole_y_dist provided, use as offsets
-      if (holeXDist !== undefined) hx += holeXDist
-      if (holeYDist !== undefined) hy += holeYDist
+      if (holeXDist !== undefined) hx += holeXDist;
+      if (holeYDist !== undefined) hy += holeYDist;
       elements.push(
         platedhole(numPins + holes.indexOf(pos) + 1, hx, hy, id, od),
-      )
+      );
     }
   }
 
@@ -548,33 +548,33 @@ export const mountedpcbmodule = (
       { x: width / 2, y: height / 2 },
       { x: -width / 2, y: height / 2 },
       { x: -width / 2, y: -height / 2 },
-    ]
-    elements.push(silkscreenpath(outline, { stroke_width: 0.1, layer: "top" }))
+    ];
+    elements.push(silkscreenpath(outline, { stroke_width: 0.1, layer: "top" }));
   }
 
   // Add silkscreen reference text
-  const refText: SilkscreenRef = silkscreenRef(0, height / 2 + 1, 0.5)
-  elements.push(refText)
+  const refText: SilkscreenRef = silkscreenRef(0, height / 2 + 1, 0.5);
+  elements.push(refText);
 
   // Add USB silkscreen rectangle if USB is configured
   if (usbposition && usbtype) {
-    let usbRectWidth: number
-    let usbRectHeight: number
+    let usbRectWidth: number;
+    let usbRectHeight: number;
 
     if (usbtype === "c") {
-      usbRectWidth = 8
-      usbRectHeight = 3
+      usbRectWidth = 8;
+      usbRectHeight = 3;
     } else if (usbtype === "micro") {
-      usbRectWidth = 6
-      usbRectHeight = 2
+      usbRectWidth = 6;
+      usbRectHeight = 2;
     } else {
       return {
         circuitJson: elements,
         parameters,
-      }
+      };
     }
 
-    let usbRect: Array<{ x: number; y: number }>
+    let usbRect: Array<{ x: number; y: number }>;
 
     if (usbposition === "left") {
       usbRect = [
@@ -583,7 +583,7 @@ export const mountedpcbmodule = (
         { x: -width / 2 + usbRectHeight, y: usbRectWidth / 2 },
         { x: -width / 2, y: usbRectWidth / 2 },
         { x: -width / 2, y: -usbRectWidth / 2 },
-      ]
+      ];
     } else if (usbposition === "right") {
       usbRect = [
         { x: width / 2 - usbRectHeight, y: -usbRectWidth / 2 },
@@ -591,7 +591,7 @@ export const mountedpcbmodule = (
         { x: width / 2, y: usbRectWidth / 2 },
         { x: width / 2 - usbRectHeight, y: usbRectWidth / 2 },
         { x: width / 2 - usbRectHeight, y: -usbRectWidth / 2 },
-      ]
+      ];
     } else if (usbposition === "top") {
       usbRect = [
         { x: -usbRectWidth / 2, y: height / 2 - usbRectHeight },
@@ -599,7 +599,7 @@ export const mountedpcbmodule = (
         { x: usbRectWidth / 2, y: height / 2 },
         { x: -usbRectWidth / 2, y: height / 2 },
         { x: -usbRectWidth / 2, y: height / 2 - usbRectHeight },
-      ]
+      ];
     } else if (usbposition === "bottom") {
       usbRect = [
         { x: -usbRectWidth / 2, y: -height / 2 },
@@ -607,36 +607,36 @@ export const mountedpcbmodule = (
         { x: usbRectWidth / 2, y: -height / 2 + usbRectHeight },
         { x: -usbRectWidth / 2, y: -height / 2 + usbRectHeight },
         { x: -usbRectWidth / 2, y: -height / 2 },
-      ]
+      ];
     } else {
       return {
         circuitJson: elements,
         parameters,
-      }
+      };
     }
 
-    elements.push(silkscreenpath(usbRect, { stroke_width: 0.1, layer: "top" }))
+    elements.push(silkscreenpath(usbRect, { stroke_width: 0.1, layer: "top" }));
   }
 
   if (screen) {
-    const halfScreenWidth = screenwidth / 2
-    const halfScreenHeight = screenheight / 2
-    const centerX = screencenteroffsetx
-    const centerY = screencenteroffsety
+    const halfScreenWidth = screenwidth / 2;
+    const halfScreenHeight = screenheight / 2;
+    const centerX = screencenteroffsetx;
+    const centerY = screencenteroffsety;
     const screenOutline = [
       { x: -halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
       { x: halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
       { x: halfScreenWidth + centerX, y: halfScreenHeight + centerY },
       { x: -halfScreenWidth + centerX, y: halfScreenHeight + centerY },
       { x: -halfScreenWidth + centerX, y: -halfScreenHeight + centerY },
-    ]
+    ];
     elements.push(
       silkscreenpath(screenOutline, { stroke_width: 0.05, layer: "top" }),
-    )
+    );
   }
 
   return {
     circuitJson: elements,
     parameters,
-  }
-}
+  };
+};

@@ -1,10 +1,10 @@
-import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
-import { length } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef } from "../helpers/silkscreenRef"
-import { silkscreenpath } from "../helpers/silkscreenpath"
-import { base_def } from "../helpers/zod/base_def"
+import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json";
+import { length } from "circuit-json";
+import { z } from "zod";
+import { rectpad } from "../helpers/rectpad";
+import { silkscreenRef } from "../helpers/silkscreenRef";
+import { silkscreenpath } from "../helpers/silkscreenpath";
+import { base_def } from "../helpers/zod/base_def";
 
 export const sot143_def = base_def.extend({
   fn: z.literal("sot143"),
@@ -17,23 +17,23 @@ export const sot143_def = base_def.extend({
   pin1centeroffsetx: length.default("0.199898mm"),
   w: length.default("3mm"),
   h: length.default("2.9mm"),
-})
+});
 
 export const sot143 = (
   rawParams: z.input<typeof sot143_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = sot143_def.parse(rawParams)
-  const { p, px, pw, ph, pin1padwidth, pin1centeroffsetx, w, h } = parameters
-  const halfX = px / 2
-  const halfY = p / 2
+  const parameters = sot143_def.parse(rawParams);
+  const { p, px, pw, ph, pin1padwidth, pin1centeroffsetx, w, h } = parameters;
+  const halfX = px / 2;
+  const halfY = p / 2;
   const pads = [
     rectpad(1, -halfX + pin1centeroffsetx, -halfY, pin1padwidth, ph),
     rectpad(2, halfX, -halfY, pw, ph),
     rectpad(3, halfX, halfY, pw, ph),
     rectpad(4, -halfX, halfY, pw, ph),
-  ]
-  const halfWidth = w / 2
-  const halfHeight = h / 2
+  ];
+  const halfWidth = w / 2;
+  const halfHeight = h / 2;
   const silkscreen = [
     silkscreenpath([
       { x: -halfWidth, y: -halfHeight / 2 },
@@ -43,9 +43,9 @@ export const sot143 = (
       { x: halfWidth, y: halfHeight / 2 },
       { x: halfWidth, y: -halfHeight / 2 },
     ]),
-  ]
-  const copperWidth = px + Math.max(pin1padwidth, pw)
-  const copperHeight = p + ph
+  ];
+  const copperWidth = px + Math.max(pin1padwidth, pw);
+  const copperHeight = p + ph;
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
@@ -54,7 +54,7 @@ export const sot143 = (
     width: Math.max(w, copperWidth) + 0.5,
     height: Math.max(h, copperHeight) + 0.5,
     layer: "top",
-  }
+  };
 
   return {
     circuitJson: [
@@ -64,5 +64,5 @@ export const sot143 = (
       courtyard,
     ],
     parameters,
-  }
-}
+  };
+};

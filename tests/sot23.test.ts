@@ -1,63 +1,63 @@
-import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { fp } from "../src/footprinter"
+import { expect, test } from "bun:test";
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg";
+import { fp } from "../src/footprinter";
 
 test("sot23", () => {
-  const circuitJson = fp.string("sot23").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23")
-})
+  const circuitJson = fp.string("sot23").circuitJson();
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23");
+});
 
 test("sot-23 legacy alias", () => {
-  const circuitJson = fp.string("sot-23").circuitJson()
-  expect(circuitJson).toEqual(fp.string("sot23").circuitJson())
+  const circuitJson = fp.string("sot-23").circuitJson();
+  expect(circuitJson).toEqual(fp.string("sot23").circuitJson());
 
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_legacy_alias")
-})
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_legacy_alias");
+});
 
 test("sot-23 pin-count aliases", () => {
   const aliases = [
     ["sot-23-3", "sot23_3"],
     ["sot-23-5", "sot23_5"],
     ["sot-23-6", "sot23_6"],
-  ] as const
+  ] as const;
 
   for (const [alias, canonical] of aliases) {
-    const circuitJson = fp.string(alias).circuitJson()
-    expect(circuitJson).toEqual(fp.string(canonical).circuitJson())
+    const circuitJson = fp.string(alias).circuitJson();
+    expect(circuitJson).toEqual(fp.string(canonical).circuitJson());
 
-    const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-    expect(svgContent).toMatchSvgSnapshot(import.meta.path, alias)
+    const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+    expect(svgContent).toMatchSvgSnapshot(import.meta.path, alias);
   }
-})
+});
 
 test("sot23_w3_h1.5_p0.95mm", () => {
-  const circuitJson = fp.string("sot23_w3_h1.5_p0.95mm").circuitJson()
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  const circuitJson = fp.string("sot23_w3_h1.5_p0.95mm").circuitJson();
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "sot23_w3_h1.5_p0.95mm",
-  )
-})
+  );
+});
 test("sot23_3", () => {
-  const circuitJson = fp.string("sot23_3").circuitJson()
+  const circuitJson = fp.string("sot23_3").circuitJson();
 
-  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad")
-  expect(smtpad).toBeDefined()
-  expect(smtpad.length).toBe(3)
+  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad");
+  expect(smtpad).toBeDefined();
+  expect(smtpad.length).toBe(3);
 
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_3")
-})
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_3");
+});
 
 test("sot23_3 supports micrometer units", () => {
   const millimeterCircuitJson = fp
     .string("sot23_3_w1.92mm_h2.74mm_p0.95mm_pw0.6mm_pl1.325mm")
-    .circuitJson()
+    .circuitJson();
   const stringCircuitJson = fp
     .string("sot23_3_w1920um_h2740um_p950um_pw600um_pl1325um")
-    .circuitJson()
+    .circuitJson();
   const builderCircuitJson = fp()
     .sot23(3)
     .w("1920um")
@@ -65,53 +65,53 @@ test("sot23_3 supports micrometer units", () => {
     .p("950um")
     .pw("600um")
     .pl("1325um")
-    .circuitJson()
+    .circuitJson();
 
-  expect(stringCircuitJson).toEqual(millimeterCircuitJson)
-  expect(builderCircuitJson).toEqual(millimeterCircuitJson)
+  expect(stringCircuitJson).toEqual(millimeterCircuitJson);
+  expect(builderCircuitJson).toEqual(millimeterCircuitJson);
 
-  const svgContent = convertCircuitJsonToPcbSvg(stringCircuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(stringCircuitJson);
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "sot23_3_micrometer_units",
-  )
-})
+  );
+});
 
 test("compound dimensions support micrometer units", () => {
   const millimeterCircuitJson = fp
     .string("soic8_thermalpad2.4mmx3mm")
-    .circuitJson()
+    .circuitJson();
   const micrometerCircuitJson = fp
     .string("soic8_thermalpad2400umx3000um")
-    .circuitJson()
+    .circuitJson();
 
-  expect(micrometerCircuitJson).toEqual(millimeterCircuitJson)
+  expect(micrometerCircuitJson).toEqual(millimeterCircuitJson);
 
-  const svgContent = convertCircuitJsonToPcbSvg(micrometerCircuitJson)
+  const svgContent = convertCircuitJsonToPcbSvg(micrometerCircuitJson);
   expect(svgContent).toMatchSvgSnapshot(
     import.meta.path,
     "soic8_compound_micrometer_units",
-  )
-})
+  );
+});
 
 test("sot23_5", () => {
-  const circuitJson = fp.string("sot23_5").circuitJson()
+  const circuitJson = fp.string("sot23_5").circuitJson();
 
-  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad")
-  expect(smtpad).toBeDefined()
-  expect(smtpad.length).toBe(5)
+  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad");
+  expect(smtpad).toBeDefined();
+  expect(smtpad.length).toBe(5);
 
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_5")
-})
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_5");
+});
 
 test("sot23_6", () => {
-  const circuitJson = fp.string("sot23_6").circuitJson()
+  const circuitJson = fp.string("sot23_6").circuitJson();
 
-  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad")
-  expect(smtpad).toBeDefined()
-  expect(smtpad.length).toBe(6)
+  const smtpad = circuitJson.filter((e) => e.type === "pcb_smtpad");
+  expect(smtpad).toBeDefined();
+  expect(smtpad.length).toBe(6);
 
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_6")
-})
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson);
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_6");
+});
