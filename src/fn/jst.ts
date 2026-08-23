@@ -111,10 +111,10 @@ const modifyBoundsToIncludeRect = ({
 
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
-    p: length.parse("2.2mm"),
-    id: length.parse("0.70mm"),
+    p: length.parse("2mm"),
+    id: length.parse("0.75mm"),
     pw: length.parse("1.20mm"),
-    pl: length.parse("1.20mm"),
+    pl: length.parse("1.75mm"),
     w: length.parse("6mm"),
     h: length.parse("5mm"),
   },
@@ -222,20 +222,25 @@ function generatePads({
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
-      pads.push(
-        platedHoleWithRectPad({
-          pn: i + 1,
-          x,
-          y: 2,
-          holeDiameter: id,
-          rectPadWidth: pw,
-          rectPadHeight: pl,
-        }),
-      )
+      if (i === 0) {
+        pads.push(
+          platedHoleWithRectPad({
+            pn: i + 1,
+            x,
+            y: 0,
+            holeDiameter: id,
+            rectPadWidth: pw,
+            rectPadHeight: pl,
+            rectBorderRadius: 0.1249998,
+          }),
+        )
+      } else {
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+      }
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
-        centerY: 2,
+        centerY: 0,
         width: pw,
         height: pl,
       })
@@ -586,25 +591,35 @@ export const jst = (
   const crtMaxY = featureMaxY + courtyardFrontClearanceY
 
   const courtyard: PcbCourtyardRect =
-    variant === "xh"
+    variant === "ph"
       ? {
           type: "pcb_courtyard_rect",
           pcb_courtyard_rect_id: "",
           pcb_component_id: "",
-          center: { x: 0, y: -0.525 },
-          width: (numPins - 1) * p + 5.9,
-          height: 6.75,
+          center: { x: 0, y: -0.55 },
+          width: (numPins - 1) * p + 4.9,
+          height: 5.5,
           layer: "top",
         }
-      : {
-          type: "pcb_courtyard_rect",
-          pcb_courtyard_rect_id: "",
-          pcb_component_id: "",
-          center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-          width: crtMaxX - crtMinX,
-          height: crtMaxY - crtMinY,
-          layer: "top",
-        }
+      : variant === "xh"
+        ? {
+            type: "pcb_courtyard_rect",
+            pcb_courtyard_rect_id: "",
+            pcb_component_id: "",
+            center: { x: 0, y: -0.525 },
+            width: (numPins - 1) * p + 5.9,
+            height: 6.75,
+            layer: "top",
+          }
+        : {
+            type: "pcb_courtyard_rect",
+            pcb_courtyard_rect_id: "",
+            pcb_component_id: "",
+            center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+            width: crtMaxX - crtMinX,
+            height: crtMaxY - crtMinY,
+            layer: "top",
+          }
 
   return {
     circuitJson: [
