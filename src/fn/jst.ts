@@ -6,8 +6,8 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -115,7 +115,6 @@ const variantDefaults: Record<JstVariant, any> = {
     id: length.parse("0.75mm"),
     pw: length.parse("1.20mm"),
     pl: length.parse("1.75mm"),
-    w: length.parse("6mm"),
     h: length.parse("5mm"),
   },
   sh: {
@@ -377,13 +376,15 @@ function generateSilkscreenBody({
       ]),
     ]
   } else if (variant === "ph") {
+    const bodyTop = h / 2 + 0.5
+    const bodyBottom = bodyTop - h
     return [
       makeSilkscreenPath([
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: -w / 2, y: bodyTop },
+        { x: w / 2, y: bodyTop },
+        { x: w / 2, y: bodyBottom },
+        { x: -w / 2, y: bodyBottom },
+        { x: -w / 2, y: bodyTop },
       ]),
     ]
   } else if (variant === "zh" && numPins && p) {
@@ -511,8 +512,15 @@ export const jst = (
   const pw = params.pw ?? defaults.pw
   const pl =
     params.pl ?? (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl)
-  const w =
-    params.w ?? (variant === "xh" ? (numPins - 1) * p + 5.12 : defaults.w)
+  // PH bodies extend 2 mm beyond each outer pin center.
+  const defaultPhBodyWidth = (numPins - 1) * p + 4
+  const defaultWidth =
+    variant === "xh"
+      ? (numPins - 1) * p + 5.12
+      : variant === "ph"
+        ? defaultPhBodyWidth
+        : defaults.w
+  const w = params.w ?? defaultWidth
   const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h)
 
   const mpx = params.mpx ?? (numPins - 1) * p + 3.4
