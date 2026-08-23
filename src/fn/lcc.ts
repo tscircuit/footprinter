@@ -14,5 +14,8 @@ export const lcc = (
   if (!parameters.pw) {
     parameters.pw = 0.6
   }
+  if (!parameters.p) {
+    parameters.p = 1.27
+  }
   return quad(parameters)
 }
