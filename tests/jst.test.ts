@@ -4,6 +4,32 @@ import { fp } from "../src/footprinter"
 
 test("jst2_ph", () => {
   const circuitJson = fp.string("jst2_ph").circuitJson()
+  const params = fp.string("jst2_ph").json() as any
+  const platedHoles = circuitJson.filter(
+    (element) => element.type === "pcb_plated_hole",
+  )
+
+  expect(params).toMatchObject({ p: 2, id: 0.75, pw: 1.2, pl: 1.75 })
+  expect(platedHoles).toMatchObject([
+    {
+      shape: "circular_hole_with_rect_pad",
+      x: -1,
+      y: 0,
+      hole_diameter: 0.75,
+      rect_pad_width: 1.2,
+      rect_pad_height: 1.75,
+      rect_border_radius: 0.1249998,
+    },
+    {
+      shape: "pill",
+      x: 1,
+      y: 0,
+      hole_width: 0.75,
+      hole_height: 0.75,
+      outer_width: 1.2,
+      outer_height: 1.75,
+    },
+  ])
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst2_ph")
 })

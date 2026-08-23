@@ -6,8 +6,8 @@ import {
 } from "circuit-json"
 import { z } from "zod"
 
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { rectpad } from "src/helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -111,11 +111,10 @@ const modifyBoundsToIncludeRect = ({
 
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
-    p: length.parse("2.2mm"),
-    id: length.parse("0.70mm"),
+    p: length.parse("2mm"),
+    id: length.parse("0.75mm"),
     pw: length.parse("1.20mm"),
-    pl: length.parse("1.20mm"),
-    w: length.parse("6mm"),
+    pl: length.parse("1.75mm"),
     h: length.parse("5mm"),
   },
   sh: {
@@ -222,20 +221,25 @@ function generatePads({
     const startX = -((numPins - 1) / 2) * p
     for (let i = 0; i < numPins; i++) {
       const x = startX + i * p
-      pads.push(
-        platedHoleWithRectPad({
-          pn: i + 1,
-          x,
-          y: 2,
-          holeDiameter: id,
-          rectPadWidth: pw,
-          rectPadHeight: pl,
-        }),
-      )
+      if (i === 0) {
+        pads.push(
+          platedHoleWithRectPad({
+            pn: i + 1,
+            x,
+            y: 0,
+            holeDiameter: id,
+            rectPadWidth: pw,
+            rectPadHeight: pl,
+            rectBorderRadius: 0.1249998,
+          }),
+        )
+      } else {
+        pads.push(platedHolePill(i + 1, x, 0, id, pw, pl))
+      }
       modifyBoundsToIncludeRect({
         bounds: padBounds,
         centerX: x,
-        centerY: 2,
+        centerY: 0,
         width: pw,
         height: pl,
       })
@@ -372,13 +376,15 @@ function generateSilkscreenBody({
       ]),
     ]
   } else if (variant === "ph") {
+    const bodyTop = h / 2 + 0.5
+    const bodyBottom = bodyTop - h
     return [
       makeSilkscreenPath([
-        { x: -3, y: 3 },
-        { x: 3, y: 3 },
-        { x: 3, y: -2 },
-        { x: -3, y: -2 },
-        { x: -3, y: 3 },
+        { x: -w / 2, y: bodyTop },
+        { x: w / 2, y: bodyTop },
+        { x: w / 2, y: bodyBottom },
+        { x: -w / 2, y: bodyBottom },
+        { x: -w / 2, y: bodyTop },
       ]),
     ]
   } else if (variant === "zh" && numPins && p) {
@@ -506,8 +512,15 @@ export const jst = (
   const pw = params.pw ?? defaults.pw
   const pl =
     params.pl ?? (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl)
-  const w =
-    params.w ?? (variant === "xh" ? (numPins - 1) * p + 5.12 : defaults.w)
+  // PH bodies extend 2 mm beyond each outer pin center.
+  const defaultPhBodyWidth = (numPins - 1) * p + 4
+  const defaultWidth =
+    variant === "xh"
+      ? (numPins - 1) * p + 5.12
+      : variant === "ph"
+        ? defaultPhBodyWidth
+        : defaults.w
+  const w = params.w ?? defaultWidth
   const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h)
 
   const mpx = params.mpx ?? (numPins - 1) * p + 3.4
@@ -586,25 +599,35 @@ export const jst = (
   const crtMaxY = featureMaxY + courtyardFrontClearanceY
 
   const courtyard: PcbCourtyardRect =
-    variant === "xh"
+    variant === "ph"
       ? {
           type: "pcb_courtyard_rect",
           pcb_courtyard_rect_id: "",
           pcb_component_id: "",
-          center: { x: 0, y: -0.525 },
-          width: (numPins - 1) * p + 5.9,
-          height: 6.75,
+          center: { x: 0, y: -0.55 },
+          width: (numPins - 1) * p + 4.9,
+          height: 5.5,
           layer: "top",
         }
-      : {
-          type: "pcb_courtyard_rect",
-          pcb_courtyard_rect_id: "",
-          pcb_component_id: "",
-          center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
-          width: crtMaxX - crtMinX,
-          height: crtMaxY - crtMinY,
-          layer: "top",
-        }
+      : variant === "xh"
+        ? {
+            type: "pcb_courtyard_rect",
+            pcb_courtyard_rect_id: "",
+            pcb_component_id: "",
+            center: { x: 0, y: -0.525 },
+            width: (numPins - 1) * p + 5.9,
+            height: 6.75,
+            layer: "top",
+          }
+        : {
+            type: "pcb_courtyard_rect",
+            pcb_courtyard_rect_id: "",
+            pcb_component_id: "",
+            center: { x: (crtMinX + crtMaxX) / 2, y: (crtMinY + crtMaxY) / 2 },
+            width: crtMaxX - crtMinX,
+            height: crtMaxY - crtMinY,
+            layer: "top",
+          }
 
   return {
     circuitJson: [
