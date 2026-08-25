@@ -86,3 +86,19 @@ test("solderjumper 2-pin custom pad size", () => {
     "solderjumper2bridged12pw2ph0.5",
   )
 })
+
+test("bare solderjumper without pin count defaults to 2 pins without NaN", () => {
+  const circuitJson = fp.string("solderjumper").circuitJson()
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads.length).toBe(2)
+
+  const courtyard = circuitJson.find((e) => e.type === "pcb_courtyard_rect") as any
+  expect(courtyard).toBeDefined()
+  expect(Number.isNaN(courtyard.width)).toBe(false)
+  expect(Number.isNaN(courtyard.center.x)).toBe(false)
+
+  const text = circuitJson.find((e) => e.type === "pcb_silkscreen_text") as any
+  if (text && text.anchor_position) {
+    expect(Number.isNaN(text.anchor_position.x)).toBe(false)
+  }
+})
