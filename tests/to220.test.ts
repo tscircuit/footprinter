@@ -49,3 +49,21 @@ test("TO-220F-3 (alias)", () => {
   )
   expect(aliasSvg).toEqual(canonicalSvg)
 })
+
+test("to220_3 defaults to 2.54mm pitch (holes at x = -2.54, 0, 2.54)", () => {
+  const circuitJson = fp.string("to220_3").circuitJson()
+  const holes = circuitJson.filter((e) => e.type === "pcb_plated_hole") as any[]
+  expect(holes).toHaveLength(3)
+  expect(holes[0].x).toBeCloseTo(-2.54, 3)
+  expect(holes[1].x).toBeCloseTo(0, 3)
+  expect(holes[2].x).toBeCloseTo(2.54, 3)
+})
+
+test("to220_3 with custom pitch to220_3_p5mm uses 5.0mm pitch", () => {
+  const circuitJson = fp.string("to220_3_p5mm").circuitJson()
+  const holes = circuitJson.filter((e) => e.type === "pcb_plated_hole") as any[]
+  expect(holes).toHaveLength(3)
+  expect(holes[0].x).toBeCloseTo(-5.0, 3)
+  expect(holes[1].x).toBeCloseTo(0, 3)
+  expect(holes[2].x).toBeCloseTo(5.0, 3)
+})
