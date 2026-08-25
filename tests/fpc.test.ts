@@ -126,7 +126,9 @@ test("bare fpc defaults to 12 pins and renders valid footprint without throwing"
     (element) => element.type === "pcb_smtpad",
   ) as RectangularPad[]
   expect(pads).toHaveLength(14)
-  const courtyard = circuitJson.find((e) => e.type === "pcb_courtyard_rect") as any
+  const courtyard = circuitJson.find(
+    (e) => e.type === "pcb_courtyard_rect",
+  ) as any
   expect(courtyard).toBeDefined()
   expect(Number.isNaN(courtyard.width)).toBe(false)
 })
