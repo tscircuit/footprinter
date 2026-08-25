@@ -92,7 +92,9 @@ test("bare solderjumper without pin count defaults to 2 pins without NaN", () =>
   const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
   expect(pads.length).toBe(2)
 
-  const courtyard = circuitJson.find((e) => e.type === "pcb_courtyard_rect") as any
+  const courtyard = circuitJson.find(
+    (e) => e.type === "pcb_courtyard_rect",
+  ) as any
   expect(courtyard).toBeDefined()
   expect(Number.isNaN(courtyard.width)).toBe(false)
   expect(Number.isNaN(courtyard.center.x)).toBe(false)
