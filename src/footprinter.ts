@@ -560,6 +560,7 @@ export type Footprinter = {
     | "holed"
     | "bodybottom"
   >
+  ufqfpn: (num_pins?: number) => FootprinterParamsBuilder<never>
 
   params: () => any
   /** @deprecated use circuitJson() instead */
