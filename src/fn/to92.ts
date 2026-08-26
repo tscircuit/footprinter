@@ -30,6 +30,13 @@ export const to92_def = base_def.extend({
   string: z.string().optional(),
 })
 
+// Parámetro de pitch para modo inline (permite separación estándar de perfboard).
+// Por defecto respeta el pitch de KiCad (1.27mm) para mantener paridad.
+const extractInlinePitch = (str?: string): number | null => {
+  const m = str?.match(/_pitch([\d.]+)mm/i)
+  return m ? Number.parseFloat(m[1]) : null
+}
+
 const generateSemicircle = (
   centerX: number,
   centerY: number,
@@ -76,9 +83,12 @@ export const to92 = (
     num_pins: numPins,
   })
 
-  const { p, id, od, w, h, inline } = parameters
+  const { p, id, od, w, h, inline, string } = parameters
   const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
+  const inlinePitch = extractInlinePitch(string)
+  const padSpacing = inline
+    ? (inlinePitch ?? Number.parseFloat(p))
+    : Number.parseFloat(p)
   const holeDia = Number.parseFloat(id)
   const padDia = Number.parseFloat(od)
 
