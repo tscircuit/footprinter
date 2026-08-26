@@ -18,7 +18,7 @@ test("jst2_ph", () => {
       hole_diameter: 0.75,
       rect_pad_width: 1.2,
       rect_pad_height: 1.75,
-      rect_border_radius: 0.1249998,
+      rect_border_radius: 0.125,
     },
     {
       shape: "pill",
@@ -30,8 +30,21 @@ test("jst2_ph", () => {
       outer_height: 1.75,
     },
   ])
+
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst2_ph")
+})
+
+test("jst4_ph", () => {
+  const circuitJson = fp.string("jst4_ph").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst4_ph")
+})
+
+test("jst10_ph", () => {
+  const circuitJson = fp.string("jst10_ph").circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst10_ph")
 })
 
 test("jst4_sh", () => {
@@ -94,13 +107,20 @@ test("jst_without_num_pins_is_invalid", () => {
   expect(() => fp.string("jst_ph").json()).toThrow()
 })
 
-test("jst_ph_4 (pretransform)", () => {
-  const circuitJson = fp.string("jst_ph_4").circuitJson()
-  const params = fp.string("jst_ph_4").json() as any
-  expect(params.num_pins).toBe(4)
-  expect(params.ph).toBe(true)
-  const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path + "jst_ph_4")
+test("jst_ph parameter overrides throw on fixed-form geometry mismatch", () => {
+  expect(() =>
+    fp.string("jst4_ph_p2mm_w10.12mm_h4.72mm").circuitJson(),
+  ).not.toThrow()
+
+  expect(() => fp.string("jst4_ph_p2.54mm").circuitJson()).toThrow(
+    /fixed-form at 2\.00mm pitch/,
+  )
+  expect(() => fp.string("jst4_ph_w12mm").circuitJson()).toThrow(
+    /fixed-form at 2\.00mm pitch/,
+  )
+  expect(() => fp.string("jst4_ph_h6mm").circuitJson()).toThrow(
+    /fixed-form at 2\.00mm pitch/,
+  )
 })
 
 test("jst_sh_6 (pretransform)", () => {

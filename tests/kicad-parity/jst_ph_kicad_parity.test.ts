@@ -8,13 +8,19 @@ const getBodySilkscreenWidth = (
     route?: Array<{ x: number }>
   }>,
 ) => {
-  const body = elements.find(
-    (element) => element.type === "pcb_silkscreen_path",
+  const paths = elements.filter(
+    (element) =>
+      element.type === "pcb_silkscreen_path" &&
+      element.route &&
+      element.route.length > 0,
   )
-  if (!body?.route) throw new Error("Missing JST-PH body silkscreen")
+  if (paths.length === 0) throw new Error("Missing JST-PH body silkscreen")
 
-  const xs = body.route.map((point) => point.x)
-  return Math.max(...xs) - Math.min(...xs)
+  const widths = paths.map((path) => {
+    const xs = path.route!.map((point) => point.x)
+    return Math.max(...xs) - Math.min(...xs)
+  })
+  return Math.max(...widths)
 }
 
 test("parity/jst2_ph", async () => {
@@ -31,7 +37,7 @@ test("parity/jst2_ph", async () => {
 
   expect(avgRelDiff).toBeLessThan(0.02)
   expect(courtyardDiffPercent).toBeLessThan(0.5)
-  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBe(6)
+  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBeCloseTo(6.12, 2)
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
@@ -48,13 +54,16 @@ test("parity/jst4_ph", async () => {
     avgRelDiff,
     combinedFootprintElements,
     booleanDifferenceSvg,
+    courtyardDiffPercent,
     fpSilkscreenElements,
   } = await compareFootprinterVsKicad(
     "jst4_ph",
     "Connector_JST.pretty/JST_PH_B4B-PH-K_1x04_P2.00mm_Vertical.circuit.json",
   )
 
-  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBe(10)
+  expect(avgRelDiff).toBeLessThan(0.02)
+  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBeCloseTo(10.12, 2)
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
@@ -71,13 +80,16 @@ test("parity/jst6_ph", async () => {
     avgRelDiff,
     combinedFootprintElements,
     booleanDifferenceSvg,
+    courtyardDiffPercent,
     fpSilkscreenElements,
   } = await compareFootprinterVsKicad(
     "jst6_ph",
     "Connector_JST.pretty/JST_PH_B6B-PH-K_1x06_P2.00mm_Vertical.circuit.json",
   )
 
-  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBe(14)
+  expect(avgRelDiff).toBeLessThan(0.02)
+  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(getBodySilkscreenWidth(fpSilkscreenElements)).toBeCloseTo(14.12, 2)
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,

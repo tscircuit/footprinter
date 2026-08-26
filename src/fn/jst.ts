@@ -49,7 +49,7 @@ export const jst_def = base_def.extend({
     .boolean()
     .optional()
     .describe(
-      'JST PH (Through-hole) connector family. PH stands for "Pin Header".',
+      'JST PH (Through-hole) connector family. PH stands for "Pin Header". Housing silkscreen and courtyard are fixed-form at standard 2.00mm pitch according to KiCad/JST specification.',
     ),
 
   zh: z
@@ -111,11 +111,12 @@ const modifyBoundsToIncludeRect = ({
 
 const variantDefaults: Record<JstVariant, any> = {
   ph: {
-    p: length.parse("2mm"),
+    p: length.parse("2.00mm"),
     id: length.parse("0.75mm"),
     pw: length.parse("1.20mm"),
     pl: length.parse("1.75mm"),
-    h: length.parse("5mm"),
+    w: length.parse("6.12mm"),
+    h: length.parse("4.72mm"),
   },
   sh: {
     p: length.parse("1mm"),
@@ -230,7 +231,7 @@ function generatePads({
             holeDiameter: id,
             rectPadWidth: pw,
             rectPadHeight: pl,
-            rectBorderRadius: 0.1249998,
+            rectBorderRadius: 0.125,
           }),
         )
       } else {
@@ -375,18 +376,139 @@ function generateSilkscreenBody({
         { x: -w / 2, y: -h / 2 },
       ]),
     ]
-  } else if (variant === "ph") {
-    const bodyTop = h / 2 + 0.5
-    const bodyBottom = bodyTop - h
-    return [
+  } else if (variant === "ph" && numPins && p) {
+    const BODY_SIDE_OFFSET = 2.06
+    const BODY_TOP_Y = -2.91
+    const BODY_BOTTOM_Y = 1.81
+
+    const INNER_CAVITY_SIDE_OFFSET = 1.45
+    const INNER_CAVITY_REAR_Y = -2.3
+    const INNER_CAVITY_FRONT_STEP_Y = 1.2
+    const FRONT_CUTOUT_X_INSET = 0.5
+
+    const DIVIDER_NOTCH_HALF_WIDTH = 0.1
+    const DIVIDER_NOTCH_TOP_Y = -2.3
+    const DIVIDER_NOTCH_BOTTOM_Y = -1.8
+
+    const FLANGE_OUTER_X_OFFSET = 2.06
+    const FLANGE_INNER_X_OFFSET = 1.45
+    const FLANGE_TOP_Y = 0.5
+    const FLANGE_BOTTOM_Y = -0.8
+
+    const PIN1_MARKER_X1_OFFSET = 1.11
+    const PIN1_MARKER_X2_OFFSET = 2.36
+    const PIN1_MARKER_Y1 = 2.11
+    const PIN1_MARKER_Y2 = 0.86
+
+    const KEYING_TAB_X_START_OFFSET = 0.6
+    const KEYING_TAB_X_END_OFFSET = 0.3
+    const KEYING_TAB_BOTTOM_Y = 1.81
+    const KEYING_TAB_TOP_Y = 2.01
+    const KEYING_TAB_MID_Y = 1.91
+
+    const pinSpan = (numPins - 1) * p
+    const pin1X = -pinSpan / 2
+    const lastPinX = pinSpan / 2
+    const bodyLeft = pin1X - BODY_SIDE_OFFSET
+    const bodyRight = lastPinX + BODY_SIDE_OFFSET
+    const bodyTop = BODY_TOP_Y
+    const bodyBottom = BODY_BOTTOM_Y
+
+    const paths: PcbSilkscreenPath[] = []
+
+    paths.push(
       makeSilkscreenPath([
-        { x: -w / 2, y: bodyTop },
-        { x: w / 2, y: bodyTop },
-        { x: w / 2, y: bodyBottom },
-        { x: -w / 2, y: bodyBottom },
-        { x: -w / 2, y: bodyTop },
+        { x: bodyLeft, y: bodyBottom },
+        { x: bodyRight, y: bodyBottom },
+        { x: bodyRight, y: bodyTop },
+        { x: bodyLeft, y: bodyTop },
+        { x: bodyLeft, y: bodyBottom },
       ]),
-    ]
+    )
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X + FRONT_CUTOUT_X_INSET, y: BODY_BOTTOM_Y },
+        { x: pin1X + FRONT_CUTOUT_X_INSET, y: INNER_CAVITY_FRONT_STEP_Y },
+        { x: pin1X - INNER_CAVITY_SIDE_OFFSET, y: INNER_CAVITY_FRONT_STEP_Y },
+        { x: pin1X - INNER_CAVITY_SIDE_OFFSET, y: INNER_CAVITY_REAR_Y },
+        { x: lastPinX + INNER_CAVITY_SIDE_OFFSET, y: INNER_CAVITY_REAR_Y },
+        {
+          x: lastPinX + INNER_CAVITY_SIDE_OFFSET,
+          y: INNER_CAVITY_FRONT_STEP_Y,
+        },
+        { x: lastPinX - FRONT_CUTOUT_X_INSET, y: INNER_CAVITY_FRONT_STEP_Y },
+        { x: lastPinX - FRONT_CUTOUT_X_INSET, y: BODY_BOTTOM_Y },
+      ]),
+    )
+
+    for (let i = 0; i < numPins - 1; i++) {
+      const mid = pin1X + (i + 0.5) * p
+      paths.push(
+        makeSilkscreenPath([
+          { x: mid - DIVIDER_NOTCH_HALF_WIDTH, y: DIVIDER_NOTCH_TOP_Y },
+          { x: mid - DIVIDER_NOTCH_HALF_WIDTH, y: DIVIDER_NOTCH_BOTTOM_Y },
+          { x: mid + DIVIDER_NOTCH_HALF_WIDTH, y: DIVIDER_NOTCH_BOTTOM_Y },
+          { x: mid + DIVIDER_NOTCH_HALF_WIDTH, y: DIVIDER_NOTCH_TOP_Y },
+        ]),
+      )
+      paths.push(
+        makeSilkscreenPath([
+          { x: mid, y: DIVIDER_NOTCH_TOP_Y },
+          { x: mid, y: DIVIDER_NOTCH_BOTTOM_Y },
+        ]),
+      )
+    }
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X - FLANGE_OUTER_X_OFFSET, y: FLANGE_TOP_Y },
+        { x: pin1X - FLANGE_INNER_X_OFFSET, y: FLANGE_TOP_Y },
+      ]),
+    )
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X - FLANGE_OUTER_X_OFFSET, y: FLANGE_BOTTOM_Y },
+        { x: pin1X - FLANGE_INNER_X_OFFSET, y: FLANGE_BOTTOM_Y },
+      ]),
+    )
+    paths.push(
+      makeSilkscreenPath([
+        { x: lastPinX + FLANGE_OUTER_X_OFFSET, y: FLANGE_TOP_Y },
+        { x: lastPinX + FLANGE_INNER_X_OFFSET, y: FLANGE_TOP_Y },
+      ]),
+    )
+    paths.push(
+      makeSilkscreenPath([
+        { x: lastPinX + FLANGE_OUTER_X_OFFSET, y: FLANGE_BOTTOM_Y },
+        { x: lastPinX + FLANGE_INNER_X_OFFSET, y: FLANGE_BOTTOM_Y },
+      ]),
+    )
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X - PIN1_MARKER_X1_OFFSET, y: PIN1_MARKER_Y1 },
+        { x: pin1X - PIN1_MARKER_X2_OFFSET, y: PIN1_MARKER_Y1 },
+        { x: pin1X - PIN1_MARKER_X2_OFFSET, y: PIN1_MARKER_Y2 },
+      ]),
+    )
+
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X - KEYING_TAB_X_START_OFFSET, y: KEYING_TAB_BOTTOM_Y },
+        { x: pin1X - KEYING_TAB_X_START_OFFSET, y: KEYING_TAB_TOP_Y },
+        { x: pin1X - KEYING_TAB_X_END_OFFSET, y: KEYING_TAB_TOP_Y },
+        { x: pin1X - KEYING_TAB_X_END_OFFSET, y: KEYING_TAB_BOTTOM_Y },
+      ]),
+    )
+    paths.push(
+      makeSilkscreenPath([
+        { x: pin1X - KEYING_TAB_X_START_OFFSET, y: KEYING_TAB_MID_Y },
+        { x: pin1X - KEYING_TAB_X_END_OFFSET, y: KEYING_TAB_MID_Y },
+      ]),
+    )
+
+    return paths
   } else if (variant === "zh" && numPins && p) {
     const pinSpan = (numPins - 1) * p
     const bodyLeft = -pinSpan / 2 - 1.5
@@ -404,11 +526,10 @@ function generateSilkscreenBody({
       ]),
     ]
   } else if (variant === "xh" && numPins && p) {
-    const startX = -((numPins - 1) / 2) * p
-    const pinXs = Array.from({ length: numPins }, (_, i) => startX + i * p)
-    const x1 = pinXs[0]
-    const xN = pinXs[numPins - 1]
-    const mid = (x1 + xN) / 2
+    const pinSpan = (numPins - 1) * p
+    const x1 = -pinSpan / 2
+    const xN = pinSpan / 2
+    const mid = 0
 
     const TOP_INNER = -2.75
     const TOP_OUTER = -3.51
@@ -468,6 +589,28 @@ function generateSilkscreenBody({
   }
 }
 
+function assertPhFixedParam({
+  paramName,
+  actual,
+  expected,
+  tolerance = 1e-3,
+  unit = "mm",
+  extraContext = "",
+}: {
+  paramName: string
+  actual: number | undefined
+  expected: number
+  tolerance?: number
+  unit?: string
+  extraContext?: string
+}) {
+  if (actual !== undefined && Math.abs(actual - expected) > tolerance) {
+    throw new Error(
+      `JST PH silkscreen housing geometry is fixed-form at 2.00mm pitch (expected ${paramName}=${expected}${unit}${extraContext ? ` ${extraContext}` : ""}, received ${paramName}=${actual}${unit}). Overriding ${paramName} is not supported for JST PH.`,
+    )
+  }
+}
+
 export const jst = (
   raw_params: jstDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -512,8 +655,30 @@ export const jst = (
   const pw = params.pw ?? defaults.pw
   const pl =
     params.pl ?? (variant === "xh" ? (numPins === 2 ? 2.0 : 1.95) : defaults.pl)
-  // PH bodies extend 2 mm beyond each outer pin center.
-  const defaultPhBodyWidth = (numPins - 1) * p + 4
+
+  const defaultPhBodyWidth = Number(((numPins - 1) * p + 4.12).toFixed(2))
+  const defaultPhBodyHeight = 4.72
+
+  if (variant === "ph") {
+    assertPhFixedParam({
+      paramName: "p",
+      actual: raw_params.p !== undefined ? Number(p) : undefined,
+      expected: 2.0,
+      tolerance: 1e-4,
+    })
+    assertPhFixedParam({
+      paramName: "w",
+      actual: params.w,
+      expected: defaultPhBodyWidth,
+      extraContext: `for ${numPins}-pin`,
+    })
+    assertPhFixedParam({
+      paramName: "h",
+      actual: params.h,
+      expected: defaultPhBodyHeight,
+    })
+  }
+
   const defaultWidth =
     variant === "xh"
       ? (numPins - 1) * p + 5.12
@@ -521,7 +686,13 @@ export const jst = (
         ? defaultPhBodyWidth
         : defaults.w
   const w = params.w ?? defaultWidth
-  const h = params.h ?? (variant === "xh" ? 5.97 : defaults.h)
+  const h =
+    params.h ??
+    (variant === "xh"
+      ? 5.97
+      : variant === "ph"
+        ? defaultPhBodyHeight
+        : defaults.h)
 
   const mpx = params.mpx ?? (numPins - 1) * p + 3.4
   const mpy = params.mpy ?? defaults.mpy ?? 0
