@@ -119,3 +119,9 @@ test("fpc31_staggered supports unequal row lengths for FPC-0.3HF-31PWBH10", () =
     "fpc31_staggered_FPC-0.3HF-31PWBH10",
   )
 })
+
+test("fpc renders from a bare name with default num_pins", () => {
+  const soup = fp.string("fpc").circuitJson()
+  const pads = soup.filter((el: any) => el.type === "pcb_smtpad")
+  expect(pads.length).toBeGreaterThan(0)
+})
