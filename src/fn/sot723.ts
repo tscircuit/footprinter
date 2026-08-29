@@ -60,13 +60,16 @@ export const getCcwSot723Coords = (parameters: {
 }) => {
   const { pn, w, h, pl, p } = parameters
 
+  // Per the Toshiba SOT-723 datasheet (and KiCad's SOT-723 footprint),
+  // pin 1 is the top-left pad, pin 2 bottom-left, and pin 3 sits alone on
+  // the right — the previous mapping swapped pins 1 and 3.
   if (pn === 1) {
-    return { x: p, y: 0 }
+    return { x: -p, y: 0.4 }
   }
   if (pn === 2) {
     return { x: -p, y: -0.4 }
   }
-  return { x: -p, y: 0.4 }
+  return { x: p, y: 0 }
 }
 
 export const sot723WithoutParsing = (
