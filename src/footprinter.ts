@@ -570,23 +570,29 @@ export type Footprinter = {
 }
 
 const normalizeDefinition = (def: string): string => {
-  return def
-    .trim()
-    .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
-    .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
-    .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
-      pins ? `to252_${pins}` : "to252",
-    )
-    .replace(/^to-263(?:-(\d+))?(?=_|$)/i, (_, pins) =>
-      pins ? `to263_${pins}` : "to263",
-    )
-    .replace(/^sot-23(?:-(\d+))?(?=_|$)/i, (_, pins) =>
-      pins ? `sot23_${pins}` : "sot23",
-    )
-    .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
-    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
-    .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
-    .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
+  return (
+    def
+      .trim()
+      .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+      .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
+      .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+        pins ? `to252_${pins}` : "to252",
+      )
+      .replace(/^to-263(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+        pins ? `to263_${pins}` : "to263",
+      )
+      .replace(/^sot-23(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+        pins ? `sot23_${pins}` : "sot23",
+      )
+      .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
+      .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+      .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+      .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
+      // PDIP/SPDIP are the same plastic/shouldered DIP land pattern the `dip`
+      // footprint already emits (KiCad DIP-8_W7.62mm).
+      .replace(/^(?:pdip|spdip)(\d+)(?=_|$)/i, "dip$1")
+      .replace(/^(?:pdip|spdip)(?=_|$)/i, "dip")
+  )
 }
 
 const normalizeMicrometerLengths = (value: string): string =>
