@@ -49,3 +49,28 @@ test("TO-220F-3 (alias)", () => {
   )
   expect(aliasSvg).toEqual(canonicalSvg)
 })
+
+test("to220 uses the fixed JEDEC 2.54mm pitch regardless of body width", () => {
+  const circuitjson = fp.string("to220").circuitJson()
+  const holes = circuitjson.filter(
+    (el: any) => el.type === "pcb_plated_hole",
+  ) as any[]
+  const xs = holes.map((h) => h.x).sort((a, b) => a - b)
+  expect(xs).toEqual([-2.54, 0, 2.54])
+
+  // a wider body must not change the pitch
+  const wide = fp.string("to220").w(20).circuitJson()
+  const wideXs = wide
+    .filter((el: any) => el.type === "pcb_plated_hole")
+    .map((h: any) => h.x)
+    .sort((a: number, b: number) => a - b)
+  expect(wideXs).toEqual([-2.54, 0, 2.54])
+
+  // an explicit p override is honored
+  const spaced = fp.string("to220").p(3).circuitJson()
+  const spacedXs = spaced
+    .filter((el: any) => el.type === "pcb_plated_hole")
+    .map((h: any) => h.x)
+    .sort((a: number, b: number) => a - b)
+  expect(spacedXs).toEqual([-3, 0, 3])
+})
