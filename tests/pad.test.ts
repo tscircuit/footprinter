@@ -80,7 +80,6 @@ test("pad footprint with different dimensions", async () => {
   expect(params).toMatchObject({ w: 3, h: 2 })
 })
 
-
 test("pad renders a valid default pad from a bare name", () => {
   const soup = fp.string("pad").circuitJson()
   const smtpad = soup.find((el: any) => el.type === "pcb_smtpad") as any
