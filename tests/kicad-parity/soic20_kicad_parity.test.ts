@@ -13,6 +13,9 @@ test("parity/soic20", async () => {
     "Package_SO.pretty/Infineon_SOIC-20W_7.6x12.8mm_P1.27mm.circuit.json",
   )
 
+  // Bespoke ceiling: measured ~15.3% off KiCad (#731) — the legsoutside
+  // courtyard variant differs from the KiCad land pattern. Tracked in #731;
+  // the other 84 parity footprints are held to <5%.
   expect(courtyardDiffPercent).toBeLessThan(16)
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
