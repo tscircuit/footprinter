@@ -335,15 +335,27 @@ export const quad = (
   ] as const) {
     // const dx = Math.floor(corner_index / 2) * 2 - 1
     // const dy = 1 - (corner_index % 2) * 2
-    const corner_x = (parameters.w / 2) * dx
-    const corner_y = (parameters.h / 2) * dy
+    // Place the corner just outside the pad envelope on the diagonal so the
+    // arms can never cross copper (KiCad-style ~0.2mm silk-to-pad clearance).
+    // The old (±w/2, ±h/2) placement sat on the pad-row centre line, which
+    // overlapped pads on narrow bodies (#734).
+    const padOuterX =
+      Math.max(
+        ...pads.map((p: any) => Math.abs(p.x) + Math.abs(p.width ?? 0) / 2),
+      ) + 0.25
+    const padOuterY =
+      Math.max(
+        ...pads.map((p: any) => Math.abs(p.y) + Math.abs(p.height ?? 0) / 2),
+      ) + 0.25
+    const corner_x = padOuterX * dx
+    const corner_y = padOuterY * dy
     let arrow: "none" | "in1" | "in2" = "none"
 
     let arrow_x = corner_x
     let arrow_y = corner_y
 
     /** corner size */
-    const csz = parameters.pw * 2
+    const csz = Math.min(parameters.pw * 2, 0.5)
 
     if (pin_map[1] === 1 && corner === "top-left") {
       arrow = "in1"
