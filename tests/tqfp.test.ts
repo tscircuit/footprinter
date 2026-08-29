@@ -34,3 +34,18 @@ test("tqfp100_w14", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tqfp100_w14")
 })
+
+test("tqfp44 uses the JEDEC 0.8mm pitch with 0.55mm pads", () => {
+  const pads = fp
+    .string("tqfp44")
+    .circuitJson()
+    .filter((el: any) => el.type === "pcb_smtpad") as any[]
+  expect(pads.length).toBe(44)
+
+  const maxX = Math.max(...pads.map((p) => p.x))
+  const colPads = pads.filter((p) => Math.abs(p.x - maxX) < 0.01)
+  const col = colPads.map((p) => p.y).sort((a: number, b: number) => b - a)
+  expect(Math.round((col[0] - col[1]) * 1000) / 1000).toBe(0.8)
+  expect(colPads[0].height).toBe(0.55)
+  expect(colPads[0].width).toBe(1.475)
+})

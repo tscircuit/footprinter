@@ -17,6 +17,10 @@ export const tqfp = (
         raw_params.p = 0.8
         break
       case 44:
+        // TQFP-44 is a 10x10mm body on 0.8mm pitch (JEDEC MS-026 BBA),
+        // matching the tqfp32 defaults.
+        raw_params.p = 0.8
+        break
       case 48:
         raw_params.p = 0.5
         break
@@ -57,6 +61,8 @@ export const tqfp = (
         raw_params.pw = 0.55
         break
       case 44:
+        raw_params.pw = 0.55
+        break
       case 48:
       case 64:
       case 80:
