@@ -54,7 +54,10 @@ export const son = (
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getSonPadCoord(parameters.num_pins, i + 1, w, p)
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    // Counter-clockwise numbering: down the left column, up the right column (#677).
+    const half = Math.floor(parameters.num_pins / 2)
+    const pinNumber = i + 1 <= half ? i + 1 : half + (parameters.num_pins - i)
+    pads.push(rectpad(pinNumber, x, y, pl, pw, cornerRadius))
   }
 
   if (parameters.ep) {
