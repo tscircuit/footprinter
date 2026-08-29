@@ -8,6 +8,11 @@ export const lcc = (
   parameters: z.input<typeof lcc_def>,
 ): { circuitJson: AnySoupElement[]; parameters: any } => {
   parameters.legsoutside = false
+  // Standard LCC/PLCC lead pitch is 1.27mm; quad's 0.5mm default leaves
+  // 0.6mm-wide pads overlapping by 0.1mm along the column.
+  if (!parameters.p) {
+    parameters.p = 1.27
+  }
   if (!parameters.pl) {
     parameters.pl = 1.0
   }
