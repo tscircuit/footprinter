@@ -154,7 +154,45 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     layer: "top",
   }
 
-  return [...pads, silkscreenRefText as AnyCircuitElement, courtyard]
+  // Body outline + pin-1 marker, mirroring the sibling SOT footprints
+  // (sot23w/sot323 draw the same two paths). The 3-pin SOT-23 has two pads
+  // on the top edge and pin 1 on the bottom, so the outline spans the body
+  // between the rows and a short pin-1 tick marks the lone bottom pad.
+  const outlineHalfWidth = w / 2 - pl / 2 - 0.2
+  const bodyPath: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_body",
+    route: [
+      { x: -outlineHalfWidth, y: h / 2 },
+      { x: outlineHalfWidth, y: h / 2 },
+      { x: outlineHalfWidth, y: -h / 2 },
+      { x: -outlineHalfWidth, y: -h / 2 },
+      { x: -outlineHalfWidth, y: h / 2 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+  const pin1Path: PcbSilkscreenPath = {
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_pin1",
+    route: [
+      { x: -outlineHalfWidth, y: -h / 2 - 0.4 },
+      { x: -outlineHalfWidth, y: -h / 2 },
+      { x: -outlineHalfWidth + 0.4, y: -h / 2 },
+    ],
+    type: "pcb_silkscreen_path",
+    stroke_width: 0.1,
+  }
+
+  return [
+    ...pads,
+    silkscreenRefText as AnyCircuitElement,
+    courtyard,
+    bodyPath,
+    pin1Path,
+  ]
 }
 
 export const getCcwSot235Coords = (parameters: {
