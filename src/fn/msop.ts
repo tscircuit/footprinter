@@ -103,7 +103,11 @@ export const msop = (
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getMsopCoords(parameters.num_pins, i + 1, w, p, pl)
-    pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
+    // Dual-row packages number counter-clockwise: down the left column, then
+    // UP the right column, so the last pin sits across from pin 1 (#677).
+    const half = Math.floor(parameters.num_pins / 2)
+    const pinNumber = i + 1 <= half ? i + 1 : half + (parameters.num_pins - i)
+    pads.push(rectpad(pinNumber, x, y, pl, pw, cornerRadius))
   }
 
   if (parameters.thermalpad) {
