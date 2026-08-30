@@ -4,7 +4,12 @@ import { fp } from "../src/footprinter"
 
 test("0402", () => {
   const soup = fp.string("0402").circuitJson()
+  const silkscreenText = soup.find(
+    (element) => element.type === "pcb_silkscreen_text",
+  )
   const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  expect(silkscreenText?.font_size).toBe(0.6)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402")
 })
 
