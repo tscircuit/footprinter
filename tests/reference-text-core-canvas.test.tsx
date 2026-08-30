@@ -158,6 +158,6 @@ test("render the previous 0.4mm reference text through Core and circuit-to-canva
 test("render the current 0.6mm reference text through Core and circuit-to-canvas", async () => {
   await expectReferenceTextCanvasSnapshot({
     renderedReferenceFontSizeMm: CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM,
-    snapshotName: "reference-text-core-canvas",
+    snapshotName: "reference-text-core-canvas-after",
   })
 })
