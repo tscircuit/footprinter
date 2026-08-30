@@ -48,6 +48,8 @@ export const pinrow_def = base_def
     rightangle: z.boolean().optional().describe("right angle"),
     pw: length.optional().default("1.0mm").describe("pad width for SMD"),
     pl: length.optional().default("2.0mm").describe("pad length for SMD"),
+    cyw: length.optional().describe("courtyard width"),
+    cyh: length.optional().describe("courtyard height"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -129,6 +131,13 @@ export const pinrow_def = base_def
         path: ["missing"],
       })
     }
+    if ((data.cyw === undefined) !== (data.cyh === undefined)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "'cyw' and 'cyh' must be provided together",
+        path: [data.cyw === undefined ? "cyw" : "cyh"],
+      })
+    }
   })
 
 export const pinrow = (
@@ -140,6 +149,8 @@ export const pinrow = (
     py,
     id,
     od,
+    cyw,
+    cyh,
     rows,
     cols,
     num_pins,
@@ -541,13 +552,20 @@ export const pinrow = (
     padOuterHalfHeight + 0.25,
     bodyHalfHeight + 0.5,
   )
+  const courtyardSize =
+    cyw !== undefined && cyh !== undefined
+      ? { width: cyw, height: cyh }
+      : {
+          width: 2 * courtyardHalfWidth,
+          height: 2 * courtyardHalfHeight,
+        }
   const courtyard: PcbCourtyardRect = {
     type: "pcb_courtyard_rect",
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: 2 * courtyardHalfWidth,
-    height: 2 * courtyardHalfHeight,
+    width: courtyardSize.width,
+    height: courtyardSize.height,
     layer: "top",
   }
 

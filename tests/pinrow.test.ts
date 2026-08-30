@@ -23,6 +23,30 @@ test("pinrow5", () => {
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "pinrow5_1")
 })
 
+test("pinrow uses explicit courtyard dimensions", () => {
+  const definition = "pinrow3_cyw8.12mm_cyh3.04mm"
+  const circuitJson = fp.string(definition).circuitJson()
+  const courtyard = circuitJson.find(
+    (element) => element.type === "pcb_courtyard_rect",
+  )
+
+  expect(courtyard).toMatchObject({
+    width: 8.12,
+    height: 3.04,
+  })
+  expect(
+    convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path, definition)
+})
+
+for (const definition of ["pinrow3_cyw8.12mm", "pinrow3_cyh3.04mm"]) {
+  test(`${definition} requires both courtyard dimensions`, () => {
+    expect(() => fp.string(definition).circuitJson()).toThrow(
+      "'cyw' and 'cyh' must be provided together",
+    )
+  })
+}
+
 test("pinrow silkscreen border and custom module label", () => {
   const definition =
     "pinrow14_rows2_p2.54mm_py15.24mm_female_silkscreenborder_silkscreenlabel(XIAO RP2040)"
