@@ -5,7 +5,12 @@ import type { AnyCircuitElement } from "circuit-json"
 
 test("dip footprint", () => {
   const circuitJson = fp().dip(4).w(4).p(2).circuitJson()
+  const silkscreenText = circuitJson.find(
+    (element) => element.type === "pcb_silkscreen_text",
+  )
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
+
+  expect(silkscreenText?.font_size).toBe(0.6)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip footprint")
 })
 

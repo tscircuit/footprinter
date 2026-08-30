@@ -119,7 +119,7 @@ export const solderjumper = (params: {
 
   const refOffset = 0.6
   const refY = outlineCenterY + outlineHeight / 2 + refOffset
-  const silk = silkscreenRef(outlineCenterX, refY, 0.4)
+  const silk = silkscreenRef(outlineCenterX, refY, 0.6)
 
   const pinRowSpanX = (num_pins - 1) * padSpacing
   const padOuterHalfWidth = pinRowSpanX / 2 + padWidth / 2

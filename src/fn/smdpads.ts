@@ -66,7 +66,7 @@ export const smdpads = (
   }
 
   return {
-    circuitJson: [...pads, silkscreenRef(0, ph / 2 + 0.8, 0.4), courtyard],
+    circuitJson: [...pads, silkscreenRef(0, ph / 2 + 0.8, 0.6), courtyard],
     parameters,
   }
 }
