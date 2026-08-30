@@ -171,6 +171,8 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
+    | "thermalpadnotchtopbottom"
+    | "thermalpadnotchleftright"
   >
   mlp: (
     num_pins?: number,
@@ -205,6 +207,8 @@ export type Footprinter = {
     | "thermalpad"
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
+    | "thermalpadnotchtopbottom"
+    | "thermalpadnotchleftright"
     | "thermalvias"
     | "thermalviapitch"
     | "thermalviaid"
