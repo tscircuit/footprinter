@@ -1,5 +1,5 @@
 import { expect, test } from "bun:test"
-import { createCanvas } from "@napi-rs/canvas"
+import { createCanvas, loadImage } from "@napi-rs/canvas"
 import { CircuitToCanvasDrawer } from "circuit-to-canvas"
 import type { PcbSilkscreenText } from "circuit-json"
 import { Circuit } from "tscircuit"
@@ -10,6 +10,7 @@ const BOARD_WIDTH_MM = 30
 const BOARD_HEIGHT_MM = 18
 const CANVAS_WIDTH_PX = 1200
 const CANVAS_HEIGHT_PX = 720
+const COMPARISON_CANVAS_WIDTH_PX = CANVAS_WIDTH_PX * 2
 const PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM = 0.2
 const PREVIOUS_RENDERED_REFERENCE_FONT_SIZE_MM = 0.4
 const CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM = 0.6
@@ -62,14 +63,12 @@ function getPreviewFootprintCircuitJson({
   })
 }
 
-async function expectReferenceTextCanvasSnapshot({
+async function renderReferenceTextCanvas({
   footprintReferenceFontSizeMm,
   renderedReferenceFontSizeMm,
-  snapshotName,
 }: {
   footprintReferenceFontSizeMm?: number
   renderedReferenceFontSizeMm: number
-  snapshotName: string
 }) {
   const circuit = new Circuit({
     platform: {
@@ -140,24 +139,30 @@ async function expectReferenceTextCanvasSnapshot({
     layers: ["top_copper", "top_silkscreen"],
   })
 
-  await expectPngToMatchSnapshot({
-    png: canvas.toBuffer("image/png"),
-    testPath: import.meta.path,
-    snapshotName,
-  })
+  return canvas.toBuffer("image/png")
 }
 
-test("render the previous 0.4mm reference text through Core and circuit-to-canvas", async () => {
-  await expectReferenceTextCanvasSnapshot({
+test("compare 0.4mm and 0.6mm reference text through Core and circuit-to-canvas", async () => {
+  const previousReferenceTextPng = await renderReferenceTextCanvas({
     footprintReferenceFontSizeMm: PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM,
     renderedReferenceFontSizeMm: PREVIOUS_RENDERED_REFERENCE_FONT_SIZE_MM,
-    snapshotName: "reference-text-core-canvas-before",
   })
-})
-
-test("render the current 0.6mm reference text through Core and circuit-to-canvas", async () => {
-  await expectReferenceTextCanvasSnapshot({
+  const currentReferenceTextPng = await renderReferenceTextCanvas({
     renderedReferenceFontSizeMm: CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM,
-    snapshotName: "reference-text-core-canvas-after",
+  })
+  const previousReferenceTextImage = await loadImage(previousReferenceTextPng)
+  const currentReferenceTextImage = await loadImage(currentReferenceTextPng)
+  const comparisonCanvas = createCanvas(
+    COMPARISON_CANVAS_WIDTH_PX,
+    CANVAS_HEIGHT_PX,
+  )
+  const comparisonCtx = comparisonCanvas.getContext("2d")
+  comparisonCtx.drawImage(previousReferenceTextImage, 0, 0)
+  comparisonCtx.drawImage(currentReferenceTextImage, CANVAS_WIDTH_PX, 0)
+
+  await expectPngToMatchSnapshot({
+    png: comparisonCanvas.toBuffer("image/png"),
+    testPath: import.meta.path,
+    snapshotName: "reference-text-core-canvas",
   })
 })
