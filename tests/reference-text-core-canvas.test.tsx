@@ -10,7 +10,8 @@ const BOARD_WIDTH_MM = 30
 const BOARD_HEIGHT_MM = 18
 const CANVAS_WIDTH_PX = 1200
 const CANVAS_HEIGHT_PX = 720
-const EXPECTED_REFERENCE_FONT_SIZE_MM = 0.6
+const PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM = 0.2
+const EXPECTED_REFERENCE_FONT_SIZE_MM = 0.4
 
 function getPreviewFootprintCircuitJson(footprintName: string) {
   switch (footprintName) {
@@ -38,14 +39,28 @@ function getPreviewFootprintCircuitJson(footprintName: string) {
   throw new Error(`Unknown preview footprint: ${footprintName}`)
 }
 
-test("render 0.6mm reference text through Core and circuit-to-canvas", async () => {
+function getPreviousPreviewFootprintCircuitJson(footprintName: string) {
+  return getPreviewFootprintCircuitJson(footprintName).map((element) => {
+    if (element.type !== "pcb_silkscreen_text") {
+      return element
+    }
+
+    return {
+      ...element,
+      font_size: PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM,
+    }
+  })
+}
+
+test("render 0.4mm reference text through Core and circuit-to-canvas", async () => {
   const circuit = new Circuit({
     platform: {
       schematicDisabled: true,
       routingDisabled: true,
       footprintLibraryMap: {
         preview: async (footprintName) => ({
-          footprintCircuitJson: getPreviewFootprintCircuitJson(footprintName),
+          footprintCircuitJson:
+            getPreviousPreviewFootprintCircuitJson(footprintName),
         }),
       },
     },
