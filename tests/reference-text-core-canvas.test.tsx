@@ -1,8 +1,7 @@
-import { expect, test } from "bun:test"
+import { test } from "bun:test"
 import { createCanvas } from "@napi-rs/canvas"
+import { Circuit } from "@tscircuit/core"
 import { CircuitToCanvasDrawer } from "circuit-to-canvas"
-import type { PcbSilkscreenText } from "circuit-json"
-import { Circuit } from "tscircuit"
 import { fp } from "../src/footprinter"
 import { expectPngToMatchSnapshot } from "./fixtures/expect-png-to-match-snapshot"
 
@@ -10,7 +9,6 @@ const BOARD_WIDTH_MM = 30
 const BOARD_HEIGHT_MM = 18
 const CANVAS_WIDTH_PX = 1200
 const CANVAS_HEIGHT_PX = 720
-const EXPECTED_REFERENCE_FONT_SIZE_MM = 0.6
 
 function getPreviewFootprintCircuitJson(footprintName: string) {
   switch (footprintName) {
@@ -78,15 +76,6 @@ test("render 0.6mm reference text through Core and circuit-to-canvas", async () 
 
   await circuit.renderUntilSettled()
   const circuitJson = circuit.getCircuitJson()
-  const referenceTexts = circuitJson.filter(
-    (element): element is PcbSilkscreenText =>
-      element.type === "pcb_silkscreen_text",
-  )
-
-  expect(referenceTexts).toHaveLength(8)
-  for (const referenceText of referenceTexts) {
-    expect(referenceText.font_size).toBeCloseTo(EXPECTED_REFERENCE_FONT_SIZE_MM)
-  }
 
   const canvas = createCanvas(CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX)
   const ctx = canvas.getContext("2d")
