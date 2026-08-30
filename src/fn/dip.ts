@@ -195,7 +195,7 @@ export const dip = (raw_params: {
     })
   }
 
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.6)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, sh / 2 + 0.5, 0.4)
 
   const pinRowSpanX = parameters.w + parameters.od
   const pinRowSpanY = padEdgeHeight

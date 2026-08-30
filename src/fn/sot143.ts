@@ -60,7 +60,7 @@ export const sot143 = (
     circuitJson: [
       ...pads,
       ...silkscreen,
-      silkscreenRef(0, Math.max(halfHeight, copperHeight / 2) + 0.8, 0.6),
+      silkscreenRef(0, Math.max(halfHeight, copperHeight / 2) + 0.8, 0.4),
       courtyard,
     ],
     parameters,
