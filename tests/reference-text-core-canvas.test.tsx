@@ -1,7 +1,7 @@
 import { test } from "bun:test"
 import { createCanvas } from "@napi-rs/canvas"
-import { Circuit } from "@tscircuit/core"
 import { CircuitToCanvasDrawer } from "circuit-to-canvas"
+import { Circuit } from "tscircuit"
 import { fp } from "../src/footprinter"
 import { expectPngToMatchSnapshot } from "./fixtures/expect-png-to-match-snapshot"
 
