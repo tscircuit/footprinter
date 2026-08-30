@@ -10,10 +10,8 @@ const BOARD_WIDTH_MM = 30
 const BOARD_HEIGHT_MM = 18
 const CANVAS_WIDTH_PX = 1200
 const CANVAS_HEIGHT_PX = 720
-const COMPARISON_CANVAS_WIDTH_PX = CANVAS_WIDTH_PX * 2
 const PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM = 0.2
-const PREVIOUS_RENDERED_REFERENCE_FONT_SIZE_MM = 0.4
-const CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM = 0.6
+const EXPECTED_REFERENCE_FONT_SIZE_MM = 0.4
 
 function getCurrentPreviewFootprintCircuitJson(footprintName: string) {
   switch (footprintName) {
@@ -41,45 +39,28 @@ function getCurrentPreviewFootprintCircuitJson(footprintName: string) {
   throw new Error(`Unknown preview footprint: ${footprintName}`)
 }
 
-function getPreviewFootprintCircuitJson({
-  footprintName,
-  referenceFontSizeMm,
-}: {
-  footprintName: string
-  referenceFontSizeMm?: number
-}) {
-  const footprintCircuitJson =
-    getCurrentPreviewFootprintCircuitJson(footprintName)
-  if (referenceFontSizeMm === undefined) {
-    return footprintCircuitJson
-  }
-
-  return footprintCircuitJson.map((element) => {
+function getPreviousPreviewFootprintCircuitJson(footprintName: string) {
+  return getPreviewFootprintCircuitJson(footprintName).map((element) => {
     if (element.type !== "pcb_silkscreen_text") {
       return element
     }
 
-    return { ...element, font_size: referenceFontSizeMm }
+    return {
+      ...element,
+      font_size: PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM,
+    }
   })
 }
 
-async function renderReferenceTextCanvas({
-  footprintReferenceFontSizeMm,
-  renderedReferenceFontSizeMm,
-}: {
-  footprintReferenceFontSizeMm?: number
-  renderedReferenceFontSizeMm: number
-}) {
+test("render 0.4mm reference text through Core and circuit-to-canvas", async () => {
   const circuit = new Circuit({
     platform: {
       schematicDisabled: true,
       routingDisabled: true,
       footprintLibraryMap: {
         preview: async (footprintName) => ({
-          footprintCircuitJson: getPreviewFootprintCircuitJson({
-            footprintName,
-            referenceFontSizeMm: footprintReferenceFontSizeMm,
-          }),
+          footprintCircuitJson:
+            getPreviousPreviewFootprintCircuitJson(footprintName),
         }),
       },
     },
