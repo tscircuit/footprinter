@@ -10,9 +10,11 @@ const BOARD_WIDTH_MM = 30
 const BOARD_HEIGHT_MM = 18
 const CANVAS_WIDTH_PX = 1200
 const CANVAS_HEIGHT_PX = 720
-const EXPECTED_REFERENCE_FONT_SIZE_MM = 0.6
+const PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM = 0.2
+const PREVIOUS_RENDERED_REFERENCE_FONT_SIZE_MM = 0.4
+const CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM = 0.6
 
-function getPreviewFootprintCircuitJson(footprintName: string) {
+function getCurrentPreviewFootprintCircuitJson(footprintName: string) {
   switch (footprintName) {
     case "0402":
     case "0603":
@@ -38,14 +40,47 @@ function getPreviewFootprintCircuitJson(footprintName: string) {
   throw new Error(`Unknown preview footprint: ${footprintName}`)
 }
 
-test("render 0.6mm reference text through Core and circuit-to-canvas", async () => {
+function getPreviewFootprintCircuitJson({
+  footprintName,
+  referenceFontSizeMm,
+}: {
+  footprintName: string
+  referenceFontSizeMm?: number
+}) {
+  const footprintCircuitJson =
+    getCurrentPreviewFootprintCircuitJson(footprintName)
+  if (referenceFontSizeMm === undefined) {
+    return footprintCircuitJson
+  }
+
+  return footprintCircuitJson.map((element) => {
+    if (element.type !== "pcb_silkscreen_text") {
+      return element
+    }
+
+    return { ...element, font_size: referenceFontSizeMm }
+  })
+}
+
+async function expectReferenceTextCanvasSnapshot({
+  footprintReferenceFontSizeMm,
+  renderedReferenceFontSizeMm,
+  snapshotName,
+}: {
+  footprintReferenceFontSizeMm?: number
+  renderedReferenceFontSizeMm: number
+  snapshotName: string
+}) {
   const circuit = new Circuit({
     platform: {
       schematicDisabled: true,
       routingDisabled: true,
       footprintLibraryMap: {
         preview: async (footprintName) => ({
-          footprintCircuitJson: getPreviewFootprintCircuitJson(footprintName),
+          footprintCircuitJson: getPreviewFootprintCircuitJson({
+            footprintName,
+            referenceFontSizeMm: footprintReferenceFontSizeMm,
+          }),
         }),
       },
     },
@@ -85,7 +120,7 @@ test("render 0.6mm reference text through Core and circuit-to-canvas", async () 
 
   expect(referenceTexts).toHaveLength(8)
   for (const referenceText of referenceTexts) {
-    expect(referenceText.font_size).toBeCloseTo(EXPECTED_REFERENCE_FONT_SIZE_MM)
+    expect(referenceText.font_size).toBeCloseTo(renderedReferenceFontSizeMm)
   }
 
   const canvas = createCanvas(CANVAS_WIDTH_PX, CANVAS_HEIGHT_PX)
@@ -108,6 +143,21 @@ test("render 0.6mm reference text through Core and circuit-to-canvas", async () 
   await expectPngToMatchSnapshot({
     png: canvas.toBuffer("image/png"),
     testPath: import.meta.path,
+    snapshotName,
+  })
+}
+
+test("render the previous 0.4mm reference text through Core and circuit-to-canvas", async () => {
+  await expectReferenceTextCanvasSnapshot({
+    footprintReferenceFontSizeMm: PREVIOUS_FOOTPRINTER_REFERENCE_FONT_SIZE_MM,
+    renderedReferenceFontSizeMm: PREVIOUS_RENDERED_REFERENCE_FONT_SIZE_MM,
+    snapshotName: "reference-text-core-canvas-before",
+  })
+})
+
+test("render the current 0.6mm reference text through Core and circuit-to-canvas", async () => {
+  await expectReferenceTextCanvasSnapshot({
+    renderedReferenceFontSizeMm: CURRENT_RENDERED_REFERENCE_FONT_SIZE_MM,
     snapshotName: "reference-text-core-canvas",
   })
 })
