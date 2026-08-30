@@ -27,6 +27,7 @@
     "@napi-rs/canvas": "^0.1.84",
     "@tscircuit/alphabet": "^0.0.23",
     "@tscircuit/circuit-json-util": "^0.0.106",
+    "@tscircuit/core": "^0.0.1802",
     "@tscircuit/log-soup": "^1.0.2",
     "@tscircuit/math-utils": "^0.0.36",
     "@tscircuit/soup-util": "^0.0.41",
@@ -43,7 +44,6 @@
     "react-dom": "^19.0.0",
     "schematic-symbols": "^0.0.230",
     "ts-node": "^10.9.2",
-    "tscircuit": "^0.0.2461",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   },
