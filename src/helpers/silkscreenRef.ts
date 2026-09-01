@@ -1,7 +1,6 @@
 import type { PcbSilkscreenText } from "circuit-json"
 
 const DEFAULT_SILKSCREEN_REFERENCE_FONT_SIZE = 0.4
-export const DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET = 0.4
 
 export const silkscreenRef: (
   x: number,

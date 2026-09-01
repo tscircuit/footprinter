@@ -120,7 +120,7 @@ test("res origin bottomleft shifts silkscreen", () => {
     (el) => el.type === "pcb_smtpad" && el.port_hints?.[0] === "1",
   )!
   const text = circuit.find((el) => el.type === "pcb_silkscreen_text")!
-  expect(text.anchor_position.y - pad1.y).toBeCloseTo(pad1.height / 2 + 0.8)
+  expect(text.anchor_position.y - pad1.y).toBeCloseTo(pad1.height / 2 + 0.9)
 })
 
 test("res origin bottomleft snapshot", () => {

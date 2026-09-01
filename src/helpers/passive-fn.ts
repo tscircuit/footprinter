@@ -8,11 +8,7 @@ import { distance, length } from "circuit-json"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
 import { platedhole } from "./platedhole"
-import {
-  DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET,
-  type SilkscreenRef,
-  silkscreenRef,
-} from "./silkscreenRef"
+import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
 
 type StandardSize = {
@@ -350,11 +346,7 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
     ]
   }
 
-  const outlineY = ph / 2 + 0.4
-  let textY = outlineY + DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET
-  if (textbottom) {
-    textY = -outlineY - DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET
-  }
+  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY)
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
