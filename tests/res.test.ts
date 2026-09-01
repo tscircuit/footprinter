@@ -10,6 +10,7 @@ test("0402", () => {
   const svgContent = convertCircuitJsonToPcbSvg(soup)
 
   expect(silkscreenText?.font_size).toBe(0.4)
+  expect(silkscreenText?.anchor_position.y).toBe(1.12)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402")
 })
 
@@ -39,7 +40,12 @@ test("0603_textbottom", () => {
 
 test("0402_x2", () => {
   const soup = fp.string("0402_x2").circuitJson()
+  const silkscreenText = soup.find(
+    (element) => element.type === "pcb_silkscreen_text",
+  )
   const svgContent = convertCircuitJsonToPcbSvg(soup)
+
+  expect(silkscreenText?.anchor_position.y).toBe(1.35)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "0402_x2")
 })
 

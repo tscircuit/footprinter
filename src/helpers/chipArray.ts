@@ -4,7 +4,11 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { rectpad } from "./rectpad"
-import { type SilkscreenRef, silkscreenRef } from "./silkscreenRef"
+import {
+  DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET,
+  type SilkscreenRef,
+  silkscreenRef,
+} from "./silkscreenRef"
 
 export interface ChipArrayParams {
   padSpacing: number // Horizontal spacing between left and right columns
@@ -114,7 +118,10 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
   }
 
   // Reference text
-  const textY = textbottom ? bottom - 0.9 : top + 0.9
+  let textY = top + DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET
+  if (textbottom) {
+    textY = bottom - DEFAULT_SILKSCREEN_REFERENCE_CENTER_OFFSET
+  }
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY)
   const courtyard: PcbCourtyardOutline | null = courtyardOutline
     ? {
