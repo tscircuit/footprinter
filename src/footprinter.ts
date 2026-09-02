@@ -389,6 +389,20 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "epw" | "eph" | "ep"
   >
+  utdfn: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "p"
+    | "pl"
+    | "pw"
+    | "p1l"
+    | "span"
+    | "cornerpadcutlength"
+    | "ep"
+    | "thermalpad"
+  >
   vson: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -586,6 +600,8 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+    .replace(/^utdfn_(\d+)_ep(?=_|$)/i, "utdfn$1_ep")
+    .replace(/^utdfn-(\d+)-ep(?:\(1x1(?:mm)?\))?(?=_|$)/i, "utdfn$1_ep")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
 
