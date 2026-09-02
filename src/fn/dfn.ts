@@ -2,6 +2,7 @@ import type {
   AnyCircuitElement,
   PcbCourtyardRect,
   PcbSilkscreenPath,
+  Point,
 } from "circuit-json"
 import { length } from "circuit-json"
 import { extendSoicDef, getCcwSoicCoords } from "./soic"
@@ -23,6 +24,40 @@ export type DfnInput = z.input<typeof dfn_def> & {
   cornerpadcutlength?: string | number
   /** Omit nominal pad positions while preserving an even, regular pad grid. */
   missing?: string | Array<string | number>
+}
+
+export const getDfnCornerPadPoints = ({
+  x,
+  y,
+  padWidth,
+  padHeight,
+  cutLength,
+}: {
+  x: number
+  y: number
+  padWidth: number
+  padHeight: number
+  cutLength: number
+}): Point[] => {
+  const xDirection = Math.sign(x)
+  const yDirection = Math.sign(y)
+  const innerX = x - (xDirection * padWidth) / 2
+  const innerY = y - (yDirection * padHeight) / 2
+  const outerX = x + (xDirection * padWidth) / 2
+  const outerY = y + (yDirection * padHeight) / 2
+
+  return [
+    { x: innerX, y: innerY + yDirection * cutLength },
+    { x: innerX, y: outerY },
+    { x: outerX, y: outerY },
+    { x: outerX, y: innerY },
+    { x: innerX + xDirection * cutLength, y: innerY },
+  ].filter(
+    (point, index, points) =>
+      index === 0 ||
+      point.x !== points[index - 1]?.x ||
+      point.y !== points[index - 1]?.y,
+  )
 }
 
 /**
@@ -102,20 +137,17 @@ export const dfn = (
     })
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
     if (cornerpads) {
-      const xDirection = Math.sign(x)
-      const yDirection = Math.sign(y)
-      const innerX = x - (xDirection * parameters.pl) / 2
-      const innerY = y - (yDirection * parameters.pw) / 2
-      const outerX = x + (xDirection * parameters.pl) / 2
-      const outerY = y + (yDirection * parameters.pw) / 2
       pads.push(
-        polygonpad(outputPinNumber, [
-          { x: innerX, y: innerY + yDirection * cornerpadcutlength! },
-          { x: innerX, y: outerY },
-          { x: outerX, y: outerY },
-          { x: outerX, y: innerY },
-          { x: innerX + xDirection * cornerpadcutlength!, y: innerY },
-        ]),
+        polygonpad(
+          outputPinNumber,
+          getDfnCornerPadPoints({
+            x,
+            y,
+            padWidth: parameters.pl,
+            padHeight: parameters.pw,
+            cutLength: cornerpadcutlength!,
+          }),
+        ),
       )
     } else {
       pads.push(
