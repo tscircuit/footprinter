@@ -29,7 +29,13 @@ sot23
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
 qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
+utdfn4
 ```
+
+`utdfn4` (also `UTDFN-4-EP(1x1)`) uses the
+[Diodes X2-DFN1010-4 Type B recommended land pattern](https://www.diodes.com/assets/Package-Files/X2-DFN1010-4-Type-B.pdf),
+including four chamfered signal pads and a rotated 0.53 mm square exposed pad.
+Check the device's package drawing when selecting this variant.
 
 You can use these like so:
 

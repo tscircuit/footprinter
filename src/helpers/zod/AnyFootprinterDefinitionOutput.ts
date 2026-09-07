@@ -1,4 +1,5 @@
 import { axial_def } from "src/fn/axial"
+import { utdfn_def } from "src/fn/utdfn"
 import { bga_def } from "src/fn/bga"
 import { dfn_def } from "src/fn/dfn"
 import { dip_def } from "src/fn/dip"
@@ -26,6 +27,7 @@ import { smtpad_def } from "../../fn/smtpad"
 import { passive_def } from "../passive-fn"
 
 export const any_footprinter_def = z.union([
+  utdfn_def,
   axial_def,
   bga_def,
   dfn_def,

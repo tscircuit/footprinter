@@ -51,6 +51,7 @@ type CommonPassiveOptionKey =
   | "textbottom"
 
 export type Footprinter = {
+  utdfn: (num_pins?: 4) => FootprinterParamsBuilder<never>
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
@@ -572,6 +573,7 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^utdfn-4-ep\(1x1\)(?=_|$)/i, "utdfn4")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
     .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
     .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
