@@ -98,6 +98,14 @@ test("bottomleft origin preserves 0 and 180 degree SOIC pad bounds", () => {
   expect(rotatedPads.every((pad) => pad.ccw_rotation === 180)).toBe(true)
   expect(rotatedCopperMin.x).toBeCloseTo(0)
   expect(rotatedCopperMin.y).toBeCloseTo(0)
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "soic8_unrotated_bottomleft_origin",
+  )
+  expect(convertCircuitJsonToPcbSvg(rotatedCircuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "soic8_rightside_bottom_bottomleft_origin",
+  )
 })
 
 test("bottomleft origin bounds rotated pill pads", () => {
@@ -128,6 +136,10 @@ test("pin1 origin remains centered on the rotated pin", () => {
 
   expect(pin1.x).toBeCloseTo(0)
   expect(pin1.y).toBeCloseTo(0)
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "soic8_topside_right_pin1_origin",
+  )
 })
 
 for (const fixture of [
