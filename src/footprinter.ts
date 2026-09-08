@@ -593,7 +593,7 @@ const normalizeDefinition = (def: string): string => {
 
 const normalizeMicrometerLengths = (value: string): string =>
   value.replace(
-    /([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(?:um|�m)(?=$|[x,() ])/gi,
+    /([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(?:um|µm)(?=$|[x,() ])/gi,
     (micrometerLength) =>
       `${Number(length.parse(micrometerLength).toPrecision(12))}mm`,
   )
