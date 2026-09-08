@@ -162,6 +162,8 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "w"
+    | "bodywidth"
+    | "bodyheight"
     | "p"
     | "pw"
     | "pl"
