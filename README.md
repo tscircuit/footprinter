@@ -113,6 +113,27 @@ fp().sod123w().p("3.4mm").pw("0.95mm").cathodepin(1)
 fp().sod123w().p("3.4mm").pw("0.95mm").anodepin(1)
 ```
 
+### SOIC body dimensions
+
+For SOIC footprints, `bodywidth` and `bodyheight` set the physical body dimensions
+used to generate the courtyard, independently of the pad positions and sizes.
+Each is optional; omitted dimensions retain their existing inferred values.
+These options do not resize the silkscreen.
+
+```ts
+fp.string(
+  "soic8_w6.9mm_pl1.95mm_pw0.6mm_p1.27mm_bodywidth3.9mm_bodyheight4.9mm",
+)
+
+// Builder equivalent:
+fp().soic(8).w("6.9mm").pl("1.95mm").pw("0.6mm").p("1.27mm")
+  .bodywidth("3.9mm").bodyheight("4.9mm")
+```
+
+The courtyard encloses the body and copper envelopes with 0.25mm clearance.
+In this example, `w` is the total pad-tip span because `legsoutside` is unset;
+it is separate from the 3.9mm physical body width.
+
 ### Rounded pads
 
 Every footprint accepts a `rounded${radius}` modifier that applies the requested

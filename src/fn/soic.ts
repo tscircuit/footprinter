@@ -35,6 +35,22 @@ export const extendSoicDef = (newDefaults: {
       p: length.default(length.parse(newDefaults.p ?? "1.27mm")),
       pw: length.default(length.parse(newDefaults.pw ?? "0.6mm")),
       pl: length.default(length.parse(newDefaults.pl ?? "1.0mm")),
+      bodywidth: length
+        .refine((value) => Number.isFinite(value) && value > 0, {
+          message: "bodywidth must be a positive finite length",
+        })
+        .optional()
+        .describe(
+          "physical body width used for the courtyard, independent of pad placement",
+        ),
+      bodyheight: length
+        .refine((value) => Number.isFinite(value) && value > 0, {
+          message: "bodyheight must be a positive finite length",
+        })
+        .optional()
+        .describe(
+          "physical body height used for the courtyard, independent of the pin span",
+        ),
       legsoutside: z
         .boolean()
         .optional()
@@ -110,6 +126,8 @@ export const soic = (raw_params: {
   soic: true
   num_pins: number
   w: number
+  bodywidth?: string | number
+  bodyheight?: string | number
   p?: number
   id?: string | number
   od?: string | number
@@ -184,8 +202,8 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       { x: -sw / 2, y: -sh / 2 },
     ],
   }
-  const bodyHalfWidth = parameters.w / 2
-  const bodyHalfHeight = sh / 2
+  const bodyHalfWidth = (parameters.bodywidth ?? parameters.w) / 2
+  const bodyHalfHeight = (parameters.bodyheight ?? sh) / 2
 
   // Outer rect: wide (pad tips in X), short (pin span in Y)
   const courtyardStepOuterHalfWidth =
@@ -197,25 +215,76 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     Math.min(maxPadExtentX, bodyHalfWidth) + 0.25
   const courtyardStepOuterHalfHeight =
     Math.max(maxPadExtentY, bodyHalfHeight) + 0.25
+  let courtyardOutline = createRectUnionOutline([
+    {
+      minX: -courtyardStepOuterHalfWidth,
+      maxX: courtyardStepOuterHalfWidth,
+      minY: -courtyardStepInnerHalfHeight,
+      maxY: courtyardStepInnerHalfHeight,
+    },
+    {
+      minX: -courtyardStepInnerHalfWidth,
+      maxX: courtyardStepInnerHalfWidth,
+      minY: -courtyardStepOuterHalfHeight,
+      maxY: courtyardStepOuterHalfHeight,
+    },
+  ])
+
+  if (
+    parameters.bodywidth !== undefined ||
+    parameters.bodyheight !== undefined
+  ) {
+    // Use the actual body and copper envelopes. Combining the minimum X of
+    // one with the minimum Y of the other can cut corners off a larger body.
+    // Include an offset thermal pad in the copper envelope as well.
+    if (parameters.thermalpad) {
+      maxPadExtentX = Math.max(
+        maxPadExtentX,
+        Math.abs(parameters.thermalpadcenteroffsetx) +
+          parameters.thermalpad.x / 2,
+      )
+      maxPadExtentY = Math.max(
+        maxPadExtentY,
+        Math.abs(parameters.thermalpadcenteroffsety) +
+          parameters.thermalpad.y / 2,
+      )
+    }
+    const envelopes = [
+      { halfWidth: maxPadExtentX + 0.25, halfHeight: maxPadExtentY + 0.25 },
+      { halfWidth: bodyHalfWidth + 0.25, halfHeight: bodyHalfHeight + 0.25 },
+    ].sort((a, b) => b.halfWidth - a.halfWidth)
+    const wide = envelopes[0]!
+    const narrow = envelopes[1]!
+    if (
+      wide.halfHeight >= narrow.halfHeight ||
+      wide.halfWidth - narrow.halfWidth < 1e-9
+    ) {
+      // A contained envelope (or a floating-point-width sliver) needs no step.
+      // Taking the maximum height keeps both envelopes entirely inside.
+      const halfHeight = Math.max(wide.halfHeight, narrow.halfHeight)
+      courtyardOutline = [
+        { x: -wide.halfWidth, y: halfHeight },
+        { x: wide.halfWidth, y: halfHeight },
+        { x: wide.halfWidth, y: -halfHeight },
+        { x: -wide.halfWidth, y: -halfHeight },
+      ]
+    } else {
+      courtyardOutline = createRectUnionOutline(
+        envelopes.map(({ halfWidth, halfHeight }) => ({
+          minX: -halfWidth,
+          maxX: halfWidth,
+          minY: -halfHeight,
+          maxY: halfHeight,
+        })),
+      )
+    }
+  }
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
     layer: "top",
-    outline: createRectUnionOutline([
-      {
-        minX: -courtyardStepOuterHalfWidth,
-        maxX: courtyardStepOuterHalfWidth,
-        minY: -courtyardStepInnerHalfHeight,
-        maxY: courtyardStepInnerHalfHeight,
-      },
-      {
-        minX: -courtyardStepInnerHalfWidth,
-        maxX: courtyardStepInnerHalfWidth,
-        minY: -courtyardStepOuterHalfHeight,
-        maxY: courtyardStepOuterHalfHeight,
-      },
-    ]),
+    outline: courtyardOutline,
   }
 
   return [
