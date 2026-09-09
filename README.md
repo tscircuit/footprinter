@@ -21,6 +21,7 @@ cap0402
 res0805
 soic8_p1.27mm
 dip16
+PDIP-8
 pinrow10
 pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
 smdpinheader6
@@ -49,7 +50,13 @@ fp.cap().metric("0402")
 fp.res().imperial("01005")
 fp.dip(4).w(7.62)
 fp.dip(4).w(7.62).socket()
+fp.pdip() // PDIP-8: 7.62 mm row spacing, 2.54 mm pitch
 ```
+
+`pdip`, `pdip8`, and `PDIP-8` select the eight-pin plastic DIP package.
+The footprint reuses DIP geometry, including its 0.8 mm drill and 1.6 mm pad
+defaults. Override `id`/`od` for your board process, or use `w`, `p`, `wide`,
+`narrow`, and `nosquareplating` as with DIP.
 
 > [!TIP]
 > Footprinter is the DSL that [text-to-footprint](https://github.com/tscircuit/text-to-footprint) uses.
