@@ -21,6 +21,7 @@ cap0402
 res0805
 soic8_p1.27mm
 dip16
+SPDIP-28
 pinrow10
 pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
 smdpinheader6
@@ -30,6 +31,13 @@ qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
 qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
 ```
+
+`SPDIP-28`, `spdip28`, and `fp().spdip()` generate the 28-pin skinny plastic DIP
+on a 7.62 mm row grid with 2.54 mm pin pitch. These dimensions follow the
+[Microchip C04-070 package drawing](https://ww1.microchip.com/downloads/en/PackagingSpec/00049AA.pdf#page=47).
+The existing DIP generator supplies pin-one marking, silkscreen and courtyard.
+Drill and pad diameters default to 0.8 mm and 1.6 mm; override them to suit your
+fabrication requirements, for example `SPDIP-28_id1mm_od1.8mm`.
 
 You can use these like so:
 
