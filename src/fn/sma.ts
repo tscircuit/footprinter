@@ -82,10 +82,7 @@ export const sma = (
 }
 
 // Get coordinates for sma pads
-export const getSmaCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSmaCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
