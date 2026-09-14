@@ -178,6 +178,9 @@ export type Footprinter = {
   ssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
+    | "bodywidth"
+    | "bodyheight"
+    | "bodythickness"
     | "w"
     | "p"
     | "thermalpad"

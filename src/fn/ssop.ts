@@ -21,6 +21,30 @@ import {
 export const ssop_def = base_def
   .extend({
     fn: z.string(),
+    bodywidth: length
+      .refine((value) => Number.isFinite(value) && value > 0, {
+        message: "bodywidth must be a positive finite length",
+      })
+      .optional()
+      .describe(
+        "physical body X size before footprint rotation, independent of copper",
+      ),
+    bodyheight: length
+      .refine((value) => Number.isFinite(value) && value > 0, {
+        message: "bodyheight must be a positive finite length",
+      })
+      .optional()
+      .describe(
+        "physical body Y size before footprint rotation, independent of copper",
+      ),
+    bodythickness: length
+      .refine((value) => Number.isFinite(value) && value > 0, {
+        message: "bodythickness must be a positive finite length",
+      })
+      .optional()
+      .describe(
+        "physical body Z size, excluding board standoff; metadata for 3D consumers",
+      ),
     num_pins: z.number().optional().default(8),
     w: length.default(length.parse("3.9mm")),
     p: length.default(length.parse("1.27mm")),
@@ -42,6 +66,9 @@ export const ssop_def = base_def
     }
 
     return v as {
+      bodywidth?: number
+      bodyheight?: number
+      bodythickness?: number
       w: number
       p: number
       pw: number
@@ -165,6 +192,35 @@ export const ssop = (
       },
     ]),
     layer: "top",
+  }
+
+  if (
+    parameters.bodywidth !== undefined ||
+    parameters.bodyheight !== undefined
+  ) {
+    // Keep the original courtyard when no body outline is supplied. With an
+    // explicit outline, enclose both the physical body and every copper pad,
+    // including an offset thermal pad. An omitted axis retains legacy bounds.
+    let halfWidth =
+      parameters.bodywidth === undefined
+        ? courtyardStepOuterHalfWidth
+        : parameters.bodywidth / 2 + 0.25
+    let halfHeight =
+      parameters.bodyheight === undefined
+        ? courtyardStepOuterHalfHeight
+        : parameters.bodyheight / 2 + 0.25
+    for (const pad of pads) {
+      if (pad.type !== "pcb_smtpad" || pad.shape !== "rect") continue
+      halfWidth = Math.max(halfWidth, Math.abs(pad.x) + pad.width / 2 + 0.25)
+      halfHeight = Math.max(halfHeight, Math.abs(pad.y) + pad.height / 2 + 0.25)
+    }
+    courtyard.outline = [
+      { x: -halfWidth, y: -halfHeight },
+      { x: halfWidth, y: -halfHeight },
+      { x: halfWidth, y: halfHeight },
+      { x: -halfWidth, y: halfHeight },
+      { x: -halfWidth, y: -halfHeight },
+    ]
   }
 
   return {
