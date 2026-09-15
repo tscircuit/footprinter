@@ -13,6 +13,30 @@ import { dim2d } from "../helpers/zod/dim-2d"
 
 export const lga_def = base_def.extend({
   fn: z.string(),
+  bodywidth: length
+    .refine((value) => Number.isFinite(value) && value > 0, {
+      message: "bodywidth must be a positive finite length",
+    })
+    .optional()
+    .describe(
+      "physical body X size before footprint rotation, independent of copper",
+    ),
+  bodyheight: length
+    .refine((value) => Number.isFinite(value) && value > 0, {
+      message: "bodyheight must be a positive finite length",
+    })
+    .optional()
+    .describe(
+      "physical body Y size before footprint rotation, independent of copper",
+    ),
+  bodythickness: length
+    .refine((value) => Number.isFinite(value) && value > 0, {
+      message: "bodythickness must be a positive finite length",
+    })
+    .optional()
+    .describe(
+      "physical body Z size, excluding board standoff; metadata for 3D consumers",
+    ),
   num_pins: z.number().int().positive().optional().default(14),
   grid: dim2d.optional(),
   p: length.default(length.parse("0.5mm")),
@@ -122,6 +146,33 @@ export const lga = (
     ],
   }
   const courtyardClearance = 0.25
+  let courtyardHalfWidth = width / 2 + courtyardClearance
+  let courtyardHalfHeight = height / 2 + courtyardClearance
+  if (
+    parameters.bodywidth !== undefined ||
+    parameters.bodyheight !== undefined
+  ) {
+    courtyardHalfWidth =
+      Math.max(width, parameters.bodywidth ?? width) / 2 + courtyardClearance
+    courtyardHalfHeight =
+      Math.max(height, parameters.bodyheight ?? height) / 2 + courtyardClearance
+    // Include actual copper extents, also for unusually small w/h settings.
+    for (const pad of pads) {
+      if (
+        pad.type !== "pcb_smtpad" ||
+        (pad.shape !== "rect" && pad.shape !== "pill")
+      )
+        continue
+      courtyardHalfWidth = Math.max(
+        courtyardHalfWidth,
+        Math.abs(pad.x) + pad.width / 2 + courtyardClearance,
+      )
+      courtyardHalfHeight = Math.max(
+        courtyardHalfHeight,
+        Math.abs(pad.y) + pad.height / 2 + courtyardClearance,
+      )
+    }
+  }
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -129,24 +180,24 @@ export const lga = (
     layer: "top",
     outline: [
       {
-        x: -width / 2 - courtyardClearance,
-        y: -height / 2 - courtyardClearance,
+        x: -courtyardHalfWidth,
+        y: -courtyardHalfHeight,
       },
       {
-        x: width / 2 + courtyardClearance,
-        y: -height / 2 - courtyardClearance,
+        x: courtyardHalfWidth,
+        y: -courtyardHalfHeight,
       },
       {
-        x: width / 2 + courtyardClearance,
-        y: height / 2 + courtyardClearance,
+        x: courtyardHalfWidth,
+        y: courtyardHalfHeight,
       },
       {
-        x: -width / 2 - courtyardClearance,
-        y: height / 2 + courtyardClearance,
+        x: -courtyardHalfWidth,
+        y: courtyardHalfHeight,
       },
       {
-        x: -width / 2 - courtyardClearance,
-        y: -height / 2 - courtyardClearance,
+        x: -courtyardHalfWidth,
+        y: -courtyardHalfHeight,
       },
     ],
   }

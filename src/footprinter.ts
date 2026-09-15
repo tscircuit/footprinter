@@ -352,7 +352,16 @@ export type Footprinter = {
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "grid" | "p" | "w" | "h" | "pl" | "pw" | "pillpads"
+    | "bodywidth"
+    | "bodyheight"
+    | "bodythickness"
+    | "grid"
+    | "p"
+    | "w"
+    | "h"
+    | "pl"
+    | "pw"
+    | "pillpads"
   >
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
