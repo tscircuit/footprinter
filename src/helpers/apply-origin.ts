@@ -11,7 +11,39 @@ export type OriginMode =
   | "rightcenter"
   | "centerright"
 
-import type { AnyCircuitElement } from "circuit-json"
+import type {
+  AnyCircuitElement,
+  PcbSmtPadRotatedPill,
+  PcbSmtPadRotatedRect,
+} from "circuit-json"
+
+const getRotatedSmtPadBounds = (
+  pad: PcbSmtPadRotatedRect | PcbSmtPadRotatedPill,
+) => {
+  const rotationRadians = ((pad.ccw_rotation ?? 0) * Math.PI) / 180
+  const cosine = Math.abs(Math.cos(rotationRadians))
+  const sine = Math.abs(Math.sin(rotationRadians))
+  const cornerRadius = Math.min(
+    Math.max(
+      pad.shape === "rotated_pill"
+        ? pad.radius
+        : (pad.corner_radius ?? pad.rect_border_radius ?? 0),
+      0,
+    ),
+    pad.width / 2,
+    pad.height / 2,
+  )
+  return {
+    width:
+      (pad.width - 2 * cornerRadius) * cosine +
+      (pad.height - 2 * cornerRadius) * sine +
+      2 * cornerRadius,
+    height:
+      (pad.width - 2 * cornerRadius) * sine +
+      (pad.height - 2 * cornerRadius) * cosine +
+      2 * cornerRadius,
+  }
+}
 
 export const applyOrigin = (
   elements: AnyCircuitElement[],
@@ -43,9 +75,14 @@ export const applyOrigin = (
 
   for (const pad of pads) {
     if (pad.type === "pcb_smtpad") {
-      const w = pad.shape === "circle" ? pad.radius * 2 : pad.width
-      const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
-      updateBounds(pad.x, pad.y, w, h)
+      if (pad.shape === "rotated_rect" || pad.shape === "rotated_pill") {
+        const bounds = getRotatedSmtPadBounds(pad)
+        updateBounds(pad.x, pad.y, bounds.width, bounds.height)
+      } else {
+        const w = pad.shape === "circle" ? pad.radius * 2 : pad.width
+        const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
+        updateBounds(pad.x, pad.y, w, h)
+      }
     } else if (pad.type === "pcb_plated_hole") {
       const d = pad.outer_diameter ?? pad.hole_diameter
       updateBounds(pad.x, pad.y, d, d)
