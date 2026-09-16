@@ -100,11 +100,18 @@ export const createStandardFlatLeadDiodeDef = <const TName extends string>(
           path: ["bodyheight"],
         })
       }
-      if (parameters.terminalthickness > parameters.bodyheight) {
+      if (parameters.terminalthickness >= parameters.bodyheight) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "terminalthickness must not exceed bodyheight",
+          message: "terminalthickness must be less than bodyheight",
           path: ["terminalthickness"],
+        })
+      }
+      if (parameters.standoff >= parameters.terminalthickness) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "standoff must be less than terminalthickness",
+          path: ["standoff"],
         })
       }
       if (parameters.leadspan < parameters.bodylength) {
@@ -128,6 +135,31 @@ export const createStandardFlatLeadDiodeDef = <const TName extends string>(
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: "markingwidth must not exceed bodylength",
+          path: ["markingwidth"],
+        })
+      }
+      const terminalOverhang = (parameters.leadspan - parameters.bodylength) / 2
+      if (
+        parameters.cathodelength <= terminalOverhang ||
+        parameters.anodelength <= terminalOverhang ||
+        parameters.cathodelength + parameters.anodelength >=
+          parameters.leadspan ||
+        parameters.cathodewidth > parameters.bodywidth ||
+        parameters.anodewidth > parameters.bodywidth
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "terminal dimensions are incompatible with the package body",
+          path: ["leadspan"],
+        })
+      }
+      if (
+        parameters.markingwidth * 2 >=
+        parameters.bodylength - parameters.taperinset * 2
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "markingwidth is too large for the tapered body",
           path: ["markingwidth"],
         })
       }

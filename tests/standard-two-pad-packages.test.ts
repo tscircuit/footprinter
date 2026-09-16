@@ -98,6 +98,9 @@ test("standard packages reject unknown and invalid parameters", () => {
   expect(() =>
     fp.string("do219ad_bodyheight0.1mm_standoff0.2mm").json(),
   ).toThrow("bodyheight must be greater than standoff")
+  expect(() =>
+    fp.string("do219ad_terminalthickness0.1mm_standoff0.1mm").json(),
+  ).toThrow("standoff must be less than terminalthickness")
   expect(() => fp.string("sod323he_cathodepin1_anodepin1").json()).toThrow(
     "anode and cathode must use different pins",
   )
