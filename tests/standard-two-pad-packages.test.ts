@@ -108,7 +108,7 @@ test("standard packages reject unknown and invalid parameters", () => {
 
 test("dfn2 is an explicit two-lead family and carries mechanical dimensions", () => {
   const footprint =
-    "dfn2_w1.6mm_pl0.6mm_pw0.6mm_bodywidth1mm_bodylength0.6mm_bodythickness0.35mm_standoff0.025mm_terminalinset0.05mm_terminalthickness0.05mm_pin1terminalchamfer0.03mm_pin1markwidth0.1mm"
+    "dfn2_w1.6mm_pl0.6mm_pw0.6mm_bodywidth1mm_bodylength0.6mm_bodythickness0.35mm_standoff0.025mm_terminalinset0.05mm_terminallength0.25mm_terminalwidth0.5mm_terminalpitch0.5mm_terminalthickness0.05mm_pin1terminalchamfer0.03mm_pin1markwidth0.1mm"
   const parameters = fp.string(footprint).json()
 
   expect(parameters).toMatchObject({
@@ -119,6 +119,9 @@ test("dfn2 is an explicit two-lead family and carries mechanical dimensions", ()
     bodythickness: 0.35,
     standoff: 0.025,
     terminalinset: 0.05,
+    terminallength: 0.25,
+    terminalwidth: 0.5,
+    terminalpitch: 0.5,
     terminalthickness: 0.05,
     pin1terminalchamfer: 0.03,
     pin1markwidth: 0.1,
