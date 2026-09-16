@@ -4,18 +4,39 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { length } from "circuit-json"
-import { extendSoicDef, getCcwSoicCoords } from "./soic"
-import { rectpad } from "src/helpers/rectpad"
-import { pillpad } from "src/helpers/pillpad"
-import { z } from "zod"
 import { CORNERS } from "src/helpers/corner"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
-import { function_call } from "src/helpers/zod/function-call"
 import { createThermalPad } from "src/helpers/create-thermal-pad"
 import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
+import { pillpad } from "src/helpers/pillpad"
 import { polygonpad } from "src/helpers/polygonpad"
+import { rectpad } from "src/helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { function_call } from "src/helpers/zod/function-call"
+import { z } from "zod"
+import { extendSoicDef, getCcwSoicCoords } from "./soic"
 
-export const dfn_def = extendSoicDef({}).and(thermalViaDef)
+const positiveMechanicalLength = length.refine((value) => value > 0, {
+  message: "DFN mechanical dimension must be positive",
+})
+const nonnegativeMechanicalLength = length.refine((value) => value >= 0, {
+  message: "DFN mechanical dimension must be non-negative",
+})
+
+/** Optional physical-package dimensions for an explicitly named DFN model. */
+export const dfn_mechanical_def = z.object({
+  bodywidth: positiveMechanicalLength.optional(),
+  bodylength: positiveMechanicalLength.optional(),
+  bodythickness: positiveMechanicalLength.optional(),
+  standoff: nonnegativeMechanicalLength.optional(),
+  terminalinset: nonnegativeMechanicalLength.optional(),
+  terminalthickness: positiveMechanicalLength.optional(),
+  pin1terminalchamfer: nonnegativeMechanicalLength.optional(),
+  pin1markwidth: nonnegativeMechanicalLength.optional(),
+})
+
+export const dfn_def = extendSoicDef({})
+  .and(thermalViaDef)
+  .and(dfn_mechanical_def)
 export type DfnInput = z.input<typeof dfn_def> & {
   /** Replace the four rectangular DFN pads with chamfered corner pads. */
   cornerpads?: boolean
@@ -52,6 +73,27 @@ export const dfn = (
     cornerpads,
     cornerpadcutlength,
     missing: missingPositions,
+  }
+  if (
+    parameters.bodythickness !== undefined &&
+    parameters.standoff !== undefined &&
+    parameters.standoff >= parameters.bodythickness
+  ) {
+    throw new Error("DFN standoff must be less than bodythickness")
+  }
+  if (
+    parameters.terminalthickness !== undefined &&
+    parameters.bodythickness !== undefined &&
+    parameters.terminalthickness > parameters.bodythickness
+  ) {
+    throw new Error("DFN terminalthickness must not exceed bodythickness")
+  }
+  if (
+    parameters.pin1markwidth !== undefined &&
+    parameters.bodywidth !== undefined &&
+    parameters.pin1markwidth >= parameters.bodywidth / 2
+  ) {
+    throw new Error("DFN pin1markwidth must be less than half bodywidth")
   }
   const nominalPinCount = parameters.num_pins
   if (
