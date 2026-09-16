@@ -171,11 +171,7 @@ export const bga = (
       )
     }
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    (grid.y * p) / 2,
-    0.2,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, (grid.y * p) / 2)
 
   // Add pin 1 marker
   const pin1MarkerSize = p / 6 // Make marker smaller, more proportional

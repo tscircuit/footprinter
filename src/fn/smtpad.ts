@@ -101,10 +101,7 @@ export const smtpad = (
   }
 
   return {
-    circuitJson: [
-      pad,
-      silkscreenRef(0, silkscreenOffset, 0.2) as AnyCircuitElement,
-    ],
+    circuitJson: [pad, silkscreenRef(0, silkscreenOffset) as AnyCircuitElement],
     parameters: params,
   }
 }

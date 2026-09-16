@@ -115,7 +115,7 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
 
   // Reference text
   const textY = textbottom ? bottom - 0.9 : top + 0.9
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY)
   const courtyard: PcbCourtyardOutline | null = courtyardOutline
     ? {
         type: "pcb_courtyard_outline",
