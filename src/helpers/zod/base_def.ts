@@ -11,13 +11,13 @@ export const base_def = z.object({
     .boolean()
     .optional()
     .describe(
-      "install the part backwards: for a pin header, the LONG pins pass through the board instead of the short ones. It does not change which side of the board the part is on — that is the component's `layer`",
+      "DEPRECATED. For pin headers, use the explicit `connectsFromAbove` or `connectsFromBelow` prop on `<pinheader />`. This option remains supported for backward compatibility.",
     ),
   faceup: z
     .boolean()
     .optional()
     .describe(
-      "DEPRECATED, and a no-op for through-hole parts. It meant 'the male pin header should face upwards, out of the top layer', which is what a correctly mounted header does by default; its other effect was to delete the pins below the board, leaving a through-hole part that cannot be soldered into its own plated holes. Use `layer` for which side of the board a part is on, and `invert` to install it backwards",
+      "DEPRECATED, and a no-op for through-hole parts. Use the component's `layer` for its board side. For pin headers, use `connectsFromAbove` or `connectsFromBelow` on `<pinheader />`.",
     ),
   nosilkscreen: z
     .boolean()

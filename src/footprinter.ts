@@ -19,7 +19,6 @@ type BaseOptionKey =
   | "cathodepin"
   | "origin"
   | "norefdes"
-  | "invert"
   | "faceup"
   | "nosilkscreen"
   | "rounded"
@@ -36,6 +35,12 @@ export type FootprinterParamsBuilder<K extends string> = {
       : P extends "rounded"
         ? (radius: number | string) => FootprinterParamsBuilder<K>
         : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+} & {
+  /**
+   * @deprecated For pin headers, use `connectsFromAbove` or
+   * `connectsFromBelow` on `<pinheader />`.
+   */
+  invert: (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
