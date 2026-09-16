@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const fpc_def = base_def.extend({
   fn: z.literal("fpc"),
-  num_pins: z.coerce.number().int().min(2),
+  num_pins: z.coerce.number().int().min(2).default(12),
   p: length.default("0.5mm").describe("contact pad pitch"),
   pw: length.default("0.3mm").describe("contact pad width"),
   pl: length.default("1.25mm").describe("contact pad length"),
