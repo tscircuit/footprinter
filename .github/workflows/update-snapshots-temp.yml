@@ -22,7 +22,7 @@ jobs:
         run: bun install
 
       - name: Update snapshots
-        run: bun test tests/to220.test.ts -u
+        run: BUN_UPDATE_SNAPSHOTS=1 bun test tests/to220.test.ts
 
       - name: Commit snapshots
         run: |
