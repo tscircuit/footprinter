@@ -650,6 +650,7 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^u?t?dfn-(\d+)-ep(?:\([^)]*\))?(?=_|$)/i, "utdfn$1ep")
 }
 
 const normalizeMicrometerLengths = (value: string): string =>
