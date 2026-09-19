@@ -52,4 +52,7 @@ test("utdfn accepts an explicit pin count", () => {
     (e): e is PcbSmtPad => e.type === "pcb_smtpad" && isSignalPad(e),
   )
   expect(signalPads).toHaveLength(6)
+
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "utdfn6")
 })
