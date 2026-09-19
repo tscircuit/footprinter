@@ -50,6 +50,34 @@ type CommonPassiveOptionKey =
   | "nonpolarized"
   | "textbottom"
 
+type DfnOptionKey =
+  | "w"
+  | "p"
+  | "pw"
+  | "pl"
+  | "missing"
+  | "pillpads"
+  | "thermalpad"
+  | "thermalpadcenteroffsetx"
+  | "thermalpadcenteroffsety"
+  | "thermalvias"
+  | "thermalviapitch"
+  | "thermalviaid"
+  | "thermalviaod"
+  | "cornerpads"
+  | "cornerpadcutlength"
+  | "bodywidth"
+  | "bodylength"
+  | "bodythickness"
+  | "standoff"
+  | "terminalinset"
+  | "terminallength"
+  | "terminalwidth"
+  | "terminalpitch"
+  | "terminalthickness"
+  | "pin1terminalchamfer"
+  | "pin1markwidth"
+
 export type Footprinter = {
   dip: (
     num_pins?: number,
@@ -196,36 +224,8 @@ export type Footprinter = {
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
   >
-  dfn: (
-    num_pins?: number,
-  ) => FootprinterParamsBuilder<
-    | "w"
-    | "p"
-    | "pw"
-    | "pl"
-    | "missing"
-    | "pillpads"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
-    | "thermalvias"
-    | "thermalviapitch"
-    | "thermalviaid"
-    | "thermalviaod"
-    | "cornerpads"
-    | "cornerpadcutlength"
-    | "bodywidth"
-    | "bodylength"
-    | "bodythickness"
-    | "standoff"
-    | "terminalinset"
-    | "terminallength"
-    | "terminalwidth"
-    | "terminalpitch"
-    | "terminalthickness"
-    | "pin1terminalchamfer"
-    | "pin1markwidth"
-  >
+  dfn: (num_pins?: number) => FootprinterParamsBuilder<DfnOptionKey>
+  utdfn: (num_pins?: number) => FootprinterParamsBuilder<DfnOptionKey>
   do219ad: () => FootprinterParamsBuilder<
     | "p"
     | "pw"
@@ -650,6 +650,7 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^u?t?dfn-(\d+)-ep(?:\([^)]*\))?(?=_|$)/i, "utdfn$1ep")
 }
 
 const normalizeMicrometerLengths = (value: string): string =>
