@@ -30,6 +30,8 @@ utdfn4
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
 qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
+do219ad
+sod323he
 ```
 
 You can use these like so:
@@ -132,6 +134,25 @@ fp.string("sod123w_p3.4mm_pw0.95mm_anodepin1")
 fp().sod123w().p("3.4mm").pw("0.95mm").cathodepin(1)
 fp().sod123w().p("3.4mm").pw("0.95mm").anodepin(1)
 ```
+
+### Explicit two-pad package identity
+
+Two rectangular pads alone do not identify the component package. Use a named
+standard-family footprint when downstream tools such as a 3D renderer need an
+unambiguous package identity:
+
+```ts
+fp.string("do219ad")
+fp.string("sod323he")
+fp.string("dfn2_w1.6mm_pl0.6mm_pw0.6mm")
+```
+
+`do-219ad` and `sod-323he` are accepted aliases and normalize to the canonical
+names above. DO-219AD and SOD-323HE assign pin 1 to the cathode at negative X
+and pin 2 to the anode at positive X. Their land-pattern parameters (`p`, `pw`,
+and `ph`) are independent from their validated mechanical parameters such as
+`bodylength`, `bodywidth`, and `bodyheight`. A generic `smdpads2` footprint
+remains generic and never selects one of these packages by pad dimensions.
 
 ### Rounded pads
 

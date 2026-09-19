@@ -2,6 +2,7 @@ import { axial_def } from "src/fn/axial"
 import { bga_def } from "src/fn/bga"
 import { dfn_def } from "src/fn/dfn"
 import { dip_def } from "src/fn/dip"
+import { do219ad_def } from "src/fn/do219ad"
 import { mlp_def } from "src/fn/mlp"
 import { ms012_def } from "src/fn/ms012"
 import { ms013_def } from "src/fn/ms013"
@@ -11,6 +12,7 @@ import { qfp_def } from "src/fn/qfp"
 import { quad_def } from "src/fn/quad"
 import { smdpinheader_def } from "src/fn/smdpinheader"
 import { sod_def } from "src/fn/sod123"
+import { sod323he_def } from "src/fn/sod323he"
 import { soic_def } from "src/fn/soic"
 import { sot23_def } from "src/fn/sot23"
 import { sot363_def } from "src/fn/sot363"
@@ -29,6 +31,7 @@ export const any_footprinter_def = z.union([
   axial_def,
   bga_def,
   dfn_def,
+  do219ad_def,
   dip_def,
   mlp_def,
   ms012_def,
@@ -39,6 +42,7 @@ export const any_footprinter_def = z.union([
   qfp_def,
   quad_def,
   sod_def,
+  sod323he_def,
   soic_def,
   sot23_def,
   sot363_def,
