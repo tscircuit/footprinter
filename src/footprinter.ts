@@ -50,6 +50,34 @@ type CommonPassiveOptionKey =
   | "nonpolarized"
   | "textbottom"
 
+type DfnOptionKey =
+  | "w"
+  | "p"
+  | "pw"
+  | "pl"
+  | "missing"
+  | "pillpads"
+  | "thermalpad"
+  | "thermalpadcenteroffsetx"
+  | "thermalpadcenteroffsety"
+  | "thermalvias"
+  | "thermalviapitch"
+  | "thermalviaid"
+  | "thermalviaod"
+  | "cornerpads"
+  | "cornerpadcutlength"
+  | "bodywidth"
+  | "bodylength"
+  | "bodythickness"
+  | "standoff"
+  | "terminalinset"
+  | "terminallength"
+  | "terminalwidth"
+  | "terminalpitch"
+  | "terminalthickness"
+  | "pin1terminalchamfer"
+  | "pin1markwidth"
+
 export type Footprinter = {
   dip: (
     num_pins?: number,
@@ -196,36 +224,8 @@ export type Footprinter = {
     | "thermalpadcenteroffsetx"
     | "thermalpadcenteroffsety"
   >
-  dfn: (
-    num_pins?: number,
-  ) => FootprinterParamsBuilder<
-    | "w"
-    | "p"
-    | "pw"
-    | "pl"
-    | "missing"
-    | "pillpads"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
-    | "thermalvias"
-    | "thermalviapitch"
-    | "thermalviaid"
-    | "thermalviaod"
-    | "cornerpads"
-    | "cornerpadcutlength"
-    | "bodywidth"
-    | "bodylength"
-    | "bodythickness"
-    | "standoff"
-    | "terminalinset"
-    | "terminallength"
-    | "terminalwidth"
-    | "terminalpitch"
-    | "terminalthickness"
-    | "pin1terminalchamfer"
-    | "pin1markwidth"
-  >
+  dfn: (num_pins?: number) => FootprinterParamsBuilder<DfnOptionKey>
+  utdfn: (num_pins?: number) => FootprinterParamsBuilder<DfnOptionKey>
   do219ad: () => FootprinterParamsBuilder<
     | "p"
     | "pw"
