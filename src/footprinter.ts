@@ -51,6 +51,9 @@ type CommonPassiveOptionKey =
   | "textbottom"
 
 export type Footprinter = {
+  spdip: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "nosquareplating">
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
@@ -633,6 +636,7 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^spdip-(\d+)(?=_|$)/i, "spdip$1")
     .replace(/^do-219ad(?=_|$)/i, "do219ad")
     .replace(/^sod-323he(?=_|$)/i, "sod323he")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
