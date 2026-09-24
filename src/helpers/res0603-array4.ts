@@ -9,14 +9,14 @@ export const res0603Array4_def = base_def.extend({
   pw: length.default("0.9mm"),
   ph: length.default("0.4mm"),
   p: length.default("0.8mm"),
+  columnpitch: length.default("1.7mm"),
+  outerpadheight: length.optional(),
   textbottom: z.boolean().optional(),
   convex: z.boolean().optional(),
   concave: z.boolean().optional(),
 })
 
 export type Res0603Array4Params = z.input<typeof res0603Array4_def>
-
-const padSpacing = 1.7 // Horizontal spacing between columns (KiCad: 1.7mm)
 
 export const res0603Array4 = (
   rawParams: Res0603Array4Params,
@@ -27,13 +27,17 @@ export const res0603Array4 = (
   const padWidth = mm(params.pw)
   const padHeight = mm(params.ph)
   const padPitch = mm(params.p)
+  const columnPitch = mm(params.columnpitch)
+  const outerPadHeight =
+    params.outerpadheight === undefined ? undefined : mm(params.outerpadheight)
 
   return chipArray({
-    padSpacing,
+    padSpacing: columnPitch,
     padWidth,
     padHeight,
     padPitch,
     numRows: 4,
+    outerPadHeight,
     textbottom: params.textbottom,
     convex: params.convex,
     concave: params.concave,
