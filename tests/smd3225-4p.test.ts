@@ -3,9 +3,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
 test("smd3225_4p creates a counter-clockwise 2x2 pad layout", () => {
-  const circuitJson = fp
-    .string("smd3225_4p")
-    .circuitJson()
+  const circuitJson = fp.string("smd3225_4p").circuitJson()
   const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
 
   expect(pads).toHaveLength(4)
