@@ -435,6 +435,7 @@ export type Footprinter = {
   sod128: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123fl: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  smd3225_4p: () => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
   sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -650,6 +651,7 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
+    .replace(/^smd3225_4p(?=_|$)/i, "crystal_px2.2mm")
 }
 
 const normalizeMicrometerLengths = (value: string): string =>
