@@ -39,6 +39,11 @@ export const extendSoicDef = (newDefaults: {
         .boolean()
         .optional()
         .default(newDefaults.legsoutside ?? false),
+      toe: length
+        .optional()
+        .describe(
+          "distance pads extend past the body edge; overrides legsoutside pad placement",
+        ),
       pillpads: z
         .boolean()
         .optional()
@@ -75,11 +80,12 @@ export const getCcwSoicCoords = (parameters: {
   pl: number
   legsoutside?: boolean
   widthincludeslegs?: boolean
+  toe?: number
 }) => {
   if (parameters.widthincludeslegs !== undefined) {
     parameters.legsoutside = !parameters.widthincludeslegs
   }
-  const { num_pins, pn, w, p, pl, legsoutside } = parameters
+  const { num_pins, pn, w, p, pl, legsoutside, toe } = parameters
   /** pin height */
   const ph = num_pins / 2
   const isLeft = pn <= ph
@@ -92,7 +98,8 @@ export const getCcwSoicCoords = (parameters: {
 
   const h = gs * leftPinGaps
 
-  const legoffset = legsoutside ? pl / 2 : -pl / 2
+  const legoffset =
+    toe !== undefined ? toe - pl / 2 : legsoutside ? pl / 2 : -pl / 2
 
   if (isLeft) {
     // The y position starts at h/2, then goes down by gap size
@@ -134,6 +141,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
       p: parameters.p,
       pl: parameters.pl,
       legsoutside: parameters.legsoutside,
+      toe: parameters.toe,
     })
     maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + parameters.pl / 2)
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
@@ -158,7 +166,11 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   /** silkscreen width */
   const m = Math.min(1, parameters.p / 2)
   const sw =
-    parameters.w - (parameters.legsoutside ? 0 : parameters.pl * 2) - 0.2
+    parameters.w -
+    (parameters.legsoutside || parameters.toe !== undefined
+      ? 0
+      : parameters.pl * 2) -
+    0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,

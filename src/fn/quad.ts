@@ -63,6 +63,11 @@ export const base_quad_def = base_def.extend({
   ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
   legsoutside: z.boolean().default(false),
+  toe: length
+    .optional()
+    .describe(
+      "distance pads extend past the body edge; overrides legsoutside pad placement",
+    ),
 })
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
@@ -156,6 +161,7 @@ export const getQuadCoords = (params: {
   pl: number // length of the pin
   leftRightPadLength?: number
   legsoutside?: boolean
+  toe?: number
 }) => {
   const {
     sidePinCounts,
@@ -168,6 +174,7 @@ export const getQuadCoords = (params: {
     pl,
     leftRightPadLength,
     legsoutside,
+    toe,
   } = params
   const sidePinCountsCcw = [
     sidePinCounts.left,
@@ -196,31 +203,38 @@ export const getQuadCoords = (params: {
   const ibh = sidePitch * (sidePinCount - 1)
 
   /** pad center distance from edge (negative is inside, positive is outside) */
-  const pcdfe = legsoutside ? padLength / 2 : -padLength / 2
+  const pcdfe =
+    toe !== undefined
+      ? toe - padLength / 2
+      : legsoutside
+        ? padLength / 2
+        : -padLength / 2
+  /** inset pulling pads toward the body; skipped when `toe` is explicit */
+  const inset = toe !== undefined ? 0 : 0.1
 
   switch (side) {
     case "left":
       return {
-        x: -w / 2 - pcdfe + 0.1,
+        x: -w / 2 - pcdfe + inset,
         y: ibh / 2 - pos * sidePitch,
         o: "vert",
       }
     case "bottom":
       return {
         x: -ibw / 2 + pos * sidePitch,
-        y: -h / 2 - pcdfe + 0.1,
+        y: -h / 2 - pcdfe + inset,
         o: "horz",
       }
     case "right":
       return {
-        x: w / 2 + pcdfe - 0.1,
+        x: w / 2 + pcdfe - inset,
         y: -ibh / 2 + pos * sidePitch,
         o: "vert",
       }
     case "top":
       return {
         x: ibw / 2 - pos * sidePitch,
-        y: h / 2 + pcdfe - 0.1,
+        y: h / 2 + pcdfe - inset,
         o: "horz",
       }
     default:
@@ -271,6 +285,7 @@ export const quad = (
       pl: parameters.pl,
       leftRightPadLength,
       legsoutside: parameters.legsoutside,
+      toe: parameters.toe,
     })
 
     const isLeftOrRight = orientation === "vert"

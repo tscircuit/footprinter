@@ -201,3 +201,20 @@ test("qfn10 supports wider left and right pads for C128396", () => {
     "qfn10_c128396_left_right_pad_overrides",
   )
 })
+
+test("qfn32 toe extends pads past the body edge", () => {
+  const soup = fp
+    .string("qfn32_w5mm_thermalpad3.1x3.1mm_toe0.375mm")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "qfn32_toe")
+
+  // Pad center sits at body edge + toe - pl/2: 2.5 + 0.375 - 0.4375 = 2.4375
+  const perimeterPads = soup.filter(
+    (el) => el.type === "pcb_smtpad" && el.width === 0.875,
+  )
+  expect(perimeterPads).toHaveLength(16)
+  for (const pad of perimeterPads) {
+    expect(Math.abs(pad.x)).toBeCloseTo(2.4375)
+  }
+})

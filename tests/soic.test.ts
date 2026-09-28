@@ -45,3 +45,18 @@ test("soic8 with pill pads", () => {
     expect(firstPad.radius).toBe(firstPad.height / 2)
   }
 })
+
+test("soic8 toe extends pads past the body edge", () => {
+  const soup = fp
+    .string("soic8_w3.9mm_p1.27mm_pl1.95mm_pw0.6mm_toe1.5mm")
+    .circuitJson()
+  const svgContent = convertCircuitJsonToPcbSvg(soup)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "soic8_toe")
+
+  // Pad center sits at body edge + toe - pl/2: 1.95 + 1.5 - 0.975 = 2.475
+  const pads = soup.filter((el) => el.type === "pcb_smtpad")
+  expect(pads).toHaveLength(8)
+  for (const pad of pads) {
+    expect(Math.abs(pad.x)).toBeCloseTo(2.475)
+  }
+})
