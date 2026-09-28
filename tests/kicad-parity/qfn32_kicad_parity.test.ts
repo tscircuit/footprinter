@@ -3,14 +3,19 @@ import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 
 test("parity/qfn32_thermalpad3.1x3.1mm", async () => {
-  const { avgRelDiff, combinedFootprintElements, booleanDifferenceSvg } =
-    await compareFootprinterVsKicad(
-      "qfn32_thermalpad3.1x3.1mm",
-      "Package_DFN_QFN.pretty/QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm.circuit.json",
-    )
+  const {
+    avgRelDiff,
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "qfn32_w5mm_thermalpad3.1x3.1mm_toe0.375mm",
+    "Package_DFN_QFN.pretty/QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm.circuit.json",
+  )
 
   // Keep a numeric copper check alongside the reference silkscreen snapshot.
   expect(avgRelDiff).toBeCloseTo(0, 6)
+  expect(courtyardDiffPercent).toBeLessThan(3)
 
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,

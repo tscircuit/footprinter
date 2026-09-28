@@ -30,6 +30,7 @@ export const sop8 = (
       p: parameters.p ?? 1.27,
       pl: parameters.pl,
       widthincludeslegs: true,
+      toe: parameters.toe,
     })
     pads.push(rectpad(i + 1, x, y, parameters.pl, parameters.pw, cornerRadius))
   }

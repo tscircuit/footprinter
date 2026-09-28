@@ -149,6 +149,22 @@ fp().soic(8).rounded("0.2mm")
 
 Circular, pill-shaped, and polygonal pads keep their original geometry.
 
+### Pad extension past the body edge
+
+`toe` sets how far each pad extends past the body edge, which lets pad centers
+straddle the body the way IPC-7351/KiCad land patterns do. The pad center is
+placed at `body edge + toe - pl/2`, so `legsoutside` is equivalent to
+`toe = pl`. `toe` is available on `soic`, `quad`/`qfn` and `soic`-derived
+footprints; `legsoutside` remains supported for pads fully outside the body.
+
+```ts
+fp.string("soic8_w3.9mm_p1.27mm_pl1.95mm_pw0.6mm_toe1.5mm")
+fp.string("qfn32_w5mm_thermalpad3.1x3.1mm_toe0.375mm")
+
+// Builder equivalent:
+fp().soic(8).w("3.9mm").p("1.27mm").pl("1.95mm").pw("0.6mm").toe("1.5mm")
+```
+
 ### Sparse pin grids
 
 `pinrow` can represent relay and connector layouts that omit positions from a

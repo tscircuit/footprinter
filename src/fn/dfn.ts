@@ -144,6 +144,7 @@ export const dfn = (
       p: parameters.p ?? 1.27,
       pl: parameters.pl,
       widthincludeslegs: true,
+      toe: parameters.toe,
     })
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
     if (cornerpads) {
