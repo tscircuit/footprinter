@@ -3,20 +3,20 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { z } from "zod"
 import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { u_curve } from "../helpers/u-curve"
-import { rectpad } from "src/helpers/rectpad"
-import { pillpad } from "src/helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
   thermalPadOffsetFields,
 } from "src/helpers/create-thermal-pad"
+import { pillpad } from "src/helpers/pillpad"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { rectpad } from "src/helpers/rectpad"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { u_curve } from "../helpers/u-curve"
+import { base_def } from "../helpers/zod/base_def"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -131,6 +131,15 @@ export const soic = (raw_params: {
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const pads: AnyCircuitElement[] = []
   const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
+  /** silkscreen width */
+  const sw =
+    parameters.w -
+    (parameters.legsoutside || parameters.toe !== undefined
+      ? 0
+      : parameters.pl * 2) -
+    0.2
+  const silkX = sw / 2
+  let minPadInnerX = Number.POSITIVE_INFINITY
   let maxPadExtentX = 0
   let maxPadExtentY = 0
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -145,6 +154,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     })
     maxPadExtentX = Math.max(maxPadExtentX, Math.abs(x) + parameters.pl / 2)
     maxPadExtentY = Math.max(maxPadExtentY, Math.abs(y) + parameters.pw / 2)
+    minPadInnerX = Math.min(minPadInnerX, Math.abs(x) - parameters.pl / 2)
     if (parameters.pillpads) {
       pads.push(pillpad(i + 1, x, y, parameters.pl, parameters.pw))
     } else {
@@ -163,38 +173,72 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
     )
   }
 
-  /** silkscreen width */
   const m = Math.min(1, parameters.p / 2)
-  const sw =
-    parameters.w -
-    (parameters.legsoutside || parameters.toe !== undefined
-      ? 0
-      : parameters.pl * 2) -
-    0.2
   const sh = (parameters.num_pins / 2 - 1) * parameters.p + parameters.pw + m
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     sh / 2 + 0.4,
     sh / 12,
   )
-  const silkscreenBorder: PcbSilkscreenPath = {
-    type: "pcb_silkscreen_path",
-    layer: "top",
+  const silkscreenPaths: PcbSilkscreenPath[] = []
+  const silkBase = {
+    layer: "top" as const,
     pcb_component_id: "",
-    pcb_silkscreen_path_id: "silkscreen_path_1",
     stroke_width: parameters.silkscreen_stroke_width ?? 0.1,
-    route: [
-      { x: -sw / 2, y: -sh / 2 },
-      { x: -sw / 2, y: sh / 2 },
-      // Little U shape at the top
-      ...u_curve.map(({ x, y }) => ({
-        x: (x * sw) / 6,
-        y: (y * sw) / 6 + sh / 2,
-      })),
-      { x: sw / 2, y: sh / 2 },
-      { x: sw / 2, y: -sh / 2 },
-      { x: -sw / 2, y: -sh / 2 },
-    ],
+  }
+  const silkPadClearance = 0.1
+  const borderWidth =
+    minPadInnerX >= silkX
+      ? sw
+      : Math.max(0, (minPadInnerX - silkPadClearance) * 2)
+  const bw = borderWidth
+  if (bw > 0) {
+    // Full body outline. When pads straddle the default silk x, the
+    // rectangle is pulled inside the pad heels (clear of copper) so the
+    // body is still marked — same as an IPC inset silk rectangle.
+    silkscreenPaths.push({
+      type: "pcb_silkscreen_path",
+      ...silkBase,
+      pcb_silkscreen_path_id: "silkscreen_path_1",
+      route: [
+        { x: -bw / 2, y: -sh / 2 },
+        { x: -bw / 2, y: sh / 2 },
+        // Little U shape at the top
+        ...u_curve.map(({ x, y }) => ({
+          x: (x * bw) / 6,
+          y: (y * bw) / 6 + sh / 2,
+        })),
+        { x: bw / 2, y: sh / 2 },
+        { x: bw / 2, y: -sh / 2 },
+        { x: -bw / 2, y: -sh / 2 },
+      ],
+    })
+  } else {
+    // Pads reach nearly to the center: no room for side lines at all.
+    silkscreenPaths.push(
+      {
+        type: "pcb_silkscreen_path",
+        ...silkBase,
+        pcb_silkscreen_path_id: "silkscreen_path_top",
+        route: [
+          { x: -sw / 2, y: sh / 2 },
+          ...u_curve.map(({ x, y }) => ({
+            x: (x * sw) / 6,
+            y: (y * sw) / 6 + sh / 2,
+          })),
+          { x: sw / 2, y: sh / 2 },
+        ],
+      },
+      {
+        type: "pcb_silkscreen_path",
+        ...silkBase,
+        pcb_silkscreen_path_id: "silkscreen_path_bottom",
+        route: [
+          { x: sw / 2, y: -sh / 2 },
+          { x: -sw / 2, y: -sh / 2 },
+        ],
+      },
+    )
   }
   const bodyHalfWidth = parameters.w / 2
   const bodyHalfHeight = sh / 2
@@ -232,7 +276,7 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
 
   return [
     ...pads,
-    silkscreenBorder,
+    ...silkscreenPaths,
     silkscreenRefText,
     courtyard,
   ] as AnyCircuitElement[]

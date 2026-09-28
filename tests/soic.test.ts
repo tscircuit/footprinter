@@ -1,4 +1,4 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
@@ -58,5 +58,24 @@ test("soic8 toe extends pads past the body edge", () => {
   expect(pads).toHaveLength(8)
   for (const pad of pads) {
     expect(Math.abs(pad.x)).toBeCloseTo(2.475)
+  }
+
+  // Silkscreen never lands on pads: side lines are clipped into pad gaps
+  const silks = soup.filter((el) => el.type === "pcb_silkscreen_path")
+  for (const silk of silks) {
+    for (let i = 0; i < silk.route.length - 1; i++) {
+      const a = silk.route[i]
+      const b = silk.route[i + 1]
+      for (let t = 0; t <= 1; t += 0.05) {
+        const x = a.x + (b.x - a.x) * t
+        const y = a.y + (b.y - a.y) * t
+        for (const pad of pads) {
+          const inside =
+            Math.abs(x - pad.x) < pad.width / 2 &&
+            Math.abs(y - pad.y) < pad.height / 2
+          expect(inside).toBe(false)
+        }
+      }
+    }
   }
 })
