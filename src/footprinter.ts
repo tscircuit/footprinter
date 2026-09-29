@@ -636,6 +636,7 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^do-219ad(?=_|$)/i, "do219ad")
     .replace(/^sod-323he(?=_|$)/i, "sod323he")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
+    .replace(/^pdip-?(\d+)(?=_|$)/i, "dip$1")
     .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
     .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
       pins ? `to252_${pins}` : "to252",
