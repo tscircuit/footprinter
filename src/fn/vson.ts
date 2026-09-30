@@ -18,9 +18,13 @@ import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 export const vson_def = base_def.extend({
   fn: z.string(),
   num_pins: z.number().optional().default(8),
-  p: distance.default("0.5mm").describe("pitch (distance between center of each pin)"),
+  p: distance
+    .default("0.5mm")
+    .describe("pitch (distance between center of each pin)"),
   w: length.default("2.75mm").describe("width between vertical rows of pins"),
-  grid: dim2d.default("3x3mm").describe("width and height of the border of the footprint"),
+  grid: dim2d
+    .default("3x3mm")
+    .describe("width and height of the border of the footprint"),
   ep: dim2d
     .default("0x0mm")
     .describe("width and height of the central exposed thermal pad"),

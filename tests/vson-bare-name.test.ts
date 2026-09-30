@@ -34,7 +34,9 @@ test("bare vson renders 8 pins by default", () => {
 })
 
 test("vson explicit dimensions still win over defaults", () => {
-  const circuitJson = fp.string("vson8_p0.4mm_w3.75mm_grid3.9x4mm_pinw0.2mm_pinh0.5mm").circuitJson()
+  const circuitJson = fp
+    .string("vson8_p0.4mm_w3.75mm_grid3.9x4mm_pinw0.2mm_pinh0.5mm")
+    .circuitJson()
   const pads = circuitJson.filter((e) => e.type === "pcb_smtpad") as Array<{
     x: number
     y: number
