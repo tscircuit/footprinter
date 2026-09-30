@@ -17,8 +17,18 @@ test("bare fpc renders the 12-pin FPC-05F-12PH20 layout", () => {
     (p) => p.port_hints?.[0] !== "13" && p.port_hints?.[0] !== "14",
   )
   expect(contactPads).toHaveLength(12)
-  expect(contactPads[0]).toMatchObject({ x: -2.75, y: 0, width: 0.3, height: 1.25 })
-  expect(contactPads[11]).toMatchObject({ x: 2.75, y: 0, width: 0.3, height: 1.25 })
+  expect(contactPads[0]).toMatchObject({
+    x: -2.75,
+    y: 0,
+    width: 0.3,
+    height: 1.25,
+  })
+  expect(contactPads[11]).toMatchObject({
+    x: 2.75,
+    y: 0,
+    width: 0.3,
+    height: 1.25,
+  })
 
   const mountingPads = pads.filter(
     (p) => p.port_hints?.[0] === "13" || p.port_hints?.[0] === "14",
