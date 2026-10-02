@@ -68,6 +68,20 @@ export const base_quad_def = base_def.extend({
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v: T,
 ) => {
+  if (v.p !== undefined && v.p <= 0) {
+    throw new Error(`Pitch (p) must be greater than 0, received ${v.p}`)
+  }
+  if (v.px !== undefined && v.px <= 0) {
+    throw new Error(
+      `Horizontal pitch (px) must be greater than 0, received ${v.px}`,
+    )
+  }
+  if (v.py !== undefined && v.py <= 0) {
+    throw new Error(
+      `Vertical pitch (py) must be greater than 0, received ${v.py}`,
+    )
+  }
+
   if (
     v.lrpw !== undefined &&
     v.leftrightpadwidth !== undefined &&
