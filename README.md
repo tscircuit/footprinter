@@ -161,6 +161,47 @@ fp.string(
 )
 ```
 
+### BGA pin numbering
+
+Use `pinnumbering(...)` to select a naming convention for every populated BGA
+ball without changing the pad geometry:
+
+```ts
+fp.string("bga6_grid3x2_pinnumbering(columnmajor)")
+fp().bga(6).grid("3x2").pinnumbering("columnmajor")
+```
+
+| Convention | Output hints | Traversal |
+| --- | --- | --- |
+| `rowmajor` | Numeric ID and ball coordinate | A1, A2, A3, then B1, B2, B3 |
+| `columnmajor` | Numeric ID and ball coordinate | A1, B1, then A2, B2, then A3, B3 |
+| `ballcoords` | Ball coordinate only | No synthetic numeric ID |
+
+Explicit conventions use BGA row letters `ABCDEFGHJKLMNPRTUVWY`, followed by
+`AA`, `AB`, and so on. They omit I, O, Q, S, X, and Z. Check this alphabet against
+the exact package's pin diagram. Omitting `pinnumbering` preserves the legacy
+row-major numbers and plain A–Z row alphabet, extended to AA after Z.
+
+Numeric IDs start at 1 and skip missing balls. Coordinate arguments to
+`missing(...)` use the selected row alphabet; numeric arguments always refer to
+nominal row-major grid positions before omissions, regardless of the numbering
+convention. Naming is relative to `tlorigin`, `blorigin`, `trorigin`, or
+`brorigin`; these options determine which physical corner holds A1. Explicit
+conventions align the corner marker with that labeled A1 corner; omitted options
+preserve the legacy marker placement.
+`pin1location(...)` can rotate numeric modes afterward. Since `ballcoords` has
+no numeric pin 1, use the BGA origin options to orient coordinate-only footprints.
+
+For example, a 25×25 layout with A1 absent and column-major component IDs can
+be expressed as:
+
+```ts
+fp.string(
+  "bga624_grid25x25_p0.8_pad0.4_missing(A1)_blorigin_pinnumbering(columnmajor)",
+)
+// B1 → 1, C1 → 2, J1 → 8, AA1 → 20, A2 → 25, AE25 → 624
+```
+
 ## Getting JSON output from the builder
 
 Use the `.circuitJson()` function to output [tscircuit circuit JSON](https://github.com/tscircuit/circuit-json)

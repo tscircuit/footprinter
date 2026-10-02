@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
+import type { BgaPinNumbering } from "./fn/bga"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -13,6 +14,8 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
+
+export type { BgaPinNumbering } from "./fn/bga"
 
 type BaseOptionKey =
   | "anodepin"
@@ -35,7 +38,9 @@ export type FootprinterParamsBuilder<K extends string> = {
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
       : P extends "rounded"
         ? (radius: number | string) => FootprinterParamsBuilder<K>
-        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+        : P extends "pinnumbering"
+          ? (convention: BgaPinNumbering) => FootprinterParamsBuilder<K>
+          : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -123,6 +128,7 @@ export type Footprinter = {
     | "trorigin"
     | "brorigin"
     | "circularpads"
+    | "pinnumbering"
   >
   qfn: (
     num_pins?: number,
