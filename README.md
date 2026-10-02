@@ -186,7 +186,9 @@ Numeric IDs start at 1 and skip missing balls. Coordinate arguments to
 `missing(...)` use the selected row alphabet; numeric arguments always refer to
 nominal row-major grid positions before omissions, regardless of the numbering
 convention. Naming is relative to `tlorigin`, `blorigin`, `trorigin`, or
-`brorigin`; these options determine which physical corner holds A1.
+`brorigin`; these options determine which physical corner holds A1. Explicit
+conventions align the corner marker with that labeled A1 corner; omitted options
+preserve the legacy marker placement.
 `pin1location(...)` can rotate numeric modes afterward. Since `ballcoords` has
 no numeric pin 1, use the BGA origin options to orient coordinate-only footprints.
 

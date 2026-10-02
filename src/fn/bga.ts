@@ -273,6 +273,12 @@ export const bga = (
       break
   }
 
+  // The legacy marker's Y corner is opposite the grid's labeled A1 corner.
+  // Explicit conventions align the marker with their actual physical labels.
+  if (parameters.pinnumbering) {
+    markerRoute = markerRoute.map(({ x, y }) => ({ x, y: -y }))
+  }
+
   const pin1Marker: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",

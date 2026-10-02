@@ -102,6 +102,18 @@ test("missing balls do not consume numbers under any BGA origin", () => {
       const b1 = pads(elements).find((pad) => pad.port_hints!.includes("B1"))!
       expect(b1.x).toBe(origin === "tr" || origin === "br" ? 1 : -1)
       expect(b1.y).toBe(origin === "bl" || origin === "br" ? -0.5 : 0.5)
+      const marker = elements.find(
+        (element) =>
+          element.type === "pcb_silkscreen_path" &&
+          element.pcb_silkscreen_path_id === "pin1_marker",
+      )
+      expect(marker?.type).toBe("pcb_silkscreen_path")
+      if (marker?.type === "pcb_silkscreen_path") {
+        expect(marker.route[0]).toEqual({
+          x: origin === "tr" || origin === "br" ? 1.5 : -1.5,
+          y: origin === "bl" || origin === "br" ? 1 : -1,
+        })
+      }
       snapshot(elements, `bga_sparse_${origin}_${convention}`)
     }
     const legacy = fp
