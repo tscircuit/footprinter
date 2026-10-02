@@ -9,6 +9,10 @@ import {
   getQuadSidePinCounts,
   type QuadSidePinCounts,
 } from "src/helpers/get-quad-side-pin-counts"
+import {
+  QUAD_PAD_EDGE_INSET_MM,
+  getQuadThermalPadDimensions,
+} from "src/helpers/quad-pad-geometry"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { dim2d } from "src/helpers/zod/dim-2d"
@@ -201,26 +205,26 @@ export const getQuadCoords = (params: {
   switch (side) {
     case "left":
       return {
-        x: -w / 2 - pcdfe + 0.1,
+        x: -w / 2 - pcdfe + QUAD_PAD_EDGE_INSET_MM,
         y: ibh / 2 - pos * sidePitch,
         o: "vert",
       }
     case "bottom":
       return {
         x: -ibw / 2 + pos * sidePitch,
-        y: -h / 2 - pcdfe + 0.1,
+        y: -h / 2 - pcdfe + QUAD_PAD_EDGE_INSET_MM,
         o: "horz",
       }
     case "right":
       return {
-        x: w / 2 + pcdfe - 0.1,
+        x: w / 2 + pcdfe - QUAD_PAD_EDGE_INSET_MM,
         y: -ibh / 2 + pos * sidePitch,
         o: "vert",
       }
     case "top":
       return {
         x: ibw / 2 - pos * sidePitch,
-        y: h / 2 + pcdfe - 0.1,
+        y: h / 2 + pcdfe - QUAD_PAD_EDGE_INSET_MM,
         o: "horz",
       }
     default:
@@ -297,12 +301,7 @@ export const quad = (
       y: parameters.thermalpadcenteroffsety,
     }
     if (typeof parameters.thermalpad === "boolean") {
-      const ibw =
-        (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) +
-        parameters.pw
-      const ibh =
-        (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
-        leftRightPadWidth
+      const { x: ibw, y: ibh } = getQuadThermalPadDimensions(parameters)
       padOuterHalfX = Math.max(
         padOuterHalfX,
         Math.abs(thermalPadOffset.x) + ibw / 2,
