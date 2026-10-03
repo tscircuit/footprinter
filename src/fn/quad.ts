@@ -89,6 +89,15 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
   v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
 
+  // A zero pitch makes every pitch-based geometry degenerate; without this
+  // guard the falsy `v.p` checks below skip sizing entirely and pad
+  // coordinates silently come out as NaN (serialized as null).
+  if (v.p === 0 || v.px === 0 || v.py === 0) {
+    throw new Error(
+      `Invalid pitch: quad footprints require a positive pitch (got p=${v.p}, px=${v.px}, py=${v.py}). Zero pitch produces NaN pad coordinates.`,
+    )
+  }
+
   if (v.w && !v.h) {
     v.h = v.w
   } else if (!v.w && v.h) {
