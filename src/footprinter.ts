@@ -232,6 +232,7 @@ export type Footprinter = {
     | "pin1terminalchamfer"
     | "pin1markwidth"
   >
+  utdfn4ep: () => FootprinterParamsBuilder<never>
   do219ad: () => FootprinterParamsBuilder<
     | "p"
     | "pw"
@@ -655,6 +656,9 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+    .replace(/^utdfn-4-ep\(1x1\)(?=_|$)/i, "utdfn4ep")
+    .replace(/^utdfn-4-ep(?=_|$)/i, "utdfn4ep")
+    .replace(/^utdfn_4_ep(?=_|$)/i, "utdfn4ep")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
 
