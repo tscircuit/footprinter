@@ -20,6 +20,7 @@ Here are some example footprinter strings:
 cap0402
 res0805
 soic8_p1.27mm
+tid0008a
 dip16
 pinrow10
 pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
@@ -32,6 +33,16 @@ axial_p0.2in
 do219ad
 sod323he
 ```
+
+For the TI D0008A SOIC-8 package (for example, TLC555CD), use `tid0008a`
+or `fp().tid0008a()`. Its fixed copper lands follow the example board layout
+in the [TLC555 datasheet](https://www.ti.com/lit/ds/symlink/tlc555.pdf),
+drawing 4214825/C: 1.55 × 0.60 mm pads, 1.27 mm pitch, 5.40 mm between
+pad-row centers, and 0.05 mm corner radius. It reuses the SOIC silkscreen
+and courtyard generator; it does not define solder-mask or paste openings.
+Use generic `soic8` with explicit dimensions for other land patterns.
+Existing `soic8` defaults are unchanged. Common options such as
+`tid0008a_norefdes` and `tid0008a_pin1location(topside,left)` also work.
 
 You can use these like so:
 
