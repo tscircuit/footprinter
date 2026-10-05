@@ -89,12 +89,19 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
   v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
 
-  // A zero pitch makes every pitch-based geometry degenerate; without this
-  // guard the falsy `v.p` checks below skip sizing entirely and pad
-  // coordinates silently come out as NaN (serialized as null).
-  if (v.p === 0 || v.px === 0 || v.py === 0) {
+  // A non-positive pitch makes every pitch-based geometry degenerate. Zero
+  // pitch: the falsy `v.p` checks below skip sizing entirely and pad
+  // coordinates silently come out as NaN (serialized as null). Negative pitch:
+  // the pad rows mirror/stack around the body centre instead, which survives
+  // the falsy checks and is emitted without any error whenever the body size
+  // is known (`w`/`h` given), so reject both here, before the pitch is used.
+  if (
+    v.p <= 0 ||
+    (v.px !== undefined && v.px <= 0) ||
+    (v.py !== undefined && v.py <= 0)
+  ) {
     throw new Error(
-      `Invalid pitch: quad footprints require a positive pitch (got p=${v.p}, px=${v.px}, py=${v.py}). Zero pitch produces NaN pad coordinates.`,
+      `Invalid pitch: quad footprints require a positive pitch (got p=${v.p}, px=${v.px}, py=${v.py}). Zero or negative pitch produces NaN or mirrored pad coordinates.`,
     )
   }
 
