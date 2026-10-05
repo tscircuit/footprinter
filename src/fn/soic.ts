@@ -64,7 +64,38 @@ export const extendSoicDef = (newDefaults: {
       >
     })
 
-export const soic_def = extendSoicDef({})
+const soicPackage = z.preprocess(
+  (value) =>
+    typeof value === "string"
+      ? value.replace(/^\((.*)\)$/, "$1").toUpperCase()
+      : value,
+  z.literal("D0008A").optional(),
+)
+
+export const soic_def = z.preprocess(
+  (raw) => {
+    if (!raw || typeof raw !== "object") return raw
+    const input = raw as Record<string, unknown>
+    const selectedPackage = soicPackage.safeParse(input.package)
+    if (!selectedPackage.success || selectedPackage.data !== "D0008A")
+      return raw
+    // TI drawing 4214825/C, example board layout:
+    // https://www.ti.com/lit/ds/symlink/tlc555.pdf
+    // w is the outer copper span: 5.4 mm row spacing + 1.55 mm pad length.
+    return { w: 6.95, p: 1.27, pl: 1.55, pw: 0.6, ...input }
+  },
+  extendSoicDef({})
+    .and(z.object({ package: soicPackage }))
+    .superRefine((value, ctx) => {
+      if (value.package === "D0008A" && value.num_pins !== 8) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["num_pins"],
+          message: "The TI D0008A package requires 8 pins",
+        })
+      }
+    }),
+)
 export type SoicInput = z.infer<typeof soic_def>
 
 export const getCcwSoicCoords = (parameters: {
@@ -111,6 +142,7 @@ export const soic = (raw_params: {
   num_pins: number
   w: number
   p?: number
+  package?: string
   id?: string | number
   od?: string | number
 }): { circuitJson: AnyCircuitElement[]; parameters: SoicInput } => {
@@ -123,7 +155,10 @@ export const soic = (raw_params: {
 
 export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
   const pads: AnyCircuitElement[] = []
-  const cornerRadius = Math.min(parameters.pl, parameters.pw) / 8
+  const cornerRadius =
+    parameters.package === "D0008A"
+      ? Math.min(0.05, parameters.pl / 2, parameters.pw / 2)
+      : Math.min(parameters.pl, parameters.pw) / 8
   let maxPadExtentX = 0
   let maxPadExtentY = 0
   for (let i = 0; i < parameters.num_pins; i++) {

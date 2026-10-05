@@ -167,6 +167,7 @@ export type Footprinter = {
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
+    | "package"
     | "w"
     | "p"
     | "pw"
@@ -385,7 +386,6 @@ export type Footprinter = {
   micromelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   ms013: () => FootprinterParamsBuilder<"w" | "p">
   ms012: () => FootprinterParamsBuilder<"w" | "p">
-  tid0008a: () => FootprinterParamsBuilder<never>
   lqfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
