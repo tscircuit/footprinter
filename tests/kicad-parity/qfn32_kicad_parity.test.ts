@@ -9,6 +9,9 @@ test("parity/qfn32_thermalpad3.1x3.1mm", async () => {
       "Package_DFN_QFN.pretty/QFN-32-1EP_5x5mm_P0.5mm_EP3.1x3.1mm.circuit.json",
     )
 
+  // Keep a numeric copper check alongside the reference silkscreen snapshot.
+  expect(avgRelDiff).toBeCloseTo(0, 6)
+
   const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
     showCourtyards: true,
   })

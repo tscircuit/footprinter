@@ -16,6 +16,22 @@ import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { type PcbSilkscreenPath } from "circuit-json"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
+const bga_pin_numbering = z.enum(["rowmajor", "columnmajor", "ballcoords"])
+export type BgaPinNumbering = z.infer<typeof bga_pin_numbering>
+
+const BGA_ROW_ALPHABET = "ABCDEFGHJKLMNPRTUVWY"
+
+const getRowLabel = (row: number, alphabet: string) => {
+  let remaining = row + 1
+  let label = ""
+  while (remaining > 0) {
+    remaining--
+    label = alphabet[remaining % alphabet.length] + label
+    remaining = Math.floor(remaining / alphabet.length)
+  }
+  return label
+}
+
 export const bga_def = base_def
   .extend({
     fn: z.string(),
@@ -38,9 +54,19 @@ export const bga_def = base_def
     trorigin: z.boolean().optional(),
     brorigin: z.boolean().optional(),
 
+    pinnumbering: z
+      .preprocess(
+        (value) =>
+          typeof value === "string"
+            ? value.trim().replace(/^\(([^()]*)\)$/, "$1")
+            : value,
+        bga_pin_numbering,
+      )
+      .optional()
+      .describe("rowmajor or columnmajor numeric IDs, or ball-coordinate IDs"),
     missing: function_call.default([]),
   })
-  .transform((a) => {
+  .transform((a, ctx) => {
     let origin: "tl" | "bl" | "tr" | "br" = "tl"
     if (a.blorigin) origin = "bl"
     if (a.trorigin) origin = "tr"
@@ -52,20 +78,33 @@ export const bga_def = base_def
       a.grid = { x: largest_square, y: largest_square }
     }
 
+    // Explicit conventions use package ball labels; omitted options retain the
+    // legacy alphabet so existing footprint strings do not change identities.
+    const rowLabels = Array.from({ length: a.grid.y }, (_, row) =>
+      getRowLabel(row, a.pinnumbering ? BGA_ROW_ALPHABET : ALPHABET),
+    )
+
     if (a.missing) {
       a.missing = a.missing.map((s) => {
         if (typeof s === "number") return s
         if (s === "center") return "center"
         if (s === "topleft") return "topleft"
-        const m = s.match(/([A-Z]+)(\d+)/)
+        const m = s.match(/^([A-Z]+)(\d+)$/)
         if (!m) return s
-        const Y = ALPHABET.indexOf(m[1]!)
+        const Y = rowLabels.indexOf(m[1]!)
         const X = Number.parseInt(m[2]!) - 1
+        if (Y < 0 || X < 0 || X >= a.grid!.x) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["missing"],
+            message: `Missing ball ${s} is outside the BGA grid or row alphabet`,
+          })
+        }
         return Y * a.grid!.x + X + 1
       })
     }
 
-    const new_def = { ...a, origin }
+    const new_def = { ...a, origin, rowLabels }
 
     return new_def as NowDefined<typeof new_def, "w" | "h" | "grid">
   })
@@ -122,7 +161,21 @@ export const bga = (
 
   const missing_pin_nums_set = new Set(missing_pin_nums)
 
-  let missing_pins_passed = 0
+  // Rank only populated grid cells, independently of the physical traversal.
+  // In particular, mirrored origins must not count missing cells backwards.
+  const populatedGridPositions = Array.from(
+    { length: grid.x * grid.y },
+    (_, index) => index + 1,
+  ).filter((position) => !missing_pin_nums_set.has(position))
+  if (parameters.pinnumbering === "columnmajor") {
+    const columnOrder = (position: number) =>
+      ((position - 1) % grid.x) * grid.y + Math.floor((position - 1) / grid.x)
+    populatedGridPositions.sort((a, b) => columnOrder(a) - columnOrder(b))
+  }
+  const pinNumbers = new Map(
+    populatedGridPositions.map((position, index) => [position, index + 1]),
+  )
+
   for (let y = 0; y < grid.y; y++) {
     for (let x = 0; x < grid.x; x++) {
       // Calculate physical pad position (always centered around origin)
@@ -151,15 +204,14 @@ export const bga = (
           break
       }
 
-      let pin_num = pin_y * grid.x + pin_x + 1
-      if (missing_pin_nums_set.has(pin_num)) {
-        missing_pins_passed++
-        continue
-      }
-      pin_num -= missing_pins_passed
+      const pin_num = pinNumbers.get(pin_y * grid.x + pin_x + 1)
+      if (pin_num === undefined) continue
 
-      // TODO handle >26 rows
-      const portHints = [pin_num, `${ALPHABET[pin_y]}${pin_x + 1}`]
+      const ballCoordinate = `${parameters.rowLabels[pin_y]}${pin_x + 1}`
+      const portHints =
+        parameters.pinnumbering === "ballcoords"
+          ? [ballCoordinate]
+          : [pin_num, ballCoordinate]
       pads.push(
         parameters.circularpads
           ? circlepad(portHints, {
@@ -219,6 +271,12 @@ export const bga = (
         { x: -edgeX, y: edgeY }, // Back to start
       ]
       break
+  }
+
+  // The legacy marker's Y corner is opposite the grid's labeled A1 corner.
+  // Explicit conventions align the marker with their actual physical labels.
+  if (parameters.pinnumbering) {
+    markerRoute = markerRoute.map(({ x, y }) => ({ x, y: -y }))
   }
 
   const pin1Marker: PcbSilkscreenPath = {

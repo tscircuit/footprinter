@@ -29,6 +29,8 @@ sot23
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
 qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
+do219ad
+sod323he
 ```
 
 You can use these like so:
@@ -113,6 +115,25 @@ fp().sod123w().p("3.4mm").pw("0.95mm").cathodepin(1)
 fp().sod123w().p("3.4mm").pw("0.95mm").anodepin(1)
 ```
 
+### Explicit two-pad package identity
+
+Two rectangular pads alone do not identify the component package. Use a named
+standard-family footprint when downstream tools such as a 3D renderer need an
+unambiguous package identity:
+
+```ts
+fp.string("do219ad")
+fp.string("sod323he")
+fp.string("dfn2_w1.6mm_pl0.6mm_pw0.6mm")
+```
+
+`do-219ad` and `sod-323he` are accepted aliases and normalize to the canonical
+names above. DO-219AD and SOD-323HE assign pin 1 to the cathode at negative X
+and pin 2 to the anode at positive X. Their land-pattern parameters (`p`, `pw`,
+and `ph`) are independent from their validated mechanical parameters such as
+`bodylength`, `bodywidth`, and `bodyheight`. A generic `smdpads2` footprint
+remains generic and never selects one of these packages by pad dimensions.
+
 ### Rounded pads
 
 Every footprint accepts a `rounded${radius}` modifier that applies the requested
@@ -138,6 +159,47 @@ regular grid. `p` controls the column pitch, `py` controls the row pitch, and
 fp.string(
   "pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)_nosquareplating",
 )
+```
+
+### BGA pin numbering
+
+Use `pinnumbering(...)` to select a naming convention for every populated BGA
+ball without changing the pad geometry:
+
+```ts
+fp.string("bga6_grid3x2_pinnumbering(columnmajor)")
+fp().bga(6).grid("3x2").pinnumbering("columnmajor")
+```
+
+| Convention | Output hints | Traversal |
+| --- | --- | --- |
+| `rowmajor` | Numeric ID and ball coordinate | A1, A2, A3, then B1, B2, B3 |
+| `columnmajor` | Numeric ID and ball coordinate | A1, B1, then A2, B2, then A3, B3 |
+| `ballcoords` | Ball coordinate only | No synthetic numeric ID |
+
+Explicit conventions use BGA row letters `ABCDEFGHJKLMNPRTUVWY`, followed by
+`AA`, `AB`, and so on. They omit I, O, Q, S, X, and Z. Check this alphabet against
+the exact package's pin diagram. Omitting `pinnumbering` preserves the legacy
+row-major numbers and plain A–Z row alphabet, extended to AA after Z.
+
+Numeric IDs start at 1 and skip missing balls. Coordinate arguments to
+`missing(...)` use the selected row alphabet; numeric arguments always refer to
+nominal row-major grid positions before omissions, regardless of the numbering
+convention. Naming is relative to `tlorigin`, `blorigin`, `trorigin`, or
+`brorigin`; these options determine which physical corner holds A1. Explicit
+conventions align the corner marker with that labeled A1 corner; omitted options
+preserve the legacy marker placement.
+`pin1location(...)` can rotate numeric modes afterward. Since `ballcoords` has
+no numeric pin 1, use the BGA origin options to orient coordinate-only footprints.
+
+For example, a 25×25 layout with A1 absent and column-major component IDs can
+be expressed as:
+
+```ts
+fp.string(
+  "bga624_grid25x25_p0.8_pad0.4_missing(A1)_blorigin_pinnumbering(columnmajor)",
+)
+// B1 → 1, C1 → 2, J1 → 8, AA1 → 20, A2 → 25, AE25 → 624
 ```
 
 ## Getting JSON output from the builder

@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
+import type { BgaPinNumbering } from "./fn/bga"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -13,6 +14,8 @@ import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
+
+export type { BgaPinNumbering } from "./fn/bga"
 
 type BaseOptionKey =
   | "anodepin"
@@ -35,7 +38,9 @@ export type FootprinterParamsBuilder<K extends string> = {
       ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
       : P extends "rounded"
         ? (radius: number | string) => FootprinterParamsBuilder<K>
-        : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+        : P extends "pinnumbering"
+          ? (convention: BgaPinNumbering) => FootprinterParamsBuilder<K>
+          : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
 }
 
 type CommonPassiveOptionKey =
@@ -123,6 +128,7 @@ export type Footprinter = {
     | "trorigin"
     | "brorigin"
     | "circularpads"
+    | "pinnumbering"
   >
   qfn: (
     num_pins?: number,
@@ -178,6 +184,9 @@ export type Footprinter = {
   ssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
+    | "bodywidth"
+    | "bodyheight"
+    | "bodythickness"
     | "w"
     | "p"
     | "thermalpad"
@@ -211,6 +220,36 @@ export type Footprinter = {
     | "thermalviaod"
     | "cornerpads"
     | "cornerpadcutlength"
+    | "bodywidth"
+    | "bodylength"
+    | "bodythickness"
+    | "standoff"
+    | "terminalinset"
+    | "terminallength"
+    | "terminalwidth"
+    | "terminalpitch"
+    | "terminalthickness"
+    | "pin1terminalchamfer"
+    | "pin1markwidth"
+  >
+  do219ad: () => FootprinterParamsBuilder<
+    | "p"
+    | "pw"
+    | "ph"
+    | "cyw"
+    | "cyh"
+    | "bodylength"
+    | "bodywidth"
+    | "bodyheight"
+    | "leadspan"
+    | "cathodelength"
+    | "cathodewidth"
+    | "anodelength"
+    | "anodewidth"
+    | "terminalthickness"
+    | "standoff"
+    | "taperinset"
+    | "markingwidth"
   >
   pinrow: (
     num_pins?: number,
@@ -352,7 +391,16 @@ export type Footprinter = {
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "grid" | "p" | "w" | "h" | "pl" | "pw" | "pillpads"
+    | "bodywidth"
+    | "bodyheight"
+    | "bodythickness"
+    | "grid"
+    | "p"
+    | "w"
+    | "h"
+    | "pl"
+    | "pw"
+    | "pillpads"
   >
   sma: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -364,6 +412,25 @@ export type Footprinter = {
   electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sod323he: () => FootprinterParamsBuilder<
+    | "p"
+    | "pw"
+    | "ph"
+    | "cyw"
+    | "cyh"
+    | "bodylength"
+    | "bodywidth"
+    | "bodyheight"
+    | "leadspan"
+    | "cathodelength"
+    | "cathodewidth"
+    | "anodelength"
+    | "anodewidth"
+    | "terminalthickness"
+    | "standoff"
+    | "taperinset"
+    | "markingwidth"
+  >
   sod80: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod882d: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -572,6 +639,8 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^do-219ad(?=_|$)/i, "do219ad")
+    .replace(/^sod-323he(?=_|$)/i, "sod323he")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
     .replace(/^d2pak(\d+)(?=_|$)/i, "d2pak_$1")
     .replace(/^to-252(?:-(\d+))?(?=_|$)/i, (_, pins) =>
@@ -620,7 +689,7 @@ export const string = (def: string): Footprinter => {
       // parameter name. Require another value token after that name so a
       // normal pitch such as p1mm is still parsed as p + 1mm.
       const m = s.match(
-        /((?:p\d+[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
+        /((?:(?:p\d+|pin1)[a-zA-Z]+(?=[\(\d\.\+\-\?]))|[a-zA-Z]+)([\(\d\.\+\-\?].*)?/,
       )
       if (!m) return null
       const [, rawFn, v] = m
