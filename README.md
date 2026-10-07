@@ -161,6 +161,21 @@ fp.string(
 )
 ```
 
+### Pin row courtyard dimensions
+
+Use `cyw` and `cyh` to set the rectangular courtyard's width and height for
+`pinrow` or `headermodule`. Dimensions must be positive and accept numbers in
+millimeters or unit strings:
+
+```ts
+fp.string("pinrow6_cyw18mm_cyh5mm")
+fp().pinrow(6).cyw("18mm").cyh("5mm")
+```
+
+Each supplied dimension replaces its automatic value exactly. An omitted
+dimension keeps its automatic value. The courtyard stays centered on the pin
+grid, and these options leave pads and silkscreen unchanged.
+
 ### BGA pin numbering
 
 Use `pinnumbering(...)` to select a naming convention for every populated BGA

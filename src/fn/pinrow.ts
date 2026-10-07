@@ -48,6 +48,14 @@ export const pinrow_def = base_def
     rightangle: z.boolean().optional().describe("right angle"),
     pw: length.optional().default("1.0mm").describe("pad width for SMD"),
     pl: length.optional().default("2.0mm").describe("pad length for SMD"),
+    cyw: length
+      .pipe(z.number().finite().positive())
+      .optional()
+      .describe("explicit courtyard width"),
+    cyh: length
+      .pipe(z.number().finite().positive())
+      .optional()
+      .describe("explicit courtyard height"),
     pinlabeltextalignleft: z.boolean().optional().default(false),
     pinlabeltextaligncenter: z.boolean().optional().default(false),
     pinlabeltextalignright: z.boolean().optional().default(false),
@@ -546,8 +554,8 @@ export const pinrow = (
     pcb_courtyard_rect_id: "",
     pcb_component_id: "",
     center: { x: 0, y: 0 },
-    width: 2 * courtyardHalfWidth,
-    height: 2 * courtyardHalfHeight,
+    width: parameters.cyw ?? 2 * courtyardHalfWidth,
+    height: parameters.cyh ?? 2 * courtyardHalfHeight,
     layer: "top",
   }
 
