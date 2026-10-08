@@ -276,6 +276,8 @@ export type Footprinter = {
     | "bottomsidepinlabel"
     | "silkscreenborder"
     | "silkscreenlabel"
+    | "cyw"
+    | "cyh"
   >
   headermodule: (
     num_pins?: number,
@@ -302,6 +304,8 @@ export type Footprinter = {
     | "bottomsidepinlabel"
     | "silkscreenborder"
     | "silkscreenlabel"
+    | "cyw"
+    | "cyh"
   >
   smdpinheader: (
     num_pins?: number,
