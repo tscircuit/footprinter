@@ -48,7 +48,7 @@ export const applyOrigin = (
       updateBounds(pad.x, pad.y, w, h)
     } else if (pad.type === "pcb_plated_hole") {
       const d = pad.outer_diameter ?? pad.hole_diameter
-      updateBounds(pad.x, pad.y, d, d)
+      updateBounds(pad.x, pad.y, pad.outer_width ?? d, pad.outer_height ?? d)
     }
   }
 
