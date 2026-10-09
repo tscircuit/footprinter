@@ -102,14 +102,21 @@ export const applyOrigin = (
       el.center.y -= dy
     }
 
-    if (el.type === "pcb_silkscreen_path") {
+    if (
+      el.type === "pcb_silkscreen_path" ||
+      el.type === "pcb_fabrication_note_path"
+    ) {
       for (const pt of el.route) {
         pt.x -= dx
         pt.y -= dy
       }
     }
 
-    if (el.type === "pcb_silkscreen_text" && el.anchor_position) {
+    if (
+      (el.type === "pcb_silkscreen_text" ||
+        el.type === "pcb_fabrication_note_text") &&
+      el.anchor_position
+    ) {
       el.anchor_position.x -= dx
       el.anchor_position.y -= dy
     }
