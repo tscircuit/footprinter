@@ -98,10 +98,14 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     throw new Error(`Invalid pitch: ${v.p}. Pitch must be greater than 0`)
   }
   if (v.px !== undefined && v.px <= 0) {
-    throw new Error(`Invalid horizontal pitch: ${v.px}. Pitch must be greater than 0`)
+    throw new Error(
+      `Invalid horizontal pitch: ${v.px}. Pitch must be greater than 0`,
+    )
   }
   if (v.py !== undefined && v.py <= 0) {
-    throw new Error(`Invalid vertical pitch: ${v.py}. Pitch must be greater than 0`)
+    throw new Error(
+      `Invalid vertical pitch: ${v.py}. Pitch must be greater than 0`,
+    )
   }
 
   const sidePinCounts = getQuadSidePinCounts(v)
