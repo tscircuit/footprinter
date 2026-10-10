@@ -26,3 +26,28 @@ test("parity/VSON8-1EP_grid3x3mm_P0.65mm_EP1.65x2.4mm_w2.9mm_pinw0.85mm_pinh0.35
     "VSON-8-1EP_3x3mm_P0.65mm_EP1.65x2.4mm_boolean_difference",
   )
 })
+
+// Parity for the bare `vson8` name (the default dimensions added in this PR).
+// The defaults describe the canonical KiCad VSON-8-1EP 3x3mm 0.65mm-pitch part,
+// so a bare `vson8` should line up with that reference courtyard.
+test("parity/vson8 (default dimensions)", async () => {
+  const {
+    avgRelDiff,
+    combinedFootprintElements,
+    booleanDifferenceSvg,
+    courtyardDiffPercent,
+  } = await compareFootprinterVsKicad(
+    "vson8",
+    "Package_SON.pretty/VSON-8-1EP_3x3mm_P0.65mm_EP1.65x2.4mm.circuit.json",
+  )
+
+  const svgContent = convertCircuitJsonToPcbSvg(combinedFootprintElements, {
+    showCourtyards: true,
+  })
+  expect(courtyardDiffPercent).toBeLessThan(0.5)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "vson8_default")
+  expect(booleanDifferenceSvg).toMatchSvgSnapshot(
+    import.meta.path,
+    "vson8_default_boolean_difference",
+  )
+})
