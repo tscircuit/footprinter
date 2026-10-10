@@ -19,6 +19,17 @@ test("tqfp32_w7", () => {
 
 test("tqfp44_w10", () => {
   const soup = fp.string("tqfp44_w10").circuitJson()
+
+  // TQFP-44 is a 0.8mm-pitch part with 0.55mm pad width (JEDEC MS-026, the same
+  // as TQFP-32). Guard against the defaults regressing into the 0.5mm-pitch,
+  // 0.3mm-pad group again.
+  const pads = soup.filter((e) => e.type === "pcb_smtpad") as any[]
+  expect(pads).toHaveLength(44)
+  const padShortSides = [
+    ...new Set(pads.map((p) => Math.min(p.width, p.height).toFixed(3))),
+  ]
+  expect(padShortSides).toEqual(["0.550"])
+
   const svgContent = convertCircuitJsonToPcbSvg(soup)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "tqfp44_w10")
 })
