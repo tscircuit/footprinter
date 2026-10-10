@@ -1,0 +1,78 @@
+// Amphenol 10118194-0001LF, front-flange variant, sheet 1, revision D.
+// https://cdn.amphenol-cs.com/media/wysiwyg/files/drawing/10118194.pdf
+// SHA256 f23de2ac15ccc8ab1c1eb5d46427ca329ebad682b145617c4a522a11fc02a3a4
+// The lower shell copper is an engineered centered land. The manufacturer
+// specifies offset D-shaped copper; its slot centers and dimensions are retained.
+export const usbMicroFrontFlangeCopper = [
+  ...[-1.3, -0.65, 0, 0.65, 1.3].map((x, index) => ({
+    pin: String(index + 1),
+    type: "pcb_smtpad",
+    shape: "rect",
+    x,
+    y: 2.675,
+    width: 0.4,
+    height: 1.35,
+  })),
+  {
+    pin: "6",
+    type: "pcb_plated_hole",
+    shape: "pill",
+    x: -2.5,
+    y: 2.7,
+    hole_width: 0.85,
+    hole_height: 0.55,
+    outer_width: 1.25,
+    outer_height: 0.95,
+  },
+  {
+    pin: "7",
+    type: "pcb_plated_hole",
+    shape: "pill",
+    x: 2.5,
+    y: 2.7,
+    hole_width: 0.85,
+    hole_height: 0.55,
+    outer_width: 1.25,
+    outer_height: 0.95,
+  },
+  {
+    pin: "8",
+    type: "pcb_plated_hole",
+    shape: "pill",
+    x: -3.5,
+    y: 0,
+    hole_width: 0.5,
+    hole_height: 1.15,
+    outer_width: 1,
+    outer_height: 1.55,
+  },
+  {
+    pin: "9",
+    type: "pcb_plated_hole",
+    shape: "pill",
+    x: 3.5,
+    y: 0,
+    hole_width: 0.5,
+    hole_height: 1.15,
+    outer_width: 1,
+    outer_height: 1.55,
+  },
+  {
+    pin: "10",
+    type: "pcb_smtpad",
+    shape: "rect",
+    x: -1,
+    y: 0,
+    width: 1.5,
+    height: 1.55,
+  },
+  {
+    pin: "11",
+    type: "pcb_smtpad",
+    shape: "rect",
+    x: 1,
+    y: 0,
+    width: 1.5,
+    height: 1.55,
+  },
+]

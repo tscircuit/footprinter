@@ -16,6 +16,9 @@ import { silkscreenpath } from "../helpers/silkscreenpath"
 import { base_def } from "../helpers/zod/base_def"
 import { function_call } from "../helpers/zod/function-call"
 
+const pinrow_pin_numbering = z.enum(["rowmajor", "columnmajor"])
+export type PinrowPinNumbering = z.infer<typeof pinrow_pin_numbering>
+
 export const pinrow_def = base_def
   .extend({
     fn: z.string(),
@@ -31,6 +34,18 @@ export const pinrow_def = base_def
       .transform((val) => Number(val))
       .optional()
       .describe("number of nominal columns in a sparse grid"),
+    pinnumbering: z
+      .preprocess(
+        (value) =>
+          typeof value === "string"
+            ? value.trim().replace(/^\(([^()]*)\)$/, "$1")
+            : value,
+        pinrow_pin_numbering,
+      )
+      .optional()
+      .describe(
+        "rowmajor or columnmajor grid numbering; omitted preserves the existing traversal",
+      ),
     p: length.default("0.1in").describe("pitch"),
     py: length.optional().describe("vertical row pitch"),
     id: length.default("1.0mm").describe("inner diameter"),
@@ -150,6 +165,7 @@ export const pinrow = (
     od,
     rows,
     cols,
+    pinnumbering,
     num_pins,
     missing,
     pinlabelAnchorSide,
@@ -168,7 +184,7 @@ export const pinrow = (
   else if (pinlabeltextalignright) pinlabelTextAlign = "right"
 
   const holes: AnyCircuitElement[] = []
-  let pin1Position: { x: number; y: number } | null = null
+  const pin1: { center: { x: number; y: number } | null } = { center: null }
   const missingPositions = missing as number[]
   const uniqueMissingPositions = new Set(missingPositions)
   if (uniqueMissingPositions.size !== missingPositions.length) {
@@ -177,7 +193,10 @@ export const pinrow = (
   const nominalPinCount = num_pins + missingPositions.length
   const numPinsPerRow = cols ?? Math.ceil(nominalPinCount / rows)
   const gridPositionCount = numPinsPerRow * rows
-  const usesExplicitGrid = cols !== undefined || missingPositions.length > 0
+  const usesExplicitGrid =
+    cols !== undefined ||
+    missingPositions.length > 0 ||
+    pinnumbering !== undefined
   if (usesExplicitGrid && gridPositionCount !== nominalPinCount) {
     throw new Error(
       `Pinrow grid has ${gridPositionCount} positions, but ${nominalPinCount} are required for ${num_pins} pins and ${missingPositions.length} missing positions`,
@@ -257,7 +276,7 @@ export const pinrow = (
 
   // Helper to add plated hole and silkscreen label
   const addPin = (pinNumber: number, xoff: number, yoff: number) => {
-    if (pinNumber === 1) pin1Position = { x: xoff, y: yoff }
+    if (pinNumber === 1) pin1.center = { x: xoff, y: yoff }
     if (parameters.smd) {
       // SMD pads
       holes.push(rectpad(pinNumber, xoff, yoff, parameters.pw, parameters.pl))
@@ -341,21 +360,28 @@ export const pinrow = (
   const usedPositions = new Set<string>()
 
   if (usesExplicitGrid) {
-    // Explicit grids use row-major nominal positions. Missing positions do not
-    // consume output pin numbers, so generated port hints remain contiguous.
+    // Missing positions always refer to row-major nominal grid positions.
+    // Column-major numbering advances through each row of one column before
+    // moving to the next, creating the standard odd/even two-row header pairs.
     const xStart = -((numPinsPerRow - 1) / 2) * p
     let outputPinNumber = 1
-    for (let row = 0; row < rows; row++) {
-      for (let col = 0; col < numPinsPerRow; col++) {
-        const nominalPosition = row * numPinsPerRow + col + 1
-        if (uniqueMissingPositions.has(nominalPosition)) continue
-        const xoff = xStart + col * p
-        const yoff = yStart + row * ySpacing
-        const posKey = `${xoff},${yoff}`
-        if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
-        usedPositions.add(posKey)
-        addPin(outputPinNumber++, xoff, yoff)
-      }
+    for (let position = 0; position < gridPositionCount; position++) {
+      const row =
+        pinnumbering === "columnmajor"
+          ? position % rows
+          : Math.floor(position / numPinsPerRow)
+      const col =
+        pinnumbering === "columnmajor"
+          ? Math.floor(position / rows)
+          : position % numPinsPerRow
+      const nominalPosition = row * numPinsPerRow + col + 1
+      if (uniqueMissingPositions.has(nominalPosition)) continue
+      const xoff = xStart + col * p
+      const yoff = yStart + row * ySpacing
+      const posKey = `${xoff},${yoff}`
+      if (usedPositions.has(posKey)) throw new Error(`Overlap at ${posKey}`)
+      usedPositions.add(posKey)
+      addPin(outputPinNumber++, xoff, yoff)
     }
   } else if (rows === 1) {
     // Single row: left to right, pin 1 to num_pins
@@ -479,6 +505,7 @@ export const pinrow = (
     : null
 
   const pin1Arrow = (() => {
+    const pin1Position = pin1.center
     if (parameters.fn !== "headermodule" || !pin1Position) return null
 
     const arrowSize = Math.max(0.3, Math.min(0.6, p / 4))

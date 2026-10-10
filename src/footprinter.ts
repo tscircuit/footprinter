@@ -5,6 +5,7 @@ import {
 } from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
 import type { BgaPinNumbering } from "./fn/bga"
+import type { PinrowPinNumbering } from "./fn/pinrow"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -16,6 +17,7 @@ import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinte
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
 
 export type { BgaPinNumbering } from "./fn/bga"
+export type { PinrowPinNumbering } from "./fn/pinrow"
 
 type BaseOptionKey =
   | "anodepin"
@@ -28,19 +30,26 @@ type BaseOptionKey =
   | "rounded"
   | "pin1location"
 
-export type FootprinterParamsBuilder<K extends string> = {
+export type FootprinterParamsBuilder<
+  K extends string,
+  PinNumbering extends string = BgaPinNumbering,
+> = {
   [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
     | "params"
     | "soup"
     | "circuitJson"
     ? Footprinter[P]
     : P extends "pin1location"
-      ? (...location: Pin1Location) => FootprinterParamsBuilder<K>
+      ? (...location: Pin1Location) => FootprinterParamsBuilder<K, PinNumbering>
       : P extends "rounded"
-        ? (radius: number | string) => FootprinterParamsBuilder<K>
+        ? (radius: number | string) => FootprinterParamsBuilder<K, PinNumbering>
         : P extends "pinnumbering"
-          ? (convention: BgaPinNumbering) => FootprinterParamsBuilder<K>
-          : (v?: number | string | boolean) => FootprinterParamsBuilder<K>
+          ? (
+              convention: PinNumbering,
+            ) => FootprinterParamsBuilder<K, PinNumbering>
+          : (
+              v?: number | string | boolean,
+            ) => FootprinterParamsBuilder<K, PinNumbering>
 }
 
 type CommonPassiveOptionKey =
@@ -260,6 +269,7 @@ export type Footprinter = {
     | "male"
     | "female"
     | "rows"
+    | "pinnumbering"
     | "smd"
     | "surfacemount"
     | "rightangle"
@@ -277,7 +287,8 @@ export type Footprinter = {
     | "silkscreenborder"
     | "silkscreenlabel"
     | "cyw"
-    | "cyh"
+    | "cyh",
+    PinrowPinNumbering
   >
   headermodule: (
     num_pins?: number,
@@ -288,6 +299,7 @@ export type Footprinter = {
     | "male"
     | "female"
     | "rows"
+    | "pinnumbering"
     | "smd"
     | "surfacemount"
     | "rightangle"
@@ -305,7 +317,8 @@ export type Footprinter = {
     | "silkscreenborder"
     | "silkscreenlabel"
     | "cyw"
-    | "cyh"
+    | "cyh",
+    PinrowPinNumbering
   >
   smdpinheader: (
     num_pins?: number,
@@ -628,6 +641,33 @@ export type Footprinter = {
     | "shieldring"
     | "w"
     | "h"
+    | "bodybottom"
+  >
+  usbmicro: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "frontflange"
+    | "pinstart"
+    | "reverse"
+    | "p"
+    | "pw"
+    | "ph"
+    | "rowy"
+    | "rearspan"
+    | "reary"
+    | "rearhw"
+    | "rearhh"
+    | "rearring"
+    | "frontspan"
+    | "fronthw"
+    | "fronthh"
+    | "frontpw"
+    | "frontph"
+    | "tabspan"
+    | "tabpw"
+    | "tabph"
+    | "w"
+    | "bodytop"
     | "bodybottom"
   >
   usbcmidmount: (
