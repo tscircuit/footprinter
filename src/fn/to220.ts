@@ -4,6 +4,7 @@ import {
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
+import { mm } from "@tscircuit/mm"
 import { platedhole } from "src/helpers/platedhole"
 import { z } from "zod"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
@@ -11,7 +12,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
+  p: length.optional().default("2.54mm"),
   id: length.optional().default("1.0mm"),
   od: length.optional().default("1.9mm"),
   w: length.optional().default("13mm"),
@@ -36,15 +37,15 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const minPitch = 2.5
-  const maxHoleWidth = w * 0.4
-  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
+  // TO-220 lead pitch is fixed (JEDEC: 0.1in = 2.54mm) and must not scale with
+  // the plastic body width; `p` keeps the pitch explicit and overridable.
+  const pitch = mm(parameters.p)
 
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
     const x =
       numPins % 2 === 0
-        ? (i - numPins / 2 + 0.5) * computedPitch
-        : (i - Math.floor(numPins / 2)) * computedPitch
+        ? (i - numPins / 2 + 0.5) * pitch
+        : (i - Math.floor(numPins / 2)) * pitch
     return platedhole(i + 1, x, holeY, id, od)
   })
 
@@ -135,6 +136,6 @@ export const to220 = (
       silkscreenRefText as AnyCircuitElement,
       courtyard,
     ],
-    parameters: { ...parameters, p: computedPitch },
+    parameters: { ...parameters, p: pitch },
   }
 }
