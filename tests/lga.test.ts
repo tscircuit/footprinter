@@ -63,3 +63,34 @@ test("lga rejects a side grid that does not match its pad count", () => {
     "requires 16 pads, got 14",
   )
 })
+
+const getMinPadToPadClearance = (footprint: string) => {
+  const pads = getPads(footprint)
+  let minClearance = Number.POSITIVE_INFINITY
+  for (let i = 0; i < pads.length; i++) {
+    for (let j = i + 1; j < pads.length; j++) {
+      const a = pads[i]
+      const b = pads[j]
+      if (!a || !b) continue
+      const dx = Math.max(0, Math.abs(a.x - b.x) - (a.width + b.width) / 2)
+      const dy = Math.max(0, Math.abs(a.y - b.y) - (a.height + b.height) / 2)
+      minClearance = Math.min(minClearance, Math.hypot(dx, dy))
+    }
+  }
+  return minClearance
+}
+
+test("lga14 and lga8 keep clearance between corner pads", () => {
+  // Regression test: with the default (derived) body size, the inner edge of
+  // the left/right pads landed exactly on the center line of the outermost
+  // top/bottom pads, so corner pads overlapped with 0mm clearance.
+  expect(getMinPadToPadClearance("lga14")).toBeGreaterThan(0.1)
+  expect(getMinPadToPadClearance("lga8")).toBeGreaterThan(0.1)
+
+  expect(
+    convertCircuitJsonToPcbSvg(fp.string("lga14").circuitJson()),
+  ).toMatchSvgSnapshot(import.meta.path, "lga14")
+  expect(
+    convertCircuitJsonToPcbSvg(fp.string("lga8").circuitJson()),
+  ).toMatchSvgSnapshot(import.meta.path, "lga8")
+})
