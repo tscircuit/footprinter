@@ -1,6 +1,7 @@
 import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
+import { ufl_def } from "../src/fn/ufl"
 
 // C88373 U.FL-R-SMT-1(10), acquired through EasyEDA's exact supplier ID lookup.
 // Ground pads 1/3 surround signal pad 2; the imported component origin is offset.
@@ -22,6 +23,22 @@ test("ufl preserves the signal and ground land pattern of C88373", () => {
   const pads = circuitJson.filter((element) => element.type === "pcb_smtpad")
   expect(pads).toHaveLength(3)
   expect(pads.map((pad) => pad.port_hints)).toEqual([["1"], ["2"], ["3"]])
+  expect(pads[0]!.x).toBeCloseTo(0.45, 8)
+  expect(pads[1]!.x).toBeCloseTo(-0.8, 8)
+  const copperBoundsCenter = (
+    emittedPads: typeof pads,
+  ): { x: number; y: number } => ({
+    x:
+      (Math.min(...emittedPads.map((pad) => pad.x - pad.width / 2)) +
+        Math.max(...emittedPads.map((pad) => pad.x + pad.width / 2))) /
+      2,
+    y:
+      (Math.min(...emittedPads.map((pad) => pad.y - pad.height / 2)) +
+        Math.max(...emittedPads.map((pad) => pad.y + pad.height / 2))) /
+      2,
+  })
+  expect(copperBoundsCenter(pads).x).toBeCloseTo(0, 8)
+  expect(copperBoundsCenter(pads).y).toBeCloseTo(0, 8)
 
   const referenceX = (referencePads[0]!.x + referencePads[1]!.x) / 2
   const generatedX = (pads[0]!.x + pads[1]!.x) / 2
@@ -56,12 +73,33 @@ test("ufl preserves the signal and ground land pattern of C88373", () => {
     .signalw("1.4mm")
     .signalx("-1.3mm")
     .circuitJson()
-  expect(customized[0]).toMatchObject({ x: 0, y: 1.6, width: 2 })
-  expect(customized[1]).toMatchObject({ x: -1.3, y: 0, width: 1.4 })
+  expect(customized[0]).toMatchObject({ x: 0.5, y: 1.6, width: 2 })
+  expect(customized[1]).toMatchObject({ x: -0.8, y: 0, width: 1.4 })
+  const customizedPads = customized.filter(
+    (element) => element.type === "pcb_smtpad",
+  )
+  expect(copperBoundsCenter(customizedPads).x).toBeCloseTo(0, 8)
+  expect(copperBoundsCenter(customizedPads).y).toBeCloseTo(0, 8)
+  expect(customizedPads.map((pad) => pad.port_hints)).toEqual([
+    ["1"],
+    ["2"],
+    ["3"],
+  ])
   expect(() => fp.string("ufl_p0mm").circuitJson()).toThrow()
   expect(() => fp.string("ufl4").circuitJson()).toThrow()
+  for (const signalx of [
+    0,
+    1,
+    Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY,
+  ]) {
+    expect(() => ufl_def.parse({ fn: "ufl", signalx })).toThrow()
+  }
 
   expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path, "ufl_C88373")
+  expect(
+    convertCircuitJsonToPcbSvg(customized, { showCourtyards: true }),
+  ).toMatchSvgSnapshot(import.meta.path, "ufl_custom_centered")
 })
