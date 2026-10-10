@@ -2,6 +2,7 @@ import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 import { usba_def } from "../src/fn/usba"
+import { any_footprinter_def } from "../src/helpers/zod/AnyFootprinterDefinitionOutput"
 import { usbARightAngleCopper } from "./fixtures/usba-rightangle"
 
 test("usba4_tht matches all six Amphenol UE27AC54100 plated holes", () => {
@@ -121,4 +122,29 @@ test("usba preserves the shell owners when reference and silk are omitted", () =
           element.type === "pcb_silkscreen_text" && element.text !== "",
       ),
   ).toBe(false)
+})
+
+test("usba definition schema retains all semantic dimensions from json", () => {
+  const parameters = fp
+    .string(
+      "usba4_tht_p3mm_centerp2500um_id1mm_ring0.4mm_shieldspan14mm_shieldy-3mm_shieldid2.4mm_shieldring0.4mm_pinstart11_reverse",
+    )
+    .json()
+  const parsed = any_footprinter_def.parse(parameters)
+  expect<unknown>(parsed).toEqual(parameters)
+  expect(parsed).toMatchObject({
+    fn: "usba",
+    num_pins: 4,
+    tht: true,
+    pinstart: 11,
+    reverse: true,
+    p: 3,
+    centerp: 2.5,
+    id: 1,
+    ring: 0.4,
+    shieldspan: 14,
+    shieldy: -3,
+    shieldid: 2.4,
+    shieldring: 0.4,
+  })
 })
