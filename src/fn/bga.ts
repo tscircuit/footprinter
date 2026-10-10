@@ -15,22 +15,10 @@ import type { NowDefined } from "src/helpers/zod/now-defined"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { type PcbSilkscreenPath } from "circuit-json"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { BGA_ROW_ALPHABET, getGridRowLabel } from "../helpers/grid-row-label"
 
 const bga_pin_numbering = z.enum(["rowmajor", "columnmajor", "ballcoords"])
 export type BgaPinNumbering = z.infer<typeof bga_pin_numbering>
-
-const BGA_ROW_ALPHABET = "ABCDEFGHJKLMNPRTUVWY"
-
-const getRowLabel = (row: number, alphabet: string) => {
-  let remaining = row + 1
-  let label = ""
-  while (remaining > 0) {
-    remaining--
-    label = alphabet[remaining % alphabet.length] + label
-    remaining = Math.floor(remaining / alphabet.length)
-  }
-  return label
-}
 
 export const bga_def = base_def
   .extend({
@@ -81,7 +69,7 @@ export const bga_def = base_def
     // Explicit conventions use package ball labels; omitted options retain the
     // legacy alphabet so existing footprint strings do not change identities.
     const rowLabels = Array.from({ length: a.grid.y }, (_, row) =>
-      getRowLabel(row, a.pinnumbering ? BGA_ROW_ALPHABET : ALPHABET),
+      getGridRowLabel(row, a.pinnumbering ? BGA_ROW_ALPHABET : ALPHABET),
     )
 
     if (a.missing) {

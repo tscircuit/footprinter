@@ -1,0 +1,464 @@
+{
+  "source_document": "https://content.arduino.cc/assets/Nano_BLE_MCU-nRF52840_PS_v1.1.pdf",
+  "pages": [575, 576, 577, 578, 582],
+  "package": "aQFN73 7\u00d77mm plusEP",
+  "source_dimensions": {
+    "e": 0.5,
+    "e1": 2.75,
+    "e2": 0.559,
+    "bMin": 0.2,
+    "bNom": 0.25,
+    "bMax": 0.3,
+    "EPnom": 4.85
+  },
+  "land_selection": "0.35mm circularlands for0.30mmmax terminations, centerpositions from mechanicaldrawing e/e1/e2 and topviewphysicalpinassignment. EP4.85squareland covers nominalcentralpad with geometricrelief excludedfromcopper onlyonpackage. Datasheetshowsoutline,noPCBland recommendation.",
+  "expectedCopper": [
+    {
+      "pin": "A8",
+      "x": -1.25,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A10",
+      "x": -0.75,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A12",
+      "x": -0.25,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A14",
+      "x": 0.25,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A16",
+      "x": 0.75,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A18",
+      "x": 1.25,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A20",
+      "x": 1.75,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A22",
+      "x": 2.25,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "A23",
+      "x": 2.75,
+      "y": 3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "B1",
+      "x": -3.25,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B3",
+      "x": -2.5,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B5",
+      "x": -2.0,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B7",
+      "x": -1.5,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B9",
+      "x": -1.0,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B11",
+      "x": -0.5,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B13",
+      "x": 0.0,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B15",
+      "x": 0.5,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B17",
+      "x": 1.0,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B19",
+      "x": 1.5,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "B24",
+      "x": 3.25,
+      "y": 2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "C1",
+      "x": -3.25,
+      "y": 2.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "D2",
+      "x": -2.75,
+      "y": 2.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "D23",
+      "x": 2.75,
+      "y": 2.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "E24",
+      "x": 3.25,
+      "y": 1.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "F2",
+      "x": -2.75,
+      "y": 1.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "F23",
+      "x": 2.75,
+      "y": 1.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "G1",
+      "x": -3.25,
+      "y": 1.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "H2",
+      "x": -2.75,
+      "y": 1.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "H23",
+      "x": 2.75,
+      "y": 1.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "J1",
+      "x": -3.25,
+      "y": 0.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "J24",
+      "x": 3.25,
+      "y": 0.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "K2",
+      "x": -2.75,
+      "y": 0.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "L1",
+      "x": -3.25,
+      "y": 0.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "L24",
+      "x": 3.25,
+      "y": 0.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "M2",
+      "x": -2.75,
+      "y": 0.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "N1",
+      "x": -3.25,
+      "y": -0.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "N24",
+      "x": 3.25,
+      "y": -0.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "P2",
+      "x": -2.75,
+      "y": -0.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "P23",
+      "x": 2.75,
+      "y": -0.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "R1",
+      "x": -3.25,
+      "y": -0.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "R24",
+      "x": 3.25,
+      "y": -0.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "T2",
+      "x": -2.75,
+      "y": -1.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "T23",
+      "x": 2.75,
+      "y": -1.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "U1",
+      "x": -3.25,
+      "y": -1.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "U24",
+      "x": 3.25,
+      "y": -1.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "V23",
+      "x": 2.75,
+      "y": -1.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "W1",
+      "x": -3.25,
+      "y": -1.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "W24",
+      "x": 3.25,
+      "y": -1.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "Y2",
+      "x": -2.75,
+      "y": -2.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "Y23",
+      "x": 2.75,
+      "y": -2.0,
+      "radius": 0.175
+    },
+    {
+      "pin": "AA24",
+      "x": 3.25,
+      "y": -2.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AB2",
+      "x": -2.75,
+      "y": -2.5,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC5",
+      "x": -2.0,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC9",
+      "x": -1.0,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC11",
+      "x": -0.5,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC13",
+      "x": 0.0,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC15",
+      "x": 0.5,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC17",
+      "x": 1.0,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC19",
+      "x": 1.5,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC21",
+      "x": 2.0,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AC24",
+      "x": 3.25,
+      "y": -2.75,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD2",
+      "x": -2.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD4",
+      "x": -2.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD6",
+      "x": -1.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD8",
+      "x": -1.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD10",
+      "x": -0.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD12",
+      "x": -0.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD14",
+      "x": 0.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD16",
+      "x": 0.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD18",
+      "x": 1.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD20",
+      "x": 1.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD22",
+      "x": 2.25,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "AD23",
+      "x": 2.75,
+      "y": -3.25,
+      "radius": 0.175
+    },
+    {
+      "pin": "EP",
+      "x": 0,
+      "y": 0,
+      "width": 4.85,
+      "height": 4.85
+    }
+  ],
+  "source_pdf_sha256": "c619e336b9c0610663273041f057f2537a65fd408ce0c5b8214a26de2aa88422",
+  "package_model": "aQFN73 fixed terminal population; e1 is opposing inner half-span, e/2 is the stagger, outer row separation equals e."
+}
