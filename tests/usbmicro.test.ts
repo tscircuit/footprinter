@@ -2,6 +2,7 @@ import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 import { usbmicro_def } from "../src/fn/usbmicro"
+import { any_footprinter_def } from "../src/helpers/zod/AnyFootprinterDefinitionOutput"
 import { usbMicroFrontFlangeCopper } from "./fixtures/usbmicro-frontflange"
 
 test("usbmicro5 front flange matches all 11 reviewed Amphenol solder owners", () => {
@@ -110,4 +111,34 @@ test("usbmicro honors standard silkscreen and reference switches", () => {
   expect(
     withoutReference.some((element) => element.type === "pcb_silkscreen_path"),
   ).toBe(true)
+})
+
+test("usbmicro definition schema retains all semantic dimensions from json", () => {
+  const parameters = fp
+    .string(
+      "usbmicro5_frontflange_p700um_rearspan5.2mm_frontspan7.4mm_tabspan2.2mm_pinstart21_reverse",
+    )
+    .json()
+  const parsed = any_footprinter_def.parse(parameters)
+  expect<unknown>(parsed).toEqual(parameters)
+  expect(parsed).toMatchObject({
+    fn: "usbmicro",
+    num_pins: 5,
+    frontflange: true,
+    pinstart: 21,
+    reverse: true,
+    p: 0.7,
+    rearspan: 5.2,
+    frontspan: 7.4,
+    tabspan: 2.2,
+    rearhw: 0.85,
+    rearhh: 0.55,
+    rearring: 0.2,
+    fronthw: 0.5,
+    fronthh: 1.15,
+    frontpw: 1,
+    frontph: 1.55,
+    tabpw: 1.5,
+    tabph: 1.55,
+  })
 })
