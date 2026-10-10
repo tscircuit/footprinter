@@ -2,6 +2,7 @@ import type {
   AnyCircuitElement,
   PcbCourtyardOutline,
   PcbSilkscreenPath,
+  PcbSmtPad,
 } from "circuit-json"
 import { length } from "circuit-json"
 import { z } from "zod"
@@ -10,6 +11,15 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { dim2d } from "../helpers/zod/dim-2d"
+import { getQuadPinMap } from "../helpers/get-quad-pin-map"
+import { pin_order_specifier } from "../helpers/zod/pin-order-specifier"
+
+const positiveLength = length.refine(
+  (value) => Number.isFinite(value) && value > 0,
+  {
+    message: "pitch must be a positive finite length",
+  },
+)
 
 export const lga_def = base_def.extend({
   fn: z.string(),
@@ -40,6 +50,24 @@ export const lga_def = base_def.extend({
   num_pins: z.number().int().positive().optional().default(14),
   grid: dim2d.optional(),
   p: length.default(length.parse("0.5mm")),
+  px: positiveLength.optional().describe("top and bottom row pitch"),
+  py: positiveLength.optional().describe("left and right row pitch"),
+  lrendpitch: positiveLength
+    .optional()
+    .describe("first and last gaps on left and right rows"),
+  tbendpitch: positiveLength
+    .optional()
+    .describe("first and last gaps on top and bottom rows"),
+  cw: z.boolean().optional(),
+  ccw: z.boolean().optional(),
+  startingpin: z
+    .string()
+    .or(z.array(pin_order_specifier))
+    .transform((value) =>
+      typeof value === "string" ? value.slice(1, -1).split(",") : value,
+    )
+    .pipe(z.array(pin_order_specifier))
+    .optional(),
   w: length.optional(),
   h: length.optional(),
   pw: length.default(length.parse("0.28mm")),
@@ -75,8 +103,58 @@ export const lga = (
     )
   }
 
-  const width = parameters.w ?? (grid.y - 1) * parameters.p + 2 * parameters.pl
-  const height = parameters.h ?? (grid.x - 1) * parameters.p + 2 * parameters.pl
+  if (parameters.cw && parameters.ccw)
+    throw new Error("Choose either cw or ccw numbering")
+  for (const [count, endPitch, row] of [
+    [grid.x, parameters.lrendpitch, "left/right"],
+    [grid.y, parameters.tbendpitch, "top/bottom"],
+  ] as const) {
+    if (endPitch !== undefined && count < 3)
+      throw new Error(`${row} end pitch requires at least three pads per row`)
+  }
+  const rowSpan = (count: number, pitch: number, endPitch?: number) =>
+    endPitch === undefined
+      ? (count - 1) * pitch
+      : 2 * endPitch + (count - 3) * pitch
+  const width =
+    parameters.w ??
+    rowSpan(grid.y, parameters.px ?? parameters.p, parameters.tbendpitch) +
+      2 * parameters.pl
+  const height =
+    parameters.h ??
+    rowSpan(grid.x, parameters.py ?? parameters.p, parameters.lrendpitch) +
+      2 * parameters.pl
+  const sidePinCounts = {
+    left: grid.x,
+    right: grid.x,
+    top: grid.y,
+    bottom: grid.y,
+  }
+  for (const side of ["left", "right", "top", "bottom"] as const) {
+    if (
+      parameters.startingpin?.includes(`${side}side`) &&
+      sidePinCounts[side] === 0
+    )
+      throw new Error(`Starting side ${side} has no pads`)
+  }
+  const pinMap = getQuadPinMap({ ...parameters, sidePinCounts })
+  const rowPosition = (
+    count: number,
+    index: number,
+    pitch: number,
+    endPitch?: number,
+  ) => {
+    if (endPitch === undefined) return ((count - 1) / 2 - index) * pitch
+    const span = 2 * endPitch + (count - 3) * pitch
+    return (
+      span / 2 -
+      (index === 0
+        ? 0
+        : endPitch +
+          (index - 1) * pitch +
+          (index === count - 1 ? endPitch - pitch : 0))
+    )
+  }
   const leftRightX = (width - parameters.pl) / 2
   const topBottomY = (height - parameters.pl) / 2
   const pads: AnyCircuitElement[] = []
@@ -89,8 +167,8 @@ export const lga = (
   ) => {
     pads.push(
       parameters.pillpads
-        ? pillpad(pin, x, y, padWidth, padHeight)
-        : rectpad(pin, x, y, padWidth, padHeight),
+        ? pillpad(pinMap[pin]!, x, y, padWidth, padHeight)
+        : rectpad(pinMap[pin]!, x, y, padWidth, padHeight),
     )
   }
 
@@ -99,7 +177,12 @@ export const lga = (
     addPad(
       pin++,
       -leftRightX,
-      ((grid.x - 1) / 2 - index) * parameters.p,
+      rowPosition(
+        grid.x,
+        index,
+        parameters.py ?? parameters.p,
+        parameters.lrendpitch,
+      ),
       parameters.pl,
       parameters.pw,
     )
@@ -107,7 +190,12 @@ export const lga = (
   for (let index = 0; index < grid.y; index += 1) {
     addPad(
       pin++,
-      (index - (grid.y - 1) / 2) * parameters.p,
+      -rowPosition(
+        grid.y,
+        index,
+        parameters.px ?? parameters.p,
+        parameters.tbendpitch,
+      ) || 0,
       -topBottomY,
       parameters.pw,
       parameters.pl,
@@ -117,7 +205,12 @@ export const lga = (
     addPad(
       pin++,
       leftRightX,
-      (index - (grid.x - 1) / 2) * parameters.p,
+      -rowPosition(
+        grid.x,
+        index,
+        parameters.py ?? parameters.p,
+        parameters.lrendpitch,
+      ) || 0,
       parameters.pl,
       parameters.pw,
     )
@@ -125,7 +218,12 @@ export const lga = (
   for (let index = 0; index < grid.y; index += 1) {
     addPad(
       pin++,
-      ((grid.y - 1) / 2 - index) * parameters.p,
+      rowPosition(
+        grid.y,
+        index,
+        parameters.px ?? parameters.p,
+        parameters.tbendpitch,
+      ),
       topBottomY,
       parameters.pw,
       parameters.pl,
@@ -133,6 +231,14 @@ export const lga = (
   }
 
   const markerSize = Math.max(parameters.pw, 0.15)
+  const firstPad = pads.find(
+    (pad): pad is Extract<PcbSmtPad, { shape: "rect" | "pill" }> =>
+      pad.type === "pcb_smtpad" &&
+      (pad.shape === "rect" || pad.shape === "pill") &&
+      Boolean(pad.port_hints?.includes("1")),
+  )!
+  const markerXSign = firstPad.x > 0 ? 1 : -1
+  const markerYSign = firstPad.y < 0 ? -1 : 1
   const pin1Marker: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -140,9 +246,15 @@ export const lga = (
     pcb_silkscreen_path_id: "pin1_marker",
     stroke_width: 0.1,
     route: [
-      { x: -width / 2, y: height / 2 - markerSize },
-      { x: -width / 2, y: height / 2 },
-      { x: -width / 2 + markerSize, y: height / 2 },
+      {
+        x: (markerXSign * width) / 2,
+        y: markerYSign * (height / 2 - markerSize),
+      },
+      { x: (markerXSign * width) / 2, y: (markerYSign * height) / 2 },
+      {
+        x: markerXSign * (width / 2 - markerSize),
+        y: (markerYSign * height) / 2,
+      },
     ],
   }
   const courtyardClearance = 0.25
