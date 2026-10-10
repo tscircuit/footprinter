@@ -70,7 +70,44 @@
       ]
     }
   ],
-  "keepouts": null,
+  "keepouts": [
+    {
+      "center": {
+        "x": 0.525,
+        "y": 0
+      },
+      "width": 2.1,
+      "height": 1.9,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": -0.575,
+        "y": 0.725
+      },
+      "width": 0.1,
+      "height": 0.45,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": -0.575,
+        "y": -0.725
+      },
+      "width": 0.1,
+      "height": 0.45,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    }
+  ],
   "area": 4.08,
   "qualification": "The arrow identifies the open central area between ground lands without an explicit perimeter. The conservative source-derived interpretation is the entire dimensioned1.9-wide ground-land gap over their2.2 height, subtracting exactSIG copper intrusion. This interpretation has independent review; no larger body-area keepout or extra copper-layer restriction is invented."
 }

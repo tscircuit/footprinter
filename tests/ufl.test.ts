@@ -140,3 +140,63 @@ test("ufl rotates the complete hard gap and translates it to pin 1", () => {
       )
   }
 })
+
+test("ufl centers rotated copper and preserves its source gap boundaries", () => {
+  const circuit = fp()
+    .ufl()
+    .pin1location("leftside", "top")
+    .origin("center")
+    .circuitJson()
+  const pads = circuit.filter((e) => e.type === "pcb_smtpad")
+  const corners: { x: number; y: number }[] = []
+  for (const [index, expected] of source.copper.entries()) {
+    const actual = pads[index]!
+    if (actual.shape !== "rotated_rect")
+      throw new Error("expected rotated copper")
+    const center = rotatePoint(expected, 90)
+    expect(actual.x).toBeCloseTo(center.x, 12)
+    expect(actual.y).toBeCloseTo(center.y, 12)
+    expect(actual.ccw_rotation).toBe(90)
+    for (const sx of [-1, 1])
+      for (const sy of [-1, 1])
+        corners.push({
+          x: actual.x + (sx * actual.height) / 2,
+          y: actual.y + (sy * actual.width) / 2,
+        })
+  }
+  expect(
+    (Math.min(...corners.map((p) => p.x)) +
+      Math.max(...corners.map((p) => p.x))) /
+      2,
+  ).toBeCloseTo(0, 12)
+  expect(
+    (Math.min(...corners.map((p) => p.y)) +
+      Math.max(...corners.map((p) => p.y))) /
+      2,
+  ).toBeCloseTo(0, 12)
+  const polygons = source.polygons.map((p) => ({
+    points: p.points.map((point) => rotatePoint(point, 90)),
+  }))
+  verifyKeepoutUnion(circuit, polygons, source.area)
+  verifyCopperDisjoint(circuit)
+  const keepouts = circuit.filter((e) => e.type === "pcb_keepout")
+  for (const [index, expected] of source.keepouts.entries()) {
+    const actual = keepouts[index]!
+    if (actual.shape !== "rect") throw new Error("expected rectangle keepout")
+    expect(actual).toMatchObject({
+      layers: ["top"],
+      allow_traces: false,
+      allow_placements: false,
+      warning_only: false,
+    })
+    const center = rotatePoint(expected.center, 90)
+    expect(actual.center.x).toBeCloseTo(center.x, 12)
+    expect(actual.center.y).toBeCloseTo(center.y, 12)
+    expect(actual.width).toBeCloseTo(expected.height, 12)
+    expect(actual.height).toBeCloseTo(expected.width, 12)
+  }
+  expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
+    import.meta.path,
+    "ufl-rotated-center-origin",
+  )
+})
