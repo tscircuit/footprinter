@@ -1,0 +1,286 @@
+{
+  "manufacturer": "Hirose",
+  "part": "DM3AT-SF-PEJM5",
+  "documents": [
+    {
+      "url": "https://www.hirose.com/product/download?distributor=digikey&type=2d&lang=en&num=DM3AT-SF-PEJM5",
+      "sha256": "43ac6f1af4a1fd92836f71e34614bbbc36903d2f403ff63c5aa4910da6a1e6ca",
+      "pages_read": [1]
+    },
+    {
+      "url": "https://www.hirose.com/product/download/?lang=en&num=DM3AT-SF-PEJM5&distributor=all&type=specSheet",
+      "sha256": "5c89a3c5e7c611160375e3c734cbabe0e1294c77a53e39247bc15e671140468a",
+      "pages_read": [1]
+    },
+    {
+      "url": "https://doc.platan.ru/pdf/datasheets/hirose/DM3AT-SF-PEJM5.pdf",
+      "sha256": "6951ecfc9330642993b27997ef0d6667c72f50f2c7ee2032d31ed960900bf0ad",
+      "pages_read": [1]
+    }
+  ],
+  "copper": [
+    {
+      "pin": "1",
+      "x": 0.0,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "2",
+      "x": -1.1,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "3",
+      "x": -2.2,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "4",
+      "x": -3.3,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "5",
+      "x": -4.4,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "6",
+      "x": -5.5,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "7",
+      "x": -6.6,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "8",
+      "x": -7.7,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "9",
+      "x": -8.65,
+      "y": 0,
+      "width": 0.7,
+      "height": 1.2
+    },
+    {
+      "pin": "10",
+      "x": -9.6,
+      "y": -10.5,
+      "width": 1,
+      "height": 0.8
+    },
+    {
+      "pin": "11",
+      "x": 1.55,
+      "y": 0,
+      "width": 1,
+      "height": 1.2
+    },
+    {
+      "pin": "11",
+      "x": -9.6,
+      "y": -4.3,
+      "width": 1,
+      "height": 1.2
+    },
+    {
+      "pin": "11",
+      "x": -9.6,
+      "y": -14.65,
+      "width": 1,
+      "height": 2.8
+    },
+    {
+      "pin": "11",
+      "x": 3.9,
+      "y": -15.1,
+      "width": 1.3,
+      "height": 1.9
+    }
+  ],
+  "polygons": [
+    {
+      "name": "outer-left-upper",
+      "points": [
+        {
+          "x": -10,
+          "y": -0.45
+        },
+        {
+          "x": -9.25,
+          "y": -0.45
+        },
+        {
+          "x": -9.25,
+          "y": -3.7
+        },
+        {
+          "x": -10,
+          "y": -3.7
+        }
+      ]
+    },
+    {
+      "name": "outer-left-middle",
+      "points": [
+        {
+          "x": -10,
+          "y": -4.9
+        },
+        {
+          "x": -9.25,
+          "y": -4.9
+        },
+        {
+          "x": -9.25,
+          "y": -8.5
+        },
+        {
+          "x": -10,
+          "y": -8.5
+        }
+      ]
+    },
+    {
+      "name": "interior-left-and-crossbar",
+      "points": [
+        {
+          "x": -8.9,
+          "y": -6.3
+        },
+        {
+          "x": -8.2,
+          "y": -6.3
+        },
+        {
+          "x": -8.2,
+          "y": -5
+        },
+        {
+          "x": 0.5,
+          "y": -5
+        },
+        {
+          "x": 0.5,
+          "y": -6.6
+        },
+        {
+          "x": -8.2,
+          "y": -6.6
+        },
+        {
+          "x": -8.2,
+          "y": -13.9
+        },
+        {
+          "x": -8.9,
+          "y": -13.9
+        }
+      ]
+    },
+    {
+      "name": "front-right",
+      "points": [
+        {
+          "x": 0.15,
+          "y": -14.7
+        },
+        {
+          "x": 2.7,
+          "y": -14.7
+        },
+        {
+          "x": 2.7,
+          "y": -16.05
+        },
+        {
+          "x": 0.15,
+          "y": -16.05
+        }
+      ]
+    }
+  ],
+  "keepouts": [
+    {
+      "center": {
+        "x": -9.625,
+        "y": -2.075
+      },
+      "width": 0.75,
+      "height": 3.25,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": -9.625,
+        "y": -6.7
+      },
+      "width": 0.75,
+      "height": 3.6,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": -8.55,
+        "y": -10.1
+      },
+      "width": 0.7,
+      "height": 7.6,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": -3.85,
+        "y": -5.8
+      },
+      "width": 8.7,
+      "height": 1.6,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    },
+    {
+      "center": {
+        "x": 1.425,
+        "y": -15.375
+      },
+      "width": 2.55,
+      "height": 1.35,
+      "layers": ["top"],
+      "allow_traces": false,
+      "allow_placements": false,
+      "warning_only": false
+    }
+  ],
+  "area": 27.82
+}

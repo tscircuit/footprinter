@@ -338,6 +338,10 @@ export type Footprinter = {
     | "h"
     | "bodyy"
   >
+  ufl: () => FootprinterParamsBuilder<
+    "p" | "pw" | "ph" | "signalw" | "signalh" | "signalx"
+  >
+  microsd: () => FootprinterParamsBuilder<"dm3at">
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
@@ -689,6 +693,8 @@ export const string = (def: string): Footprinter => {
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'
     .map((s) => {
+      // Mechanical model names can include digits, unlike dimension keys.
+      if (/^dm3at$/i.test(s)) return { fn: "dm3at", v: undefined }
       const pin1LocationMatch = s.match(/^(pin1location)(\(.*\))$/i)
       if (pin1LocationMatch) {
         return {

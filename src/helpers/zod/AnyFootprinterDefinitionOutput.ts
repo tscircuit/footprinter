@@ -26,8 +26,12 @@ import { z } from "zod"
 import { pad_def } from "../../fn/pad"
 import { smtpad_def } from "../../fn/smtpad"
 import { passive_def } from "../passive-fn"
+import { microsd_def } from "../../fn/microsd"
+import { ufl_def } from "../../fn/ufl"
 
 export const any_footprinter_def = z.union([
+  ufl_def,
+  microsd_def,
   axial_def,
   bga_def,
   dfn_def,
