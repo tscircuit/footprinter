@@ -1,0 +1,76 @@
+{
+  "manufacturer": "Hirose",
+  "part": "U.FL-R-SMT-1(10)",
+  "documents": [
+    {
+      "url": "https://atta.szlcsc.com/upload/public/pdf/source/20260116/2407FA611152E2F7D3D59FECA9EB337E.pdf",
+      "sha256": "772d7d06e2dde2d17ba72e895f0f3608de762f050d8498e57966a84f28474a59",
+      "pages_read": [2, 3]
+    }
+  ],
+  "copper": [
+    {
+      "pin": "1",
+      "x": 0.475,
+      "y": 1.475,
+      "width": 2.2,
+      "height": 1.05
+    },
+    {
+      "pin": "2",
+      "x": -1.05,
+      "y": 0,
+      "width": 1.05,
+      "height": 1
+    },
+    {
+      "pin": "3",
+      "x": 0.475,
+      "y": -1.475,
+      "width": 2.2,
+      "height": 1.05
+    }
+  ],
+  "polygons": [
+    {
+      "name": "conservative-ground-gap",
+      "points": [
+        {
+          "x": -0.625,
+          "y": -0.95
+        },
+        {
+          "x": 1.575,
+          "y": -0.95
+        },
+        {
+          "x": 1.575,
+          "y": 0.95
+        },
+        {
+          "x": -0.625,
+          "y": 0.95
+        },
+        {
+          "x": -0.625,
+          "y": 0.5
+        },
+        {
+          "x": -0.525,
+          "y": 0.5
+        },
+        {
+          "x": -0.525,
+          "y": -0.5
+        },
+        {
+          "x": -0.625,
+          "y": -0.5
+        }
+      ]
+    }
+  ],
+  "keepouts": null,
+  "area": 4.08,
+  "qualification": "The arrow identifies the open central area between ground lands without an explicit perimeter. The conservative source-derived interpretation is the entire dimensioned1.9-wide ground-land gap over their2.2 height, subtracting exactSIG copper intrusion. This interpretation has independent review; no larger body-area keepout or extra copper-layer restriction is invented."
+}

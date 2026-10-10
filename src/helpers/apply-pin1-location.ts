@@ -162,6 +162,7 @@ const rotateElements = (
       (element.type === "pcb_courtyard_rect" ||
         element.type === "pcb_silkscreen_rect" ||
         element.type === "pcb_fabrication_note_rect" ||
+        (element.type === "pcb_keepout" && element.shape === "rect") ||
         (element.type === "pcb_cutout" && element.shape === "rect"))
     ) {
       ;[element.width, element.height] = [element.height, element.width]
