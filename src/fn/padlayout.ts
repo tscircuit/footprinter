@@ -1,12 +1,13 @@
-import { z } from "zod"
 import {
-  length,
   type AnyCircuitElement,
+  type PCBKeepoutRect,
   type PcbCourtyardRect,
   type PcbFabricationNoteRect,
   type PcbHoleCircle,
   type PcbPlatedHole,
+  length,
 } from "circuit-json"
+import { z } from "zod"
 import { circlepad } from "../helpers/circlepad"
 import { platedhole } from "../helpers/platedhole"
 import { polygonpad } from "../helpers/polygonpad"
@@ -39,6 +40,13 @@ export type PadLayoutRing = [
   innerDiameter: Length,
 ]
 export type PadLayoutHole = [x: Length, y: Length, diameter: Length]
+/** Hard top-layer copper and component-placement restriction. */
+export type PadLayoutKeepoutRect = [
+  x: Length,
+  y: Length,
+  width: Length,
+  height: Length,
+]
 export type PadLayoutPlatedHole = [
   pin: Pin,
   shape: "circle" | "pill" | "oval",
@@ -74,6 +82,28 @@ const tupleList = <T extends z.ZodTypeAny>(tuple: T) =>
 const smdPads = tupleList(z.tuple([pin, coordinate, coordinate, size, size]))
 const circlePads = tupleList(z.tuple([pin, coordinate, coordinate, size]))
 const holes = tupleList(z.tuple([coordinate, coordinate, size]))
+// Reject partial parses of a routing restriction (e.g. "1.2.3" or "1mm text").
+// Decimal lengths use the same units as Circuit JSON, with omitted units in mm.
+const keepoutCoordinate = z
+  .union([
+    z.number(),
+    z
+      .string()
+      .trim()
+      .regex(
+        /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)\s*(?:nm|[µμu]m|mm|cm|dm|m|km|in|ft|yd|mi|mil|IN|FT)?$/,
+        "keepout coordinate must be a decimal length",
+      )
+      .transform((value) => value.replace(/^\+/, "")),
+  ])
+  .pipe(coordinate)
+const keepoutSize = keepoutCoordinate.refine(
+  (value) => value > 0,
+  "keepout dimension must be positive",
+)
+const keepoutRects = tupleList(
+  z.tuple([keepoutCoordinate, keepoutCoordinate, keepoutSize, keepoutSize]),
+)
 const rings = tupleList(
   z
     .tuple([pin, coordinate, coordinate, size, size])
@@ -118,6 +148,7 @@ export const padlayout_def = base_def
     rings: rings.optional(),
     holes: holes.optional(),
     platedholes: platedHoles.optional(),
+    keepoutrects: keepoutRects.optional(),
     bodywidth: size.optional(),
     bodyheight: size.optional(),
     bodyx: coordinate.default(0),
@@ -231,6 +262,22 @@ export const padlayout = (
           }
     elements.push(hole)
     bounds(x, y, ow, oh)
+  }
+  for (const [x, y, width, height] of parameters.keepoutrects ?? []) {
+    const keepout: PCBKeepoutRect = {
+      type: "pcb_keepout",
+      pcb_keepout_id: "",
+      shape: "rect",
+      center: { x, y },
+      width,
+      height,
+      layers: ["top"],
+      allow_traces: false,
+      allow_placements: false,
+      warning_only: false,
+    }
+    elements.push(keepout)
+    bounds(x, y, width, height)
   }
   const { bodywidth, bodyheight, bodyx, bodyy } = parameters
   if (bodywidth !== undefined && bodyheight !== undefined) {

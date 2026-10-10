@@ -6,11 +6,12 @@ import {
 import * as FOOTPRINT_FN from "./fn"
 import type { BgaPinNumbering } from "./fn/bga"
 import type {
-  PadLayoutSmdPad,
   PadLayoutCirclePad,
-  PadLayoutRing,
   PadLayoutHole,
+  PadLayoutKeepoutRect,
   PadLayoutPlatedHole,
+  PadLayoutRing,
+  PadLayoutSmdPad,
 } from "./fn/padlayout"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
@@ -29,6 +30,7 @@ export type {
   PadLayoutRing,
   PadLayoutHole,
   PadLayoutPlatedHole,
+  PadLayoutKeepoutRect,
 } from "./fn/padlayout"
 
 export type PadLayoutBuilder = Pick<
@@ -51,6 +53,7 @@ export type PadLayoutBuilder = Pick<
   rings: (pads: PadLayoutRing[] | string) => PadLayoutBuilder
   holes: (holes: PadLayoutHole[] | string) => PadLayoutBuilder
   platedholes: (holes: PadLayoutPlatedHole[] | string) => PadLayoutBuilder
+  keepoutrects: (rects: PadLayoutKeepoutRect[] | string) => PadLayoutBuilder
 }
 
 type BaseOptionKey =
@@ -736,7 +739,9 @@ export const string = (def: string): Footprinter => {
       const [, rawFn, v] = m
       if (!rawFn) return null
       const fn = rawFn.toLowerCase()
-      if (v?.includes("?")) return null
+      // Keepout placeholders must fail validation instead of losing a hard
+      // copper restriction through the generic optional-parameter filtering.
+      if (v?.includes("?") && fn !== "keepoutrects") return null
       return { fn, v }
     })
     .filter(isNotNull)
