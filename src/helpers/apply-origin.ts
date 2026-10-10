@@ -43,8 +43,18 @@ export const applyOrigin = (
 
   for (const pad of pads) {
     if (pad.type === "pcb_smtpad") {
-      const w = pad.shape === "circle" ? pad.radius * 2 : pad.width
-      const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
+      if (pad.shape === "polygon") {
+        for (const point of pad.points) updateBounds(point.x, point.y)
+        continue
+      }
+      let w = pad.shape === "circle" ? pad.radius * 2 : pad.width
+      let h = pad.shape === "circle" ? pad.radius * 2 : pad.height
+      if (pad.shape === "rotated_rect") {
+        const angle = (pad.ccw_rotation * Math.PI) / 180
+        const cos = Math.abs(Math.cos(angle))
+        const sin = Math.abs(Math.sin(angle))
+        ;[w, h] = [w * cos + h * sin, w * sin + h * cos]
+      }
       updateBounds(pad.x, pad.y, w, h)
     } else if (pad.type === "pcb_plated_hole") {
       const d = pad.outer_diameter ?? pad.hole_diameter
@@ -102,8 +112,9 @@ export const applyOrigin = (
       el.center.y -= dy
     }
 
-    if (el.type === "pcb_silkscreen_path") {
-      for (const pt of el.route) {
+    for (const field of ["points", "outline", "route"] as const) {
+      if (!Array.isArray(el[field])) continue
+      for (const pt of el[field]) {
         pt.x -= dx
         pt.y -= dy
       }
