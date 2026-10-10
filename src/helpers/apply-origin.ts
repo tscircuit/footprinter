@@ -41,15 +41,42 @@ export const applyOrigin = (
     maxY = Math.max(maxY, top)
   }
 
-  for (const pad of pads) {
-    if (pad.type === "pcb_smtpad") {
-      const w = pad.shape === "circle" ? pad.radius * 2 : pad.width
-      const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
-      updateBounds(pad.x, pad.y, w, h)
-    } else if (pad.type === "pcb_plated_hole") {
-      const d = pad.outer_diameter ?? pad.hole_diameter
-      updateBounds(pad.x, pad.y, d, d)
+  const boundsForPad = (pad: any) => {
+    if (pad.shape === "polygon") {
+      return {
+        minX: Math.min(...pad.points.map((p: any) => p.x)),
+        maxX: Math.max(...pad.points.map((p: any) => p.x)),
+        minY: Math.min(...pad.points.map((p: any) => p.y)),
+        maxY: Math.max(...pad.points.map((p: any) => p.y)),
+      }
     }
+    let w: number
+    let h: number
+    if (pad.type === "pcb_smtpad") {
+      w = pad.shape === "circle" ? pad.radius * 2 : pad.width
+      h = pad.shape === "circle" ? pad.radius * 2 : pad.height
+    } else {
+      const d = pad.outer_diameter ?? pad.hole_diameter
+      w = pad.outer_width ?? pad.rect_pad_width ?? d
+      h = pad.outer_height ?? pad.rect_pad_height ?? d
+    }
+    const angle = ((pad.ccw_rotation ?? 0) * Math.PI) / 180
+    const rotatedWidth =
+      Math.abs(w * Math.cos(angle)) + Math.abs(h * Math.sin(angle))
+    const rotatedHeight =
+      Math.abs(w * Math.sin(angle)) + Math.abs(h * Math.cos(angle))
+    return {
+      minX: pad.x - rotatedWidth / 2,
+      maxX: pad.x + rotatedWidth / 2,
+      minY: pad.y - rotatedHeight / 2,
+      maxY: pad.y + rotatedHeight / 2,
+    }
+  }
+
+  for (const pad of pads) {
+    const bounds = boundsForPad(pad)
+    updateBounds(bounds.minX, bounds.minY)
+    updateBounds(bounds.maxX, bounds.maxY)
   }
 
   let dx = 0
@@ -84,9 +111,28 @@ export const applyOrigin = (
       dy = (minY + maxY) / 2
       break
     case "pin1": {
-      const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0]
-      dx = pin1.x
-      dy = pin1.y
+      const pin1 = pads.filter((p) =>
+        p.port_hints?.some((hint: string) => /^(?:pin)?1$/i.test(hint)),
+      )
+      const terminal = pin1.length ? pin1 : [pads[0]]
+      if (
+        terminal.length === 1 &&
+        typeof terminal[0].x === "number" &&
+        typeof terminal[0].y === "number"
+      ) {
+        dx = terminal[0].x
+        dy = terminal[0].y
+        break
+      }
+      const terminalBounds = terminal.map(boundsForPad)
+      dx =
+        (Math.min(...terminalBounds.map((b) => b.minX)) +
+          Math.max(...terminalBounds.map((b) => b.maxX))) /
+        2
+      dy =
+        (Math.min(...terminalBounds.map((b) => b.minY)) +
+          Math.max(...terminalBounds.map((b) => b.maxY))) /
+        2
       break
     }
   }
@@ -106,6 +152,13 @@ export const applyOrigin = (
       for (const pt of el.route) {
         pt.x -= dx
         pt.y -= dy
+      }
+    }
+
+    if (el.type === "pcb_smtpad" && el.shape === "polygon") {
+      for (const point of el.points) {
+        point.x -= dx
+        point.y -= dy
       }
     }
 

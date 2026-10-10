@@ -5,6 +5,13 @@ import {
 } from "circuit-json"
 import * as FOOTPRINT_FN from "./fn"
 import type { BgaPinNumbering } from "./fn/bga"
+import type {
+  PadLayoutSmdPad,
+  PadLayoutCirclePad,
+  PadLayoutRing,
+  PadLayoutHole,
+  PadLayoutPlatedHole,
+} from "./fn/padlayout"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -16,6 +23,35 @@ import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinte
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
 
 export type { BgaPinNumbering } from "./fn/bga"
+export type {
+  PadLayoutSmdPad,
+  PadLayoutCirclePad,
+  PadLayoutRing,
+  PadLayoutHole,
+  PadLayoutPlatedHole,
+} from "./fn/padlayout"
+
+export type PadLayoutBuilder = Pick<
+  Footprinter,
+  "params" | "soup" | "circuitJson"
+> & {
+  [P in
+    | "bodywidth"
+    | "bodyheight"
+    | "bodyx"
+    | "bodyy"
+    | Exclude<BaseOptionKey, "rounded" | "pin1location">]: (
+    value?: string | number | boolean,
+  ) => PadLayoutBuilder
+} & {
+  rounded: (radius: number | string) => PadLayoutBuilder
+  pin1location: (...location: Pin1Location) => PadLayoutBuilder
+  smdpads: (pads: PadLayoutSmdPad[] | string) => PadLayoutBuilder
+  circlepads: (pads: PadLayoutCirclePad[] | string) => PadLayoutBuilder
+  rings: (pads: PadLayoutRing[] | string) => PadLayoutBuilder
+  holes: (holes: PadLayoutHole[] | string) => PadLayoutBuilder
+  platedholes: (holes: PadLayoutPlatedHole[] | string) => PadLayoutBuilder
+}
 
 type BaseOptionKey =
   | "anodepin"
@@ -56,6 +92,7 @@ type CommonPassiveOptionKey =
   | "textbottom"
 
 export type Footprinter = {
+  padlayout: () => PadLayoutBuilder
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
