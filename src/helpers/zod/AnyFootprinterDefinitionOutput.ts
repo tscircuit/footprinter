@@ -19,6 +19,7 @@ import { sot363_def } from "src/fn/sot363"
 import { sot563_def } from "src/fn/sot563"
 import { sot723_def } from "src/fn/sot723"
 import { sot886_def } from "src/fn/sot886"
+import { spdip_def } from "src/fn/spdip"
 import { ssop_def } from "src/fn/ssop"
 import { tqfp_def } from "src/fn/tqfp"
 import { tssop_def } from "src/fn/tssop"
@@ -33,6 +34,7 @@ export const any_footprinter_def = z.union([
   dfn_def,
   do219ad_def,
   dip_def,
+  spdip_def,
   mlp_def,
   ms012_def,
   ms013_def,
