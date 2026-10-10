@@ -64,3 +64,15 @@ test("VSON8_grid3.3x3.3mm_P0.65mm_ep1.9x2.45mm_epx0.385mm_w2.88mm_pinw0.63mm_pin
     "VSON-8_3.3x3.3mm_P0.65mm_NexFET",
   )
 })
+
+test("bare vson8 defaults to 8 pads without throwing", () => {
+  const circuitJson = fp.string("vson8").circuitJson()
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads).toHaveLength(8)
+})
+
+test("bare vson10 defaults to 10 pads without throwing", () => {
+  const circuitJson = fp.string("vson10").circuitJson()
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads).toHaveLength(10)
+})
