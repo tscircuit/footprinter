@@ -612,6 +612,24 @@ export type Footprinter = {
   solderjumper: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"bridged" | "p" | "pw" | "ph">
+  usba: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    | "tht"
+    | "pinstart"
+    | "reverse"
+    | "p"
+    | "centerp"
+    | "id"
+    | "ring"
+    | "shieldspan"
+    | "shieldy"
+    | "shieldid"
+    | "shieldring"
+    | "w"
+    | "h"
+    | "bodybottom"
+  >
   usbcmidmount: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
