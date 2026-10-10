@@ -86,6 +86,21 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
       `Conflicting lrpl (${v.lrpl}) and leftrightpadlength (${v.leftrightpadlength})`,
     )
   }
+  if (v.p !== undefined && v.p <= 0) {
+    throw new Error(
+      `Invalid pitch (p=${v.p}): pitch must be a positive number. Use a non-zero value like p0.5mm.`,
+    )
+  }
+  if (v.px !== undefined && v.px <= 0) {
+    throw new Error(
+      `Invalid horizontal pitch (px=${v.px}): pitch must be a positive number.`,
+    )
+  }
+  if (v.py !== undefined && v.py <= 0) {
+    throw new Error(
+      `Invalid vertical pitch (py=${v.py}): pitch must be a positive number.`,
+    )
+  }
   v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
   v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
 
