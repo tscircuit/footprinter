@@ -102,6 +102,14 @@ export const applyOrigin = (
       el.center.y -= dy
     }
 
+    if (el.type === "pcb_courtyard_outline") {
+      el.outline = el.outline.map((point) => ({
+        ...point,
+        x: point.x - dx,
+        y: point.y - dy,
+      }))
+    }
+
     if (el.type === "pcb_silkscreen_path") {
       for (const pt of el.route) {
         pt.x -= dx
