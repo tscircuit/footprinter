@@ -11,7 +11,7 @@ export type OriginMode =
   | "rightcenter"
   | "centerright"
 
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnyCircuitElement, Point } from "circuit-json"
 
 export const applyOrigin = (
   elements: AnyCircuitElement[],
@@ -43,6 +43,10 @@ export const applyOrigin = (
 
   for (const pad of pads) {
     if (pad.type === "pcb_smtpad") {
+      if (pad.shape === "polygon") {
+        for (const point of pad.points) updateBounds(point.x, point.y)
+        continue
+      }
       const w = pad.shape === "circle" ? pad.radius * 2 : pad.width
       const h = pad.shape === "circle" ? pad.radius * 2 : pad.height
       updateBounds(pad.x, pad.y, w, h)
@@ -85,8 +89,15 @@ export const applyOrigin = (
       break
     case "pin1": {
       const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0]
-      dx = pin1.x
-      dy = pin1.y
+      if (pin1.type === "pcb_smtpad" && pin1.shape === "polygon") {
+        const xs = pin1.points.map((point: Point) => point.x)
+        const ys = pin1.points.map((point: Point) => point.y)
+        dx = (Math.min(...xs) + Math.max(...xs)) / 2
+        dy = (Math.min(...ys) + Math.max(...ys)) / 2
+      } else {
+        dx = pin1.x
+        dy = pin1.y
+      }
       break
     }
   }
@@ -94,6 +105,14 @@ export const applyOrigin = (
   if (dx === 0 && dy === 0) return elements
 
   for (const el of elements as Array<any>) {
+    if (el.type === "pcb_smtpad" && el.shape === "polygon") {
+      // Footprint generators can share point arrays between calls.
+      el.points = el.points.map((point: Point) => ({
+        ...point,
+        x: point.x - dx,
+        y: point.y - dy,
+      }))
+    }
     if (typeof el.x === "number") el.x -= dx
     if (typeof el.y === "number") el.y -= dy
 
