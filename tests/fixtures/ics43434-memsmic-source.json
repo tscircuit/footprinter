@@ -1,0 +1,74 @@
+{
+  "part": "ICS-43434",
+  "manufacturer": "TDK InvenSense",
+  "document": {
+    "url": "https://d17t6iyxenbwp1.cloudfront.net/s3fs-public/2026-03/DS-000069-ICS-43434-v1.2.pdf",
+    "sha256": "6f87312bec5078aef44866f4e765137aad0a085b144f3a4f27d697f28f68b0c8",
+    "pages_read": [10, 17, 19],
+    "revision": "1.2"
+  },
+  "recipe": "memsmic6_profile(ics43434)",
+  "orientation": "Top view, terminal side down as Figure 3. Figure 13 land pattern rotated 90 degrees counterclockwise; body center is origin.",
+  "body": {
+    "width": 2.65,
+    "height": 3.5
+  },
+  "rectangular_lands": [
+    {
+      "pin": "1",
+      "name": "WS",
+      "x": 0.9,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "2",
+      "name": "LR",
+      "x": 0.9,
+      "y": -0.542,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "4",
+      "name": "SCK",
+      "x": -0.9,
+      "y": -0.542,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "5",
+      "name": "VDD",
+      "x": -0.9,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "6",
+      "name": "SD",
+      "x": 0,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    }
+  ],
+  "annular_land": {
+    "pin": "3",
+    "name": "GND",
+    "x": 0,
+    "y": 0.71,
+    "inner_diameter": 1.025,
+    "outer_diameter": 1.625
+  },
+  "acoustic_aperture": {
+    "x": 0,
+    "y": 0.71,
+    "minimum_diameter": 0.5,
+    "plated": false
+  },
+  "paste_constraints": "Figure 14 recommends five 0.5 x 0.422 mm paste apertures and four ring stencil segments (OD1.625, ID1.125, 0.1 mm gaps). Copper remains a continuous annulus. No paste on the sound opening. This footprint does not emit a paste stencil.",
+  "acoustic_constraints": "PCB sound opening at least 0.5 mm; package sound port is 0.375 mm. Seal the path to the housing, keep solder/flux/water out of the port, and avoid blow-off or ultrasonic cleaning."
+}

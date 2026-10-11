@@ -6,6 +6,7 @@ import {
 import * as FOOTPRINT_FN from "./fn"
 import type { BgaPinNumbering } from "./fn/bga"
 import type { PinrowPinNumbering } from "./fn/pinrow"
+import type { MemsmicOptionKey, MemsmicProfile } from "./fn/memsmic"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
@@ -33,6 +34,7 @@ type BaseOptionKey =
 export type FootprinterParamsBuilder<
   K extends string,
   PinNumbering extends string = BgaPinNumbering,
+  Profile extends string = string,
 > = {
   [P in K | BaseOptionKey | "params" | "soup" | "circuitJson"]: P extends
     | "params"
@@ -40,16 +42,24 @@ export type FootprinterParamsBuilder<
     | "circuitJson"
     ? Footprinter[P]
     : P extends "pin1location"
-      ? (...location: Pin1Location) => FootprinterParamsBuilder<K, PinNumbering>
+      ? (
+          ...location: Pin1Location
+        ) => FootprinterParamsBuilder<K, PinNumbering, Profile>
       : P extends "rounded"
-        ? (radius: number | string) => FootprinterParamsBuilder<K, PinNumbering>
-        : P extends "pinnumbering"
+        ? (
+            radius: number | string,
+          ) => FootprinterParamsBuilder<K, PinNumbering, Profile>
+        : P extends "profile"
           ? (
-              convention: PinNumbering,
-            ) => FootprinterParamsBuilder<K, PinNumbering>
-          : (
-              v?: number | string | boolean,
-            ) => FootprinterParamsBuilder<K, PinNumbering>
+              profile: Profile,
+            ) => FootprinterParamsBuilder<K, PinNumbering, Profile>
+          : P extends "pinnumbering"
+            ? (
+                convention: PinNumbering,
+              ) => FootprinterParamsBuilder<K, PinNumbering, Profile>
+            : (
+                v?: number | string | boolean,
+              ) => FootprinterParamsBuilder<K, PinNumbering, Profile>
 }
 
 type CommonPassiveOptionKey =
@@ -65,6 +75,13 @@ type CommonPassiveOptionKey =
   | "textbottom"
 
 export type Footprinter = {
+  memsmic: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
+    MemsmicOptionKey,
+    BgaPinNumbering,
+    MemsmicProfile
+  >
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
