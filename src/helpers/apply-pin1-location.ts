@@ -39,6 +39,21 @@ const getPadCenter = (pad: any): Point | null => {
 const isPin1 = (pad: any) =>
   pad.port_hints?.some((hint: unknown) => /^(?:pin)?1$/i.test(String(hint)))
 
+const getContactCenter = (pad: any, pads: any[]): Point | null => {
+  if (pad.shape !== "polygon" || !pad.port_hints?.length)
+    return getPadCenter(pad)
+  // An annular contact has several polygon sectors with one physical owner.
+  // Its location is their combined center, rather than any individual sector.
+  const points = pads
+    .filter(
+      (candidate) =>
+        candidate.shape === "polygon" &&
+        candidate.port_hints?.[0] === pad.port_hints[0],
+    )
+    .flatMap((candidate) => candidate.points)
+  return getPadCenter({ points })
+}
+
 const pinMatchesLocation = (
   padCenters: Point[],
   pin1Center: Point,
@@ -181,8 +196,10 @@ export const applyPin1Location = (
       element.type === "pcb_smtpad" || element.type === "pcb_plated_hole",
   )
   const pin1 = pads.find(isPin1)
-  const padCenters = pads.map(getPadCenter).filter((point) => point !== null)
-  const pin1Center = pin1 ? getPadCenter(pin1) : null
+  const padCenters = pads
+    .map((pad) => getContactCenter(pad, pads))
+    .filter((point) => point !== null)
+  const pin1Center = pin1 ? getContactCenter(pin1, pads) : null
 
   if (!pin1 || !pin1Center || padCenters.length === 0) {
     throw new Error(
