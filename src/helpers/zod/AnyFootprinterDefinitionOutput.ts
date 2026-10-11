@@ -3,7 +3,7 @@ import { bga_def } from "src/fn/bga"
 import { dfn_def } from "src/fn/dfn"
 import { dip_def } from "src/fn/dip"
 import { do219ad_def } from "src/fn/do219ad"
-import { memsmic_def } from "src/fn/memsmic"
+import { lga_def } from "src/fn/lga"
 import { mlp_def } from "src/fn/mlp"
 import { ms012_def } from "src/fn/ms012"
 import { ms013_def } from "src/fn/ms013"
@@ -31,7 +31,7 @@ import { smtpad_def } from "../../fn/smtpad"
 import { passive_def } from "../passive-fn"
 
 export const any_footprinter_def = z.union([
-  memsmic_def,
+  lga_def,
   usba_def,
   usbmicro_def,
   qfn_def,

@@ -7,7 +7,7 @@
     "pages_read": [10, 17, 19],
     "revision": "1.2"
   },
-  "recipe": "memsmic6_profile(ics43434)",
+  "recipe": "lga6_bottomport",
   "orientation": "Top view, terminal side down as Figure 3. Figure 13 land pattern rotated 90 degrees counterclockwise; body center is origin.",
   "body": {
     "width": 2.65,

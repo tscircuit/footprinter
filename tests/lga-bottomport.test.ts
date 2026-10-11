@@ -2,13 +2,13 @@ import { expect, test } from "bun:test"
 import { pcb_hole, pcb_smtpad, type PcbSmtPad } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp, getFootprintNames } from "../src/footprinter"
-import { memsmic, memsmic_def } from "../src/fn/memsmic"
+import { lga, lga_def } from "../src/fn/lga"
 import { any_footprinter_def } from "../src/helpers/zod/AnyFootprinterDefinitionOutput"
-import ics43434 from "./fixtures/ics43434-memsmic-source.json"
-import ics43432 from "./fixtures/ics43432-memsmic-source.json"
+import ics43434 from "./fixtures/ics43434-lga-source.json"
+import knowles from "./fixtures/knowles-sph0645-lga-source.json"
 
-for (const source of [ics43434, ics43432]) {
-  test(`${source.part} profile reproduces manufacturer copper and physical terminals`, () => {
+for (const source of [ics43434, knowles]) {
+  test(`${source.part} bottom-port LGA reproduces manufacturer copper and physical terminals`, () => {
     const circuit = fp.string(source.recipe).circuitJson()
     const pads = circuit.filter(
       (element): element is PcbSmtPad => element.type === "pcb_smtpad",
@@ -23,7 +23,7 @@ for (const source of [ics43434, ics43432]) {
     ].sort()
     expect(rectangles).toHaveLength(source.rectangular_lands.length)
     expect(physicalPins).toEqual(expectedPins)
-    // Profile-specific signal functions are evidence in the fixture, not aliases
+    // Supplier-specific signal functions are evidence in the fixture, not aliases
     // imposed on every component using the mechanical footprint.
     for (const pad of pads) expect(pad.port_hints).toHaveLength(1)
     for (const expected of source.rectangular_lands) {
@@ -59,7 +59,10 @@ for (const source of [ics43434, ics43432]) {
     expect(holes).toHaveLength(1)
     expect(holes[0]).toMatchObject({
       hole_shape: "circle",
-      hole_diameter: source.acoustic_aperture.minimum_diameter,
+      hole_diameter:
+        "minimum_diameter" in source.acoustic_aperture
+          ? source.acoustic_aperture.minimum_diameter
+          : source.acoustic_aperture.diameter,
       x: source.acoustic_aperture.x,
       y: source.acoustic_aperture.y,
     })
@@ -80,40 +83,38 @@ for (const source of [ics43434, ics43432]) {
     )
     expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
       import.meta.path,
-      `memsmic-${source.part.toLowerCase()}-source`,
+      `lga6-bottomport-${source.part.toLowerCase()}-source`,
     )
   })
 }
 
-test("both profiles have typed builders and normalized JSON round trips", () => {
-  expect(
-    fp().memsmic(6).profile("ics43434").holed("0.5mm").circuitJson(),
-  ).toEqual(fp.string(ics43434.recipe).circuitJson())
-  expect(
-    fp().memsmic(7).profile("ics43432").holed("0.5mm").circuitJson(),
-  ).toEqual(fp.string(ics43432.recipe).circuitJson())
-  for (const source of [ics43434, ics43432]) {
-    const normalized = memsmic_def.parse(fp.string(source.recipe).json())
-    const parameters = memsmic_def.parse(any_footprinter_def.parse(normalized))
-    expect(memsmic_def.parse(parameters)).toEqual(normalized)
-    expect(memsmic(parameters).circuitJson).toEqual(
+test("shared LGA variant has typed builders and normalized JSON round trips", () => {
+  expect(fp().lga(6).bottomport().circuitJson()).toEqual(
+    fp.string(ics43434.recipe).circuitJson(),
+  )
+  expect(fp().lga(6).bottomport().id(1.024).od(1.624).circuitJson()).toEqual(
+    fp.string(knowles.recipe).circuitJson(),
+  )
+  for (const source of [ics43434, knowles]) {
+    const normalized = lga_def.parse(fp.string(source.recipe).json())
+    const parameters = lga_def.parse(any_footprinter_def.parse(normalized))
+    expect(lga_def.parse(parameters)).toEqual(normalized)
+    expect(lga(parameters).circuitJson).toEqual(
       fp.string(source.recipe).circuitJson(),
     )
-    expect(Number(normalized.num_pins)).toBe(
-      source.rectangular_lands.length + 1,
-    )
-    expect(String(normalized.profile)).toBe(
-      source.part.replaceAll("-", "").toLowerCase(),
-    )
+    expect(normalized.grid).toEqual({ x: 2, y: 1 })
+    expect(normalized.startingpin).toEqual(["rightside", "bottompin"])
+    expect(normalized.num_pins).toBe(6)
+    expect("profile" in normalized).toBe(false)
   }
-  expect(getFootprintNames()).toContain("memsmic")
-  expect(getFootprintNames()).not.toContain("lgacav")
-  expect(getFootprintNames()).not.toContain("union")
+  expect(getFootprintNames()).toContain("lga")
+  for (const name of ["memsmic", "lgacav", "union"])
+    expect(getFootprintNames()).not.toContain(name)
 })
 
-test("profiles include the required sound opening independently of copper dimensions", () => {
-  const base = fp().memsmic(6).profile("ics43434").circuitJson()
-  const withHole = fp().memsmic(6).profile("ics43434").holed(0.65).circuitJson()
+test("bottom-port LGA includes an independent sound opening with generic diameter overrides", () => {
+  const base = fp().lga(6).bottomport().circuitJson()
+  const withHole = fp().lga(6).bottomport().holed(0.65).circuitJson()
   expect(base.find((element) => element.type === "pcb_hole")).toMatchObject({
     hole_diameter: 0.5,
   })
@@ -123,22 +124,30 @@ test("profiles include the required sound opening independently of copper dimens
   expect(withHole.find((element) => element.type === "pcb_hole")).toMatchObject(
     { hole_diameter: 0.65 },
   )
+  expect(
+    fp()
+      .lga(6)
+      .bottomport()
+      .holed(0.25)
+      .circuitJson()
+      .find((element) => element.type === "pcb_hole"),
+  ).toMatchObject({ hole_diameter: 0.25 })
   expect(convertCircuitJsonToPcbSvg(withHole)).toMatchSvgSnapshot(
     import.meta.path,
-    "memsmic-independent-acoustic-opening",
+    "lga6-bottomport-independent-acoustic-opening",
   )
 })
 
 test("semantic dimensions scale rows, port and body without a coordinate pad table", () => {
   const circuit = fp()
-    .memsmic(6)
-    .profile("ics43434")
+    .lga(6)
+    .bottomport()
     .bodywidth(3)
     .bodyheight(4)
-    .p(1)
+    .px(1)
     .py(0.9)
     .pw(0.65)
-    .ph(0.5)
+    .pl(0.5)
     .rowoffsety(-1.5)
     .portoffsetx(0.15)
     .portoffsety(0.8)
@@ -178,14 +187,14 @@ test("semantic dimensions scale rows, port and body without a coordinate pad tab
   ).toBeCloseTo(-0.75, 12)
   expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
     import.meta.path,
-    "memsmic-semantic-dimension-variant",
+    "lga6-bottomport-semantic-dimension-variant",
   )
 })
 
 test("pin1 rotation and origin move copper, sound opening and courtyard together", () => {
   const circuit = fp()
-    .memsmic(6)
-    .profile("ics43434")
+    .lga(6)
+    .bottomport()
     .holed(0.5)
     .pin1location("topside", "right")
     .origin("pin1")
@@ -215,25 +224,21 @@ test("pin1 rotation and origin move copper, sound opening and courtyard together
   }
   expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
     import.meta.path,
-    "memsmic-rotated-pin1-origin",
+    "lga6-bottomport-rotated-pin1-origin",
   )
 })
 
 test("reference and silkscreen controls preserve the physical geometry", () => {
-  const withReference = fp()
-    .memsmic(7)
-    .profile("ics43432")
-    .holed(0.5)
-    .circuitJson()
+  const withReference = fp().lga(6).bottomport().holed(0.5).circuitJson()
   const withoutReference = fp()
-    .memsmic(7)
-    .profile("ics43432")
+    .lga(6)
+    .bottomport()
     .holed(0.5)
     .norefdes()
     .circuitJson()
   const withoutSilkscreen = fp()
-    .memsmic(7)
-    .profile("ics43432")
+    .lga(6)
+    .bottomport()
     .holed(0.5)
     .nosilkscreen()
     .circuitJson()
@@ -258,39 +263,53 @@ test("reference and silkscreen controls preserve the physical geometry", () => {
   )
 })
 
-test("profiles reject unsupported names, counts, invalid dimensions and copper collisions", () => {
+test("bottom-port LGA rejects unsupported topology, ignored controls and copper collisions", () => {
   for (const recipe of [
-    "memsmic6",
-    "memsmic6_profile(other)",
-    "memsmic5_profile(ics43434)",
-    "memsmic6_profile(ics43432)",
-    "memsmic7_profile(ics43434)",
-    "memsmic6_profile(ics43434)_holed0.4",
-    "memsmic7_profile(ics43432)_holed0.4",
-    "memsmic6_profile(ics43434)_id1.625",
-    "memsmic6_profile(ics43434)_holed1.025",
-    "memsmic6_profile(ics43434)_p0.6",
-    "memsmic6_profile(ics43434)_py0.522",
-    "memsmic6_profile(ics43434)_portoffsety-1.364",
-    "memsmic6_profile(ics43434)_id1.025_od1.026_holed1.0248",
+    "memsmic6_profile(ics43434)",
+    "lga_bottomport",
+    "lga5_bottomport",
+    "lga7_bottomport",
+    "lga6_bottomport_grid1x2",
+    "lga6_bottomport_grid3x0",
+    "lga6_bottomport_grid3x2",
+    "lga6_bottomport_w2.4",
+    "lga6_bottomport_h3.5",
+    "lga6_bottomport_pillpads",
+    "lga6_bottomport_lrendpitch0.9",
+    "lga6_bottomport_tbendpitch0.9",
+    "lga6_bottomport_cw_ccw",
+    "lga6_bottomport_id1.625",
+    "lga6_bottomport_holed1.025",
+    "lga6_bottomport_px0.6",
+    "lga6_bottomport_py0.522",
+    "lga6_bottomport_portoffsety-1.364",
+    "lga6_bottomport_id1.025_od1.026_holed1.0248",
+    "lga6_id1",
+    "lga6_od2",
+    "lga6_holed0.5",
+    "lga6_rowoffsety0",
+    "lga6_portoffsetx0",
+    "lga6_portoffsety0",
   ])
     expect(() => fp.string(recipe).circuitJson()).toThrow()
   for (const name of [
     "bodywidth",
     "bodyheight",
     "p",
+    "px",
     "py",
     "pw",
-    "ph",
+    "pl",
     "id",
     "od",
     "holed",
   ]) {
     for (const value of [0, -1, NaN, Infinity, -Infinity]) {
       expect(
-        memsmic_def.safeParse({
-          fn: "memsmic",
-          profile: "ics43434",
+        lga_def.safeParse({
+          fn: "lga",
+          num_pins: 6,
+          bottomport: true,
           [name]: value,
         }).success,
       ).toBe(false)
@@ -299,12 +318,112 @@ test("profiles reject unsupported names, counts, invalid dimensions and copper c
   for (const name of ["rowoffsety", "portoffsetx", "portoffsety"]) {
     for (const value of [NaN, Infinity, -Infinity]) {
       expect(
-        memsmic_def.safeParse({
-          fn: "memsmic",
-          profile: "ics43434",
+        lga_def.safeParse({
+          fn: "lga",
+          num_pins: 6,
+          bottomport: true,
           [name]: value,
         }).success,
       ).toBe(false)
     }
   }
+  for (const grid of [
+    { x: 2.5, y: 1 },
+    { x: -2, y: 1 },
+    { x: Infinity, y: 1 },
+    { x: 2, y: NaN },
+    { x: 1e6, y: 1 },
+  ]) {
+    expect(
+      lga_def.safeParse({ fn: "lga", num_pins: 6, bottomport: true, grid })
+        .success,
+    ).toBe(false)
+  }
+})
+
+test("existing LGA numbering maps the annular contact without a replacement selector", () => {
+  const circuit = fp()
+    .lga(6)
+    .bottomport()
+    .startingpin("(topside,rightpin)")
+    .portoffsetx(0.1)
+    .pin1location("leftside", "top")
+    .origin("pin1")
+    .circuitJson()
+  const ring = circuit.filter(
+    (element) => element.type === "pcb_smtpad" && element.shape === "polygon",
+  )
+  expect(ring).toHaveLength(4)
+  expect(ring.every((sector) => sector.port_hints?.[0] === "1")).toBe(true)
+  const hole = circuit.find((element) => element.type === "pcb_hole")!
+  expect(hole.x).toBeCloseTo(0, 12)
+  expect(hole.y).toBeCloseTo(0, 12)
+  expect(hole).toMatchObject({ hole_diameter: 0.5 })
+  expect(
+    Math.min(
+      ...ring.flatMap((sector) => sector.points.map((point) => point.x)),
+    ),
+  ).toBeCloseTo(-0.8125, 12)
+  expect(
+    Math.max(
+      ...ring.flatMap((sector) => sector.points.map((point) => point.x)),
+    ),
+  ).toBeCloseTo(0.8125, 12)
+  expect(
+    Math.min(
+      ...ring.flatMap((sector) => sector.points.map((point) => point.y)),
+    ),
+  ).toBeCloseTo(-0.8125, 12)
+  expect(
+    Math.max(
+      ...ring.flatMap((sector) => sector.points.map((point) => point.y)),
+    ),
+  ).toBeCloseTo(0.8125, 12)
+  expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
+    import.meta.path,
+    "lga6-bottomport-annular-pin1-origin",
+  )
+  const clockwise = fp().lga(6).bottomport().cw().circuitJson()
+  const clockwiseRing = clockwise.filter(
+    (element) => element.type === "pcb_smtpad" && element.shape === "polygon",
+  )
+  expect(clockwiseRing.every((sector) => sector.port_hints?.[0] === "5")).toBe(
+    true,
+  )
+  expect(
+    clockwise
+      .filter(
+        (element) => element.type === "pcb_smtpad" && element.shape === "rect",
+      )
+      .find((pad) => pad.port_hints?.[0] === "1"),
+  ).toMatchObject({ x: 0.9, y: -1.364 })
+  expect(convertCircuitJsonToPcbSvg(clockwise)).toMatchSvgSnapshot(
+    import.meta.path,
+    "lga6-bottomport-clockwise-numbering",
+  )
+})
+
+test("bottomport false retains ordinary LGA geometry and ordinary defaults", () => {
+  for (const recipe of [
+    "lga14",
+    "lga6_grid3x0_p0.94_w1.74_pw0.64_pl0.57",
+    "lga8_cw",
+    "lga16_grid5x3_pillpads",
+  ]) {
+    expect(
+      lga({ ...lga_def.parse(fp.string(recipe).json()), bottomport: false })
+        .circuitJson,
+    ).toEqual(fp.string(recipe).circuitJson())
+  }
+  expect(lga_def.parse({ fn: "lga" })).toEqual({
+    fn: "lga",
+    num_pins: 14,
+    p: 0.5,
+    pw: 0.28,
+    pl: 0.7,
+    pillpads: false,
+  })
+  expect(lga_def.parse(fp().lga(6).bottomport().p(0.7).params())).toMatchObject(
+    { p: 0.7, px: 0.7, py: 0.7 },
+  )
 })
