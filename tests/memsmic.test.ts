@@ -99,7 +99,9 @@ test("both profiles have typed builders and normalized JSON round trips", () => 
     expect(memsmic(parameters).circuitJson).toEqual(
       fp.string(source.recipe).circuitJson(),
     )
-    expect(Number(normalized.num_pins)).toBe(source.rectangular_lands.length + 1)
+    expect(Number(normalized.num_pins)).toBe(
+      source.rectangular_lands.length + 1,
+    )
     expect(String(normalized.profile)).toBe(
       source.part.replaceAll("-", "").toLowerCase(),
     )
