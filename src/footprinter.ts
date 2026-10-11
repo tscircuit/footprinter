@@ -169,6 +169,15 @@ export type Footprinter = {
     | "thermalviaid"
     | "thermalviaod"
     | "pillpads"
+    | "grid"
+    | "rows"
+    | "rowgap"
+    | "rowspan"
+    | "staggered"
+    | "circularpads"
+    | "pinnumbering"
+    | "missing",
+    "ballcoords"
   >
   tqfp: (
     num_pins?: number,

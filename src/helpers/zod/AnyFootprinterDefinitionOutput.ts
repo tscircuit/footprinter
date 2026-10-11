@@ -30,6 +30,7 @@ import { passive_def } from "../passive-fn"
 
 export const any_footprinter_def = z.union([
   usbmicro_def,
+  qfn_def,
   axial_def,
   bga_def,
   dfn_def,
@@ -39,7 +40,6 @@ export const any_footprinter_def = z.union([
   ms012_def,
   ms013_def,
   pinrow_def,
-  qfn_def,
   tqfp_def,
   qfp_def,
   quad_def,
