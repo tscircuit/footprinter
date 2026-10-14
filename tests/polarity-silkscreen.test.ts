@@ -41,7 +41,7 @@ const marks = (elements: AnyCircuitElement[]) =>
   elements.filter(
     (e): e is PcbSilkscreenPath =>
       e.type === "pcb_silkscreen_path" &&
-      e.pcb_silkscreen_path_id.startsWith("polarity_cathode_"),
+      e.pcb_silkscreen_path_id.startsWith("polarity_anode_"),
   )
 const snapshot = (elements: AnyCircuitElement[], name: string) =>
   expect(convertCircuitJsonToPcbSvg(elements)).toMatchSvgSnapshot(
@@ -56,13 +56,14 @@ for (const family of families) {
       const name = pin === defaultPin ? family : `${family}_cathodepin${pin}`
       const elements = fp.string(name).circuitJson()
       const cathode = elements.find(
-        (e) => e.type === "pcb_smtpad" && e.port_hints?.includes(String(pin)),
+        (e) =>
+          e.type === "pcb_smtpad" && e.port_hints?.includes(String(3 - pin)),
       )!
       expect(marks(elements)).toHaveLength(2)
       for (const mark of marks(elements)) {
         expect(mark.stroke_width).toBe(0.15)
         for (const point of mark.route) {
-          if (pin === 1)
+          if (pin === 2)
             expect(point.x + mark.stroke_width / 2).toBeLessThanOrEqual(
               cathode.x - cathode.width / 2 - 0.25 + 1e-9,
             )
@@ -77,17 +78,17 @@ for (const family of families) {
   })
 }
 
-test("RGB LED has a K beside each cathode, not an ambiguous single two-pin mark", () => {
+test("RGB LED has a + beside each anode, not an ambiguous single two-pin mark", () => {
   const elements = fp.string("led5050").circuitJson()
   expect(marks(elements)).toHaveLength(6)
-  for (const pin of [4, 5, 6]) {
+  for (const pin of [1, 2, 3]) {
     const pad = elements.find(
       (e) => e.type === "pcb_smtpad" && e.port_hints?.includes(String(pin)),
     )!
     const mark = marks(elements).find(
-      (e) => e.pcb_silkscreen_path_id === `polarity_cathode_${pin}_0`,
+      (e) => e.pcb_silkscreen_path_id === `polarity_anode_${pin}_0`,
     )!
-    expect(mark.route[0].x).toBeGreaterThan(pad.x + pad.width / 2)
+    expect(mark.route[0].x).toBeLessThan(pad.x - pad.width / 2)
     expect((mark.route[0].y + mark.route[1].y) / 2).toBeCloseTo(pad.y)
   }
   snapshot(elements, "led5050-three-cathodes")
@@ -102,7 +103,7 @@ test("custom pad positions keep silk and fabrication polarity on the actual cath
     [...pads, ...createFabricationNoteDiodeFromCircuitJson(pads)],
     { fn: "led2835" },
   )
-  expect(marks(elements)[0].route[0].x).toBeLessThan(-1.8)
+  expect(marks(elements)[0].route[0].x).toBeGreaterThan(2.1)
   const cathodeSymbol = elements.find(
     (e) =>
       e.type === "pcb_fabrication_note_path" &&
@@ -125,9 +126,9 @@ test("anode-only mappings derive the opposite cathode, including K1 standard pac
     "sod323he_anodepin1",
   ]) {
     const elements = fp.string(name).circuitJson()
-    const pin = name.endsWith("2") ? 1 : 2
+    const pin = name.endsWith("2") ? 2 : 1
     expect(marks(elements)[0].pcb_silkscreen_path_id).toBe(
-      `polarity_cathode_${pin}_0`,
+      `polarity_anode_${pin}_0`,
     )
     snapshot(elements, name)
   }
@@ -187,7 +188,7 @@ test("through-hole diode marks are opt-in on the otherwise generic axial package
     const name = `axial_cathodepin${pin}`
     const elements = fp.string(name).circuitJson()
     expect(marks(elements)).toHaveLength(2)
-    expect(Math.sign(marks(elements)[0].route[0].x)).toBe(pin === 1 ? -1 : 1)
+    expect(Math.sign(marks(elements)[0].route[0].x)).toBe(pin === 1 ? 1 : -1)
     snapshot(elements, name)
   }
   const unpolarized = fp.string("axial").circuitJson()

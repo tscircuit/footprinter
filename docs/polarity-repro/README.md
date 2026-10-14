@@ -12,7 +12,7 @@ This reproduction is `fp.string("diode0603").circuitJson()`, rendered with `conv
 | --- | --- |
 | ![Before](before.png) | ![After](after.png) |
 
-The top silkscreen Gerber contains 25 `D01*` drawing commands before and 28 after. The additional three segments draw the explicit K beside pin 2 with a circular 0.15 mm aperture. They are in `F_SilkScreen.gbr`, not merely an additional fabrication-note layer. The same existing Gerber silkscreen conversion handles both versions; this reproduction does not depend on changes to fabrication-note export.
+The top silkscreen Gerber contains 25 `D01*` drawing commands before and 27 after. The additional two segments draw an explicit + beside anode pin 1 with a circular 0.15 mm aperture. They are in `F_SilkScreen.gbr`, not merely an additional fabrication-note layer. The same existing Gerber silkscreen conversion handles both versions; this reproduction does not depend on changes to fabrication-note export.
 
 Reproduce from a checkout of each revision:
 

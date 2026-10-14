@@ -33,7 +33,7 @@ const diodeFamilies = new Set([
   "sod923",
 ])
 
-/** Add explicit K marks, using pad identities rather than a fixed body side.
+/** Add explicit + marks at anodes, using pad identities rather than a fixed body side.
  * Run before footprint rotation, origin translation and nosilkscreen filtering.
  */
 export const addPolaritySilkscreen = (
@@ -47,10 +47,10 @@ export const addPolaritySilkscreen = (
   const pads = elements.filter(
     (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
   )
-  const cathodePins =
+  const anodePins =
     parameters.fn === "led5050"
-      ? [4, 5, 6]
-      : [parameters.cathodepin ?? (parameters.anodepin === 2 ? 1 : 2)]
+      ? [1, 2, 3]
+      : [parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1)]
   if (
     parameters.fn === "led5050" &&
     (parameters.cathodepin !== undefined || parameters.anodepin !== undefined)
@@ -84,27 +84,26 @@ export const addPolaritySilkscreen = (
   if (!Number.isFinite(minX) || !Number.isFinite(maxX)) {
     throw new Error("Could not determine diode silkscreen bounds")
   }
-  const marks: PcbSilkscreenPath[] = cathodePins.flatMap((pin) => {
+  const marks: PcbSilkscreenPath[] = anodePins.flatMap((pin) => {
     const pad = pads.find((e) => e.port_hints?.includes(String(pin)))
-    if (!pad) throw new Error(`Could not find diode cathode pad ${pin}`)
+    if (!pad) throw new Error(`Could not find diode anode pad ${pin}`)
     // 0.25 mm edge clearance with a 0.15 mm printed stroke.
     const left = pad.x < padCenterX
-    const x = left ? minX - 0.325 - 0.45 : maxX + 0.325
+    const x = left ? minX - 0.625 : maxX + 0.625
     const y = pad.y
     const routes = [
       [
-        { x, y: y - 0.4 },
-        { x, y: y + 0.4 },
+        { x: x - 0.3, y },
+        { x: x + 0.3, y },
       ],
       [
-        { x: x + 0.45, y: y + 0.4 },
-        { x, y },
-        { x: x + 0.45, y: y - 0.4 },
+        { x, y: y - 0.3 },
+        { x, y: y + 0.3 },
       ],
     ]
     return routes.map((route, index) => ({
       type: "pcb_silkscreen_path",
-      pcb_silkscreen_path_id: `polarity_cathode_${pin}_${index}`,
+      pcb_silkscreen_path_id: `polarity_anode_${pin}_${index}`,
       pcb_component_id: "",
       layer: "top",
       stroke_width: 0.15,

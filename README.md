@@ -262,7 +262,7 @@ or a linter will eventually error if it sees these.
 
 ## Assembly polarity marks
 
-Native diode and LED packages include an explicit `K` on top silkscreen beside the cathode. Use `cathodepin` or `anodepin` to match the actual part's pinout; setting one derives the other. Most two-pin packages default to pin 2 as cathode; DO-219AD and SOD-323HE default to pin 1. RGB LED5050 has fixed pairs 1–6, 2–5, and 3–4, with K marks at pins 6, 5, and 4; two-pin overrides are rejected.
+Native diode and LED packages include an explicit `+` on top silkscreen beside the anode. Use `cathodepin` or `anodepin` to match the actual part's pinout; setting one derives the other. Most two-pin packages default to pin 2 as cathode; DO-219AD and SOD-323HE default to pin 1. RGB LED5050 has fixed pairs 1–6, 2–5, and 3–4, with + marks at pins 1, 2, and 3; two-pin overrides are rejected.
 
 ```ts
 fp.string("diode0603_cathodepin1").circuitJson()
