@@ -270,7 +270,7 @@ fp().led().imperial("0603").anodepin(2).circuitJson()
 fp.string("axial_cathodepin2").circuitJson() // generic axial packages need an explicit diode mapping
 ```
 
-Importers must supply the actual electrical A/K or positive/negative mapping. These options do not infer polarity from power/ground attributes or change connected nets. Keep IC and transistor pin-1 orientation distinct from electrical polarity. See the [JLCPCB evidence and before/after SVG and Gerber reproduction](docs/polarity-repro/README.md).
+Importers must supply the actual electrical A/K or positive/negative mapping. These options do not infer polarity from power/ground attributes or change connected nets. Keep IC and transistor pin-1 orientation distinct from electrical polarity.
 
 ## Adding a new footprint function
 
