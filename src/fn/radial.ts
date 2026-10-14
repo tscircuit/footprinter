@@ -128,10 +128,7 @@ export const radial = (
   ]
 
   const hasPolarity =
-    parameters.electrolytic === true ||
-    parameters.polarized === true ||
-    parameters.positivepin !== undefined ||
-    parameters.negativepin !== undefined
+    parameters.electrolytic === true || parameters.polarized === true
   if (hasPolarity) {
     circuitJson.push(plusHoriz, plusVert)
   }

@@ -12,8 +12,8 @@ const snapshot = (elements: AnyCircuitElement[], name: string) =>
 test("polarized capacitors expose positive/negative mapping without marking ceramic capacitors", () => {
   for (const name of [
     "cap0603_polarized",
-    "cap0603_positivepin2",
-    "cap0603_negativepin1",
+    "cap0603_polarized_positivepin2",
+    "cap0603_polarized_negativepin1",
   ]) {
     const elements = fp.string(name).circuitJson()
     const plus = elements.filter(
@@ -28,10 +28,10 @@ test("polarized capacitors expose positive/negative mapping without marking cera
     snapshot(elements, name)
   }
   expect(() =>
-    fp.string("cap0603_positivepin1_negativepin1").circuitJson(),
+    fp.string("cap0603_polarized_positivepin1_negativepin1").circuitJson(),
   ).toThrow()
   expect(() =>
-    fp.string("cap0603_nonpolarized_positivepin1").circuitJson(),
+    fp.string("cap0603_nonpolarized_polarized_positivepin1").circuitJson(),
   ).toThrow()
   for (const family of ["electrolytic", "radial_polarized"]) {
     const left = fp.string(family).circuitJson()
@@ -62,7 +62,11 @@ test("polarized capacitors expose positive/negative mapping without marking cera
 })
 
 test("capacitor polarity rejects conflicting pins and respects nosilkscreen", () => {
-  for (const family of ["cap0603", "electrolytic", "radial"]) {
+  for (const family of [
+    "cap0603_polarized",
+    "electrolytic",
+    "radial_polarized",
+  ]) {
     expect(() =>
       fp.string(`${family}_positivepin2_negativepin2`).circuitJson(),
     ).toThrow()

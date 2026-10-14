@@ -9,15 +9,9 @@ export const cap = (
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
   parameters = { ...parameters, ...base_def.parse(parameters) }
   const circuitJson = passive(parameters)
-  if (
-    parameters.polarized ||
-    parameters.positivepin !== undefined ||
-    parameters.negativepin !== undefined
-  ) {
+  if (parameters.polarized === true) {
     if (parameters.nonpolarized)
-      throw new Error(
-        "A nonpolarized capacitor cannot specify polarized terminals",
-      )
+      throw new Error("A nonpolarized capacitor cannot be polarized")
     const positivePin = getPositivePin(parameters)
     const pads = circuitJson.filter(
       (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
