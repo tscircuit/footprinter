@@ -36,17 +36,52 @@ test("polarized capacitors expose positive/negative mapping without marking cera
   for (const family of ["electrolytic", "radial_polarized"]) {
     const left = fp.string(family).circuitJson()
     const right = fp.string(`${family}_positivepin2`).circuitJson()
-    // Existing plus strokes are the only two-point paths with identical y or x outside the body.
     const plusX = (elements: AnyCircuitElement[]) =>
       elements.filter(
         (e) =>
           e.type === "pcb_silkscreen_path" &&
-          e.route.length === 2 &&
-          Math.abs(e.route[0].x) > 5,
+          e.pcb_silkscreen_path_id.startsWith("polarity_positive_"),
       )
-    expect(plusX(left).length).toBeGreaterThan(0)
+    expect(plusX(left)).toHaveLength(2)
+    expect(plusX(left)[0].route[0].x).toBeLessThan(0)
     expect(plusX(right)[0].route[0].x).toBeGreaterThan(0)
+    if (family === "electrolytic") {
+      const positivePad = right.find(
+        (e) => e.type === "pcb_plated_hole" && e.port_hints?.includes("2"),
+      )!
+      expect(positivePad.shape).toBe("circular_hole_with_rect_pad")
+      expect(positivePad.x).toBeGreaterThan(0)
+      const pin1 = right.find(
+        (e) => e.type === "pcb_plated_hole" && e.port_hints?.includes("1"),
+      )!
+      expect(pin1.x).toBeLessThan(0)
+    }
     snapshot(left, `${family}-positive1`)
     snapshot(right, `${family}-positive2`)
+  }
+})
+
+test("capacitor polarity rejects conflicting pins and respects nosilkscreen", () => {
+  for (const family of ["cap0603", "electrolytic", "radial"]) {
+    expect(() =>
+      fp.string(`${family}_positivepin2_negativepin2`).circuitJson(),
+    ).toThrow()
+    expect(() => fp.string(`${family}_positivepin3`).circuitJson()).toThrow()
+    const elements = fp
+      .string(`${family}_positivepin2_nosilkscreen`)
+      .circuitJson()
+    expect(elements.some((e) => e.type === "pcb_silkscreen_path")).toBeFalse()
+    snapshot(elements, `${family}-nosilkscreen`)
+  }
+  for (const family of ["cap0603", "radial_ceramic"]) {
+    const elements = fp.string(family).circuitJson()
+    expect(
+      elements.some(
+        (e) =>
+          e.type === "pcb_silkscreen_path" &&
+          e.pcb_silkscreen_path_id.startsWith("polarity_positive_"),
+      ),
+    ).toBeFalse()
+    snapshot(elements, `${family}-nonpolarized`)
   }
 })
