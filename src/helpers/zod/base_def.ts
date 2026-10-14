@@ -3,6 +3,17 @@ import { z } from "zod"
 import { pin1_location } from "./pin1-location"
 
 export const base_def = z.object({
+  polarized: z.boolean().optional().describe("mark a capacitor as polarized"),
+  positivepin: z.coerce
+    .number()
+    .pipe(z.union([z.literal(1), z.literal(2)]))
+    .optional()
+    .describe("positive terminal of a polarized capacitor"),
+  negativepin: z.coerce
+    .number()
+    .pipe(z.union([z.literal(1), z.literal(2)]))
+    .optional()
+    .describe("negative terminal of a polarized capacitor"),
   norefdes: z
     .boolean()
     .optional()

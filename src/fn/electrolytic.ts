@@ -9,6 +9,7 @@ import { platedhole } from "src/helpers/platedhole"
 import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { getPositivePin } from "../helpers/get-positive-pin"
 
 const electrolytic_def = base_def.extend({
   fn: z.string(),
@@ -73,17 +74,25 @@ export const electrolytic = (
   const parameters = electrolytic_def.parse(raw_params)
 
   const { p, id, od, d } = parameters
+  const positivePin = getPositivePin(parameters)
+  const polarityDirection = positivePin === 1 ? 1 : -1
 
   const plated_holes = [
     platedHoleWithRectPad({
-      pn: 1,
-      x: -p / 2,
+      pn: positivePin,
+      x: (-polarityDirection * p) / 2,
       y: 0,
       holeDiameter: id,
       rectPadWidth: od,
       rectPadHeight: od,
     }),
-    platedhole(2, p / 2, 0, id, od),
+    platedhole(
+      positivePin === 1 ? 2 : 1,
+      (polarityDirection * p) / 2,
+      0,
+      id,
+      od,
+    ),
   ]
 
   const { topArc, bottomArc } = generate_circle_arcs(
@@ -98,7 +107,10 @@ export const electrolytic = (
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
-    route: topArc,
+    route: topArc.map((point) => ({
+      ...point,
+      x: point.x * polarityDirection,
+    })),
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
@@ -107,7 +119,10 @@ export const electrolytic = (
     type: "pcb_silkscreen_path",
     layer: "top",
     pcb_component_id: "",
-    route: bottomArc,
+    route: bottomArc.map((point) => ({
+      ...point,
+      x: point.x * polarityDirection,
+    })),
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
@@ -124,7 +139,7 @@ export const electrolytic = (
     pcb_silkscreen_path_id: "",
   }
 
-  const X = -(d / 2 + 0.5)
+  const X = -(d / 2 + 0.5) * polarityDirection
   const plusY = od / 2 + 1.5
   const Size = 0.5
 
@@ -136,8 +151,8 @@ export const electrolytic = (
       { x: X - Size, y: plusY },
       { x: X + Size, y: plusY },
     ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
+    stroke_width: 0.15,
+    pcb_silkscreen_path_id: "polarity_positive_horizontal",
   }
 
   const silkscreenline: PcbSilkscreenPath = {
@@ -148,8 +163,8 @@ export const electrolytic = (
       { x: X, y: plusY - Size },
       { x: X, y: plusY + Size },
     ],
-    stroke_width: 0.1,
-    pcb_silkscreen_path_id: "",
+    stroke_width: 0.15,
+    pcb_silkscreen_path_id: "polarity_positive_vertical",
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, d / 2 + 1, 0.5)
