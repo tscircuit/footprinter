@@ -11,6 +11,7 @@ import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyPin1Location } from "./helpers/apply-pin1-location"
 import { applyRounded } from "./helpers/apply-rounded"
+import { addPolaritySilkscreen } from "./helpers/add-polarity-silkscreen"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
@@ -827,9 +828,13 @@ export const footprinter = (): Footprinter & {
         if (prop === "soup" || prop === "circuitJson") {
           if ("fn" in target && FOOTPRINT_FN[target.fn]) {
             return () => {
-              const { circuitJson } = FOOTPRINT_FN[target.fn](target)
+              const { circuitJson, parameters } =
+                FOOTPRINT_FN[target.fn](target)
               const circuitWithoutSilkscreen = applyNoSilkscreen(
-                circuitJson,
+                addPolaritySilkscreen(circuitJson, {
+                  ...parameters,
+                  fn: target.fn,
+                }),
                 target,
               )
               const circuitWithoutRefDes = applyNoRefDes(

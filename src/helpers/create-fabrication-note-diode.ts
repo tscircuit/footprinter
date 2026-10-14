@@ -60,8 +60,27 @@ export const getCopperBounds = (
 export const createFabricationNoteDiodeFromCircuitJson = (
   circuitJson: AnyCircuitElement[],
   options: DiodeFabricationNoteOptions = {},
-): AnyCircuitElement[] =>
-  createFabricationNoteDiode(getCopperBounds(circuitJson), options)
+): AnyCircuitElement[] => {
+  const cathodePin = getCathodePin(options) ?? 2
+  const pads = circuitJson.filter(
+    (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
+  )
+  const cathode = pads.find((pad) =>
+    pad.port_hints?.includes(String(cathodePin)),
+  )
+  const anode = pads.find((pad) =>
+    pad.port_hints?.includes(String(3 - cathodePin)),
+  )
+  if (!cathode || !anode)
+    throw new Error("Could not find diode anode/cathode pads")
+  return createFabricationNoteDiode(getCopperBounds(circuitJson), {
+    ...options,
+    // The drawing helper's 1/2 convention means left/right. Pad identity can
+    // differ from physical position in footprints with configurable pad centers.
+    anodePin: undefined,
+    cathodePin: cathode.x < anode.x ? 1 : 2,
+  })
+}
 
 const getCathodePin = ({
   anodePin,

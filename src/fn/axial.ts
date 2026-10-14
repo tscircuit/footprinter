@@ -11,6 +11,7 @@ import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 
 export const axial_def = base_def.extend({
   fn: z.string(),
@@ -77,6 +78,13 @@ export const axial = (
   return {
     circuitJson: [
       ...plated_holes,
+      ...(parameters.anodepin !== undefined ||
+      parameters.cathodepin !== undefined
+        ? createFabricationNoteDiodeFromCircuitJson(plated_holes, {
+            anodePin: parameters.anodepin,
+            cathodePin: parameters.cathodepin,
+          })
+        : []),
       silkscreenLine,
       silkscreenRefText as AnyCircuitElement,
       courtyard,
