@@ -19,3 +19,5 @@ The shared native-footprint processing adds a marker to footprints with at least
 The added triangle points inward from outside the copper and path outlines. Its stroke is 0.15 mm with at least 0.25 mm copper-edge clearance. Polygon pads, circular pads and plated-slot extents are supported. It rotates/translates with pads and is removed by `nosilkscreen`. Additional silkscreen space is needed beside densely placed packages; this change leaves copper and courtyards unchanged.
 
 `tests/native-pin1-silkscreen.test.ts` checks 28 native IC, transistor and connector configurations, snapshots enabled/disabled silkscreen, and verifies clearance after SOIC orientation/origin transforms. The full existing test suite also exercises further native families. The existing raw-QFN roundtrip expectation now applies the same assembly postprocessing as the public API; copper and other generated geometry remain checked exactly.
+
+The pre-existing default BGA marker was at the opposite Y corner from A1. The BGA generator now aligns it with the actual A1 corner for both default and explicit numbering. A regression checks and snapshots all four package origins.

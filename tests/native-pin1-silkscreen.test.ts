@@ -98,3 +98,24 @@ test("resistor and capacitor arrays receive no invented electrical orientation",
     )
   }
 })
+
+test("default BGA marker identifies A1 instead of the opposite Y corner", () => {
+  for (const origin of ["tl", "tr", "bl", "br"]) {
+    const name = `bga64_${origin}origin`
+    const elements = fp.string(name).circuitJson()
+    const a1 = elements.find(
+      (e) => e.type === "pcb_smtpad" && e.port_hints?.includes("A1"),
+    )!
+    const marker = elements.find(
+      (e) =>
+        e.type === "pcb_silkscreen_path" &&
+        e.pcb_silkscreen_path_id === "pin1_marker",
+    )!
+    expect(Math.sign(marker.route[0].x)).toBe(Math.sign(a1.x))
+    expect(Math.sign(marker.route[0].y)).toBe(Math.sign(a1.y))
+    expect(convertCircuitJsonToPcbSvg(elements)).toMatchSvgSnapshot(
+      import.meta.path,
+      `pin1-${name}-A1`,
+    )
+  }
+})
