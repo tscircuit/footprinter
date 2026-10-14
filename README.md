@@ -273,3 +273,7 @@ file is.
 You'll sometimes see this `logSoup` function- this makes some debug output
 appear at https://debug.tscircuit.com. Make sure to hit "pcb" and "pcb_renderer"
 after the design.
+
+## Native pin-1 silkscreen
+
+Native packages with at least three pads get a triangle beside physical pin 1 when no explicit pin-1 marker exists. This includes SOIC, SSOP/TSSOP, QFN/DFN and connectors. Existing indicators are retained. The triangle follows the pad's actual identity and footprint transforms, and `nosilkscreen` removes it. Pin-1 orientation is separate from electrical polarity; this processing does not infer an anode or positive terminal. See the [SOIC SVG and Gerber reproduction](docs/native-pin1-repro/README.md).

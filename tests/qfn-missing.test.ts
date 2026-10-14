@@ -2,6 +2,7 @@ import { expect, test } from "bun:test"
 import type { PcbSmtPad } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
+import { addPin1Silkscreen } from "../src/helpers/add-pin1-silkscreen"
 import { qfn, qfn_def } from "../src/fn/qfn"
 import { any_footprinter_def } from "../src/helpers/zod/AnyFootprinterDefinitionOutput"
 import source from "./fixtures/aqfn73-nrf52840-source.json"
@@ -79,7 +80,9 @@ test("QFN shared schema and parsed-definition roundtrip retain nominal count and
   )
   expect(() => qfn_def.parse({ fn: "axial" })).toThrow()
   expect(qfn_def.safeParse({ fn: "bga", grid: "3x3" }).success).toBe(false)
-  expect(qfn(parsed).circuitJson).toEqual(fp.string(recipe).circuitJson())
+  expect(addPin1Silkscreen(qfn(parsed).circuitJson, "qfn")).toEqual(
+    fp.string(recipe).circuitJson(),
+  )
   const restored = qfn(JSON.parse(JSON.stringify(parsed)))
   expect(restored.parameters.num_pins).toBe(88)
   expect(restored.parameters.missing).toHaveLength(15)
@@ -118,7 +121,7 @@ test("ordinary single-row missing QFN preserves each surviving nominal pin and e
     fp.string("qfn16_grid4x4_thermalpad1.5x1.5mm_missing(2,7)").params(),
   )
   expect(parsed.num_pins).toBe(16)
-  expect(qfn(parsed).circuitJson).toEqual(
+  expect(addPin1Silkscreen(qfn(parsed).circuitJson, "qfn")).toEqual(
     fp.string("qfn16_grid4x4_thermalpad1.5x1.5mm_missing(2,7)").circuitJson(),
   )
   expect(

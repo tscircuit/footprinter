@@ -7,6 +7,7 @@ import * as FOOTPRINT_FN from "./fn"
 import type { BgaPinNumbering } from "./fn/bga"
 import type { PinrowPinNumbering } from "./fn/pinrow"
 import { applyNoRefDes } from "./helpers/apply-norefdes"
+import { addPin1Silkscreen } from "./helpers/add-pin1-silkscreen"
 import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyPin1Location } from "./helpers/apply-pin1-location"
@@ -836,8 +837,11 @@ export const footprinter = (): Footprinter & {
                 circuitWithoutSilkscreen,
                 target,
               )
+              const circuitWithPin1Marker = target.nosilkscreen
+                ? circuitWithoutRefDes
+                : addPin1Silkscreen(circuitWithoutRefDes, target.fn)
               const circuitWithPin1Location = applyPin1Location(
-                circuitWithoutRefDes,
+                circuitWithPin1Marker,
                 target.pin1location
                   ? pin1_location.parse(target.pin1location)
                   : undefined,
