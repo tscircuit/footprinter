@@ -77,7 +77,12 @@ test("capacitor polarity rejects conflicting pins and respects nosilkscreen", ()
     expect(elements.some((e) => e.type === "pcb_silkscreen_path")).toBeFalse()
     snapshot(elements, `${family}-nosilkscreen`)
   }
-  for (const family of ["cap0603", "radial_ceramic"]) {
+  for (const family of [
+    "cap0603",
+    "radial_ceramic",
+    "cap0603_positivepin2",
+    "radial_positivepin2",
+  ]) {
     const elements = fp.string(family).circuitJson()
     expect(
       elements.some(

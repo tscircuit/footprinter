@@ -276,7 +276,7 @@ after the design.
 
 ## Polarized capacitor terminals
 
-Electrolytic capacitors default to positive pin 1. `positivepin` or `negativepin` moves the plus mark to the corresponding terminal, including the square positive pad on electrolytic through-hole packages. Radial capacitors get a plus mark only when selected as polarized/electrolytic. Generic capacitors remain nonpolarized unless explicitly requested. Polarity marks rotate and translate with pads, and `nosilkscreen` removes them.
+Electrolytic capacitors default to positive pin 1. `positivepin` or `negativepin` moves the plus mark to the corresponding terminal, including the square positive pad on electrolytic through-hole packages. Radial capacitors get a plus mark only when selected as polarized/electrolytic. Generic capacitors require `polarized: true` (the `.polarized()` builder option); terminal-number options alone never enable polarity marks. Polarity marks rotate and translate with pads, and `nosilkscreen` removes them.
 
 ```ts
 fp.string("cap0603_polarized_positivepin2").circuitJson()
