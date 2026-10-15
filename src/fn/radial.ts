@@ -9,6 +9,7 @@ import { generateCircleArcs } from "../helpers/generateCircleArcs"
 import { platedhole } from "src/helpers/platedhole"
 import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { getPositivePin } from "../helpers/get-positive-pin"
 
 export const radial_def = base_def.extend({
   fn: z.string(),
@@ -28,6 +29,7 @@ export const radial = (
   raw_params: RadialDef,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = radial_def.parse(raw_params)
+  const positivePin = getPositivePin(parameters)
 
   const { p, id, od } = parameters
 
@@ -84,7 +86,7 @@ export const radial = (
   }
 
   const plusSize = 0.1 * p
-  const plusX = -(p + plusSize + 0.04 * p)
+  const plusX = -(p + plusSize + 0.04 * p) * (positivePin === 1 ? 1 : -1)
   const plusY = bodyR - plusSize - 0.08 * p
 
   const plusHoriz: PcbSilkscreenPath = {
@@ -95,8 +97,8 @@ export const radial = (
       { x: plusX - plusSize, y: plusY },
       { x: plusX + plusSize, y: plusY },
     ],
-    stroke_width: strokeWidth,
-    pcb_silkscreen_path_id: "",
+    stroke_width: Math.max(0.15, strokeWidth),
+    pcb_silkscreen_path_id: "polarity_positive_horizontal",
   }
 
   const plusVert: PcbSilkscreenPath = {
@@ -107,8 +109,8 @@ export const radial = (
       { x: plusX, y: plusY - plusSize },
       { x: plusX, y: plusY + plusSize },
     ],
-    stroke_width: strokeWidth,
-    pcb_silkscreen_path_id: "",
+    stroke_width: Math.max(0.15, strokeWidth),
+    pcb_silkscreen_path_id: "polarity_positive_vertical",
   }
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
