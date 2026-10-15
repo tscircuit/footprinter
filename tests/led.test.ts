@@ -116,3 +116,47 @@ test("custom LED footprint uses explicit courtyard dimensions", () => {
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path, footprintString)
 })
+
+for (const { footprint, builder } of [
+  {
+    footprint: "led0603",
+    builder: () => fp().led().imperial("0603"),
+  },
+  {
+    footprint: "led_p3.4mm_pw1.2mm_ph0.95mm",
+    builder: () => fp().led().p("3.4mm").pw("1.2mm").ph("0.95mm"),
+  },
+]) {
+  test(`${footprint} strings normalize explicit polarity pins`, async () => {
+    for (const modifier of ["anodepin", "cathodepin"] as const) {
+      for (const pin of [1, 2] as const) {
+        const circuitJson = fp
+          .string(`${footprint}_${modifier}${pin}`)
+          .circuitJson()
+        expect(circuitJson).toEqual(builder()[modifier](pin).circuitJson())
+
+        const negative = circuitJson.find(
+          (element) =>
+            element.type === "pcb_fabrication_note_text" &&
+            element.text === "-",
+        )
+        const cathodePin = modifier === "cathodepin" ? pin : 3 - pin
+        expect(negative).toBeDefined()
+        expect(
+          negative!.anchor_position.x * (cathodePin === 1 ? -1 : 1),
+        ).toBeGreaterThan(0)
+      }
+    }
+
+    expect(() =>
+      fp.string(`${footprint}_cathodepin1_anodepin1`).circuitJson(),
+    ).toThrow("Diode anode and cathode cannot use the same pin")
+
+    await expect(
+      convertCircuitJsonToPcbSvg(
+        fp.string(`${footprint}_cathodepin1`).circuitJson(),
+        { showFabricationNotes: true },
+      ),
+    ).toMatchSvgSnapshot(import.meta.path, `${footprint}-explicit-polarity`)
+  })
+}
