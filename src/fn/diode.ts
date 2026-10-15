@@ -1,17 +1,19 @@
 import type { AnySoupElement } from "circuit-json"
 import { type PassiveDef, passive } from "src/helpers/passive-fn"
 import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
+import { base_def } from "../helpers/zod/base_def"
 
 export const diode = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
   const circuitJson = passive({ ...parameters, roundedPads: true })
+  const { anodepin, cathodepin } = base_def.parse(parameters)
 
   return {
     circuitJson: circuitJson.concat(
       createFabricationNoteDiodeFromCircuitJson(circuitJson, {
-        anodePin: parameters.anodepin,
-        cathodePin: parameters.cathodepin,
+        anodePin: anodepin,
+        cathodePin: cathodepin,
       }),
     ),
     parameters,
