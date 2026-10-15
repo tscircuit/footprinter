@@ -81,10 +81,15 @@ export const createStandardFlatLeadDiodeDef = <const TName extends string>(
       markingwidth: nonnegativeLength.default(
         length.parse(defaults.markingwidth),
       ),
-      cathodepin: diodePin.default(1),
-      anodepin: diodePin.default(2),
+      cathodepin: diodePin.optional(),
+      anodepin: diodePin.optional(),
     })
     .strict()
+    .transform((parameters) => ({
+      ...parameters,
+      cathodepin: parameters.cathodepin ?? (parameters.anodepin === 1 ? 2 : 1),
+      anodepin: parameters.anodepin ?? (parameters.cathodepin === 2 ? 1 : 2),
+    }))
     .superRefine((parameters, ctx) => {
       if (parameters.cathodepin === parameters.anodepin) {
         ctx.addIssue({
