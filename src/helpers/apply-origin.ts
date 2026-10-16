@@ -120,7 +120,11 @@ export const applyOrigin = (
       }
     }
 
-    if (el.type === "pcb_silkscreen_text" && el.anchor_position) {
+    if (
+      (el.type === "pcb_silkscreen_text" ||
+        el.type === "pcb_fabrication_note_text") &&
+      el.anchor_position
+    ) {
       el.anchor_position.x -= dx
       el.anchor_position.y -= dy
     }
