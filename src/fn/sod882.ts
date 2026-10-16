@@ -104,15 +104,15 @@ export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      p: Number.parseFloat(parameters.p),
+      p: length.parse(parameters.p),
     })
     pads.push(
       rectpad(
         i,
         x,
         y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
+        length.parse(parameters.pl),
+        length.parse(parameters.pw),
         0.025,
       ),
     )
