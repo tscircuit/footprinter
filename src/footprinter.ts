@@ -88,7 +88,7 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
   >
-  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey | "polarized">
   crystal: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
