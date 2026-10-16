@@ -417,6 +417,13 @@ export type Footprinter = {
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
+    | "bottomport"
+    | "id"
+    | "od"
+    | "holed"
+    | "portoffsetx"
+    | "portoffsety"
+    | "rowoffsety"
     | "bodywidth"
     | "bodyheight"
     | "bodythickness"
