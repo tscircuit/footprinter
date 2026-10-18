@@ -7,6 +7,7 @@ import { circlepad } from "../helpers/circlepad"
 import { rectpad } from "../helpers/rectpad"
 import { pillpad } from "../helpers/pillpad"
 import { getGridRowLabel } from "../helpers/grid-row-label"
+import { getQuadSidePinCounts } from "../helpers/get-quad-side-pin-counts"
 import { dim2d } from "../helpers/zod/dim-2d"
 import { function_call } from "../helpers/zod/function-call"
 import { base_quad_def, quad, quadTransform } from "./quad"
@@ -16,6 +17,9 @@ const positiveLength = length.refine(
   "QFN dimensions must be positive finite lengths",
 )
 const parsedDimensions = z.object({ x: z.number(), y: z.number() })
+// Matches the 0.1 mm edge inset applied by getQuadCoords.
+const QUAD_PAD_EDGE_INSET = 0.1
+const QFN_DEFAULT_CORNER_PAD_CLEARANCE = 0.1
 
 export const qfn_def = base_quad_def
   .extend(thermalViaDef.shape)
@@ -141,7 +145,47 @@ export const qfn_def = base_quad_def
           parameters[key] !== gridCounts[key]
         )
           throw new Error("QFN grid conflicts with explicit side counts")
-      return quadTransform({ ...parameters, ...gridCounts, pl, pw })
+      const transformed = quadTransform({
+        ...parameters,
+        ...gridCounts,
+        pl,
+        pw,
+      })
+      if (
+        parameters.pl === undefined &&
+        !parameters.circularpads &&
+        !transformed.legsoutside &&
+        transformed.leftrightpadlength === undefined
+      ) {
+        // The default pad length ignores w/h. On a compact body it pushes the
+        // end pads of adjacent sides into each other, so shorten it to keep
+        // the corner pads apart. Explicit pl values are left unchanged.
+        const sides = getQuadSidePinCounts(transformed)
+        const cornerHalfX =
+          ((transformed.px ?? transformed.p) *
+            (Math.max(sides.top, sides.bottom) - 1) +
+            transformed.pw) /
+          2
+        const cornerHalfY =
+          ((transformed.py ?? transformed.p) *
+            (Math.max(sides.left, sides.right) - 1) +
+            (transformed.leftrightpadwidth ?? transformed.pw)) /
+          2
+        const maxPlX =
+          transformed.w / 2 -
+          QUAD_PAD_EDGE_INSET -
+          cornerHalfX -
+          QFN_DEFAULT_CORNER_PAD_CLEARANCE
+        const maxPlY =
+          transformed.h / 2 -
+          QUAD_PAD_EDGE_INSET -
+          cornerHalfY -
+          QFN_DEFAULT_CORNER_PAD_CLEARANCE
+        const maxPl = Math.min(maxPlX, maxPlY)
+        if (transformed.pl > maxPlX && transformed.pl > maxPlY && maxPl > 0)
+          transformed.pl = maxPl
+      }
+      return transformed
     }
     if (
       parameters.cc === false ||
