@@ -11,6 +11,7 @@ import { applyNoSilkscreen } from "./helpers/apply-nosilkscreen"
 import { applyOrigin } from "./helpers/apply-origin"
 import { applyPin1Location } from "./helpers/apply-pin1-location"
 import { applyRounded } from "./helpers/apply-rounded"
+import { applySolderMask } from "./helpers/apply-soldermask"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
@@ -28,6 +29,11 @@ type BaseOptionKey =
   | "faceup"
   | "nosilkscreen"
   | "rounded"
+  | "soldermaskmargin"
+  | "smm"
+  | "padmask"
+  | "thermalpadsoldermaskmargin"
+  | "thermalpadmask"
   | "pin1location"
 
 export type FootprinterParamsBuilder<
@@ -846,7 +852,11 @@ export const footprinter = (): Footprinter & {
                 circuitWithPin1Location,
                 target.rounded,
               )
-              return applyOrigin(circuitWithRoundedPads, target.origin)
+              const circuitWithSolderMask = applySolderMask(
+                circuitWithRoundedPads,
+                target,
+              )
+              return applyOrigin(circuitWithSolderMask, target.origin)
             }
           }
 
