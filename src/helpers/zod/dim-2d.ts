@@ -1,3 +1,4 @@
+import { length } from "circuit-json"
 import { z } from "zod"
 
 export const dim2d = z
@@ -5,8 +6,8 @@ export const dim2d = z
   .transform((a) => {
     const [x, y] = a.split(/[x ]/)
     return {
-      x: parseFloat(x ?? ""),
-      y: parseFloat(y ?? ""),
+      x: length.parse(x ?? ""),
+      y: length.parse(y ?? ""),
     }
   })
   .pipe(
