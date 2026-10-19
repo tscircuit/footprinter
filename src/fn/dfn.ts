@@ -5,7 +5,10 @@ import type {
 } from "circuit-json"
 import { length } from "circuit-json"
 import { CORNERS } from "src/helpers/corner"
-import { createThermalPad } from "src/helpers/create-thermal-pad"
+import {
+  createThermalPad,
+  getThermalPadSolderMask,
+} from "src/helpers/create-thermal-pad"
 import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
 import { pillpad } from "src/helpers/pillpad"
 import { polygonpad } from "src/helpers/polygonpad"
@@ -179,10 +182,14 @@ export const dfn = (
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(parameters.thermalpad, parameters),
+      ),
     )
   }
 

@@ -64,6 +64,37 @@ type CommonPassiveOptionKey =
   | "nonpolarized"
   | "textbottom"
 
+type ThermalPadOptionKey =
+  | "thermalpad"
+  | "thermalpadcenteroffsetx"
+  | "thermalpadcenteroffsety"
+  | "thermalpadmask"
+  | "tpmask"
+  | "thermalpadmaskopening"
+  | "thermalpadsoldermaskmargin"
+  | "thermalpadmaskmargin"
+  | "tpsmm"
+
+type QuadSolderMaskOptionKey =
+  | ThermalPadOptionKey
+  | "soldermaskmargin"
+  | "maskmargin"
+  | "smm"
+  | "padsoldermaskmargin"
+  | "padmaskmargin"
+  | "padmask"
+  | "padmaskopening"
+  | "pwmask"
+  | "maskpw"
+  | "padmaskwidth"
+  | "plmask"
+  | "maskpl"
+  | "padmasklength"
+  | "lrpwmask"
+  | "leftrightpadmaskwidth"
+  | "lrplmask"
+  | "leftrightpadmasklength"
+
 export type Footprinter = {
   dip: (
     num_pins?: number,
@@ -105,12 +136,23 @@ export type Footprinter = {
   qfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "id" | "od" | "wide" | "narrow" | "pillpads"
+    | "w"
+    | "h"
+    | "p"
+    | "pw"
+    | "pl"
+    | "id"
+    | "od"
+    | "wide"
+    | "narrow"
+    | "pillpads"
+    | QuadSolderMaskOptionKey
   >
   quad: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "w"
+    | "h"
     | "l"
     | "square"
     | "pl"
@@ -118,9 +160,25 @@ export type Footprinter = {
     | "pb"
     | "pt"
     | "p"
+    | "px"
+    | "py"
     | "pw"
     | "ph"
+    | "lrpw"
+    | "lrpl"
+    | "leftrightpadwidth"
+    | "leftrightpadlength"
+    | "leftpins"
+    | "toppins"
+    | "rightpins"
+    | "bottompins"
+    | "lrpins"
+    | "leftrightpins"
+    | "tbpins"
+    | "topbottompins"
     | "pillpads"
+    | "legsoutside"
+    | QuadSolderMaskOptionKey
   >
   bga: (
     num_pins?: number,
@@ -161,9 +219,6 @@ export type Footprinter = {
     | "leftrightpins"
     | "tbpins"
     | "topbottompins"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
     | "thermalvias"
     | "thermalviapitch"
     | "thermalviaid"
@@ -176,25 +231,19 @@ export type Footprinter = {
     | "staggered"
     | "circularpads"
     | "pinnumbering"
-    | "missing",
+    | "missing"
+    | QuadSolderMaskOptionKey,
     "ballcoords"
   >
   tqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pw" | "pl" | "pillpads" | QuadSolderMaskOptionKey
+  >
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    | "w"
-    | "p"
-    | "pw"
-    | "pl"
-    | "id"
-    | "od"
-    | "pillpads"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
+    "w" | "p" | "pw" | "pl" | "id" | "od" | "pillpads" | ThermalPadOptionKey
   >
   mlp: (
     num_pins?: number,
@@ -207,19 +256,11 @@ export type Footprinter = {
     | "bodythickness"
     | "w"
     | "p"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
+    | ThermalPadOptionKey
   >
   tssop: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<
-    | "w"
-    | "p"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
-  >
+  ) => FootprinterParamsBuilder<"w" | "p" | ThermalPadOptionKey>
   dfn: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -229,9 +270,7 @@ export type Footprinter = {
     | "pl"
     | "missing"
     | "pillpads"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
+    | ThermalPadOptionKey
     | "thermalvias"
     | "thermalviapitch"
     | "thermalviaid"
@@ -413,7 +452,9 @@ export type Footprinter = {
   ms012: () => FootprinterParamsBuilder<"w" | "p">
   lqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
+  ) => FootprinterParamsBuilder<
+    "w" | "h" | "p" | "pl" | "pw" | "pillpads" | QuadSolderMaskOptionKey
+  >
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -502,26 +543,12 @@ export type Footprinter = {
   vssop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    | "w"
-    | "h"
-    | "p"
-    | "pl"
-    | "pw"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
+    "w" | "h" | "p" | "pl" | "pw" | ThermalPadOptionKey
   >
   msop: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    | "w"
-    | "h"
-    | "p"
-    | "pl"
-    | "pw"
-    | "thermalpad"
-    | "thermalpadcenteroffsetx"
-    | "thermalpadcenteroffsety"
+    "w" | "h" | "p" | "pl" | "pw" | ThermalPadOptionKey
   >
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
@@ -615,6 +642,27 @@ export type Footprinter = {
     | "height"
     | "s"
     | "size"
+    | "soldermaskmargin"
+    | "maskmargin"
+    | "smm"
+    | "maskd"
+    | "md"
+    | "maskdiameter"
+    | "maskr"
+    | "mr"
+    | "maskradius"
+    | "maskw"
+    | "mw"
+    | "maskwidth"
+    | "maskh"
+    | "mh"
+    | "maskheight"
+    | "masks"
+    | "ms"
+    | "masksize"
+    | "mask"
+    | "maskopening"
+    | "soldermaskopening"
   > & {
     params: () => any
     soup: () => AnySoupElement[]
@@ -626,7 +674,22 @@ export type Footprinter = {
   smdpads: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"p" | "pw" | "ph" | "centerpadwidth">
-  pad: () => FootprinterParamsBuilder<"w" | "h"> & {
+  pad: () => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "soldermaskmargin"
+    | "maskmargin"
+    | "smm"
+    | "maskw"
+    | "mw"
+    | "maskwidth"
+    | "maskh"
+    | "mh"
+    | "maskheight"
+    | "mask"
+    | "maskopening"
+    | "soldermaskopening"
+  > & {
     params: () => any
     soup: () => AnySoupElement[]
     circuitJson: () => AnyCircuitElement[]

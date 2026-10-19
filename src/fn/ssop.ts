@@ -4,17 +4,18 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { length } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { u_curve } from "../helpers/u-curve"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
+  getThermalPadSolderMask,
   thermalPadOffsetFields,
 } from "src/helpers/create-thermal-pad"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { u_curve } from "../helpers/u-curve"
+import { base_def } from "../helpers/zod/base_def"
 
 // TODO we should accept MS-012 or MS-013
 
@@ -65,21 +66,10 @@ export const ssop_def = base_def
       v.pl = v.pw! * (1.1 / 0.51)
     }
 
-    return v as {
-      bodywidth?: number
-      bodyheight?: number
-      bodythickness?: number
-      w: number
-      p: number
-      pw: number
-      pl: number
-      num_pins: number
-      legsoutside: boolean
-      thermalpad?: { x: number; y: number }
-      thermalpadcenteroffsetx: number
-      thermalpadcenteroffsety: number
-      silkscreen_stroke_width?: number
-      fn: string
+    return {
+      ...v,
+      pw: v.pw!,
+      pl: v.pl!,
     }
   })
 
@@ -129,10 +119,14 @@ export const ssop = (
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(parameters.thermalpad, parameters),
+      ),
     )
   }
 

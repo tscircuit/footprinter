@@ -1,15 +1,25 @@
 import type { AnyCircuitElement, PcbSmtPad } from "circuit-json"
 import { length } from "circuit-json"
-import { z } from "zod"
 import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
-import { createThermalPad } from "../helpers/create-thermal-pad"
+import { z } from "zod"
 import { circlepad } from "../helpers/circlepad"
-import { rectpad } from "../helpers/rectpad"
-import { pillpad } from "../helpers/pillpad"
+import {
+  createThermalPad,
+  getThermalPadSolderMask,
+} from "../helpers/create-thermal-pad"
 import { getGridRowLabel } from "../helpers/grid-row-label"
+import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
 import { dim2d } from "../helpers/zod/dim-2d"
 import { function_call } from "../helpers/zod/function-call"
-import { base_quad_def, quad, quadTransform } from "./quad"
+import {
+  base_quad_def,
+  getQuadPerimeterCircleSolderMask,
+  getQuadPerimeterPadSolderMask,
+  normalizeQuadSolderMask,
+  quad,
+  quadTransform,
+} from "./quad"
 
 const positiveLength = length.refine(
   (value) => Number.isFinite(value) && value > 0,
@@ -150,11 +160,16 @@ export const qfn_def = base_quad_def
       parameters.leftrightpadwidth !== undefined ||
       parameters.leftrightpadlength !== undefined ||
       parameters.lrpw !== undefined ||
-      parameters.lrpl !== undefined
+      parameters.lrpl !== undefined ||
+      parameters.leftrightpadmaskwidth !== undefined ||
+      parameters.leftrightpadmasklength !== undefined ||
+      parameters.lrpwmask !== undefined ||
+      parameters.lrplmask !== undefined
     )
       throw new Error(
         "Two-row QFN uses counterclockwise grid numbering and uniform pad sizes",
       )
+    normalizeQuadSolderMask(parameters)
     for (const key of [
       "leftpins",
       "rightpins",
@@ -196,6 +211,32 @@ export const qfn_def = base_quad_def
     ])
       if (!Number.isFinite(value) || value <= 0)
         throw new Error("QFN dimensions must be positive finite lengths")
+    if (parameters.circularpads) {
+      getQuadPerimeterCircleSolderMask({
+        ...parameters,
+        pw,
+      })
+      if (parameters.pwmask !== undefined && parameters.plmask === undefined)
+        parameters.plmask = parameters.pwmask
+      if (parameters.plmask !== undefined && parameters.pwmask === undefined)
+        parameters.pwmask = parameters.plmask
+    } else {
+      getQuadPerimeterPadSolderMask({
+        parameters,
+        isLeftOrRight: false,
+        padWidth: pw,
+        padHeight: pl,
+      })
+      getQuadPerimeterPadSolderMask({
+        parameters,
+        isLeftOrRight: true,
+        padWidth: pl,
+        padHeight: pw,
+      })
+    }
+    if (parameters.thermalpad && typeof parameters.thermalpad === "object") {
+      getThermalPadSolderMask(parameters.thermalpad, parameters)
+    }
     return {
       ...parameters,
       grid,
@@ -407,7 +448,8 @@ export const qfn = (
         element.port_hints?.includes("thermalpad") ||
         selectedNumbers.has(Number(element.port_hints?.[0])),
     )
-    if (parameters.circularpads)
+    if (parameters.circularpads) {
+      const circleSolderMask = getQuadPerimeterCircleSolderMask(parameters)
       circuitJson = circuitJson.map((element) =>
         element.type === "pcb_smtpad" &&
         element.shape === "rect" &&
@@ -416,9 +458,11 @@ export const qfn = (
               x: element.x,
               y: element.y,
               radius: parameters.pw / 2,
+              solderMask: circleSolderMask,
             })
           : element,
       )
+    }
   } else {
     const sites = selectSites(twoRowSites(parameters), parameters)
     const pads = sites.map((site) => {
@@ -428,14 +472,27 @@ export const qfn = (
           x: site.x,
           y: site.y,
           radius: parameters.pw / 2,
+          solderMask: getQuadPerimeterCircleSolderMask(parameters),
         })
-      return (parameters.pillpads ? pillpad : rectpad)(
-        hints,
-        site.x,
-        site.y,
-        site.vertical ? parameters.pl : parameters.pw,
-        site.vertical ? parameters.pw : parameters.pl,
-      )
+      const padWidth = site.vertical ? parameters.pl : parameters.pw
+      const padHeight = site.vertical ? parameters.pw : parameters.pl
+      const solderMask = getQuadPerimeterPadSolderMask({
+        parameters,
+        isLeftOrRight: site.vertical,
+        padWidth,
+        padHeight,
+      })
+      return parameters.pillpads
+        ? pillpad(hints, site.x, site.y, padWidth, padHeight, solderMask)
+        : rectpad(
+            hints,
+            site.x,
+            site.y,
+            padWidth,
+            padHeight,
+            undefined,
+            solderMask,
+          )
     })
     if (parameters.thermalpad) {
       const dimensions =
@@ -451,10 +508,14 @@ export const qfn = (
                 2 * parameters.pl,
             }
           : parameters.thermalpad
-      const exposed = createThermalPad(dimensions, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      })
+      const exposed = createThermalPad(
+        dimensions,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(dimensions, parameters),
+      )
       if (parameters.pinnumbering === "ballcoords")
         exposed.port_hints = ["EP", "thermalpad"]
       pads.push(exposed)

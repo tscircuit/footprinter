@@ -3,17 +3,18 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { length } from "circuit-json"
-import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
+  getThermalPadSolderMask,
   thermalPadOffsetFields,
 } from "src/helpers/create-thermal-pad"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { base_def } from "../helpers/zod/base_def"
 
 const getDefaultValues = (num_pins: number) => {
   switch (num_pins) {
@@ -81,10 +82,14 @@ export const vssop = (
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(parameters.thermalpad, parameters),
+      ),
     )
   }
 

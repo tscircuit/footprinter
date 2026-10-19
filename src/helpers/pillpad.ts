@@ -1,4 +1,5 @@
 import type { PcbSmtPad } from "circuit-json"
+import type { UniformSolderMaskFields } from "./solder-mask"
 
 export const pillpad = (
   pn: number | Array<string | number>,
@@ -6,6 +7,7 @@ export const pillpad = (
   y: number,
   w: number,
   h: number,
+  solderMask?: UniformSolderMaskFields,
 ): PcbSmtPad => {
   return {
     type: "pcb_smtpad",
@@ -16,6 +18,7 @@ export const pillpad = (
     radius: Math.min(w, h) / 2,
     layer: "top",
     shape: "pill",
+    ...solderMask,
     pcb_smtpad_id: "",
     port_hints: Array.isArray(pn)
       ? pn.map((item) => item.toString())

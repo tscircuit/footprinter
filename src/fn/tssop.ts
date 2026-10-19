@@ -4,17 +4,18 @@ import type {
   PcbSilkscreenPath,
 } from "circuit-json"
 import { length } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { u_curve } from "../helpers/u-curve"
-import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
+  getThermalPadSolderMask,
   thermalPadOffsetFields,
 } from "src/helpers/create-thermal-pad"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { u_curve } from "../helpers/u-curve"
+import { base_def } from "../helpers/zod/base_def"
 
 export const tssop_def = base_def.extend({
   fn: z.string(),
@@ -85,10 +86,14 @@ export const tssop = (
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(parameters.thermalpad, parameters),
+      ),
     )
   }
 

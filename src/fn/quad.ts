@@ -6,24 +6,40 @@ import type {
 import { length } from "circuit-json"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import {
-  getQuadSidePinCounts,
   type QuadSidePinCounts,
+  getQuadSidePinCounts,
 } from "src/helpers/get-quad-side-pin-counts"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
-import { optional, z } from "zod"
+import { z } from "zod"
+import {
+  createThermalPad,
+  getThermalPadSolderMask,
+  hasExplicitThermalPadSolderMask,
+  thermalPadOffsetFields,
+} from "../helpers/create-thermal-pad"
 import { pillpad } from "../helpers/pillpad"
 import { rectpad } from "../helpers/rectpad"
 import {
-  createThermalPad,
-  thermalPadOffsetFields,
-} from "../helpers/create-thermal-pad"
+  type RectSolderMaskFields,
+  type UniformSolderMaskFields,
+  getCircleSolderMaskFields,
+  getPillSolderMaskFields,
+  getRectSolderMaskFields,
+  isDim2dEqual,
+  isNumberEqual,
+  maskOpening2d,
+  positiveMaskLength,
+  resolveAlias,
+  soldermaskMarginLength,
+} from "../helpers/solder-mask"
 import { base_def } from "../helpers/zod/base_def"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
 const side_pin_count = z.coerce.number().int().positive().optional()
+const parsedDimensions = z.object({ x: z.number(), y: z.number() })
 
 export const base_quad_def = base_def.extend({
   fn: z.string(),
@@ -59,11 +75,228 @@ export const base_quad_def = base_def.extend({
   leftrightpadlength: length
     .optional()
     .describe("left and right side pad length"),
-  thermalpad: z.union([z.literal(true), dim2d]).optional(),
+  soldermaskmargin: soldermaskMarginLength.optional(),
+  maskmargin: soldermaskMarginLength.optional(),
+  smm: soldermaskMarginLength.optional(),
+  padsoldermaskmargin: soldermaskMarginLength.optional(),
+  padmaskmargin: soldermaskMarginLength.optional(),
+  padmask: maskOpening2d
+    .optional()
+    .describe("perimeter pad mask opening width by length"),
+  padmaskopening: maskOpening2d.optional(),
+  pwmask: positiveMaskLength
+    .optional()
+    .describe("perimeter pad mask opening width"),
+  maskpw: positiveMaskLength.optional(),
+  padmaskwidth: positiveMaskLength.optional(),
+  plmask: positiveMaskLength
+    .optional()
+    .describe("perimeter pad mask opening length"),
+  maskpl: positiveMaskLength.optional(),
+  padmasklength: positiveMaskLength.optional(),
+  lrpwmask: positiveMaskLength
+    .optional()
+    .describe("left and right side pad mask opening width"),
+  leftrightpadmaskwidth: positiveMaskLength.optional(),
+  lrplmask: positiveMaskLength
+    .optional()
+    .describe("left and right side pad mask opening length"),
+  leftrightpadmasklength: positiveMaskLength.optional(),
+  thermalpad: z.union([z.literal(true), dim2d, parsedDimensions]).optional(),
   ...thermalPadOffsetFields,
   pillpads: z.boolean().optional().default(false),
   legsoutside: z.boolean().default(false),
 })
+
+export const normalizeQuadSolderMask = <
+  T extends z.infer<typeof base_quad_def>,
+>(
+  v: T,
+) => {
+  if (hasExplicitThermalPadSolderMask(v) && !v.thermalpad) {
+    throw new Error("Thermal pad solder mask parameters require thermalpad")
+  }
+  const soldermaskmargin = resolveAlias(
+    [
+      ["soldermaskmargin", v.soldermaskmargin],
+      ["maskmargin", v.maskmargin],
+      ["smm", v.smm],
+    ],
+    isNumberEqual,
+  )
+  const padsoldermaskmargin = resolveAlias(
+    [
+      ["padsoldermaskmargin", v.padsoldermaskmargin],
+      ["padmaskmargin", v.padmaskmargin],
+    ],
+    isNumberEqual,
+  )
+  if (
+    soldermaskmargin !== undefined &&
+    padsoldermaskmargin !== undefined &&
+    !isNumberEqual(soldermaskmargin, padsoldermaskmargin) &&
+    !v.thermalpad
+  ) {
+    throw new Error(
+      `Conflicting soldermaskmargin (${soldermaskmargin}) and padsoldermaskmargin (${padsoldermaskmargin})`,
+    )
+  }
+  const padmask = resolveAlias(
+    [
+      ["padmask", v.padmask],
+      ["padmaskopening", v.padmaskopening],
+    ],
+    isDim2dEqual,
+  )
+  const pwmask = resolveAlias(
+    [
+      ["pwmask", v.pwmask],
+      ["maskpw", v.maskpw],
+      ["padmaskwidth", v.padmaskwidth],
+      ["padmask", padmask?.x],
+    ],
+    isNumberEqual,
+  )
+  const plmask = resolveAlias(
+    [
+      ["plmask", v.plmask],
+      ["maskpl", v.maskpl],
+      ["padmasklength", v.padmasklength],
+      ["padmask", padmask?.y],
+    ],
+    isNumberEqual,
+  )
+  const leftrightpadmaskwidth = resolveAlias(
+    [
+      ["leftrightpadmaskwidth", v.leftrightpadmaskwidth],
+      ["lrpwmask", v.lrpwmask],
+    ],
+    isNumberEqual,
+  )
+  const leftrightpadmasklength = resolveAlias(
+    [
+      ["leftrightpadmasklength", v.leftrightpadmasklength],
+      ["lrplmask", v.lrplmask],
+    ],
+    isNumberEqual,
+  )
+  const thermalpadmask = resolveAlias(
+    [
+      ["thermalpadmask", v.thermalpadmask],
+      ["tpmask", v.tpmask],
+      ["thermalpadmaskopening", v.thermalpadmaskopening],
+    ],
+    isDim2dEqual,
+  )
+  const thermalpadsoldermaskmargin = resolveAlias(
+    [
+      ["thermalpadsoldermaskmargin", v.thermalpadsoldermaskmargin],
+      ["thermalpadmaskmargin", v.thermalpadmaskmargin],
+      ["tpsmm", v.tpsmm],
+    ],
+    isNumberEqual,
+  )
+
+  if (soldermaskmargin !== undefined) v.soldermaskmargin = soldermaskmargin
+  if (padsoldermaskmargin !== undefined)
+    v.padsoldermaskmargin = padsoldermaskmargin
+  if (padmask !== undefined) v.padmask = padmask
+  if (pwmask !== undefined) v.pwmask = pwmask
+  if (plmask !== undefined) v.plmask = plmask
+  if (leftrightpadmaskwidth !== undefined)
+    v.leftrightpadmaskwidth = leftrightpadmaskwidth
+  if (leftrightpadmasklength !== undefined)
+    v.leftrightpadmasklength = leftrightpadmasklength
+  if (thermalpadmask !== undefined) v.thermalpadmask = thermalpadmask
+  if (thermalpadsoldermaskmargin !== undefined)
+    v.thermalpadsoldermaskmargin = thermalpadsoldermaskmargin
+
+  return v
+}
+
+export const getQuadPerimeterPadSolderMask = ({
+  parameters,
+  isLeftOrRight,
+  padWidth,
+  padHeight,
+}: {
+  parameters: {
+    pillpads?: boolean
+    soldermaskmargin?: number
+    padsoldermaskmargin?: number
+    pwmask?: number
+    plmask?: number
+    leftrightpadmaskwidth?: number
+    leftrightpadmasklength?: number
+  }
+  isLeftOrRight: boolean
+  padWidth: number
+  padHeight: number
+}): RectSolderMaskFields => {
+  const margin = parameters.padsoldermaskmargin ?? parameters.soldermaskmargin
+  const maskWidth = isLeftOrRight
+    ? (parameters.leftrightpadmasklength ?? parameters.plmask)
+    : parameters.pwmask
+  const maskHeight = isLeftOrRight
+    ? (parameters.leftrightpadmaskwidth ?? parameters.pwmask)
+    : parameters.plmask
+
+  if (parameters.pillpads) {
+    return getPillSolderMaskFields({
+      width: padWidth,
+      height: padHeight,
+      margin,
+      maskWidth,
+      maskHeight,
+    })
+  }
+
+  return getRectSolderMaskFields({
+    width: padWidth,
+    height: padHeight,
+    margin,
+    maskWidth,
+    maskHeight,
+  })
+}
+
+export const getQuadPerimeterCircleSolderMask = (parameters: {
+  pw: number
+  soldermaskmargin?: number
+  padsoldermaskmargin?: number
+  pwmask?: number
+  plmask?: number
+  leftrightpadmaskwidth?: number
+  leftrightpadmasklength?: number
+  lrpwmask?: number
+  lrplmask?: number
+}): UniformSolderMaskFields => {
+  if (
+    parameters.leftrightpadmaskwidth !== undefined ||
+    parameters.leftrightpadmasklength !== undefined ||
+    parameters.lrpwmask !== undefined ||
+    parameters.lrplmask !== undefined
+  ) {
+    throw new Error(
+      "Circular QFN pads use one mask diameter and no left/right pad mask overrides",
+    )
+  }
+  if (
+    parameters.pwmask !== undefined &&
+    parameters.plmask !== undefined &&
+    !isNumberEqual(parameters.pwmask, parameters.plmask)
+  ) {
+    throw new Error("Circular QFN pads require equal plmask/pwmask")
+  }
+  const maskDiameter = parameters.pwmask ?? parameters.plmask
+  const margin = parameters.padsoldermaskmargin ?? parameters.soldermaskmargin
+
+  return getCircleSolderMaskFields({
+    radius: parameters.pw / 2,
+    margin,
+    maskRadius: maskDiameter !== undefined ? maskDiameter / 2 : undefined,
+  })
+}
 
 export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v: T,
@@ -88,6 +321,8 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   }
   v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
   v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
+
+  normalizeQuadSolderMask(v)
 
   if (v.w && !v.h) {
     v.h = v.w
@@ -135,6 +370,32 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.pw = v.pl! * (0.6 / 1.0)
   } else if (!v.pl) {
     v.pl = v.pw! * (1.0 / 0.6)
+  }
+
+  if ((v as { circularpads?: boolean }).circularpads) {
+    getQuadPerimeterCircleSolderMask({
+      ...v,
+      pw: v.pw!,
+    })
+    if (v.pwmask !== undefined && v.plmask === undefined) v.plmask = v.pwmask
+    if (v.plmask !== undefined && v.pwmask === undefined) v.pwmask = v.plmask
+  } else {
+    getQuadPerimeterPadSolderMask({
+      parameters: v,
+      isLeftOrRight: false,
+      padWidth: v.pw!,
+      padHeight: v.pl!,
+    })
+    getQuadPerimeterPadSolderMask({
+      parameters: v,
+      isLeftOrRight: true,
+      padWidth: v.leftrightpadlength ?? v.pl!,
+      padHeight: v.leftrightpadwidth ?? v.pw!,
+    })
+  }
+
+  if (v.thermalpad && typeof v.thermalpad === "object") {
+    getThermalPadSolderMask(v.thermalpad, v)
   }
 
   return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
@@ -280,14 +541,20 @@ export const quad = (
       ;[padWidth, padHeight] = [padHeight, padWidth]
     }
     const cornerRadius = Math.min(padWidth, padHeight) / 8
+    const solderMask = getQuadPerimeterPadSolderMask({
+      parameters,
+      isLeftOrRight,
+      padWidth,
+      padHeight,
+    })
 
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
     padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
     pads.push(
       parameters.pillpads
-        ? pillpad(pn, x, y, padWidth, padHeight)
-        : rectpad(pn, x, y, padWidth, padHeight, cornerRadius),
+        ? pillpad(pn, x, y, padWidth, padHeight, solderMask)
+        : rectpad(pn, x, y, padWidth, padHeight, cornerRadius, solderMask),
     )
   }
 
@@ -296,33 +563,32 @@ export const quad = (
       x: parameters.thermalpadcenteroffsetx,
       y: parameters.thermalpadcenteroffsety,
     }
-    if (typeof parameters.thermalpad === "boolean") {
-      const ibw =
-        (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) +
-        parameters.pw
-      const ibh =
-        (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
-        leftRightPadWidth
-      padOuterHalfX = Math.max(
-        padOuterHalfX,
-        Math.abs(thermalPadOffset.x) + ibw / 2,
-      )
-      padOuterHalfY = Math.max(
-        padOuterHalfY,
-        Math.abs(thermalPadOffset.y) + ibh / 2,
-      )
-      pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset))
-    } else {
-      padOuterHalfX = Math.max(
-        padOuterHalfX,
-        Math.abs(thermalPadOffset.x) + parameters.thermalpad.x / 2,
-      )
-      padOuterHalfY = Math.max(
-        padOuterHalfY,
-        Math.abs(thermalPadOffset.y) + parameters.thermalpad.y / 2,
-      )
-      pads.push(createThermalPad(parameters.thermalpad, thermalPadOffset))
-    }
+    const thermalDimensions =
+      typeof parameters.thermalpad === "boolean"
+        ? {
+            x:
+              (parameters.px ?? parameters.p) * (horizontalSidePinCount - 1) +
+              parameters.pw,
+            y:
+              (parameters.py ?? parameters.p) * (verticalSidePinCount - 1) +
+              leftRightPadWidth,
+          }
+        : parameters.thermalpad
+    padOuterHalfX = Math.max(
+      padOuterHalfX,
+      Math.abs(thermalPadOffset.x) + thermalDimensions.x / 2,
+    )
+    padOuterHalfY = Math.max(
+      padOuterHalfY,
+      Math.abs(thermalPadOffset.y) + thermalDimensions.y / 2,
+    )
+    pads.push(
+      createThermalPad(
+        thermalDimensions,
+        thermalPadOffset,
+        getThermalPadSolderMask(thermalDimensions, parameters),
+      ),
+    )
   }
 
   // Silkscreen corners

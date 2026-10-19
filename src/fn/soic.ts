@@ -3,20 +3,21 @@ import type {
   PcbCourtyardOutline,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { z } from "zod"
 import { length } from "circuit-json"
-import type { NowDefined } from "../helpers/zod/now-defined"
-import { u_curve } from "../helpers/u-curve"
-import { rectpad } from "src/helpers/rectpad"
-import { pillpad } from "src/helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
-import { dim2d } from "src/helpers/zod/dim-2d"
 import {
   createThermalPad,
+  getThermalPadSolderMask,
   thermalPadOffsetFields,
 } from "src/helpers/create-thermal-pad"
+import { pillpad } from "src/helpers/pillpad"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { rectpad } from "src/helpers/rectpad"
+import { dim2d } from "src/helpers/zod/dim-2d"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { u_curve } from "../helpers/u-curve"
+import { base_def } from "../helpers/zod/base_def"
+import type { NowDefined } from "../helpers/zod/now-defined"
 
 export const extendSoicDef = (newDefaults: {
   w?: string
@@ -148,10 +149,14 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        getThermalPadSolderMask(parameters.thermalpad, parameters),
+      ),
     )
   }
 
