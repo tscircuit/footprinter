@@ -51,7 +51,9 @@ export const base_quad_def = base_def.extend({
     .describe("center-to-center span between opposite pad rows"),
   padspanx: length
     .optional()
-    .describe("horizontal center-to-center span between left and right pad rows"),
+    .describe(
+      "horizontal center-to-center span between left and right pad rows",
+    ),
   padspany: length
     .optional()
     .describe("vertical center-to-center span between top and bottom pad rows"),
@@ -60,7 +62,9 @@ export const base_quad_def = base_def.extend({
     .describe("overall outer tip-to-tip span between opposite pad rows"),
   leadspanx: length
     .optional()
-    .describe("horizontal outer tip-to-tip span between left and right pad rows"),
+    .describe(
+      "horizontal outer tip-to-tip span between left and right pad rows",
+    ),
   leadspany: length
     .optional()
     .describe("vertical outer tip-to-tip span between top and bottom pad rows"),
