@@ -46,6 +46,24 @@ export const base_quad_def = base_def.extend({
   topbottompins: side_pin_count,
   w: length.optional(),
   h: length.optional(),
+  padspan: length
+    .optional()
+    .describe("center-to-center span between opposite pad rows"),
+  padspanx: length
+    .optional()
+    .describe("horizontal center-to-center span between left and right pad rows"),
+  padspany: length
+    .optional()
+    .describe("vertical center-to-center span between top and bottom pad rows"),
+  leadspan: length
+    .optional()
+    .describe("overall outer tip-to-tip span between opposite pad rows"),
+  leadspanx: length
+    .optional()
+    .describe("horizontal outer tip-to-tip span between left and right pad rows"),
+  leadspany: length
+    .optional()
+    .describe("vertical outer tip-to-tip span between top and bottom pad rows"),
   p: length.default(length.parse("0.5mm")),
   px: length.optional().describe("top and bottom side pad pitch"),
   py: length.optional().describe("left and right side pad pitch"),
@@ -135,6 +153,33 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.pw = v.pl! * (0.6 / 1.0)
   } else if (!v.pl) {
     v.pl = v.pw! * (1.0 / 0.6)
+  }
+
+  const lrPadLen = v.leftrightpadlength ?? v.pl!
+  const tbPadLen = v.pl!
+  const targetPadSpanX = v.padspanx ?? v.padspan
+  const targetPadSpanY = v.padspany ?? v.padspan
+  const targetLeadSpanX = v.leadspanx ?? v.leadspan
+  const targetLeadSpanY = v.leadspany ?? v.leadspan
+
+  if (targetPadSpanX !== undefined) {
+    v.w = v.legsoutside
+      ? targetPadSpanX - (lrPadLen - 0.2)
+      : targetPadSpanX + (lrPadLen - 0.2)
+  } else if (targetLeadSpanX !== undefined) {
+    v.w = v.legsoutside
+      ? targetLeadSpanX - (2 * lrPadLen - 0.2)
+      : targetLeadSpanX + 0.2
+  }
+
+  if (targetPadSpanY !== undefined) {
+    v.h = v.legsoutside
+      ? targetPadSpanY - (tbPadLen - 0.2)
+      : targetPadSpanY + (tbPadLen - 0.2)
+  } else if (targetLeadSpanY !== undefined) {
+    v.h = v.legsoutside
+      ? targetLeadSpanY - (2 * tbPadLen - 0.2)
+      : targetLeadSpanY + 0.2
   }
 
   return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
