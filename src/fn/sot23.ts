@@ -1,13 +1,14 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 const sot23_3CourtyardOutline = [
   { x: -2.05, y: 1.5 },
@@ -122,11 +123,11 @@ export const getCcwSot23Coords = (parameters: {
 
 export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const p = length.parse(parameters.p)
   const cornerRadius = parameters.rounded ?? Math.min(pl, pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -140,11 +141,7 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     })
     pads.push(rectpad(i + 1, x, y, pl, pw, cornerRadius))
   }
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(
-    0,
-    Number.parseInt(parameters.h),
-    0.3,
-  )
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, Math.trunc(h), 0.3)
 
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
@@ -184,11 +181,11 @@ export const getCcwSot235Coords = (parameters: {
 
 export const sot23_5 = (parameters: z.infer<typeof sot23_def>) => {
   const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const p = Number.parseFloat(parameters.p)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const p = length.parse(parameters.p)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
   const cornerRadius = parameters.rounded ?? Math.min(pl, pw) / 8
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getCcwSot235Coords({

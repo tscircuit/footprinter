@@ -1,7 +1,8 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
@@ -38,7 +39,7 @@ export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot343_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 4) : 4
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 4
 
   const parameters = sot343_def.parse({
     ...raw_params,
@@ -74,17 +75,17 @@ export const getCcwSot343Coords = (parameters: {
 export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
   const pads: AnyCircuitElement[] = []
 
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const p = length.parse(parameters.p)
   const cornerRadius = Math.min(pl, pw) / 8
 
-  let minX = Infinity
-  let maxX = -Infinity
-  let minY = Infinity
-  let maxY = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = getCcwSot343Coords({
