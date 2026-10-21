@@ -1,7 +1,8 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
@@ -42,7 +43,7 @@ export const sot323 = (
   raw_params: z.input<typeof sot323_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot323_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 3) : 3
+  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
   const parameters = sot323_def.parse({
     ...raw_params,
@@ -81,11 +82,11 @@ export const getCcwSot323Coords = (parameters: {
 
 export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
   const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const p = length.parse(parameters.p)
   const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 0; i < parameters.num_pins; i++) {
@@ -102,7 +103,7 @@ export const sot323_3 = (parameters: z.infer<typeof sot323_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
-    Number.parseInt(parameters.h) / 2 + 1,
+    Math.trunc(h) / 2 + 1,
     0.3,
   )
 

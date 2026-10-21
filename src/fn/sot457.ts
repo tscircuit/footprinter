@@ -1,15 +1,16 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbCourtyardRect,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbCourtyardRect,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { z } from "zod"
-import { rectpad } from "../helpers/rectpad"
-import { pillpad } from "../helpers/pillpad"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "src/helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { base_def } from "src/helpers/zod/base_def"
+import { z } from "zod"
+import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 
 // Common schema properties for both SOT-457 configurations
 const commonSchema = {
@@ -57,7 +58,7 @@ type Sot457WaveParams = z.infer<typeof sot457WaveSchema>
 
 // Helper function to parse dimension strings to numbers
 const parseDimension = (value: string): number => {
-  return Number.parseFloat(value.replace("mm", ""))
+  return length.parse(value)
 }
 
 // Get pin coordinates for counter-clockwise arrangement

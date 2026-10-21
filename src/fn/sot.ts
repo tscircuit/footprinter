@@ -1,13 +1,14 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
+import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
-import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 
 export const sot_def = base_def.extend({
   fn: z.string(),
@@ -57,10 +58,10 @@ export const getCcwSotCoords = (parameters: {
 
 export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
   const pads: AnyCircuitElement[] = []
-  const h = Number.parseFloat(parameters.h)
-  const p = Number.parseFloat(parameters.p)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
+  const h = length.parse(parameters.h)
+  const p = length.parse(parameters.p)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
   const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 1; i <= parameters.num_pins; i++) {
@@ -79,7 +80,7 @@ export const sotWithoutParsing = (parameters: z.infer<typeof sot_def>) => {
     pcb_component_id: "",
     pcb_silkscreen_path_id: "silkscreen_path_1",
     route: [
-      { x: -width / 3, y: height / 2 + Number.parseFloat(parameters.p) / 1.3 },
+      { x: -width / 3, y: height / 2 + p / 1.3 },
       { x: width / 3, y: height / 2 + p / 1.3 },
     ],
     type: "pcb_silkscreen_path",

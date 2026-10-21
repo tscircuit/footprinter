@@ -1,13 +1,14 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardRect,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { extendSoicDef, soicWithoutParsing } from "./soic"
 import { base_def } from "../helpers/zod/base_def"
+import { extendSoicDef, soicWithoutParsing } from "./soic"
 
 export const sot223_def = base_def.extend({
   fn: z.string(),
@@ -94,14 +95,14 @@ export const sot223_4 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const p = Number.parseFloat(parameters.p)
-  const pw = Number.parseFloat(parameters.pw)
-  const tabpl = Number.parseFloat(parameters.tabpl ?? parameters.pl)
-  const tabpw = Number.parseFloat(parameters.tabpw)
-  const taboffset = Number.parseFloat(parameters.taboffset)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const p = length.parse(parameters.p)
+  const pw = length.parse(parameters.pw)
+  const tabpl = length.parse(parameters.tabpl ?? parameters.pl)
+  const tabpw = length.parse(parameters.tabpw)
+  const taboffset = length.parse(parameters.taboffset)
 
   for (let i = 0; i < parameters.num_pins; i++) {
     const { x, y } = get2CcwSot223Coords({
@@ -219,8 +220,8 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2235Coords({
       h,
@@ -229,8 +230,8 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
       w,
     })
 
-    let pinWidth = Number.parseFloat(parameters.pw)
-    let pinLength = Number.parseFloat(parameters.pl)
+    let pinWidth = length.parse(parameters.pw)
+    let pinLength = length.parse(parameters.pl)
 
     if (i === 5) {
       pinWidth = 3.4
@@ -339,7 +340,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
   const pads: AnyCircuitElement[] = []
   let padOuterHalfWidth = 0
   let padOuterHalfHeight = 0
-  const h = Number.parseFloat(parameters.h)
+  const h = length.parse(parameters.h)
   const w = 8.7
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2236Coords({
@@ -349,8 +350,8 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
       w,
     })
 
-    let pinWidth = Number.parseFloat(parameters.pw)
-    let pinLength = Number.parseFloat(parameters.pl)
+    let pinWidth = length.parse(parameters.pw)
+    let pinLength = length.parse(parameters.pl)
 
     if (i === 6) {
       pinWidth = 3.4
@@ -369,7 +370,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
     pads.push(rectpad(i, x, y, pinLength, pinWidth, cornerRadius))
   }
 
-  const width = Number.parseFloat(parameters.w) / 2 - 2.4
+  const width = length.parse(parameters.w) / 2 - 2.4
   const height = h / 2
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
@@ -398,7 +399,7 @@ export const sot223_6 = (parameters: z.infer<typeof sot223_def>) => {
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, 0, 0.3)
 
-  const bodyHalfWidth = Number.parseFloat(parameters.w) / 2
+  const bodyHalfWidth = length.parse(parameters.w) / 2
   const bodyHalfHeight = h / 2
   const courtyardHalfWidth = Math.max(
     padOuterHalfWidth + 0.25,
