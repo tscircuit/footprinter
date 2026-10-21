@@ -1,6 +1,13 @@
 import { length } from "circuit-json"
 import { z } from "zod"
+import { dim2d } from "./dim-2d"
 import { pin1_location } from "./pin1-location"
+
+const maskDimension = z.union([
+  dim2d,
+  length.transform((l) => ({ x: l, y: l })),
+  z.object({ x: z.number(), y: z.number() }),
+])
 
 export const base_def = z.object({
   norefdes: z
@@ -29,6 +36,25 @@ export const base_def = z.object({
     })
     .optional()
     .describe("corner radius applied to all rectangular copper pads"),
+  soldermaskmargin: length
+    .optional()
+    .describe(
+      "solder mask margin applied to copper pads (negative for solder-mask-defined pads)",
+    ),
+  smm: length.optional().describe("alias for soldermaskmargin"),
+  padmask: maskDimension
+    .optional()
+    .describe("solder mask opening size for regular copper pads"),
+  thermalpadsoldermaskmargin: length
+    .optional()
+    .describe(
+      "solder mask margin applied to the thermal pad (negative for solder-mask-defined thermal pad)",
+    ),
+  thermalpadmask: maskDimension
+    .optional()
+    .describe(
+      "solder mask opening size (width and height) for the thermal pad",
+    ),
   pin1location: pin1_location
     .optional()
     .describe("rotate the footprint to place pin 1 on a requested side"),
