@@ -1,14 +1,15 @@
-import { z } from "zod"
 import { mm } from "@tscircuit/mm"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedhole } from "src/helpers/platedhole"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 const to92CourtyardOutline = [
@@ -46,8 +47,8 @@ const generateSemicircle = (
 
 export const to92_2 = (parameters: z.infer<typeof to92_def>) => {
   const { p, id, od, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
+  const holeY = length.parse(h) / 2
+  const padSpacing = length.parse(p)
 
   return [
     platedHoleWithRectPad({
@@ -77,10 +78,10 @@ export const to92 = (
   })
 
   const { p, id, od, w, h, inline } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
-  const holeDia = Number.parseFloat(id)
-  const padDia = Number.parseFloat(od)
+  const holeY = length.parse(h) / 2
+  const padSpacing = length.parse(p)
+  const holeDia = length.parse(id)
+  const padDia = length.parse(od)
 
   const padWidth = padDia
   const padHeight = padDia * (1.5 / 1.05)
@@ -145,7 +146,7 @@ export const to92 = (
     throw new Error("Invalid number of pins for TO-92")
   }
 
-  const radius = Number.parseFloat(w) / 2
+  const radius = length.parse(w) / 2
   const semicircle = generateSemicircle(0, holeY, radius)
 
   const silkscreenBody: PcbSilkscreenPath = {
