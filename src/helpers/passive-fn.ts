@@ -233,6 +233,7 @@ export const passive_def = base_def.extend({
   cyw: length.optional().describe("courtyard width"),
   cyh: length.optional().describe("courtyard height"),
   nonpolarized: z.boolean().optional(),
+  polarized: z.boolean().optional(),
   textbottom: z.boolean().optional(),
   roundedPads: z.boolean().optional(),
 })
