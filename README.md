@@ -273,3 +273,14 @@ file is.
 You'll sometimes see this `logSoup` function- this makes some debug output
 appear at https://debug.tscircuit.com. Make sure to hit "pcb" and "pcb_renderer"
 after the design.
+
+## Polarized capacitor terminals
+
+Electrolytic capacitors default to positive pin 1. `positivepin` or `negativepin` moves the plus mark to the corresponding terminal, including the square positive pad on electrolytic through-hole packages. Radial capacitors get a plus mark only when selected as polarized/electrolytic. Generic capacitors require `polarized: true` (the `.polarized()` builder option); terminal-number options alone never enable polarity marks. Polarity marks rotate and translate with pads, and `nosilkscreen` removes them.
+
+```ts
+fp.string("cap0603_polarized_positivepin2").circuitJson()
+fp().electrolytic().negativepin(1).circuitJson()
+```
+
+These options identify physical terminals; they do not change connected nets or infer polarity from power/ground attributes. Match the component datasheet.
