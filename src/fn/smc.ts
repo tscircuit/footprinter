@@ -3,13 +3,12 @@ import type {
   PcbCourtyardRect,
   PcbSilkscreenPath,
 } from "circuit-json"
-import { length } from "circuit-json"
-import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
-import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
-import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { length } from "circuit-json"
 import { base_def } from "../helpers/zod/base_def"
+import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabrication-note-diode"
 
 export const smc_def = base_def.extend({
   fn: z.string(),
@@ -68,18 +67,11 @@ export const smc = (
   }
 
   return {
-    circuitJson: addPolaritySilkscreen(
-      smcWithoutParsing(parameters).concat(
-        ...createFabricationNoteDiodeFromCopperPads(parameters),
-        silkscreenLine as AnyCircuitElement,
-        silkscreenRefText as AnyCircuitElement,
-        courtyard as AnyCircuitElement,
-      ),
-      {
-        anodePins: [
-          parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1),
-        ],
-      },
+    circuitJson: smcWithoutParsing(parameters).concat(
+      ...createFabricationNoteDiodeFromCopperPads(parameters),
+      silkscreenLine as AnyCircuitElement,
+      silkscreenRefText as AnyCircuitElement,
+      courtyard as AnyCircuitElement,
     ),
     parameters,
   }

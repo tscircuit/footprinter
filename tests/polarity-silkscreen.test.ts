@@ -1,48 +1,13 @@
 import { expect, test } from "bun:test"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import {
-  axial,
-  diode,
-  led,
-  led2835,
-  led5050,
-  sod123,
-  sod323he,
-} from "../src/fn"
+import { diode, led, led2835, led5050 } from "../src/fn"
 import { fp } from "../src/footprinter"
 import { addPolaritySilkscreen } from "../src/helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../src/helpers/create-fabrication-note-diode"
 import { rectpad } from "../src/helpers/rectpad"
 
-const families = [
-  "diode0402",
-  "led0402",
-  "led2835",
-  "sma",
-  "smb",
-  "smbf",
-  "smc",
-  "smf",
-  "sod110",
-  "sod123",
-  "sod123f",
-  "sod123fl",
-  "sod123w",
-  "sod128",
-  "sod323",
-  "sod323f",
-  "sod323fl",
-  "sod323w",
-  "sod523",
-  "sod723",
-  "sod80",
-  "sod882",
-  "sod882d",
-  "sod923",
-  "do219ad",
-  "sod323he",
-]
+const families = ["diode0402", "led0402", "led2835"]
 const marks = (elements: AnyCircuitElement[]) =>
   elements.filter(
     (e): e is PcbSilkscreenPath =>
@@ -56,8 +21,8 @@ const snapshot = (elements: AnyCircuitElement[], name: string) =>
   )
 
 for (const family of families) {
-  test(`${family}: default and reversed cathode marks follow actual pads`, () => {
-    const defaultPin = ["do219ad", "sod323he"].includes(family) ? 1 : 2
+  test(`${family}: default and reversed polarity marks follow actual pads`, () => {
+    const defaultPin = 2
     for (const pin of [defaultPin, 3 - defaultPin]) {
       const name = pin === defaultPin ? family : `${family}_cathodepin${pin}`
       const elements = fp.string(name).circuitJson()
@@ -124,13 +89,8 @@ test("custom pad positions keep silk and fabrication polarity on the actual cath
   snapshot(elements, "custom-pad-positions")
 })
 
-test("anode-only mappings derive the opposite cathode, including K1 standard packages", () => {
-  for (const name of [
-    "diode0603_anodepin2",
-    "led0603_anodepin2",
-    "do219ad_anodepin1",
-    "sod323he_anodepin1",
-  ]) {
+test("anode-only mappings derive the opposite cathode", () => {
+  for (const name of ["diode0603_anodepin2", "led0603_anodepin2"]) {
     const elements = fp.string(name).circuitJson()
     const pin = name.endsWith("2") ? 2 : 1
     expect(marks(elements)[0].pcb_silkscreen_path_id).toBe(
@@ -175,7 +135,7 @@ test("marks rotate and translate by exactly the same transform as cathode pads",
   }
 })
 
-test("nosilkscreen removes polarity marks; nonpolarized parts get no cathode marks", () => {
+test("only diode and LED generators receive new polarity marks", () => {
   for (const name of [
     "diode0603_nosilkscreen",
     "led5050_nosilkscreen",
@@ -187,24 +147,15 @@ test("nosilkscreen removes polarity marks; nonpolarized parts get no cathode mar
     "dip8",
     "bga16",
     "pinrow4",
+    "sod123",
+    "sma",
+    "melf",
+    "axial",
   ]) {
     const elements = fp.string(name).circuitJson()
     expect(marks(elements)).toHaveLength(0)
     snapshot(elements, name)
   }
-})
-
-test("through-hole diode marks are opt-in on the otherwise generic axial package", () => {
-  for (const pin of [1, 2]) {
-    const name = `axial_cathodepin${pin}`
-    const elements = fp.string(name).circuitJson()
-    expect(marks(elements)).toHaveLength(2)
-    expect(Math.sign(marks(elements)[0].route[0].x)).toBe(pin === 1 ? 1 : -1)
-    snapshot(elements, name)
-  }
-  const unpolarized = fp.string("axial").circuitJson()
-  expect(marks(unpolarized)).toHaveLength(0)
-  snapshot(unpolarized, "axial-unpolarized")
 })
 
 test("package generators draw polarity marks without the footprinter dispatcher", () => {
@@ -220,26 +171,10 @@ test("package generators draw polarity marks without the footprinter dispatcher"
       count: 2,
     },
     { name: "led2835", generate: () => led2835({ fn: "led2835" }), count: 2 },
-    { name: "sod123", generate: () => sod123({ fn: "sod123" }), count: 2 },
-    {
-      name: "sod323he",
-      generate: () => sod323he({ fn: "sod323he" }),
-      count: 2,
-    },
     {
       name: "led5050-three-cathodes",
       generate: () => led5050({ fn: "led5050" }),
       count: 6,
-    },
-    {
-      name: "axial_cathodepin2",
-      generate: () => axial({ fn: "axial", cathodepin: 2 }),
-      count: 2,
-    },
-    {
-      name: "axial-unpolarized",
-      generate: () => axial({ fn: "axial" }),
-      count: 0,
     },
   ]
   for (const { name, generate, count } of packages) {
@@ -248,20 +183,3 @@ test("package generators draw polarity marks without the footprinter dispatcher"
     snapshot(circuitJson, name)
   }
 })
-
-for (const family of ["melf", "micromelf", "minimelf"]) {
-  test(`${family}: generic packages need an explicit diode mapping`, () => {
-    const unpolarized = fp.string(family).circuitJson()
-    expect(marks(unpolarized)).toHaveLength(0)
-    snapshot(unpolarized, family)
-    for (const pin of [1, 2]) {
-      const name = `${family}_cathodepin${pin}`
-      const elements = fp.string(name).circuitJson()
-      expect(marks(elements)).toHaveLength(2)
-      expect(marks(elements)[0].pcb_silkscreen_path_id).toBe(
-        `polarity_anode_${3 - pin}_0`,
-      )
-      snapshot(elements, name)
-    }
-  })
-}

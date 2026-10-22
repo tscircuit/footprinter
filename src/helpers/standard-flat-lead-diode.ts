@@ -5,7 +5,6 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
-import { addPolaritySilkscreen } from "./add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "./create-fabrication-note-diode"
 import { rectpad } from "./rectpad"
 import { silkscreenRef } from "./silkscreenRef"
@@ -82,15 +81,10 @@ export const createStandardFlatLeadDiodeDef = <const TName extends string>(
       markingwidth: nonnegativeLength.default(
         length.parse(defaults.markingwidth),
       ),
-      cathodepin: diodePin.optional(),
-      anodepin: diodePin.optional(),
+      cathodepin: diodePin.default(1),
+      anodepin: diodePin.default(2),
     })
     .strict()
-    .transform((parameters) => ({
-      ...parameters,
-      cathodepin: parameters.cathodepin ?? (parameters.anodepin === 1 ? 2 : 1),
-      anodepin: parameters.anodepin ?? (parameters.cathodepin === 2 ? 1 : 2),
-    }))
     .superRefine((parameters, ctx) => {
       if (parameters.cathodepin === parameters.anodepin) {
         ctx.addIssue({
@@ -229,17 +223,14 @@ export const createStandardFlatLeadDiodeCircuitJson = (
     layer: "top",
   }
 
-  return addPolaritySilkscreen(
-    [
-      ...pads,
-      ...createFabricationNoteDiodeFromCircuitJson(pads, {
-        cathodePin: parameters.cathodepin,
-        anodePin: parameters.anodepin,
-      }),
-      ...silkscreen,
-      silkscreenRef(0, courtyardHeight / 2 + 0.4, 0.3),
-      courtyard,
-    ],
-    { anodePins: [parameters.anodepin] },
-  )
+  return [
+    ...pads,
+    ...createFabricationNoteDiodeFromCircuitJson(pads, {
+      cathodePin: parameters.cathodepin,
+      anodePin: parameters.anodepin,
+    }),
+    ...silkscreen,
+    silkscreenRef(0, courtyardHeight / 2 + 0.4, 0.3),
+    courtyard,
+  ]
 }
