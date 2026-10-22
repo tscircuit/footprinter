@@ -1,4 +1,4 @@
-export { dip } from "./dip"
+export { dip, dip as pdip } from "./dip"
 export { d2pak } from "./d2pak"
 export { dpak } from "./dpak"
 export { diode } from "./diode"
