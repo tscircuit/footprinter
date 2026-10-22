@@ -19,9 +19,6 @@ const families = [
   "diode0402",
   "led0402",
   "led2835",
-  "melf",
-  "micromelf",
-  "minimelf",
   "sma",
   "smb",
   "smbf",
@@ -185,6 +182,11 @@ test("nosilkscreen removes polarity marks; nonpolarized parts get no cathode mar
     "res0603",
     "cap0603",
     "radial_ceramic",
+    "soic8",
+    "sot23",
+    "dip8",
+    "bga16",
+    "pinrow4",
   ]) {
     const elements = fp.string(name).circuitJson()
     expect(marks(elements)).toHaveLength(0)
@@ -246,3 +248,20 @@ test("package generators draw polarity marks without the footprinter dispatcher"
     snapshot(circuitJson, name)
   }
 })
+
+for (const family of ["melf", "micromelf", "minimelf"]) {
+  test(`${family}: generic packages need an explicit diode mapping`, () => {
+    const unpolarized = fp.string(family).circuitJson()
+    expect(marks(unpolarized)).toHaveLength(0)
+    snapshot(unpolarized, family)
+    for (const pin of [1, 2]) {
+      const name = `${family}_cathodepin${pin}`
+      const elements = fp.string(name).circuitJson()
+      expect(marks(elements)).toHaveLength(2)
+      expect(marks(elements)[0].pcb_silkscreen_path_id).toBe(
+        `polarity_anode_${3 - pin}_0`,
+      )
+      snapshot(elements, name)
+    }
+  })
+}

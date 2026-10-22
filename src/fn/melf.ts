@@ -80,9 +80,11 @@ export const melf = (
         courtyard as AnyCircuitElement,
       ),
       {
-        anodePins: [
-          parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1),
-        ],
+        anodePins:
+          parameters.anodepin !== undefined ||
+          parameters.cathodepin !== undefined
+            ? [parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1)]
+            : [],
       },
     ),
     parameters,
