@@ -88,7 +88,7 @@ export type Footprinter = {
   ) => FootprinterParamsBuilder<
     "p" | "pw" | "pl" | "tabw" | "tabh" | "span" | "w" | "h"
   >
-  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey>
+  cap: () => FootprinterParamsBuilder<CommonPassiveOptionKey | "polarized">
   crystal: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"px" | "py" | "pw" | "ph">
@@ -751,7 +751,7 @@ export const string = (def: string): Footprinter => {
   // "0603_pw1.0_ph1.1" are understood without typing "res0603".
   const modifiedDef = normalizedDef
     .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
-    .replace(/^zh(\d+)(?:$|_)/, "jst$1_zh")
+    .replace(/^zh(\d+)(?=$|_)/, "jst$1_zh")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'

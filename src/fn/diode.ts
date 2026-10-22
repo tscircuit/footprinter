@@ -7,22 +7,18 @@ import { base_def } from "../helpers/zod/base_def"
 export const diode = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  parameters = { ...parameters, ...base_def.parse(parameters) }
   const circuitJson = passive({ ...parameters, roundedPads: true })
+  const { anodepin, cathodepin } = base_def.parse(parameters)
 
   return {
     circuitJson: addPolaritySilkscreen(
       circuitJson.concat(
         createFabricationNoteDiodeFromCircuitJson(circuitJson, {
-          anodePin: parameters.anodepin,
-          cathodePin: parameters.cathodepin,
+          anodePin: anodepin,
+          cathodePin: cathodepin,
         }),
       ),
-      {
-        anodePins: [
-          parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1),
-        ],
-      },
+      { anodePins: [anodepin ?? (cathodepin === 1 ? 2 : 1)] },
     ),
     parameters,
   }

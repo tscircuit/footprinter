@@ -60,3 +60,42 @@ test("custom diode footprint uses explicit courtyard dimensions", () => {
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path, footprintString)
 })
+
+test("diode strings normalize explicit polarity pins", () => {
+  const dimensions = "diode_p3.4mm_pw1.2mm_ph0.95mm_rounded0"
+  for (const modifier of ["anodepin", "cathodepin"] as const) {
+    for (const pin of [1, 2] as const) {
+      const circuitJson = fp
+        .string(`${dimensions}_${modifier}${pin}`)
+        .circuitJson()
+      const builder = fp()
+        .diode()
+        .p("3.4mm")
+        .pw("1.2mm")
+        .ph("0.95mm")
+        .rounded(0)
+      const expected = builder[modifier](pin).circuitJson()
+      expect(circuitJson).toEqual(expected)
+      const negative = circuitJson.find(
+        (element) =>
+          element.type === "pcb_fabrication_note_text" && element.text === "-",
+      )
+      const cathodePin = modifier === "cathodepin" ? pin : 3 - pin
+      expect(
+        negative?.anchor_position.x! * (cathodePin === 1 ? -1 : 1),
+      ).toBeGreaterThan(0)
+    }
+  }
+
+  expect(() =>
+    fp.string(`${dimensions}_cathodepin1_anodepin1`).circuitJson(),
+  ).toThrow("Diode anode and cathode cannot use the same pin")
+  expect(
+    convertCircuitJsonToPcbSvg(
+      fp.string(`${dimensions}_cathodepin1`).circuitJson(),
+      {
+        showFabricationNotes: true,
+      },
+    ),
+  ).toMatchSvgSnapshot(import.meta.path, "diode-explicit-polarity")
+})

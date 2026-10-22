@@ -109,15 +109,15 @@ export const melfWithoutParsing = (parameters: z.infer<typeof melf_def>) => {
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getMelfCoords({
       pn: i,
-      p: Number.parseFloat(parameters.p),
+      p: length.parse(parameters.p),
     })
     pads.push(
       rectpad(
         i,
         x,
         y,
-        Number.parseFloat(parameters.pl),
-        Number.parseFloat(parameters.pw),
+        length.parse(parameters.pl),
+        length.parse(parameters.pw),
         0.125,
       ),
     )
