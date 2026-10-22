@@ -1,4 +1,5 @@
 import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 import { type PassiveDef, passive } from "../helpers/passive-fn"
 import { base_def } from "../helpers/zod/base_def"
@@ -24,5 +25,10 @@ export const led = (
       }
     })
 
-  return { circuitJson, parameters }
+  return {
+    circuitJson: addPolaritySilkscreen(circuitJson, {
+      anodePins: [parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1)],
+    }),
+    parameters,
+  }
 }

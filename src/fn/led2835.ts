@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
@@ -64,7 +65,14 @@ export const led2835 = (
   })
 
   return {
-    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
+    circuitJson: addPolaritySilkscreen(
+      [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
+      {
+        anodePins: [
+          parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1),
+        ],
+      },
+    ),
     parameters,
   }
 }

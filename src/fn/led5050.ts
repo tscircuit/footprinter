@@ -4,6 +4,7 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
@@ -25,6 +26,14 @@ export const led5050 = (
   rawParams: z.input<typeof led5050_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = led5050_def.parse(rawParams)
+  if (
+    parameters.cathodepin !== undefined ||
+    parameters.anodepin !== undefined
+  ) {
+    throw new Error(
+      "led5050 has three fixed anode/cathode pairs; two-pin polarity overrides are not supported",
+    )
+  }
   const { p, rowspan, pl, pw, w, h } = parameters
 
   // 6 pads in counter-clockwise order starting from top-left, matching
@@ -83,7 +92,10 @@ export const led5050 = (
   )
 
   return {
-    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNotes],
+    circuitJson: addPolaritySilkscreen(
+      [...pads, ...silkscreen, ref, courtyard, ...fabricationNotes],
+      { anodePins: [1, 2, 3] },
+    ),
     parameters,
   }
 }

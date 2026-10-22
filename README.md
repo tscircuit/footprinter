@@ -260,18 +260,6 @@ An example of a sloppy definition is `bga64`. It's very underconstrained and
 unlikely to be correct (what's the pitch? pad size?). tscircuit strict mode
 or a linter will eventually error if it sees these.
 
-## Assembly polarity marks
-
-Native diode and LED packages include an explicit `+` on top silkscreen beside the anode. Use `cathodepin` or `anodepin` to match the actual part's pinout; setting one derives the other. Most two-pin packages default to pin 2 as cathode; DO-219AD and SOD-323HE default to pin 1. RGB LED5050 has fixed pairs 1–6, 2–5, and 3–4, with + marks at pins 1, 2, and 3; two-pin overrides are rejected.
-
-```ts
-fp.string("diode0603_cathodepin1").circuitJson()
-fp().led().imperial("0603").anodepin(2).circuitJson()
-fp.string("axial_cathodepin2").circuitJson() // generic axial packages need an explicit diode mapping
-```
-
-Importers must supply the actual electrical A/K or positive/negative mapping. These options do not infer polarity from power/ground attributes or change connected nets. Keep IC and transistor pin-1 orientation distinct from electrical polarity.
-
 ## Adding a new footprint function
 
 You can add new footprint functions by introducing a new function in the [src/fn directory](https://github.com/tscircuit/footprinter/tree/main/src/fn). You'll also need to export it from the [footprint function index file](https://github.com/tscircuit/footprinter/blob/main/src/fn/index.ts)

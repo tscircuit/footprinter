@@ -1,6 +1,15 @@
 import { expect, test } from "bun:test"
-import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
+import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
+import {
+  axial,
+  diode,
+  led,
+  led2835,
+  led5050,
+  sod123,
+  sod323he,
+} from "../src/fn"
 import { fp } from "../src/footprinter"
 import { addPolaritySilkscreen } from "../src/helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../src/helpers/create-fabrication-note-diode"
@@ -101,7 +110,7 @@ test("custom pad positions keep silk and fabrication polarity on the actual cath
   const pads = [rectpad(1, 1.5, 0, 1.2, 1), rectpad(2, -1.5, 0, 0.6, 1)]
   const elements = addPolaritySilkscreen(
     [...pads, ...createFabricationNoteDiodeFromCircuitJson(pads)],
-    { fn: "led2835" },
+    { anodePins: [1] },
   )
   expect(marks(elements)[0].route[0].x).toBeGreaterThan(2.1)
   const cathodeSymbol = elements.find(
@@ -194,4 +203,46 @@ test("through-hole diode marks are opt-in on the otherwise generic axial package
   const unpolarized = fp.string("axial").circuitJson()
   expect(marks(unpolarized)).toHaveLength(0)
   snapshot(unpolarized, "axial-unpolarized")
+})
+
+test("package generators draw polarity marks without the footprinter dispatcher", () => {
+  const packages = [
+    {
+      name: "diode0402",
+      generate: () => diode({ fn: "diode", imperial: "0402", tht: false }),
+      count: 2,
+    },
+    {
+      name: "led0402",
+      generate: () => led({ fn: "led", imperial: "0402", tht: false }),
+      count: 2,
+    },
+    { name: "led2835", generate: () => led2835({ fn: "led2835" }), count: 2 },
+    { name: "sod123", generate: () => sod123({ fn: "sod123" }), count: 2 },
+    {
+      name: "sod323he",
+      generate: () => sod323he({ fn: "sod323he" }),
+      count: 2,
+    },
+    {
+      name: "led5050-three-cathodes",
+      generate: () => led5050({ fn: "led5050" }),
+      count: 6,
+    },
+    {
+      name: "axial_cathodepin2",
+      generate: () => axial({ fn: "axial", cathodepin: 2 }),
+      count: 2,
+    },
+    {
+      name: "axial-unpolarized",
+      generate: () => axial({ fn: "axial" }),
+      count: 0,
+    },
+  ]
+  for (const { name, generate, count } of packages) {
+    const { circuitJson } = generate()
+    expect(marks(circuitJson)).toHaveLength(count)
+    snapshot(circuitJson, name)
+  }
 })

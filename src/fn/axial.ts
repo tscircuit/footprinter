@@ -1,17 +1,18 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardOutline,
   type PcbSilkscreenLine,
   type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { passive, type PassiveDef } from "../helpers/passive-fn"
-import { z } from "zod"
 import { platedhole } from "src/helpers/platedhole"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
-import { base_def } from "../helpers/zod/base_def"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
+import { z } from "zod"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
+import { type PassiveDef, passive } from "../helpers/passive-fn"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
+import { base_def } from "../helpers/zod/base_def"
 
 export const axial_def = base_def.extend({
   fn: z.string(),
@@ -76,19 +77,28 @@ export const axial = (
     layer: "top",
   }
   return {
-    circuitJson: [
-      ...plated_holes,
-      ...(parameters.anodepin !== undefined ||
-      parameters.cathodepin !== undefined
-        ? createFabricationNoteDiodeFromCircuitJson(plated_holes, {
-            anodePin: parameters.anodepin,
-            cathodePin: parameters.cathodepin,
-          })
-        : []),
-      silkscreenLine,
-      silkscreenRefText as AnyCircuitElement,
-      courtyard,
-    ],
+    circuitJson: addPolaritySilkscreen(
+      [
+        ...plated_holes,
+        ...(parameters.anodepin !== undefined ||
+        parameters.cathodepin !== undefined
+          ? createFabricationNoteDiodeFromCircuitJson(plated_holes, {
+              anodePin: parameters.anodepin,
+              cathodePin: parameters.cathodepin,
+            })
+          : []),
+        silkscreenLine,
+        silkscreenRefText as AnyCircuitElement,
+        courtyard,
+      ],
+      {
+        anodePins:
+          parameters.anodepin !== undefined ||
+          parameters.cathodepin !== undefined
+            ? [parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1)]
+            : [],
+      },
+    ),
     parameters,
   }
 }

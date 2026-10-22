@@ -1,66 +1,18 @@
 import type { AnyCircuitElement, PcbSilkscreenPath } from "circuit-json"
 
-const diodeFamilies = new Set([
-  "diode",
-  "led",
-  "led2835",
-  "led5050",
-  "melf",
-  "micromelf",
-  "minimelf",
-  "sma",
-  "smb",
-  "smbf",
-  "smc",
-  "smf",
-  "do219ad",
-  "sod110",
-  "sod123",
-  "sod123f",
-  "sod123fl",
-  "sod123w",
-  "sod128",
-  "sod323",
-  "sod323f",
-  "sod323fl",
-  "sod323w",
-  "sod323he",
-  "sod523",
-  "sod723",
-  "sod80",
-  "sod882",
-  "sod882d",
-  "sod923",
-])
-
 /** Add explicit + marks at anodes, using pad identities rather than a fixed body side.
  * Run before footprint rotation, origin translation and nosilkscreen filtering.
  */
 export const addPolaritySilkscreen = (
   elements: AnyCircuitElement[],
-  parameters: { fn: string; cathodepin?: number; anodepin?: number },
+  { anodePins }: { anodePins: readonly number[] },
 ): AnyCircuitElement[] => {
-  const axialDiode =
-    parameters.fn === "axial" &&
-    (parameters.anodepin !== undefined || parameters.cathodepin !== undefined)
-  if (!diodeFamilies.has(parameters.fn) && !axialDiode) return elements
+  if (anodePins.length === 0) return elements
   const pads = elements.filter(
     (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
   )
-  const anodePins =
-    parameters.fn === "led5050"
-      ? [1, 2, 3]
-      : [parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1)]
-  if (
-    parameters.fn === "led5050" &&
-    (parameters.cathodepin !== undefined || parameters.anodepin !== undefined)
-  ) {
-    throw new Error(
-      "led5050 has three fixed anode/cathode pairs; two-pin polarity overrides are not supported",
-    )
-  }
-  let minX = Infinity
-  let maxX = -Infinity
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
   const padCenterX =
     (Math.min(...pads.map((pad) => pad.x)) +
       Math.max(...pads.map((pad) => pad.x))) /
