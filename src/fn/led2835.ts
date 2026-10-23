@@ -4,7 +4,8 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
-import { createFabricationNoteDiode } from "../helpers/create-fabrication-note-diode"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
+import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { silkscreenpath } from "../helpers/silkscreenpath"
@@ -58,21 +59,20 @@ export const led2835 = (
     height: Math.max(h, ph) + 0.5,
     layer: "top",
   }
-  const fabricationNote = createFabricationNoteDiode(
-    {
-      minX: Math.min(p1x - p1w / 2, p2x - p2w / 2),
-      maxX: Math.max(p1x + p1w / 2, p2x + p2w / 2),
-      minY: -ph / 2,
-      maxY: ph / 2,
-    },
-    {
-      anodePin: parameters.anodepin,
-      cathodePin: parameters.cathodepin,
-    },
-  )
+  const fabricationNote = createFabricationNoteDiodeFromCircuitJson(pads, {
+    anodePin: parameters.anodepin,
+    cathodePin: parameters.cathodepin,
+  })
 
   return {
-    circuitJson: [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
+    circuitJson: addPolaritySilkscreen(
+      [...pads, ...silkscreen, ref, courtyard, ...fabricationNote],
+      {
+        anodePins: [
+          parameters.anodepin ?? (parameters.cathodepin === 1 ? 2 : 1),
+        ],
+      },
+    ),
     parameters,
   }
 }

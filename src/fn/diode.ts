@@ -1,5 +1,6 @@
 import type { AnySoupElement } from "circuit-json"
 import { type PassiveDef, passive } from "src/helpers/passive-fn"
+import { addPolaritySilkscreen } from "../helpers/add-polarity-silkscreen"
 import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 import { base_def } from "../helpers/zod/base_def"
 
@@ -10,11 +11,14 @@ export const diode = (
   const { anodepin, cathodepin } = base_def.parse(parameters)
 
   return {
-    circuitJson: circuitJson.concat(
-      createFabricationNoteDiodeFromCircuitJson(circuitJson, {
-        anodePin: anodepin,
-        cathodePin: cathodepin,
-      }),
+    circuitJson: addPolaritySilkscreen(
+      circuitJson.concat(
+        createFabricationNoteDiodeFromCircuitJson(circuitJson, {
+          anodePin: anodepin,
+          cathodePin: cathodepin,
+        }),
+      ),
+      { anodePins: [anodepin ?? (cathodepin === 1 ? 2 : 1)] },
     ),
     parameters,
   }
