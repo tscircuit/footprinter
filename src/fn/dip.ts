@@ -29,11 +29,11 @@ const lengthInMm = z
   .union([z.string(), z.number()])
   .transform((val) => convertMilToMm(val))
 
-export const extendDipDef = (newDefaults: { w?: string; p?: string }) =>
+export const extendDipDef = (newDefaults: { w?: string; p?: string; num_pins?: number }) =>
   base_def
     .extend({
       fn: z.string(),
-      num_pins: z.number().optional().default(6),
+      num_pins: z.number().optional().default(newDefaults.num_pins ?? 6),
       wide: z.boolean().optional(),
       narrow: z.boolean().optional(),
       w: lengthInMm.optional(),
