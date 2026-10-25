@@ -25,6 +25,13 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 
 const side_pin_count = z.coerce.number().int().positive().optional()
 
+const positivePitch = length.refine(
+  (value) => Number.isFinite(value) && value > 0,
+  {
+    message: "pitch must be a positive finite length",
+  },
+)
+
 export const base_quad_def = base_def.extend({
   fn: z.string(),
   cc: z.boolean().default(true).optional(),
@@ -46,9 +53,9 @@ export const base_quad_def = base_def.extend({
   topbottompins: side_pin_count,
   w: length.optional(),
   h: length.optional(),
-  p: length.default(length.parse("0.5mm")),
-  px: length.optional().describe("top and bottom side pad pitch"),
-  py: length.optional().describe("left and right side pad pitch"),
+  p: positivePitch.default(length.parse("0.5mm")),
+  px: positivePitch.optional().describe("top and bottom side pad pitch"),
+  py: positivePitch.optional().describe("left and right side pad pitch"),
   pw: length.optional(),
   pl: length.optional(),
   lrpw: length.optional().describe("alias for leftrightpadwidth"),
@@ -104,6 +111,16 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     sidePinCounts.left,
     sidePinCounts.right,
   )
+  if (v.p !== undefined && (!(v.p > 0) || !Number.isFinite(v.p))) {
+    throw new Error("pitch must be a positive finite length")
+  }
+  if (v.px !== undefined && (!(v.px > 0) || !Number.isFinite(v.px))) {
+    throw new Error("horizontal pitch (px) must be a positive finite length")
+  }
+  if (v.py !== undefined && (!(v.py > 0) || !Number.isFinite(v.py))) {
+    throw new Error("vertical pitch (py) must be a positive finite length")
+  }
+
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
 
@@ -126,6 +143,19 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     // HACK: underspecified
     v.w = horizontal_pitch * (horizontal_side_pin_count + 4)
     v.h = vertical_pitch * (vertical_side_pin_count + 4)
+  }
+
+  if (
+    v.w === undefined ||
+    v.h === undefined ||
+    !Number.isFinite(v.w) ||
+    !Number.isFinite(v.h) ||
+    v.w <= 0 ||
+    v.h <= 0
+  ) {
+    throw new Error(
+      "Quad package width and height must be positive finite lengths",
+    )
   }
 
   if (v.p && !v.pw && !v.pl) {
