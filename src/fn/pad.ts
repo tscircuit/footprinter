@@ -7,24 +7,24 @@ import { mm } from "@tscircuit/mm"
 import { base_def } from "../helpers/zod/base_def"
 
 export const pad_def = base_def.extend({
-  w: length,
-  h: length,
+  w: length.default("1mm"),
+  h: length.default("1mm"),
 })
 
 export type PadDef = z.input<typeof pad_def>
 
 export const pad = (
   params: PadDef,
-): { circuitJson: AnySoupElement[]; parameters: PadDef } => {
-  const { w, h } = params
-  const width = mm(w)
-  const height = mm(h)
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  const parsed = pad_def.parse(params)
+  const width = parsed.w
+  const height = parsed.h
 
   return {
     circuitJson: [
       rectpad(1, 0, 0, width, height),
       silkscreenRef(0, height / 2 + 0.5, 0.2),
     ],
-    parameters: params,
+    parameters: parsed,
   }
 }
