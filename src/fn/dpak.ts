@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const dpak_def = base_def.extend({
   fn: z.string(),
-  num_pins: z.union([z.literal(3), z.literal(6)]).default(3),
+  num_pins: z.union([z.literal(3), z.literal(5), z.literal(6)]).default(3),
   p: length.default("2.29mm").describe("pitch between adjacent lead positions"),
   pw: length.default("1.6mm").describe("lead pad width along the pin column"),
   pl: length.default("3mm").describe("lead pad length toward the package"),
@@ -39,6 +39,8 @@ const d2pakDefaults = {
 } as const
 
 const getNumberOfPads = (rawParams: DpakDef): 3 | 6 => {
+  // A five-lead package has an additional exposed tab, including builder calls.
+  if (rawParams.num_pins === 5) return 6
   if (rawParams.num_pins === 3 || rawParams.num_pins === 6) {
     return rawParams.num_pins
   }
