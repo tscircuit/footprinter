@@ -120,6 +120,13 @@ export const applyOrigin = (
       }
     }
 
+    if (el.type === "pcb_fabrication_note_dimension") {
+      el.from.x -= dx
+      el.from.y -= dy
+      el.to.x -= dx
+      el.to.y -= dy
+    }
+
     if (
       (el.type === "pcb_silkscreen_text" ||
         el.type === "pcb_fabrication_note_text") &&

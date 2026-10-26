@@ -66,60 +66,57 @@ for (const origin of ["pin1", "bottomleft"] as const) {
     )
   })
 
-  test.failing(
-    `fabrication dimension endpoints follow the pad with ${origin} origin`,
-    () => {
-      const original = fixture()
-      const shifted = applyOrigin(structuredClone(original), origin)
-      const originalPad = original.find(
-        (el): el is PcbSmtPadRect =>
-          el.type === "pcb_smtpad" && el.shape === "rect",
-      )!
-      const shiftedPad = shifted.find(
-        (el): el is PcbSmtPadRect =>
-          el.type === "pcb_smtpad" && el.shape === "rect",
-      )!
-      const dx = shiftedPad.x - originalPad.x
-      const dy = shiftedPad.y - originalPad.y
+  test(`fabrication dimension endpoints follow the pad with ${origin} origin`, () => {
+    const original = fixture()
+    const shifted = applyOrigin(structuredClone(original), origin)
+    const originalPad = original.find(
+      (el): el is PcbSmtPadRect =>
+        el.type === "pcb_smtpad" && el.shape === "rect",
+    )!
+    const shiftedPad = shifted.find(
+      (el): el is PcbSmtPadRect =>
+        el.type === "pcb_smtpad" && el.shape === "rect",
+    )!
+    const dx = shiftedPad.x - originalPad.x
+    const dy = shiftedPad.y - originalPad.y
 
-      expect(dx).not.toBe(0)
-      expect(dy).not.toBe(0)
+    expect(dx).not.toBe(0)
+    expect(dy).not.toBe(0)
 
-      const originalText = original.find(
-        (el) => el.type === "pcb_fabrication_note_text",
-      )!
-      const shiftedText = shifted.find(
-        (el) => el.type === "pcb_fabrication_note_text",
-      )!
-      expect(shiftedText.anchor_position).toEqual({
-        x: originalText.anchor_position.x + dx,
-        y: originalText.anchor_position.y + dy,
+    const originalText = original.find(
+      (el) => el.type === "pcb_fabrication_note_text",
+    )!
+    const shiftedText = shifted.find(
+      (el) => el.type === "pcb_fabrication_note_text",
+    )!
+    expect(shiftedText.anchor_position).toEqual({
+      x: originalText.anchor_position.x + dx,
+      y: originalText.anchor_position.y + dy,
+    })
+
+    const dimensions = shifted.filter(
+      (el) => el.type === "pcb_fabrication_note_dimension",
+    )
+    expect(dimensions).toHaveLength(2)
+    for (const dimension of dimensions) {
+      const originalDimension = original
+        .filter((el) => el.type === "pcb_fabrication_note_dimension")
+        .find(
+          (el) =>
+            el.pcb_fabrication_note_dimension_id ===
+            dimension.pcb_fabrication_note_dimension_id,
+        )!
+      expect(dimension).toEqual({
+        ...originalDimension,
+        from: {
+          x: originalDimension.from.x + dx,
+          y: originalDimension.from.y + dy,
+        },
+        to: {
+          x: originalDimension.to.x + dx,
+          y: originalDimension.to.y + dy,
+        },
       })
-
-      const dimensions = shifted.filter(
-        (el) => el.type === "pcb_fabrication_note_dimension",
-      )
-      expect(dimensions).toHaveLength(2)
-      for (const dimension of dimensions) {
-        const originalDimension = original
-          .filter((el) => el.type === "pcb_fabrication_note_dimension")
-          .find(
-            (el) =>
-              el.pcb_fabrication_note_dimension_id ===
-              dimension.pcb_fabrication_note_dimension_id,
-          )!
-        expect(dimension).toEqual({
-          ...originalDimension,
-          from: {
-            x: originalDimension.from.x + dx,
-            y: originalDimension.from.y + dy,
-          },
-          to: {
-            x: originalDimension.to.x + dx,
-            y: originalDimension.to.y + dy,
-          },
-        })
-      }
-    },
-  )
+    }
+  })
 }
