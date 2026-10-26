@@ -21,6 +21,7 @@ cap0402
 res0805
 soic8_p1.27mm
 dip16
+wson6
 pinrow10
 pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
 smdpinheader6
@@ -32,6 +33,16 @@ axial_p0.2in
 do219ad
 sod323he
 ```
+
+`wson6` (or `fp().wson(6)`) uses the TPS746 2 × 2 mm DRV0006A
+recommended land pattern: six 0.45 × 0.3 mm pads on a 0.65 mm pitch,
+1.95 mm between pad columns, and a 1 × 1.6 mm exposed pad numbered 7.
+Pin 1 is top-left in the top view. Dimensions follow TI drawing 4222173/C
+in the [TPS746 datasheet](https://www.ti.com/lit/ds/symlink/tps746.pdf).
+The existing `wson` and `wson8` defaults remain the WSON-8 layout.
+Use `p`, `rowspan`, `pl`, `pw`, `w`, `h`, `epw` and `eph` to override the
+six-pin geometry; `fp().wson(6).ep(false)` omits its exposed pad. Dimensions
+must be positive and finite, and custom copper pads must not touch or overlap.
 
 You can use these like so:
 
