@@ -49,3 +49,35 @@ test("TO-220F-3 (alias)", () => {
   )
   expect(aliasSvg).toEqual(canonicalSvg)
 })
+
+test("to220 uses standard 2.54mm pitch (fixes #790)", () => {
+  const circuitJson = fp.string("to220_3").circuitJson()
+  const holes = circuitJson.filter((e) => e.type === "pcb_plated_hole") as any[]
+  expect(holes.length).toBe(3)
+
+  expect(holes[0].x).toBeCloseTo(-2.54, 2)
+  expect(holes[1].x).toBeCloseTo(0, 2)
+  expect(holes[2].x).toBeCloseTo(2.54, 2)
+
+  // Pin 1: rectangular pad
+  expect(holes[0].shape).toBe("circular_hole_with_rect_pad")
+  // Pins 2 & 3: pill pads
+  expect(holes[1].shape).toBe("pill")
+  expect(holes[2].shape).toBe("pill")
+
+  // Changing body width must not change lead pitch
+  const wideCircuit = fp.string("to220_3_w15mm").circuitJson()
+  const wideHoles = wideCircuit.filter(
+    (e) => e.type === "pcb_plated_hole",
+  ) as any[]
+  expect(wideHoles[0].x).toBeCloseTo(-2.54, 2)
+  expect(wideHoles[2].x).toBeCloseTo(2.54, 2)
+
+  // Explicit p parameter must be respected
+  const customPitchCircuit = fp.string("to220_3_p3mm").circuitJson()
+  const customHoles = customPitchCircuit.filter(
+    (e) => e.type === "pcb_plated_hole",
+  ) as any[]
+  expect(customHoles[0].x).toBeCloseTo(-3.0, 2)
+  expect(customHoles[2].x).toBeCloseTo(3.0, 2)
+})

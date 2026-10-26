@@ -4,16 +4,23 @@ import {
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
+import { mm } from "@tscircuit/mm"
 import { platedhole } from "src/helpers/platedhole"
+import { platedHoleWithRectPad } from "../helpers/platedHoleWithRectPad"
+import { platedHolePill } from "../helpers/platedHolePill"
 import { z } from "zod"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
+// Standard JEDEC TO-220 lead pitch (0.1 inch / 2.54mm)
+export const TO220_STANDARD_PITCH_MM = 2.54
+
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
-  id: length.optional().default("1.0mm"),
-  od: length.optional().default("1.9mm"),
+  p: length.optional().default("2.54mm"),
+  id: length.optional().default("1.2mm"),
+  od: length.optional().default("1.905mm"),
+  ph: length.optional().default("2mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
@@ -26,7 +33,7 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { id, od, w, h, string } = parameters
+  const { id, od, ph, w, h, string, p } = parameters
 
   const numPins =
     parameters.num_pins ??
@@ -36,16 +43,31 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const minPitch = 2.5
-  const maxHoleWidth = w * 0.4
-  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
+  const computedPitch = p !== undefined ? mm(p) : TO220_STANDARD_PITCH_MM
 
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
     const x =
       numPins % 2 === 0
         ? (i - numPins / 2 + 0.5) * computedPitch
         : (i - Math.floor(numPins / 2)) * computedPitch
-    return platedhole(i + 1, x, holeY, id, od)
+    if (i === 0) {
+      return platedHoleWithRectPad({
+        pn: 1,
+        x,
+        y: holeY,
+        holeDiameter: id,
+        rectPadWidth: od,
+        rectPadHeight: ph,
+      }) as AnyCircuitElement
+    }
+    return platedHolePill(
+      i + 1,
+      x,
+      holeY,
+      mm(id),
+      mm(od),
+      mm(ph),
+    ) as AnyCircuitElement
   })
 
   const silkscreenBody: PcbSilkscreenPath = {
@@ -103,7 +125,7 @@ export const to220 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
   const pinToeHalfSpanX =
-    Math.max(...plated_holes.map((hole) => Math.abs(hole.x))) + od / 2
+    Math.max(...plated_holes.map((hole: any) => Math.abs(hole.x))) + od / 2
   const pinToeTopY = holeY + od / 2
   const pinToeBottomY = holeY - od / 2
   const courtyardHalfWidth = Math.max(
