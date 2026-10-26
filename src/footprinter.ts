@@ -363,6 +363,7 @@ export type Footprinter = {
   hc49: () => FootprinterParamsBuilder<"p" | "id" | "od" | "w" | "h">
   to220: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to220f: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to220h: (num_pins?: 3) => FootprinterParamsBuilder<"tabup">
   sot363: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot886: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sot457: () => FootprinterParamsBuilder<
@@ -733,6 +734,11 @@ const normalizeDefinition = (def: string): string => {
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
     .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
+    .replace(
+      /^to-220-(\d+)_horizontal_tab(up|down)(?=_|$)/i,
+      (_, pins, orientation) =>
+        `to220h_${pins}${orientation.toLowerCase() === "up" ? "_tabup" : ""}`,
+    )
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
 
