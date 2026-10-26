@@ -79,3 +79,26 @@ test("pad footprint with different dimensions", async () => {
   const params = fp().pad().w(3).h(2).json()
   expect(params).toMatchObject({ w: 3, h: 2 })
 })
+
+test("pad bare name and default dimensions", () => {
+  const circuitJson = fp.string("pad").circuitJson()
+  expect(circuitJson).toBeDefined()
+  expect(circuitJson.length).toBe(2)
+
+  const smtPad = circuitJson.find((e) => e.type === "pcb_smtpad")
+  expect(smtPad).toMatchObject({
+    type: "pcb_smtpad",
+    x: 0,
+    y: 0,
+    width: 1,
+    height: 1,
+    shape: "rect",
+  })
+
+  const json = fp.string("pad").json()
+  expect(json).toMatchObject({
+    fn: "pad",
+    w: 1,
+    h: 1,
+  })
+})
