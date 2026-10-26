@@ -86,3 +86,23 @@ test("solderjumper 2-pin custom pad size", () => {
     "solderjumper2bridged12pw2ph0.5",
   )
 })
+
+test("solderjumper bare name defaults to 2 pins with valid geometry", () => {
+  const circuitJson = fp.string("solderjumper").circuitJson()
+  const pads = circuitJson.filter((e) => e.type === "pcb_smtpad")
+  expect(pads.length).toBe(2)
+
+  const courtyard = circuitJson.find(
+    (e) => e.type === "pcb_courtyard_rect",
+  ) as any
+  expect(courtyard).toBeDefined()
+  expect(Number.isFinite(courtyard.center.x)).toBe(true)
+  expect(Number.isFinite(courtyard.width)).toBe(true)
+  expect(courtyard.center.x).toBe(1.27)
+  expect(courtyard.width).toBe(5.04)
+
+  const text = circuitJson.find((e) => e.type === "pcb_silkscreen_text") as any
+  expect(text).toBeDefined()
+  expect(Number.isFinite(text.anchor_position.x)).toBe(true)
+  expect(text.anchor_position.x).toBe(1.27)
+})
