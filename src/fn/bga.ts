@@ -155,6 +155,11 @@ export const bga = (
     { length: grid.x * grid.y },
     (_, index) => index + 1,
   ).filter((position) => !missing_pin_nums_set.has(position))
+  if (populatedGridPositions.length !== num_pins) {
+    throw new Error(
+      `BGA pin count mismatch: requested ${num_pins} pins, but the ${grid.x}x${grid.y} grid with missing sites produces ${populatedGridPositions.length} pads. Specify grid and missing sites that match the requested pin count.`,
+    )
+  }
   if (parameters.pinnumbering === "columnmajor") {
     const columnOrder = (position: number) =>
       ((position - 1) % grid.x) * grid.y + Math.floor((position - 1) / grid.x)

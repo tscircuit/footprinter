@@ -163,6 +163,11 @@ fp.string(
 
 ### BGA pin numbering
 
+The populated grid must match the requested pin count. If a bare definition
+cannot infer that count, specify the grid and missing sites explicitly; for
+example, use `bga20_grid4x5` instead of `bga20`. Inconsistent definitions throw
+an error instead of silently generating extra or missing pads.
+
 Use `pinnumbering(...)` to select a naming convention for every populated BGA
 ball without changing the pad geometry:
 
