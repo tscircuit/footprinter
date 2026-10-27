@@ -1,5 +1,6 @@
 import type { AnySoupElement } from "circuit-json"
 import { z } from "zod"
+import { createFabricationNoteCapacitor } from "../helpers/create-fabrication-note-capacitor"
 import { type PassiveDef, passive, passive_def } from "../helpers/passive-fn"
 
 const pinNumber = z.coerce.number().pipe(z.union([z.literal(1), z.literal(2)]))
@@ -37,6 +38,7 @@ export const cap = (
     const other = pads.find((pad) =>
       pad.port_hints?.includes(String(3 - positivePin)),
     )!
+    circuitJson.push(...createFabricationNoteCapacitor(positive, other))
     const side = positive.x < other.x ? -1 : 1
     const edges = pads.flatMap((pad) => {
       const width = pad.type === "pcb_smtpad" ? pad.width : pad.outer_diameter
