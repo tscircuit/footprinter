@@ -1,22 +1,40 @@
 import type { AnySoupElement } from "circuit-json"
+import { z } from "zod"
 import { type PassiveDef, passive, passive_def } from "../helpers/passive-fn"
 
-const polarity_def = passive_def.pick({ polarized: true, nonpolarized: true })
+const pinNumber = z.coerce.number().pipe(z.union([z.literal(1), z.literal(2)]))
+const polarity_def = passive_def
+  .pick({ polarized: true, nonpolarized: true })
+  .extend({
+    positivepin: pinNumber.optional(),
+    negativepin: pinNumber.optional(),
+  })
 
 export const cap = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  const { polarized, nonpolarized } = polarity_def.parse(parameters)
+  const { polarized, nonpolarized, positivepin, negativepin } =
+    polarity_def.parse(parameters)
   if (polarized && nonpolarized) {
     throw new Error("A capacitor cannot be both polarized and nonpolarized")
+  }
+  if (positivepin !== undefined && positivepin === negativepin) {
+    throw new Error(
+      "A capacitor's positive and negative pins must be different",
+    )
   }
   const circuitJson = passive(parameters)
   if (polarized) {
     const pads = circuitJson.filter(
       (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
     )
-    const positive = pads.find((pad) => pad.port_hints?.includes("1"))!
-    const other = pads.find((pad) => pad.port_hints?.includes("2"))!
+    const positivePin = positivepin ?? (negativepin === 1 ? 2 : 1)
+    const positive = pads.find((pad) =>
+      pad.port_hints?.includes(String(positivePin)),
+    )!
+    const other = pads.find((pad) =>
+      pad.port_hints?.includes(String(3 - positivePin)),
+    )!
     const side = positive.x < other.x ? -1 : 1
     const edges = pads.flatMap((pad) => {
       const width = pad.type === "pcb_smtpad" ? pad.width : pad.outer_diameter
