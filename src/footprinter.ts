@@ -20,6 +20,7 @@ export type { BgaPinNumbering } from "./fn/bga"
 export type { PinrowPinNumbering } from "./fn/pinrow"
 
 type BaseOptionKey =
+  | "nonpolarized"
   | "anodepin"
   | "cathodepin"
   | "origin"

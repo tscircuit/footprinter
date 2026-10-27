@@ -174,6 +174,7 @@ export const createStandardFlatLeadDiodeDef = <const TName extends string>(
     })
 
 type StandardFlatLeadDiodeParameters = {
+  nonpolarized?: boolean
   num_pins: 2
   p: number
   pw: number
@@ -226,6 +227,7 @@ export const createStandardFlatLeadDiodeCircuitJson = (
   return [
     ...pads,
     ...createFabricationNoteDiodeFromCircuitJson(pads, {
+      nonpolarized: parameters.nonpolarized,
       cathodePin: parameters.cathodepin,
       anodePin: parameters.anodepin,
     }),

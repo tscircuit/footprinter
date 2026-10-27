@@ -66,6 +66,7 @@ export const led2835 = (
       maxY: ph / 2,
     },
     {
+      nonpolarized: parameters.nonpolarized,
       anodePin: parameters.anodepin,
       cathodePin: parameters.cathodepin,
     },

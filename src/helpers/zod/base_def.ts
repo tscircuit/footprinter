@@ -3,6 +3,10 @@ import { z } from "zod"
 import { pin1_location } from "./pin1-location"
 
 export const base_def = z.object({
+  nonpolarized: z
+    .boolean()
+    .optional()
+    .describe("omit automatic electrical polarity fabrication symbols"),
   norefdes: z
     .boolean()
     .optional()

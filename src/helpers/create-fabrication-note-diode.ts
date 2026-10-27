@@ -7,6 +7,7 @@ import {
 import type { RectBounds } from "./rect-union-outline"
 
 type DiodeCopperPadBoundsParams = {
+  nonpolarized?: boolean
   p?: string | number
   pad_spacing?: string | number
   pl?: string | number
@@ -16,6 +17,7 @@ type DiodeCopperPadBoundsParams = {
 }
 
 type DiodeFabricationNoteOptions = {
+  nonpolarized?: boolean
   cathodePin?: number
   anodePin?: number
   idSuffix?: string
@@ -114,6 +116,7 @@ export const createFabricationNoteDiodeFromCopperPads = (
       maxY: padWidth / 2,
     },
     {
+      nonpolarized: parameters.nonpolarized,
       anodePin: parameters.anodepin,
       cathodePin: parameters.cathodepin,
     },
@@ -124,6 +127,8 @@ export const createFabricationNoteDiode = (
   bounds: RectBounds,
   options: DiodeFabricationNoteOptions = {},
 ): AnyCircuitElement[] => {
+  if (options.nonpolarized) return []
+
   const elms: (PcbFabricationNotePath | PcbFabricationNoteText)[] = []
 
   const width = bounds.maxX - bounds.minX

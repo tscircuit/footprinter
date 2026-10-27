@@ -78,7 +78,7 @@ export const led5050 = (
         minY: y - pw / 2,
         maxY: y + pw / 2,
       },
-      { idSuffix: color },
+      { idSuffix: color, nonpolarized: parameters.nonpolarized },
     ),
   )
 
