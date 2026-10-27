@@ -7,10 +7,11 @@ export const led = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
   const passiveCircuitJson = passive(parameters)
-  const { anodepin, cathodepin } = base_def.parse(parameters)
+  const { anodepin, cathodepin, nonpolarized } = base_def.parse(parameters)
   const circuitJson = passiveCircuitJson
     .concat(
       createFabricationNoteDiodeFromCircuitJson(passiveCircuitJson, {
+        nonpolarized,
         anodePin: anodepin,
         cathodePin: cathodepin,
       }),

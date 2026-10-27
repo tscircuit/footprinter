@@ -75,6 +75,7 @@ export const smdpads = (
       ...(num_pins === 2 &&
       (parameters.anodepin !== undefined || parameters.cathodepin !== undefined)
         ? createFabricationNoteDiodeFromCircuitJson(pads, {
+            nonpolarized: parameters.nonpolarized,
             anodePin: parameters.anodepin,
             cathodePin: parameters.cathodepin,
           })
