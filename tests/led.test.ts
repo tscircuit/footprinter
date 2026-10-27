@@ -3,7 +3,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { led } from "../src/fn"
 import { fp } from "../src/footprinter"
 
-test("led_rect", () => {
+test("led_rect", async () => {
   const soup = led({
     tht: false,
     p: 2.5,
@@ -12,9 +12,9 @@ test("led_rect", () => {
   }).circuitJson
 
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_rect")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_rect")
 })
-test("led_hole", () => {
+test("led_hole", async () => {
   const soup = led({
     tht: true,
     p: 2,
@@ -26,7 +26,7 @@ test("led_hole", () => {
   }).circuitJson
 
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_hole")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_hole")
 })
 
 test("led_rect testing .parameters for .json", async () => {
@@ -45,7 +45,7 @@ test("led_rect testing .parameters for .json", async () => {
   const svgContent = convertCircuitJsonToPcbSvg(soupJson)
 
   expect(soupParameters).toEqual(params)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_rect")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_rect")
 })
 
 test("led_hole testing .parameters for .json", async () => {
@@ -67,40 +67,40 @@ test("led_hole testing .parameters for .json", async () => {
   const svgContent = convertCircuitJsonToPcbSvg(soupJson)
 
   expect(soupParameters).toEqual(params)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_hole")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_hole")
 })
 
-test("led0402", () => {
+test("led0402", async () => {
   const soup = fp.string("led0402").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0402")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0402")
 })
 
-test("led0603", () => {
+test("led0603", async () => {
   const soup = fp.string("led0603").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0603")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0603")
 })
 
-test("led0805", () => {
+test("led0805", async () => {
   const soup = fp.string("led0805").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0805")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0805")
 })
 
-test("led1206", () => {
+test("led1206", async () => {
   const soup = fp().led().imperial("1206").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_1206")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_1206")
 })
 
-test("led0201", () => {
+test("led0201", async () => {
   const soup = fp().led().imperial("0201").circuitJson()
   const svgContent = convertCircuitJsonToPcbSvg(soup)
-  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
+  await expect(svgContent).toMatchSvgSnapshot(import.meta.path, "led_0201")
 })
 
-test("custom LED footprint uses explicit courtyard dimensions", () => {
+test("custom LED footprint uses explicit courtyard dimensions", async () => {
   const footprintString =
     "led_p4.6599mm_pw2.91mm_ph2.9106mm_cyw8.628mm_cyh4.056mm"
   const circuitJson = fp.string(footprintString).circuitJson()
@@ -112,7 +112,7 @@ test("custom LED footprint uses explicit courtyard dimensions", () => {
     width: 8.628,
     height: 4.056,
   })
-  expect(
+  await expect(
     convertCircuitJsonToPcbSvg(circuitJson, { showCourtyards: true }),
   ).toMatchSvgSnapshot(import.meta.path, footprintString)
 })
@@ -135,16 +135,13 @@ for (const { footprint, builder } of [
           .circuitJson()
         expect(circuitJson).toEqual(builder()[modifier](pin).circuitJson())
 
-        const negative = circuitJson.find(
-          (element) =>
-            element.type === "pcb_fabrication_note_text" &&
-            element.text === "-",
-        )
-        const cathodePin = modifier === "cathodepin" ? pin : 3 - pin
-        expect(negative).toBeDefined()
         expect(
-          negative!.anchor_position.x * (cathodePin === 1 ? -1 : 1),
-        ).toBeGreaterThan(0)
+          circuitJson.filter(
+            (element) =>
+              element.type === "pcb_fabrication_note_path" ||
+              element.type === "pcb_fabrication_note_text",
+          ),
+        ).toHaveLength(0)
       }
     }
 

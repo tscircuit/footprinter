@@ -4,7 +4,6 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
-import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
 import { rectpad } from "../helpers/rectpad"
 import { silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
@@ -67,19 +66,7 @@ export const smdpads = (
   }
 
   return {
-    circuitJson: [
-      ...pads,
-      silkscreenRef(0, ph / 2 + 0.8, 0.4),
-      courtyard,
-      // Generic pads stay neutral unless the caller explicitly identifies A/K.
-      ...(num_pins === 2 &&
-      (parameters.anodepin !== undefined || parameters.cathodepin !== undefined)
-        ? createFabricationNoteDiodeFromCircuitJson(pads, {
-            anodePin: parameters.anodepin,
-            cathodePin: parameters.cathodepin,
-          })
-        : []),
-    ],
+    circuitJson: [...pads, silkscreenRef(0, ph / 2 + 0.8, 0.4), courtyard],
     parameters,
   }
 }

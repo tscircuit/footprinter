@@ -5,7 +5,6 @@ import {
   length,
 } from "circuit-json"
 import { z } from "zod"
-import { createFabricationNoteDiodeFromCircuitJson } from "./create-fabrication-note-diode"
 import { rectpad } from "./rectpad"
 import { silkscreenRef } from "./silkscreenRef"
 import { base_def } from "./zod/base_def"
@@ -225,10 +224,6 @@ export const createStandardFlatLeadDiodeCircuitJson = (
 
   return [
     ...pads,
-    ...createFabricationNoteDiodeFromCircuitJson(pads, {
-      cathodePin: parameters.cathodepin,
-      anodePin: parameters.anodepin,
-    }),
     ...silkscreen,
     silkscreenRef(0, courtyardHeight / 2 + 0.4, 0.3),
     courtyard,

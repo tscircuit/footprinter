@@ -100,11 +100,16 @@ mirrored-only location is rejected with an error.
 
 ### Diode polarity pins
 
-Diode footprints assume pin 1 is the anode and pin 2 is the cathode by default.
-Use `anodepin1` to record that default explicitly, or `cathodepin1` for parts
-whose package numbering assigns the cathode to pin 1. These modifiers orient
-the fabrication-note diode symbol and polarity labels without changing pad
-numbers:
+Use `anodepin` and `cathodepin` to declare a two-terminal part's pin roles
+without changing its copper or pad numbering. These modifiers remain accepted
+by both string and builder APIs; assigning both terminals to one pin is invalid.
+Package-specific mechanical models can also use the declared terminal roles.
+
+Footprinter supplies pad geometry, silkscreen and courtyards. It does not draw
+automatic polarity fabrication symbols or +/− labels. `@tscircuit/core`
+generates those notes from the component type and resolved electrical terminals
+after PCB placement, so the footprint and component do not draw them twice:
+
 
 ```ts
 fp.string("sod123w_p3.4mm_pw0.95mm_cathodepin1")

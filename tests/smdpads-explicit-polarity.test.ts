@@ -3,7 +3,7 @@ import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 import { applyOrigin } from "../src/helpers/apply-origin"
 
-test("explicit smdpads polarity reuses diode artwork without changing the land pattern", () => {
+test("explicit smdpads polarity options retain neutral footprint geometry", async () => {
   const dimensions = "smdpads2_p3.3848mm_pw0.95mm_ph1.15mm"
   const transforms: Array<{
     origin?: "pin1" | "bottomleft"
@@ -45,58 +45,7 @@ test("explicit smdpads polarity reuses diode artwork without changing the land p
       "anodepin2_cathodepin1",
     ]) {
       const circuitJson = generate(`${dimensions}_${modifier}`, transform)
-      const notes = circuitJson.filter((note) =>
-        note.type.startsWith("pcb_fabrication_note"),
-      )
-      expect(notes).toHaveLength(6)
-      // Polarity is artwork only: preserve pads, numbering, silk and courtyard.
-      expect(
-        circuitJson.filter(
-          (note) => !note.type.startsWith("pcb_fabrication_note"),
-        ),
-      ).toEqual(plain)
-      const cathodePin =
-        modifier === "anodepin1" || modifier === "cathodepin2" ? "2" : "1"
-      const pads = circuitJson.flatMap((element) =>
-        element.type === "pcb_smtpad" && "x" in element ? [element] : [],
-      )
-      const cathode = pads.find((pad) => pad.port_hints?.includes(cathodePin))!
-      const anode = pads.find((pad) => !pad.port_hints?.includes(cathodePin))!
-      const center = {
-        x: (anode.x + cathode.x) / 2,
-        y: (anode.y + cathode.y) / 2,
-      }
-      // Emitted pad coordinates are the oracle after origin modifiers.
-      for (const [text, terminal] of [
-        ["+", anode],
-        ["-", cathode],
-      ] as const) {
-        const label = circuitJson.find(
-          (note) =>
-            note.type === "pcb_fabrication_note_text" && note.text === text,
-        )!
-        if (label.type !== "pcb_fabrication_note_text")
-          throw new Error("missing polarity label")
-        expect(
-          (label.anchor_position.x - center.x) * (terminal.x - center.x) +
-            (label.anchor_position.y - center.y) * (terminal.y - center.y),
-        ).toBeGreaterThan(0)
-      }
-      const bar = circuitJson.find(
-        (note) =>
-          note.type === "pcb_fabrication_note_path" &&
-          note.pcb_fabrication_note_path_id ===
-            "diode_fabrication_note_cathode",
-      )!
-      if (bar.type !== "pcb_fabrication_note_path")
-        throw new Error("missing cathode bar")
-      const barCenter = {
-        x: (bar.route[0]!.x + bar.route[1]!.x) / 2,
-        y: (bar.route[0]!.y + bar.route[1]!.y) / 2,
-      }
-      expect(
-        Math.hypot(barCenter.x - cathode.x, barCenter.y - cathode.y),
-      ).toBeLessThan(Math.hypot(barCenter.x - anode.x, barCenter.y - anode.y))
+      expect(circuitJson).toEqual(plain)
     }
   }
   expect(() =>
@@ -133,7 +82,7 @@ test("explicit smdpads polarity reuses diode artwork without changing the land p
     ["cathode_right", generate(`${dimensions}_anodepin1`, {})],
     ["pin1_origin", generate(`${dimensions}_cathodepin1`, { origin: "pin1" })],
   ] as const) {
-    expect(
+    await expect(
       convertCircuitJsonToPcbSvg(circuitJson, svgOptions),
     ).toMatchSvgSnapshot(import.meta.path, `smdpads-polarity-${name}`)
   }
