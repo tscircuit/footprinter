@@ -134,6 +134,18 @@ and `ph`) are independent from their validated mechanical parameters such as
 `bodylength`, `bodywidth`, and `bodyheight`. A generic `smdpads2` footprint
 remains generic and never selects one of these packages by pad dimensions.
 
+### Quad package dimensions (`w`, `h`, `padspan`, `leadspan`)
+
+On quad packages (`qfp`, `tqfp`, `lqfp`, `qfn`, `quad`), `w` and `h` specify the nominal package body width and height:
+- For gull-wing packages with `legsoutside` (`tqfp`, `lqfp`, `qfp`), pads extend outward from the body edge (`w / 2` and `h / 2`) with a `0.1mm` inner overlap, so opposite pad centres are `w + pl - 0.2mm` apart (and outer pad tips are `w + 2 * pl - 0.2mm` apart).
+- For leadless packages (`qfn`), pads sit inside the body edge so opposite pad centres are `w - pl + 0.2mm` apart.
+- To specify land-pattern spans directly from a datasheet, use `padspan` (`padspanx`, `padspany`) for the centre-to-centre distance between opposite pad rows, or `leadspan` (`leadspanx`, `leadspany`) for the outer pad-tip span:
+
+```ts
+fp.string("tqfp64_padspan11.4mm_p0.5mm")
+fp.string("tqfp64_leadspan12.875mm_p0.5mm")
+```
+
 ### Rounded pads
 
 Every footprint accepts a `rounded${radius}` modifier that applies the requested
