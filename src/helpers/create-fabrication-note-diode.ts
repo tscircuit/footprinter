@@ -158,6 +158,7 @@ export const createFabricationNoteDiode = (
         "diode_fabrication_note_anode_leg",
       ),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       stroke_width: strokeWidth,
       route: [
@@ -171,6 +172,7 @@ export const createFabricationNoteDiode = (
         "diode_fabrication_note_triangle",
       ),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       stroke_width: strokeWidth,
       route: [
@@ -184,6 +186,7 @@ export const createFabricationNoteDiode = (
       type: "pcb_fabrication_note_path",
       pcb_fabrication_note_path_id: getNoteId("diode_fabrication_note_cathode"),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       stroke_width: strokeWidth,
       route: [
@@ -197,6 +200,7 @@ export const createFabricationNoteDiode = (
         "diode_fabrication_note_cathode_leg",
       ),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       stroke_width: strokeWidth,
       route: [
@@ -210,6 +214,7 @@ export const createFabricationNoteDiode = (
         "diode_fabrication_note_positive",
       ),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       font: "tscircuit2024",
       font_size: fontSize,
@@ -226,6 +231,7 @@ export const createFabricationNoteDiode = (
         "diode_fabrication_note_negative",
       ),
       pcb_component_id: "",
+      is_polarity_marking: true,
       layer: "top",
       font: "tscircuit2024",
       font_size: fontSize,
