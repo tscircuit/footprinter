@@ -37,6 +37,10 @@ test("polarized capacitor silkscreen follows the selected positive pin", () => {
         e.type === "pcb_silkscreen_path" &&
         e.pcb_silkscreen_path_id === "capacitor_polarity_plus_1",
     )!
+    const outline = elements.find(
+      (e) =>
+        e.type === "pcb_silkscreen_path" && e.pcb_silkscreen_path_id === "",
+    )!
     if (
       positivePad.type !== "pcb_smtpad" ||
       !("x" in positivePad) ||
@@ -46,6 +50,12 @@ test("polarized capacitor silkscreen follows the selected positive pin", () => {
     expect(
       (line.route[0]!.x - positivePad.x) * (positivePin === 1 ? -1 : 1),
     ).toBeGreaterThan(0)
+    if (outline.type !== "pcb_silkscreen_path")
+      throw new Error("missing outline")
+    // The closed end of the three-sided outline is also a polarity mark.
+    expect(outline.route[1]!.x * (positivePin === 1 ? -1 : 1)).toBeGreaterThan(
+      0,
+    )
     expect(elements.filter((e) => e.type === "pcb_smtpad")).toEqual(pads)
   }
   expect(() =>
@@ -60,4 +70,23 @@ test("polarized capacitor silkscreen follows the selected positive pin", () => {
       .negativepin(1)
       .circuitJson(),
   ).toEqual(footprint)
+  const tht = fp
+    .string("cap0805_polarized_positivepin2_negativepin1")
+    .tht()
+    .circuitJson()
+  const pin2 = tht.find(
+    (e) => e.type === "pcb_plated_hole" && e.port_hints?.includes("2"),
+  )!
+  const thtPlus = tht.find(
+    (e) =>
+      e.type === "pcb_silkscreen_path" &&
+      e.pcb_silkscreen_path_id === "capacitor_polarity_plus_1",
+  )!
+  if (
+    pin2.type !== "pcb_plated_hole" ||
+    !("x" in pin2) ||
+    thtPlus.type !== "pcb_silkscreen_path"
+  )
+    throw new Error("missing through-hole pad or mark")
+  expect(thtPlus.route[0]!.x).toBeGreaterThan(pin2.x)
 })

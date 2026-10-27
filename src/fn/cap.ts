@@ -23,12 +23,14 @@ export const cap = (
       "A capacitor's positive and negative pins must be different",
     )
   }
-  const circuitJson = passive(parameters)
+  const positivePin = positivepin ?? (negativepin === 1 ? 2 : 1)
+  const circuitJson = passive(parameters, {
+    polarizedSilkscreenSide: polarized && positivePin === 2 ? "right" : "left",
+  })
   if (polarized) {
     const pads = circuitJson.filter(
       (e) => e.type === "pcb_smtpad" || e.type === "pcb_plated_hole",
     )
-    const positivePin = positivepin ?? (negativepin === 1 ? 2 : 1)
     const positive = pads.find((pad) =>
       pad.port_hints?.includes(String(positivePin)),
     )!

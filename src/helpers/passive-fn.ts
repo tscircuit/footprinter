@@ -240,7 +240,10 @@ export const passive_def = base_def.extend({
 
 export type PassiveDef = z.input<typeof passive_def>
 
-export const passive = (params: PassiveDef): AnyCircuitElement[] => {
+export const passive = (
+  params: PassiveDef,
+  options?: { polarizedSilkscreenSide?: "left" | "right" },
+): AnyCircuitElement[] => {
   let {
     fn,
     tht,
@@ -340,7 +343,11 @@ export const passive = (params: PassiveDef): AnyCircuitElement[] => {
           { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
           { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
           { x: p / 2, y: -ph / 2 - 0.4 },
-        ],
+        ].map((point) =>
+          options?.polarizedSilkscreenSide === "right"
+            ? { ...point, x: -point.x }
+            : point,
+        ),
         stroke_width: 0.1,
         pcb_silkscreen_path_id: "",
       },
