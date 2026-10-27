@@ -13,11 +13,20 @@ import { applyPin1Location } from "./helpers/apply-pin1-location"
 import { applyRounded } from "./helpers/apply-rounded"
 import { isNotNull } from "./helpers/is-not-null"
 import { footprintSizes } from "./helpers/passive-fn"
+import {
+  type FootprinterStringOptions,
+  resolvePassiveFootprintDefinition,
+} from "./helpers/resolve-passive-footprint-definition"
 import type { AnyFootprinterDefinitionOutput } from "./helpers/zod/AnyFootprinterDefinitionOutput"
 import { type Pin1Location, pin1_location } from "./helpers/zod/pin1-location"
 
 export type { BgaPinNumbering } from "./fn/bga"
 export type { PinrowPinNumbering } from "./fn/pinrow"
+export {
+  type FootprinterStringOptions,
+  type PassiveFootprintFamily,
+  resolvePassiveFootprintDefinition,
+} from "./helpers/resolve-passive-footprint-definition"
 
 type BaseOptionKey =
   | "nonpolarized"
@@ -746,15 +755,17 @@ const normalizeMicrometerLengths = (value: string): string =>
       `${Number(length.parse(micrometerLength).toPrecision(12))}mm`,
   )
 
-export const string = (def: string): Footprinter => {
+export const string = (
+  def: string,
+  options: FootprinterStringOptions = {},
+): Footprinter => {
   let fp = footprinter()
   const normalizedDef = normalizeDefinition(def)
 
-  // The regex below automatically inserts a "res" prefix so forms like
-  // "0603_pw1.0_ph1.1" are understood without typing "res0603".
-  const modifiedDef = normalizedDef
-    .replace(/^((?:\d{4}|\d{5}))(?=$|_|x)/, "res$1")
-    .replace(/^zh(\d+)(?=$|_)/, "jst$1_zh")
+  const modifiedDef = resolvePassiveFootprintDefinition(
+    normalizedDef,
+    options,
+  ).replace(/^zh(\d+)(?=$|_)/, "jst$1_zh")
 
   const def_parts = modifiedDef
     .split(/_(?!metric)/) // split on '_' not followed by 'metric'

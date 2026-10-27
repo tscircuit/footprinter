@@ -80,6 +80,44 @@ fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 ```
 
+### Default family for bare passive sizes
+
+Bare numeric sizes such as `0805` use the resistor family by default. A caller
+that knows the component type can select `res`, `cap`, `diode`, or `led` with
+the typed `defaultFamily` option:
+
+```ts
+fp.string("0805_polarized", { defaultFamily: "cap" }).circuitJson()
+// Same footprint as cap0805_polarized, including capacitor polarity marks.
+
+fp.string("0805_cathodepin1", { defaultFamily: "diode" }).circuitJson()
+// Same footprint as diode0805_cathodepin1.
+
+fp.string("res0805", { defaultFamily: "cap" }).circuitJson()
+// Still a resistor: explicit footprint names take precedence.
+```
+
+If downstream tools need the qualified string rather than generated geometry,
+use the same resolver as the parser:
+
+```ts
+import { resolvePassiveFootprintDefinition } from "@tscircuit/footprinter"
+
+resolvePassiveFootprintDefinition("0805_pw0.8mm", { defaultFamily: "cap" })
+// "cap0805_pw0.8mm"
+
+resolvePassiveFootprintDefinition("1608_metric", { defaultFamily: "diode" })
+// "diode1608_metric"
+```
+
+The resolver trims surrounding whitespace and only qualifies a leading four-
+or five-digit size token. It preserves dimensions and modifiers; explicit
+families and named packages are unchanged. It does not validate or otherwise
+normalize the definition. The parser's `params().string` continues to record
+the normalized input, so use the resolver when you need the qualified string.
+Existing resistor silkscreen differences between bare sizes and explicit `res`
+strings are preserved.
+
 ### Pin 1 location
 
 Every footprint accepts a `pin1location(side,alignment)` modifier that rotates
