@@ -865,26 +865,35 @@ export const footprinter = (): Footprinter & {
           }
 
           if (!FOOTPRINT_FN[target.fn]) {
+            if (target.string) {
+              throw new Error(
+                `Invalid footprint function, got "${target.fn}", from string "${target.string}"`,
+              )
+            }
+            if (target.fn) {
+              throw new Error(
+                `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.`,
+              )
+            }
             throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
-            )
-          }
-
-          return () => {
-            // TODO improve error
-            throw new Error(
-              `No function found for footprinter, make sure to specify .dip, .lr, .p, etc. Got "${prop}"`,
+              `Function not found for footprinter. Specify a valid function like .dip, .lr, .p etc.`,
             )
           }
         }
         if (prop === "json") {
           if (!FOOTPRINT_FN[target.fn]) {
+            if (target.string) {
+              throw new Error(
+                `Invalid footprint function, got "${target.fn}", from string "${target.string}"`,
+              )
+            }
+            if (target.fn) {
+              throw new Error(
+                `Function not found for footprinter "${target.fn}". Specify a valid function like .dip, .lr, .p etc.`,
+              )
+            }
             throw new Error(
-              `Invalid footprint function, got "${target.fn}"${
-                target.string ? `, from string "${target.string}"` : ""
-              }`,
+              `Function not found for footprinter. Specify a valid function like .dip, .lr, .p etc.`,
             )
           }
           return () => FOOTPRINT_FN[target.fn](target).parameters
