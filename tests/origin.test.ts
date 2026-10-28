@@ -2,6 +2,26 @@ import { test, expect } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
 import { fp } from "../src/footprinter"
 
+test("usbcmidmount bottomleft origin includes plated slot copper", () => {
+  const circuit = fp.string("usbcmidmount16").origin("bottomleft").circuitJson()
+  const slots = circuit.filter(
+    (element) => element.type === "pcb_plated_hole" && element.shape === "pill",
+  )
+
+  expect(slots).toHaveLength(4)
+  expect(
+    Math.min(...slots.map((slot) => slot.x - slot.outer_width / 2)),
+  ).toBeCloseTo(0)
+  expect(
+    Math.min(...slots.map((slot) => slot.y - slot.outer_height / 2)),
+  ).toBeCloseTo(0)
+
+  expect(convertCircuitJsonToPcbSvg(circuit)).toMatchSvgSnapshot(
+    import.meta.path,
+    "usbcmidmount_bottomleft_origin",
+  )
+})
+
 // Test bottomleft origin for single pad
 
 test("smtpad origin bottomleft", () => {
