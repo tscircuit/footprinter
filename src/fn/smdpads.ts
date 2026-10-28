@@ -14,7 +14,7 @@ export const smdpads_def = base_def
     fn: z.literal("smdpads"),
     num_pins: z.number().int().positive().default(3),
     p: length.default("1mm").describe("pad center pitch"),
-    pw: length.default("1mm").describe("outer pad width"),
+    pw: length.default("0.5mm").describe("outer pad width"),
     ph: length.default("1mm").describe("pad height"),
     cyw: length.optional().describe("courtyard width"),
     cyh: length.optional().describe("courtyard height"),
