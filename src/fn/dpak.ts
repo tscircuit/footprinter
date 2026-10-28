@@ -45,7 +45,7 @@ const getNumberOfPads = (rawParams: DpakDef): 3 | 6 => {
     return rawParams.num_pins
   }
 
-  const match = rawParams.string?.match(/^(?:d2pak|to252|to263)_(\d+)/i)
+  const match = rawParams.string?.match(/^(?:dpak|d2pak|to252|to263)_(\d+)/i)
   const packagePinCount = Number.parseInt(match?.[1] ?? "3", 10)
 
   // TO-252-5 and TO-263-5 name the five package leads. The exposed tab is
