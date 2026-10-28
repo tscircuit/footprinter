@@ -4,7 +4,8 @@ import { z } from "zod"
 export const dim2d = z
   .string()
   .transform((a) => {
-    const [x, y] = a.split(/[x ]/)
+    const cleaned = a.replace(/^\(([^()]*)\)$/, "$1")
+    const [x, y] = cleaned.split(/[x ]/)
     return {
       x: length.parse(x ?? ""),
       y: length.parse(y ?? ""),
