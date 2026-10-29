@@ -148,10 +148,14 @@ export const soicWithoutParsing = (parameters: z.infer<typeof soic_def>) => {
 
   if (parameters.thermalpad) {
     pads.push(
-      createThermalPad(parameters.thermalpad, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      }),
+      createThermalPad(
+        parameters.thermalpad,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        parameters.num_pins + 1,
+      ),
     )
   }
 
