@@ -78,6 +78,9 @@ export type Footprinter = {
   dip: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
+  pdip: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "id" | "od" | "wide" | "narrow">
   dpak: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -729,6 +732,8 @@ export type Footprinter = {
 const normalizeDefinition = (def: string): string => {
   return def
     .trim()
+    .replace(/^pdip[-_]?(\d+)(?=_|$)/i, "dip$1")
+    .replace(/^pdip(?=_|$)/i, "dip")
     .replace(/^do-219ad(?=_|$)/i, "do219ad")
     .replace(/^sod-323he(?=_|$)/i, "sod323he")
     .replace(/^pinheader(?=[\d_]|$)/i, "pinrow")
