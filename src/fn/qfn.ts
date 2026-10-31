@@ -7,6 +7,7 @@ import { circlepad } from "../helpers/circlepad"
 import { rectpad } from "../helpers/rectpad"
 import { pillpad } from "../helpers/pillpad"
 import { getGridRowLabel } from "../helpers/grid-row-label"
+import { getQuadSidePinCounts } from "../helpers/get-quad-side-pin-counts"
 import { dim2d } from "../helpers/zod/dim-2d"
 import { function_call } from "../helpers/zod/function-call"
 import { base_quad_def, quad, quadTransform } from "./quad"
@@ -141,7 +142,43 @@ export const qfn_def = base_quad_def
           parameters[key] !== gridCounts[key]
         )
           throw new Error("QFN grid conflicts with explicit side counts")
-      return quadTransform({ ...parameters, ...gridCounts, pl, pw })
+      const transformed = quadTransform({
+        ...parameters,
+        ...gridCounts,
+        pl,
+        pw,
+      })
+      if (
+        parameters.pl === undefined &&
+        parameters.leftrightpadlength === undefined &&
+        parameters.lrpl === undefined &&
+        !parameters.circularpads
+      ) {
+        const sidePinCounts = getQuadSidePinCounts(transformed)
+        const horizontalSidePinCount = Math.max(
+          sidePinCounts.top,
+          sidePinCounts.bottom,
+        )
+        const verticalSidePinCount = Math.max(
+          sidePinCounts.left,
+          sidePinCounts.right,
+        )
+        const horizontalPitch = transformed.px ?? transformed.p
+        const verticalPitch = transformed.py ?? transformed.p
+        const leftRightPadWidth =
+          transformed.leftrightpadwidth ?? transformed.pw
+        const halfRowSpanX =
+          (horizontalPitch * (horizontalSidePinCount - 1) + transformed.pw) / 2
+        const halfRowSpanY =
+          (verticalPitch * (verticalSidePinCount - 1) + leftRightPadWidth) / 2
+        const maxPlX = transformed.w / 2 - 0.1 - halfRowSpanX - 0.15
+        const maxPlY = transformed.h / 2 - 0.1 - halfRowSpanY - 0.15
+        const maxCornerSafePl = Math.min(maxPlX, maxPlY)
+        if (maxCornerSafePl > 0 && maxCornerSafePl < transformed.pl) {
+          transformed.pl = Number(maxCornerSafePl.toFixed(12))
+        }
+      }
+      return transformed
     }
     if (
       parameters.cc === false ||
