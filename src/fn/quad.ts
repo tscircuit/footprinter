@@ -32,7 +32,6 @@ const positiveLength = length.refine(
   },
 )
 
-
 export const base_quad_def = base_def.extend({
   fn: z.string(),
   cc: z.boolean().default(true).optional(),
