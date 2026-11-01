@@ -117,13 +117,35 @@ export type Footprinter = {
   qfp: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
-    "w" | "p" | "id" | "od" | "wide" | "narrow" | "pillpads"
+    | "w"
+    | "h"
+    | "padspan"
+    | "padspanx"
+    | "padspany"
+    | "leadspan"
+    | "leadspanx"
+    | "leadspany"
+    | "p"
+    | "pw"
+    | "pl"
+    | "id"
+    | "od"
+    | "wide"
+    | "narrow"
+    | "pillpads"
   >
   quad: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "w"
+    | "h"
     | "l"
+    | "padspan"
+    | "padspanx"
+    | "padspany"
+    | "leadspan"
+    | "leadspanx"
+    | "leadspany"
     | "square"
     | "pl"
     | "pr"
@@ -193,7 +215,20 @@ export type Footprinter = {
   >
   tqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pillpads">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "padspan"
+    | "padspanx"
+    | "padspany"
+    | "leadspan"
+    | "leadspanx"
+    | "leadspany"
+    | "p"
+    | "pw"
+    | "pl"
+    | "pillpads"
+  >
   soic: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
@@ -425,7 +460,20 @@ export type Footprinter = {
   ms012: () => FootprinterParamsBuilder<"w" | "p">
   lqfp: (
     num_pins?: number,
-  ) => FootprinterParamsBuilder<"w" | "h" | "pl" | "pw" | "pillpads">
+  ) => FootprinterParamsBuilder<
+    | "w"
+    | "h"
+    | "padspan"
+    | "padspanx"
+    | "padspany"
+    | "leadspan"
+    | "leadspanx"
+    | "leadspany"
+    | "p"
+    | "pl"
+    | "pw"
+    | "pillpads"
+  >
   lga: (
     num_pins?: number,
   ) => FootprinterParamsBuilder<
