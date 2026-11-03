@@ -23,11 +23,23 @@ export const sot223_def = base_def.extend({
   string: z.string().optional(),
 })
 
+export const sot223_5_def = sot223_def.extend({
+  num_pins: z.number().default(5),
+  pl: z.string().default("2.2mm"),
+  pw: z.string().default("1mm"),
+  p: z.string().default("1.5mm"),
+  tabpl: z.string().default("1.8mm"),
+  tabpw: z.string().default("3.4mm"),
+  taboffset: z.string().default("0mm"),
+})
+
 export const sot223 = (
   raw_params: z.input<typeof sot223_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot223_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 4
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 4)
 
   if (numPins === 8) {
     const parameters = sot223_8_def.parse({
@@ -40,6 +52,17 @@ export const sot223 = (
     }
   }
 
+  if (numPins === 5) {
+    const parameters = sot223_5_def.parse({
+      ...raw_params,
+      num_pins: numPins,
+    })
+    return {
+      circuitJson: sot223_5(parameters),
+      parameters: parameters,
+    }
+  }
+
   const parameters = sot223_def.parse({
     ...raw_params,
     num_pins: numPins,
@@ -48,12 +71,6 @@ export const sot223 = (
   if (parameters.num_pins === 4) {
     return {
       circuitJson: sot223_4(parameters),
-      parameters: parameters,
-    }
-  }
-  if (parameters.num_pins === 5) {
-    return {
-      circuitJson: sot223_5(parameters),
       parameters: parameters,
     }
   }
@@ -195,8 +212,9 @@ export const get2CcwSot2235Coords = (parameters: {
   p: number
   pn: number
   w: number
+  taboffset?: number
 }) => {
-  const { p, h, pn, w } = parameters
+  const { p, pn, w, taboffset = 0 } = parameters
   if (pn === 1) {
     return { x: -w / 2 + 1.2, y: p / 2 + p }
   }
@@ -210,7 +228,7 @@ export const get2CcwSot2235Coords = (parameters: {
     return { x: -w / 2 + 1.2, y: -p / 2 - p }
   }
   if (pn === 5) {
-    return { x: w / 2 - 1, y: 0 }
+    return { x: w / 2 - 1 + taboffset, y: 0 }
   }
   throw new Error("Invalid pin number")
 }
@@ -221,24 +239,24 @@ export const sot223_5 = (parameters: z.infer<typeof sot223_def>) => {
   let padOuterHalfHeight = 0
   const w = Number.parseFloat(parameters.w)
   const h = Number.parseFloat(parameters.h)
+  const p = Number.parseFloat(parameters.p)
+  const pl = Number.parseFloat(parameters.pl)
+  const pw = Number.parseFloat(parameters.pw)
+  const tabpl = Number.parseFloat(parameters.tabpl ?? "1.8mm")
+  const tabpw = Number.parseFloat(parameters.tabpw)
+  const taboffset = Number.parseFloat(parameters.taboffset)
+
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = get2CcwSot2235Coords({
       h,
-      p: 1.5,
+      p,
       pn: i,
       w,
+      taboffset,
     })
 
-    let pinWidth = Number.parseFloat(parameters.pw)
-    let pinLength = Number.parseFloat(parameters.pl)
-
-    if (i === 5) {
-      pinWidth = 3.4
-      pinLength = 1.8
-    } else {
-      pinWidth = 1
-      pinLength = 2.2
-    }
+    const pinWidth = i === 5 ? tabpw : pw
+    const pinLength = i === 5 ? tabpl : pl
     const cornerRadius = Math.min(pinLength, pinWidth) / 8
 
     padOuterHalfWidth = Math.max(padOuterHalfWidth, Math.abs(x) + pinLength / 2)

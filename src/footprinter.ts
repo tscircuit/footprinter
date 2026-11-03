@@ -492,7 +492,9 @@ export type Footprinter = {
   to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
   to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
-  sot223: () => FootprinterParamsBuilder<
+  sot223: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "tabpl" | "tabpw" | "taboffset"
   >
   m2host: () => FootprinterParamsBuilder<never>
@@ -743,7 +745,9 @@ const normalizeDefinition = (def: string): string => {
       pins ? `sot23_${pins}` : "sot23",
     )
     .replace(/^sot23-(\d+)(?=_|$)/i, "sot23_$1")
-    .replace(/^sot-223-(\d+)(?=_|$)/i, "sot223_$1")
+    .replace(/^sot-?223(?:-(\d+))?(?=_|$)/i, (_, pins) =>
+      pins ? `sot223_${pins}` : "sot223",
+    )
     .replace(/^to-220f-(\d+)(?=_|$)/i, "to220f_$1")
     .replace(/^jst_(ph|sh|zh|xh)_(\d+)(?=_|$)/i, "jst$2_$1")
 }
