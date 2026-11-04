@@ -119,3 +119,35 @@ test("fpc31_staggered supports unequal row lengths for FPC-0.3HF-31PWBH10", () =
     "fpc31_staggered_FPC-0.3HF-31PWBH10",
   )
 })
+
+test("fpc without a pin count defaults to the 12-pin FPC-05F-12PH20 layout", () => {
+  const circuitJson = fp.string("fpc").circuitJson()
+  const pads = circuitJson.filter(
+    (element) => element.type === "pcb_smtpad",
+  ) as RectangularPad[]
+
+  // Bare `fpc` used to throw a raw ZodError because num_pins had no default.
+  // It now renders the same 12-pin part the explicit fpc12 test asserts.
+  const reference = fp
+    .string(
+      "fpc12_p0.5mm_pw0.3mm_pl1.25mm_mpx8.88mm_mpy2.575mm_mpw2mm_mpl2.5mm",
+    )
+    .circuitJson()
+    .filter((element) => element.type === "pcb_smtpad") as RectangularPad[]
+
+  expect(pads).toHaveLength(14)
+  expect(pads).toHaveLength(reference.length)
+  pads.forEach((pad, index) => {
+    const referencePad = reference[index]!
+    expect(pad.x).toBeCloseTo(referencePad.x, 6)
+    expect(pad.y).toBeCloseTo(referencePad.y, 6)
+    expect(pad.width).toBeCloseTo(referencePad.width, 6)
+    expect(pad.height).toBeCloseTo(referencePad.height, 6)
+    expect(pad.port_hints).toEqual(referencePad.port_hints)
+  })
+
+  expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
+    import.meta.path,
+    "fpc_default_12pin",
+  )
+})
