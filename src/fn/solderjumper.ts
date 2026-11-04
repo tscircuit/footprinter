@@ -5,8 +5,8 @@ import { length } from "circuit-json"
 
 /**
  * Solderjumper footprint generator
- * @param params { num_pins: 2 | 3, bridged?: string, p?: number, pw?: number, ph?: number }
- * - num_pins: 2 or 3
+ * @param params { num_pins?: 2 | 3, bridged?: string, p?: number, pw?: number, ph?: number }
+ * - num_pins: 2 or 3 (defaults to 2 when omitted)
  * - bridged: e.g. "12" or "123" (which pins are connected)
  * - p: pad pitch (default 2.54)
  * - pw: pad width (default 1.5)
@@ -20,13 +20,13 @@ import { length } from "circuit-json"
  *   solderjumper({ num_pins: 3, pw: 2.0, ph: 1.0 }) // custom pad size
  */
 export const solderjumper = (params: {
-  num_pins: 2 | 3
+  num_pins?: 2 | 3
   bridged?: string
   p?: number
   pw?: number
   ph?: number
 }) => {
-  const { num_pins, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
+  const { num_pins = 2, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
   const padSpacing = length.parse(p)
   const padWidth = length.parse(pw)
   const padHeight = length.parse(ph)
