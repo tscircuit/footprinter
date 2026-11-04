@@ -8,8 +8,9 @@ import { rectpad } from "../helpers/rectpad"
 import { silkscreenpath } from "../helpers/silkscreenpath"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
+import { wson6, wson6_def } from "../helpers/wson6"
 
-export const wson_def = base_def.extend({
+const wson8_def = base_def.extend({
   fn: z.literal("wson"),
   num_pins: z.literal(8).default(8),
   p: length.default("0.5mm").describe("pin pitch"),
@@ -23,10 +24,13 @@ export const wson_def = base_def.extend({
   h: length.default("3mm").describe("package body height"),
 })
 
+export const wson_def = z.union([wson8_def, wson6_def])
+
 export const wson = (
   rawParams: z.input<typeof wson_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = wson_def.parse(rawParams)
+  if (parameters.num_pins === 6) return wson6(parameters)
   const { p, rowspan, pl, pw, ep, epw, eph, w, h } = parameters
   const pads: AnyCircuitElement[] = []
   const startX = (-3 * p) / 2
