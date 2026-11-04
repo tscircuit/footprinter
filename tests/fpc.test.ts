@@ -119,3 +119,16 @@ test("fpc31_staggered supports unequal row lengths for FPC-0.3HF-31PWBH10", () =
     "fpc31_staggered_FPC-0.3HF-31PWBH10",
   )
 })
+
+test("bare fpc defaults to 12 pins and renders valid footprint without throwing", () => {
+  const circuitJson = fp.string("fpc").circuitJson()
+  const pads = circuitJson.filter(
+    (element) => element.type === "pcb_smtpad",
+  ) as RectangularPad[]
+  expect(pads).toHaveLength(14)
+  const courtyard = circuitJson.find(
+    (e) => e.type === "pcb_courtyard_rect",
+  ) as any
+  expect(courtyard).toBeDefined()
+  expect(Number.isNaN(courtyard.width)).toBe(false)
+})
