@@ -1,10 +1,16 @@
 import type { PcbSilkscreenText } from "circuit-json"
 
+const DEFAULT_SILKSCREEN_REFERENCE_FONT_SIZE = 0.4
+
 export const silkscreenRef: (
   x: number,
   y: number,
-  font_size: number,
-) => PcbSilkscreenText = (x: number, y: number, font_size: number) => {
+  font_size?: number,
+) => PcbSilkscreenText = (
+  x: number,
+  y: number,
+  font_size = DEFAULT_SILKSCREEN_REFERENCE_FONT_SIZE,
+) => {
   return {
     type: "pcb_silkscreen_text",
     pcb_silkscreen_text_id: "silkscreen_text_1",

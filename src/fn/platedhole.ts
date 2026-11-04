@@ -59,7 +59,7 @@ export const platedhole = (
             rectPadHeight: pd,
           }) as AnyCircuitElement)
         : (makePlatedHole(1, 0, 0, d, pd) as AnyCircuitElement),
-      silkscreenRef(0, pd / 2 + 0.5, 0.2) as AnyCircuitElement,
+      silkscreenRef(0, pd / 2 + 0.5) as AnyCircuitElement,
     ],
     parameters: params,
   }

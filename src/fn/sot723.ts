@@ -26,7 +26,6 @@ export const sot723 = (
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
     0,
     length.parse(parameters.h),
-    0.2,
   )
 
   const courtyardWidthMm = 1.8
