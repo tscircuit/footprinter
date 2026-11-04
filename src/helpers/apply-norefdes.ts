@@ -5,7 +5,7 @@ export const applyNoRefDes = (
   parameters: any,
 ): AnyCircuitElement[] => {
   const refs = elements.filter(
-    (el) => el.type === "pcb_silkscreen_text",
+    (el) => el.type === "pcb_silkscreen_text" && el.text === "{REF}",
   ) as Array<any>
 
   if (refs.length === 0) return elements
