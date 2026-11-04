@@ -122,7 +122,7 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.p = (horizontalPitch + verticalPitch) / 2
   }
 
-  if (!v.w && !v.h && v.p) {
+  if (!v.w && !v.h && v.p !== undefined) {
     // HACK: underspecified
     v.w = horizontal_pitch * (horizontal_side_pin_count + 4)
     v.h = vertical_pitch * (vertical_side_pin_count + 4)
