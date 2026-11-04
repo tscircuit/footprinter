@@ -296,8 +296,13 @@ export const passive = (
     sz !== undefined && (pw !== sz.pw_mm_min || ph !== sz.ph_mm_min)
   const copperPadWidth = tht ? pw / 0.8 : pw
   const copperPadHeight = tht ? copperPadWidth : ph
-  const outlinePadWidth = hasCustomPadDimensions ? copperPadWidth : pw
-  const outlinePadHeight = hasCustomPadDimensions ? copperPadHeight : ph
+  // Custom lands do not shrink the selected component's marking envelope.
+  const outlinePadWidth = hasCustomPadDimensions
+    ? Math.max(copperPadWidth, sz!.pw_mm_min)
+    : pw
+  const outlinePadHeight = hasCustomPadDimensions
+    ? Math.max(copperPadHeight, sz!.ph_mm_min)
+    : ph
 
   let silkscreenLines: PcbSilkscreenPath[] = []
   const nonpolarizedSilkscreen =
@@ -315,7 +320,7 @@ export const passive = (
       stroke_width_mm,
     } = nonpolarizedSilkscreen
     const lineY = hasCustomPadDimensions
-      ? outlinePadHeight / 2 + 0.4
+      ? Math.max(line_y_mm, copperPadHeight / 2 + 0.4)
       : line_y_mm
     silkscreenLines = [
       {
@@ -386,9 +391,25 @@ export const passive = (
     sz.courtyard_height_mm &&
     courtyard
   ) {
-    // Keep the authored standard envelope as a floor for customized lands.
-    courtyard.width = Math.max(courtyard.width, p + copperPadWidth)
-    courtyard.height = Math.max(courtyard.height, copperPadHeight)
+    // Retain the standard copper-to-courtyard spacing in the same pad mode.
+    const standardCopperWidth = tht ? sz.pw_mm_min / 0.8 : sz.pw_mm_min
+    const standardCopperHeight = tht ? standardCopperWidth : sz.ph_mm_min
+    const widthMargin = Math.max(
+      0,
+      sz.courtyard_width_mm - p - standardCopperWidth,
+    )
+    const heightMargin = Math.max(
+      0,
+      sz.courtyard_height_mm - standardCopperHeight,
+    )
+    courtyard.width = Math.max(
+      courtyard.width,
+      p + copperPadWidth + widthMargin,
+    )
+    courtyard.height = Math.max(
+      courtyard.height,
+      copperPadHeight + heightMargin,
+    )
     for (const line of silkscreenLines) {
       for (const point of line.route) {
         courtyard.width = Math.max(
