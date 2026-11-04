@@ -4,16 +4,21 @@ import {
   type PcbSilkscreenPath,
   length,
 } from "circuit-json"
-import { platedhole } from "src/helpers/platedhole"
+import { mm } from "@tscircuit/mm"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
 import { z } from "zod"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
-  id: length.optional().default("1.0mm"),
-  od: length.optional().default("1.9mm"),
+  // JEDEC TO-220 lead pitch is a fixed 0.1" (2.54mm), the same value the
+  // to220f sibling and KiCad TO-220-3_Vertical use.
+  p: length.optional().default("2.54mm"),
+  id: length.optional().default("1.1mm"),
+  od: length.optional().default("1.905mm"),
+  ph: length.optional().default("2mm"),
   w: length.optional().default("13mm"),
   h: length.optional().default("7mm"),
   num_pins: z.number().optional(),
@@ -26,7 +31,7 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { id, od, w, h, string } = parameters
+  const { p, id, od, ph, w, h, string } = parameters
 
   const numPins =
     parameters.num_pins ??
@@ -36,17 +41,29 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const minPitch = 2.5
-  const maxHoleWidth = w * 0.4
-  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
-
-  const plated_holes = Array.from({ length: numPins }, (_, i) => {
-    const x =
-      numPins % 2 === 0
-        ? (i - numPins / 2 + 0.5) * computedPitch
-        : (i - Math.floor(numPins / 2)) * computedPitch
-    return platedhole(i + 1, x, holeY, id, od)
-  })
+  // Pins sit on the fixed 2.54mm pitch, not a value derived from the body
+  // width. Pin 1 gets a rectangular pad (polarity marker) and the rest are
+  // pill pads, mirroring KiCad's TO-220-3_Vertical land pattern.
+  const plated_holes: AnyCircuitElement[] = Array.from(
+    { length: numPins },
+    (_, i) => {
+      const x =
+        numPins % 2 === 0
+          ? (i - numPins / 2 + 0.5) * p
+          : (i - Math.floor(numPins / 2)) * p
+      if (i === 0) {
+        return platedHoleWithRectPad({
+          pn: 1,
+          x,
+          y: holeY,
+          holeDiameter: id,
+          rectPadWidth: od,
+          rectPadHeight: ph,
+        })
+      }
+      return platedHolePill(i + 1, x, holeY, mm(id), mm(od), mm(ph))
+    },
+  )
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -103,7 +120,10 @@ export const to220 = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, h / 2 + 0.6, 0.5)
   const pinToeHalfSpanX =
-    Math.max(...plated_holes.map((hole) => Math.abs(hole.x))) + od / 2
+    Math.max(
+      ...plated_holes.map((hole) => Math.abs((hole as { x: number }).x)),
+    ) +
+    od / 2
   const pinToeTopY = holeY + od / 2
   const pinToeBottomY = holeY - od / 2
   const courtyardHalfWidth = Math.max(
@@ -135,6 +155,6 @@ export const to220 = (
       silkscreenRefText as AnyCircuitElement,
       courtyard,
     ],
-    parameters: { ...parameters, p: computedPitch },
+    parameters: { ...parameters, p },
   }
 }
