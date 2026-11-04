@@ -12,6 +12,7 @@ export interface ChipArrayParams {
   padHeight: number
   padPitch: number // Vertical spacing between pads
   numRows: number // Number of rows (2 for 0402_x2, 4 for 0402_x4)
+  outerPadHeight?: number
   textbottom?: boolean
   convex?: boolean
   concave?: boolean
@@ -33,6 +34,7 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     padHeight,
     padPitch,
     numRows,
+    outerPadHeight,
     textbottom,
     courtyardOutline,
   } = params
@@ -48,7 +50,11 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
 
   // Left column: pins 1 to numRows
   yPositions.forEach((y, index) => {
-    pads.push(rectpad(index + 1, -padSpacing / 2, y, padWidth, padHeight))
+    const height =
+      outerPadHeight !== undefined && (index === 0 || index === numRows - 1)
+        ? outerPadHeight
+        : padHeight
+    pads.push(rectpad(index + 1, -padSpacing / 2, y, padWidth, height))
   })
 
   // Right column: pins numRows+1 to 2*numRows (reverse order)
@@ -56,8 +62,12 @@ export const chipArray = (params: ChipArrayParams): AnyCircuitElement[] => {
     .slice()
     .reverse()
     .forEach((y, index) => {
+      const height =
+        outerPadHeight !== undefined && (index === 0 || index === numRows - 1)
+          ? outerPadHeight
+          : padHeight
       pads.push(
-        rectpad(index + numRows + 1, padSpacing / 2, y, padWidth, padHeight),
+        rectpad(index + numRows + 1, padSpacing / 2, y, padWidth, height),
       )
     })
 
