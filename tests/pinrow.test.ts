@@ -42,7 +42,7 @@ test("pinrow silkscreen border and custom module label", () => {
   })
   expect(
     circuitJson.filter((element) => element.type === "pcb_silkscreen_path"),
-  ).toHaveLength(1)
+  ).toHaveLength(2)
   expect(
     circuitJson.find(
       (element) =>
