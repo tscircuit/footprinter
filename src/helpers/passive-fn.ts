@@ -284,13 +284,25 @@ export const passive = (
     w = sz.w_mm_min
     h = sz.h_mm_min
     p = sz.p_mm_min
-    pw = sz.pw_mm_min
-    ph = sz.ph_mm_min
+    pw ??= sz.pw_mm_min
+    ph ??= sz.ph_mm_min
   }
 
   if (p === undefined || pw === undefined || ph === undefined) {
     throw new Error("Could not determine required pad dimensions (p, pw, ph)")
   }
+
+  const hasCustomPadDimensions =
+    sz !== undefined && (pw !== sz.pw_mm_min || ph !== sz.ph_mm_min)
+  const copperPadWidth = tht ? pw / 0.8 : pw
+  const copperPadHeight = tht ? copperPadWidth : ph
+  // Custom lands do not shrink the selected component's marking envelope.
+  const outlinePadWidth = hasCustomPadDimensions
+    ? Math.max(copperPadWidth, sz!.pw_mm_min)
+    : pw
+  const outlinePadHeight = hasCustomPadDimensions
+    ? Math.max(copperPadHeight, sz!.ph_mm_min)
+    : ph
 
   let silkscreenLines: PcbSilkscreenPath[] = []
   const nonpolarizedSilkscreen =
@@ -307,14 +319,17 @@ export const passive = (
       line_y_mm = 0,
       stroke_width_mm,
     } = nonpolarizedSilkscreen
+    const lineY = hasCustomPadDimensions
+      ? Math.max(line_y_mm, copperPadHeight / 2 + 0.4)
+      : line_y_mm
     silkscreenLines = [
       {
         type: "pcb_silkscreen_path",
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: -line_half_length_mm, y: line_y_mm },
-          { x: line_half_length_mm, y: line_y_mm },
+          { x: -line_half_length_mm, y: lineY },
+          { x: line_half_length_mm, y: lineY },
         ],
         stroke_width: stroke_width_mm,
         pcb_silkscreen_path_id: "",
@@ -324,8 +339,8 @@ export const passive = (
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: -line_half_length_mm, y: -line_y_mm },
-          { x: line_half_length_mm, y: -line_y_mm },
+          { x: -line_half_length_mm, y: -lineY },
+          { x: line_half_length_mm, y: -lineY },
         ],
         stroke_width: stroke_width_mm,
         pcb_silkscreen_path_id: "",
@@ -339,10 +354,16 @@ export const passive = (
         layer: "top",
         pcb_component_id: "",
         route: [
-          { x: p / 2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: ph / 2 + 0.4 },
-          { x: -p / 2 - pw / 2 - 0.2, y: -ph / 2 - 0.4 },
-          { x: p / 2, y: -ph / 2 - 0.4 },
+          { x: p / 2, y: outlinePadHeight / 2 + 0.4 },
+          {
+            x: -p / 2 - outlinePadWidth / 2 - 0.2,
+            y: outlinePadHeight / 2 + 0.4,
+          },
+          {
+            x: -p / 2 - outlinePadWidth / 2 - 0.2,
+            y: -outlinePadHeight / 2 - 0.4,
+          },
+          { x: p / 2, y: -outlinePadHeight / 2 - 0.4 },
         ].map((point) =>
           options?.polarizedSilkscreenSide === "right"
             ? { ...point, x: -point.x }
@@ -354,7 +375,9 @@ export const passive = (
     ]
   }
 
-  const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
+  const textY = textbottom
+    ? -outlinePadHeight / 2 - 0.9
+    : outlinePadHeight / 2 + 0.9
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
@@ -362,6 +385,44 @@ export const passive = (
       : cyw !== undefined && cyh !== undefined
         ? createCourtyardRect(cyw, cyh)
         : null
+  if (
+    hasCustomPadDimensions &&
+    sz?.courtyard_width_mm &&
+    sz.courtyard_height_mm &&
+    courtyard
+  ) {
+    // Retain the standard copper-to-courtyard spacing in the same pad mode.
+    const standardCopperWidth = tht ? sz.pw_mm_min / 0.8 : sz.pw_mm_min
+    const standardCopperHeight = tht ? standardCopperWidth : sz.ph_mm_min
+    const widthMargin = Math.max(
+      0,
+      sz.courtyard_width_mm - p - standardCopperWidth,
+    )
+    const heightMargin = Math.max(
+      0,
+      sz.courtyard_height_mm - standardCopperHeight,
+    )
+    courtyard.width = Math.max(
+      courtyard.width,
+      p + copperPadWidth + widthMargin,
+    )
+    courtyard.height = Math.max(
+      courtyard.height,
+      copperPadHeight + heightMargin,
+    )
+    for (const line of silkscreenLines) {
+      for (const point of line.route) {
+        courtyard.width = Math.max(
+          courtyard.width,
+          2 * Math.abs(point.x) + line.stroke_width,
+        )
+        courtyard.height = Math.max(
+          courtyard.height,
+          2 * Math.abs(point.y) + line.stroke_width,
+        )
+      }
+    }
+  }
   const shouldRoundPads = roundedPads ?? sz?.rounded_pads ?? false
   const cornerRadius = shouldRoundPads
     ? Math.min(0.125, Math.min(pw, ph) / 8)
