@@ -31,6 +31,8 @@ qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048
 axial_p0.2in
 do219ad
 sod323he
+to220h_3
+to220h_3_tabup
 ```
 
 You can use these like so:
@@ -78,6 +80,20 @@ import { fp } from "@tscircuit/footprinter"
 fp.string("dip4_w7.62") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
+```
+
+### Horizontal TO-220-3
+
+`to220h` (or `to220h_3`) uses the KiCad `TO-220-3_Horizontal_TabDown`
+geometry: three leads at 2.54 mm pitch with 1.1 mm drills, plus a 3.5 mm
+non-plated mounting hole. `to220h_3_tabup` selects the TabUp orientation.
+Both full KiCad names are accepted as aliases. The origin is the middle lead;
+the mounting hole is at y = +16.66 mm for TabDown and -16.66 mm for TabUp.
+Only the three-pin variant is supported.
+
+```ts
+fp().to220h().circuitJson()
+fp().to220h(3).tabup().circuitJson()
 ```
 
 ### Pin 1 location
