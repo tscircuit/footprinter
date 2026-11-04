@@ -1,14 +1,15 @@
-import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
-import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import { platedHolePill } from "src/helpers/platedHolePill"
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
+import { platedHolePill } from "src/helpers/platedHolePill"
+import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
+import { platedhole } from "src/helpers/platedhole"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "src/helpers/zod/base_def"
+import { z } from "zod"
 
 const to92lCourtyardOutline = [
   { x: -1.45, y: 2.75 },
@@ -40,11 +41,12 @@ export const to92l = (
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to92l_def.parse(raw_params)
 
-  const p = Number.parseFloat(parameters.p)
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
+  const p = length.parse(parameters.p)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const id = length.parse(parameters.id)
 
-  const od = parameters.inline ? 1.05 : Number.parseFloat(parameters.od)
+  const od = parameters.inline ? 1.05 : length.parse(parameters.od)
   const padH = parameters.inline ? 1.5 : od
 
   const holes = [
@@ -52,16 +54,16 @@ export const to92l = (
       pn: 1,
       x: 0,
       y: 0,
-      holeDiameter: parameters.id,
+      holeDiameter: id,
       rectPadWidth: od,
       rectPadHeight: padH,
     }),
     parameters.inline
-      ? platedHolePill(2, p, 0, Number.parseFloat(parameters.id), od, padH)
-      : platedhole(2, p, p, parameters.id, od),
+      ? platedHolePill(2, p, 0, id, od, padH)
+      : platedhole(2, p, p, id, od),
     parameters.inline
-      ? platedHolePill(3, p * 2, 0, Number.parseFloat(parameters.id), od, padH)
-      : platedhole(3, p * 2, 0, parameters.id, od),
+      ? platedHolePill(3, p * 2, 0, id, od, padH)
+      : platedhole(3, p * 2, 0, id, od),
   ]
 
   const radius = w / 2
