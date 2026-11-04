@@ -157,6 +157,64 @@ test("through-hole passive width controls its drill and copper envelope", () => 
   ).toMatchSvgSnapshot(import.meta.path, "passive-custom-cap-tht")
 })
 
+for (const family of ["cap", "res"]) {
+  for (const position of ["top", "bottom"]) {
+    test(`${family} wide through-hole pads keep the ${position} reference clear of the outline`, () => {
+      const suffix = position === "bottom" ? "_textbottom" : ""
+      const direction = position === "bottom" ? -1 : 1
+      const elements = fp
+        .string(`${family}1206_pw2.2mm_tht${suffix}`)
+        .circuitJson()
+      const pads = elements.filter(
+        (element) => element.type === "pcb_plated_hole",
+      )
+      expect(pads).toHaveLength(2)
+      for (const pad of pads)
+        expect(pad).toMatchObject({ hole_diameter: 2.2, outer_diameter: 2.75 })
+      expect(pads.map((pad) => pad.x)).toEqual([-1.4625, 1.4625])
+      expect(pads[1]!.x - pads[0]!.x).toBeGreaterThan(2.75)
+      const reference = elements.find(
+        (element) => element.type === "pcb_silkscreen_text",
+      )
+      expect(reference).toBeDefined()
+      if (!reference) throw new Error("missing reference")
+      expect(reference.anchor_position.y).toBe(direction * 2.275)
+      const nearestTextEdge =
+        Math.abs(reference.anchor_position.y) - reference.font_size / 2
+      expect(nearestTextEdge).toBeGreaterThan(2.75 / 2)
+      for (const line of elements) {
+        if (line.type !== "pcb_silkscreen_path") continue
+        for (const point of line.route)
+          expect(nearestTextEdge).toBeGreaterThan(
+            Math.abs(point.y) + line.stroke_width / 2,
+          )
+      }
+      expectConsistentGeometry(elements)
+
+      const standard = fp.string(`${family}1206_tht${suffix}`).circuitJson()
+      expect(
+        fp
+          .string(`${family}1206_pw1.125mm_ph1.75mm_tht${suffix}`)
+          .circuitJson(),
+      ).toEqual(standard)
+      for (const control of [
+        standard,
+        fp.string(`${family}1206_pw2.2mm${suffix}`).circuitJson(),
+      ]) {
+        expect(
+          control.find((element) => element.type === "pcb_silkscreen_text"),
+        ).toMatchObject({ anchor_position: { y: direction * 1.775 } })
+      }
+      expect(
+        convertCircuitJsonToPcbSvg(elements, { showCourtyards: true }),
+      ).toMatchSvgSnapshot(
+        import.meta.path,
+        `passive-custom-${family}-wide-tht-${position}`,
+      )
+    })
+  }
+}
+
 test("explicit dimensions equal to defaults retain the complete standard footprint", () => {
   const elements = fp.string("res0603_pw0.8mm_ph0.95mm").circuitJson()
   expect(elements).toEqual(fp.string("res0603").circuitJson())
