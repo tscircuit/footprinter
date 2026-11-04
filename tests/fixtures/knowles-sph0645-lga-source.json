@@ -1,0 +1,89 @@
+{
+  "part": "SPH0645LM4H-B",
+  "manufacturer": "Knowles",
+  "document": {
+    "url": "https://media.digikey.com/pdf/Data%20Sheets/Knowles%20Acoustics%20PDFs/SPH0645LM4H-B.pdf",
+    "sha256": "22b3bb6e219b081420cc8be1084b11214fd8098cbe13793cf259a40e36b70a99",
+    "pages_read": [8],
+    "revision": "C",
+    "hosting_note": "Knowles manufacturer-authored datasheet, retained via DigiKey distributor-hosted copy; Knowles current website URLs did not return the PDF."
+  },
+  "orientation": "Top view, terminal side down, matching the page 8 Example Land Pattern rotated 180 degrees so pin 1 is at the bottom right and annular contact 3 is above. The default origin is the package body center. Coordinates are independently derived from the page 8 mechanical drawing rather than generated geometry.",
+  "body": {
+    "width": 2.65,
+    "height": 3.5
+  },
+  "rectangular_lands": [
+    {
+      "pin": "1",
+      "name": "WS",
+      "x": 0.9,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "2",
+      "name": "SELECT",
+      "x": 0.9,
+      "y": -0.542,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "4",
+      "name": "BCLK",
+      "x": -0.9,
+      "y": -0.542,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "5",
+      "name": "VDD",
+      "x": -0.9,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    },
+    {
+      "pin": "6",
+      "name": "Data Out",
+      "x": 0,
+      "y": -1.364,
+      "width": 0.6,
+      "height": 0.522
+    }
+  ],
+  "annular_land": {
+    "pin": "3",
+    "name": "GND",
+    "x": 0,
+    "y": 0.71,
+    "inner_diameter": 1.024,
+    "outer_diameter": 1.624
+  },
+  "acoustic_aperture": {
+    "x": 0,
+    "y": 0.71,
+    "diameter": 0.5,
+    "plated": false,
+    "dimension_provenance": "Chosen PCB engineering diameter, corroborated by the current official KiCad Knowles_SPH0645LM4H-6_3.5x2.65mm footprint, which uses a 0.5 mm NPTH. Knowles page 8 specifies a package acoustic port of 0.325 \u00b10.05 mm and refers PCB opening considerations to the SiSonic Design Guide. It does not specify a manufacturer PCB minimum of 0.5 mm.",
+    "corroborating_url": "https://gitlab.com/kicad/libraries/kicad-footprints/-/blob/master/Sensor_Audio.pretty/Knowles_SPH0645LM4H-6_3.5x2.65mm.kicad_mod"
+  },
+  "derivation": {
+    "horizontal_side_centers": [-0.9, 0.9],
+    "horizontal_center_derivation": "The drawing shows a 1.800 mm span between the side contact centers. The 2.650 mm body width, 0.125 mm edge margin and half of the 0.600 mm land width independently yield centers at \u00b10.900 mm. Terminal 6 lies on the body centerline.",
+    "signal_lowest_row_y": -1.364,
+    "signal_lowest_row_derivation": "After the 180 degree rotation: -(3.500/2 - 0.125 - 0.522/2) = -1.364 mm.",
+    "signal_next_row_y": -0.542,
+    "row_pitch": 0.822,
+    "signal_next_row_derivation": "-1.364 + 0.822 = -0.542 mm.",
+    "port_center_y": 0.71,
+    "port_center_derivation": "The package drawing places the acoustic center 1.040 mm from the bottom edge. After the 180 degree rotation: 3.500/2 - 1.040 = 0.710 mm.",
+    "ring_dimensions_source": "Use the page 8 Example Land Pattern ID 1.024 mm / OD 1.624 mm, rather than the package contacts and stencil ID 1.025 mm / OD 1.625 mm."
+  },
+  "paste_constraints": "The page 8 Example Solder Stencil Pattern shows five 0.600 \u00d7 0.522 mm rectangular apertures and four annular stencil sectors with OD 1.625 mm, ID 1.025 mm and 0.200 mm gaps. The example PCB copper ring is continuous, with OD 1.624 mm and ID 1.024 mm. The manufacturer recommends further application optimization and refers to the SiSonic Design Guide. This footprint does not emit a paste stencil.",
+  "acoustic_constraints": "The package acoustic port diameter is 0.325 \u00b10.05 mm. A 0.5 mm PCB opening is an engineering choice corroborated by official KiCad, rather than a minimum stated in this datasheet. Follow the latest SiSonic Design Guide for PCB acoustic port optimization and keep paste off the opening.",
+  "recipe": "lga6_bottomport_id1.024mm_od1.624mm"
+}

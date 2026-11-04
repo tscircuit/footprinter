@@ -95,8 +95,31 @@ export const applyOrigin = (
       break
     case "pin1": {
       const pin1 = pads.find((p) => p.port_hints?.[0] === "1") || pads[0]
-      dx = pin1.x
-      dy = pin1.y
+      if (pin1.shape === "polygon") {
+        // Several polygon sectors can represent one electrical contact. Use
+        // their combined bounds instead of the first sector's own center.
+        const owner = pin1.port_hints?.[0]
+        const points =
+          owner === undefined
+            ? pin1.points
+            : pads
+                .filter(
+                  (pad) =>
+                    pad.shape === "polygon" && pad.port_hints?.[0] === owner,
+                )
+                .flatMap((pad) => pad.points)
+        dx =
+          (Math.min(...points.map((p) => p.x)) +
+            Math.max(...points.map((p) => p.x))) /
+          2
+        dy =
+          (Math.min(...points.map((p) => p.y)) +
+            Math.max(...points.map((p) => p.y))) /
+          2
+      } else {
+        dx = pin1.x
+        dy = pin1.y
+      }
       break
     }
   }

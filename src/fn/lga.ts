@@ -13,6 +13,7 @@ import { base_def } from "../helpers/zod/base_def"
 import { dim2d } from "../helpers/zod/dim-2d"
 import { getQuadPinMap } from "../helpers/get-quad-pin-map"
 import { pin_order_specifier } from "../helpers/zod/pin-order-specifier"
+import { makeBottomPortLga } from "../helpers/lga-bottomport"
 
 const positiveLength = length.refine(
   (value) => Number.isFinite(value) && value > 0,
@@ -21,8 +22,14 @@ const positiveLength = length.refine(
   },
 )
 
-export const lga_def = base_def.extend({
-  fn: z.string(),
+const lga_input_def = base_def.extend({
+  fn: z.literal("lga"),
+  bottomport: z
+    .boolean()
+    .optional()
+    .describe(
+      "shared 3.5 x 2.65 mm six-contact bottom-port LGA layout: five rectangular lands and one annular contact",
+    ),
   bodywidth: length
     .refine((value) => Number.isFinite(value) && value > 0, {
       message: "bodywidth must be a positive finite length",
@@ -48,8 +55,8 @@ export const lga_def = base_def.extend({
       "physical body Z size, excluding board standoff; metadata for 3D consumers",
     ),
   num_pins: z.number().int().positive().optional().default(14),
-  grid: dim2d.optional(),
-  p: length.default(length.parse("0.5mm")),
+  grid: dim2d.or(z.object({ x: z.number(), y: z.number() })).optional(),
+  p: length.optional(),
   px: positiveLength.optional().describe("top and bottom row pitch"),
   py: positiveLength.optional().describe("left and right row pitch"),
   lrendpitch: positiveLength
@@ -70,10 +77,114 @@ export const lga_def = base_def.extend({
     .optional(),
   w: length.optional(),
   h: length.optional(),
-  pw: length.default(length.parse("0.28mm")),
-  pl: length.default(length.parse("0.7mm")),
+  pw: length.optional(),
+  pl: length.optional(),
   pillpads: z.boolean().optional().default(false),
+  rowoffsety: length
+    .refine(Number.isFinite, "row offset must be finite")
+    .optional()
+    .describe("bottom-port rectangular lower row Y center"),
+  portoffsetx: length
+    .refine(Number.isFinite, "port offset must be finite")
+    .optional()
+    .describe("bottom-port sound opening X center"),
+  portoffsety: length
+    .refine(Number.isFinite, "port offset must be finite")
+    .optional()
+    .describe("bottom-port sound opening Y center"),
+  id: positiveLength
+    .optional()
+    .describe("bottom-port annular copper opening diameter"),
+  od: positiveLength
+    .optional()
+    .describe("bottom-port annular copper outer diameter"),
+  holed: positiveLength
+    .optional()
+    .describe("bottom-port concentric unplated sound opening diameter"),
 })
+
+export const lga_def = lga_input_def
+  .transform((parameters) => {
+    // Ordinary LGA defaults are unchanged. Bottom-port dimensions describe the
+    // shared six-contact 3.5 x 2.65 mm outline, independently of a manufacturer.
+    const p = parameters.p ?? (parameters.bottomport ? 0.9 : 0.5)
+    return {
+      ...parameters,
+      p,
+      pw: parameters.pw ?? (parameters.bottomport ? 0.6 : 0.28),
+      pl: parameters.pl ?? (parameters.bottomport ? 0.522 : 0.7),
+      ...(parameters.bottomport
+        ? {
+            grid: parameters.grid ?? { x: 2, y: 1 },
+            px: parameters.px ?? p,
+            py: parameters.py ?? parameters.p ?? 0.822,
+            bodywidth: parameters.bodywidth ?? 2.65,
+            bodyheight: parameters.bodyheight ?? 3.5,
+            startingpin:
+              parameters.startingpin ??
+              (["rightside", "bottompin"] as ["rightside", "bottompin"]),
+            rowoffsety: parameters.rowoffsety ?? -1.364,
+            portoffsetx: parameters.portoffsetx ?? 0,
+            portoffsety: parameters.portoffsety ?? 0.71,
+            id: parameters.id ?? 1.025,
+            od: parameters.od ?? 1.625,
+            holed: parameters.holed ?? 0.5,
+          }
+        : {}),
+    }
+  })
+  .pipe(lga_input_def.required({ p: true, pw: true, pl: true }))
+  .superRefine((parameters, context) => {
+    const invalid = (path: string, message: string) =>
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: [path],
+        message,
+      })
+    if (!parameters.bottomport) {
+      for (const name of [
+        "rowoffsety",
+        "portoffsetx",
+        "portoffsety",
+        "id",
+        "od",
+        "holed",
+      ] as const) {
+        if (parameters[name] !== undefined)
+          invalid(name, `${name} requires bottomport`)
+      }
+      return
+    }
+    if (parameters.num_pins !== 6)
+      invalid(
+        "num_pins",
+        "Bottom-port LGA layout requires six physical contacts",
+      )
+    if (parameters.grid?.x !== 2 || parameters.grid?.y !== 1)
+      invalid("grid", "Bottom-port LGA layout requires grid2x1")
+    for (const name of ["w", "h", "lrendpitch", "tbendpitch"] as const) {
+      if (parameters[name] !== undefined)
+        invalid(
+          name,
+          `${name} is not used by bottomport; configure body, pitch and port dimensions`,
+        )
+    }
+    if (parameters.pillpads)
+      invalid("pillpads", "Bottom-port LGA layout uses rectangular lands")
+    if (parameters.cw && parameters.ccw)
+      invalid("cw", "Choose either cw or ccw numbering")
+    for (const name of ["p", "pw", "pl"] as const) {
+      if (!Number.isFinite(parameters[name]) || parameters[name] <= 0)
+        invalid(name, `${name} must be a positive finite length`)
+    }
+    if (parameters.id! >= parameters.od!)
+      invalid(
+        "id",
+        "Annular inner diameter must be smaller than outer diameter",
+      )
+    if (parameters.holed! >= parameters.id! * Math.cos(Math.PI / 128))
+      invalid("holed", "Unplated sound opening must clear the annular copper")
+  })
 
 export type LgaInput = z.input<typeof lga_def>
 
@@ -81,6 +192,8 @@ export const lga = (
   rawParameters: LgaInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = lga_def.parse(rawParameters)
+  if (parameters.bottomport)
+    return { circuitJson: makeBottomPortLga(parameters), parameters }
   const halfPinCount = parameters.num_pins / 2
   if (!Number.isInteger(halfPinCount)) {
     throw new Error("LGA footprints require an even number of perimeter pads")
