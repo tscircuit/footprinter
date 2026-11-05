@@ -1,12 +1,12 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardRect,
+  length,
 } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { platedhole } from "../helpers/platedhole"
 import { silkscreenpath } from "../helpers/silkscreenpath"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const pushbutton_def = base_def.extend({
@@ -25,12 +25,15 @@ export const pushbutton = (
   const width = parameters.w
   const height = parameters.h
   const holeDiameter = parameters.id
+  const outerDiameter =
+    raw_params.od !== undefined ? parameters.od : holeDiameter * 1.5
+  parameters.od = outerDiameter
 
   const holes: AnyCircuitElement[] = [
-    platedhole(1, -width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(2, -width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(3, width / 2, -height / 2, holeDiameter, holeDiameter * 1.5),
-    platedhole(4, width / 2, height / 2, holeDiameter, holeDiameter * 1.5),
+    platedhole(1, -width / 2, height / 2, holeDiameter, outerDiameter),
+    platedhole(2, -width / 2, -height / 2, holeDiameter, outerDiameter),
+    platedhole(3, width / 2, -height / 2, holeDiameter, outerDiameter),
+    platedhole(4, width / 2, height / 2, holeDiameter, outerDiameter),
   ]
 
   const silkscreenLines: AnyCircuitElement[] = [
@@ -60,7 +63,7 @@ export const pushbutton = (
     0.5,
   )
 
-  const padOuterRadius = (holeDiameter * 1.5) / 2
+  const padOuterRadius = outerDiameter / 2
   const pinRowSpanX = width
   const pinRowSpanY = height
   const padOuterHalfWidth = pinRowSpanX / 2 + padOuterRadius

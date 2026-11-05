@@ -1,7 +1,7 @@
-import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef } from "../helpers/silkscreenRef"
 import type { AnyCircuitElement, PcbCourtyardRect } from "circuit-json"
 import { length } from "circuit-json"
+import { rectpad } from "../helpers/rectpad"
+import { silkscreenRef } from "../helpers/silkscreenRef"
 
 /**
  * Solderjumper footprint generator
@@ -20,13 +20,13 @@ import { length } from "circuit-json"
  *   solderjumper({ num_pins: 3, pw: 2.0, ph: 1.0 }) // custom pad size
  */
 export const solderjumper = (params: {
-  num_pins: 2 | 3
-  bridged?: string
-  p?: number
-  pw?: number
-  ph?: number
+  num_pins?: 2 | 3
+  bridged?: string | number | boolean
+  p?: number | string
+  pw?: number | string
+  ph?: number | string
 }) => {
-  const { num_pins, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
+  const { num_pins = 2, bridged, p = 2.54, pw = 1.5, ph = 1.5 } = params
   const padSpacing = length.parse(p)
   const padWidth = length.parse(pw)
   const padHeight = length.parse(ph)
@@ -35,9 +35,12 @@ export const solderjumper = (params: {
   for (let i = 0; i < num_pins; i++) {
     pads.push(rectpad(i + 1, i * padSpacing, 0, padWidth, padHeight))
   }
-  let traces: AnyCircuitElement[] = []
+  const traces: AnyCircuitElement[] = []
   if (bridged) {
-    const pins = bridged.split("").map(Number)
+    const pins =
+      bridged === true
+        ? Array.from({ length: num_pins }, (_, i) => i + 1)
+        : String(bridged).split("").map(Number)
     if (pins.length > 1) {
       for (let i = 0; i < pins.length - 1; i++) {
         const from = pins[i]
@@ -45,8 +48,8 @@ export const solderjumper = (params: {
         if (
           typeof from === "number" &&
           typeof to === "number" &&
-          !isNaN(from) &&
-          !isNaN(to)
+          !Number.isNaN(from) &&
+          !Number.isNaN(to)
         ) {
           const xCenterFrom = (from - 1) * padSpacing
           const xCenterTo = (to - 1) * padSpacing

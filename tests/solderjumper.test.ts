@@ -1,7 +1,7 @@
-import { test, expect } from "bun:test"
+import { expect, test } from "bun:test"
 import { convertCircuitJsonToPcbSvg } from "circuit-to-svg"
-import { solderjumper } from "../src/fn/solderjumper"
 import { fp } from "src"
+import { solderjumper } from "../src/fn/solderjumper"
 
 test("solderjumper 2-pin no bridge", () => {
   const result = solderjumper({ num_pins: 2 })
@@ -85,4 +85,15 @@ test("solderjumper 2-pin custom pad size", () => {
     import.meta.path,
     "solderjumper2bridged12pw2ph0.5",
   )
+})
+
+test("solderjumper defaults to 2 pins and supports boolean/numeric bridged flags", () => {
+  const defaultJumper = fp.string("solderjumper").circuitJson()
+  expect(defaultJumper.filter((e) => e.type === "pcb_smtpad")).toHaveLength(2)
+
+  const bridged2 = fp.string("solderjumper2_bridged").circuitJson()
+  expect(bridged2.filter((e) => e.type === "pcb_trace")).toHaveLength(1)
+
+  const bridged3 = fp().solderjumper(3).bridged(12).circuitJson()
+  expect(bridged3.filter((e) => e.type === "pcb_trace")).toHaveLength(1)
 })
