@@ -13,17 +13,19 @@ import { createFabricationNoteDiodeFromCopperPads } from "../helpers/create-fabr
 export const sod_def = base_def.extend({
   fn: z.string(),
   num_pins: z.literal(2).default(2),
-  w: z.string().default("3.05mm"),
-  h: z.string().default("1.4mm"),
-  pl: z.string().default("0.5mm"),
-  pw: z.string().default("0.5mm"),
-  pad_spacing: z.string().default("2.2mm"),
+  w: z.union([z.string(), z.number()]).default("3.05mm"),
+  h: z.union([z.string(), z.number()]).default("1.4mm"),
+  p: z.union([z.string(), z.number()]).optional(),
+  pl: z.union([z.string(), z.number()]).default("0.5mm"),
+  pw: z.union([z.string(), z.number()]).default("0.5mm"),
+  pad_spacing: z.union([z.string(), z.number()]).default("2.2mm"),
 })
 
 export const sod323f = (
   raw_params: z.input<typeof sod_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = sod_def.parse(raw_params)
+  const padSpacing = length.parse(parameters.p ?? parameters.pad_spacing)
 
   // Define silkscreen reference text
   const silkscreenRefText: SilkscreenRef = silkscreenRef(
@@ -39,7 +41,7 @@ export const sod323f = (
     pcb_component_id: "",
     route: [
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: padSpacing / 2,
         y: length.parse(parameters.h) / 2,
       },
       {
@@ -51,7 +53,7 @@ export const sod323f = (
         y: -length.parse(parameters.h) / 2,
       },
       {
-        x: length.parse(parameters.pad_spacing) / 2,
+        x: padSpacing / 2,
         y: -length.parse(parameters.h) / 2,
       },
     ],
@@ -100,11 +102,12 @@ export const getSodCoords = (parameters: {
 // Function to generate SOD pads
 export const sodWithoutParsing = (parameters: z.infer<typeof sod_def>) => {
   const pads: AnyCircuitElement[] = []
+  const padSpacing = length.parse(parameters.p ?? parameters.pad_spacing)
 
   for (let i = 1; i <= parameters.num_pins; i++) {
     const { x, y } = getSodCoords({
       pn: i,
-      pad_spacing: length.parse(parameters.pad_spacing),
+      pad_spacing: padSpacing,
     })
     pads.push(
       rectpad(
