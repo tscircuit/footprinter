@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { quad, quad_def } from "./quad"
 import type { z } from "zod"
+import { quad, quad_def } from "./quad"
 
 export const qfp_def = quad_def
 
@@ -17,7 +17,7 @@ export const qfp = (
         raw_params.p = 0.8
         break
       case 52:
-        if (raw_params.w === 14) raw_params.p = 1
+        if (quad_defaults.w === 14) raw_params.p = 1
         else raw_params.p = 0.65
         break
       case 208:
@@ -47,7 +47,7 @@ export const qfp = (
         raw_params.pw = 0.5
         break
       case 52:
-        if (raw_params.w === 14) raw_params.pw = 0.45
+        if (quad_defaults.w === 14) raw_params.pw = 0.45
         else raw_params.pw = 0.55
         break
       case 208:

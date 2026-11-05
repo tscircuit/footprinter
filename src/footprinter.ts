@@ -537,7 +537,7 @@ export type Footprinter = {
   >
   sot23w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   pushbutton: () => FootprinterParamsBuilder<
-    "tllabel" | "trlabel" | "bllabel" | "brlabel"
+    "w" | "h" | "id" | "od" | "tllabel" | "trlabel" | "bllabel" | "brlabel"
   >
   smdpushbutton: (
     num_pins?: number,
