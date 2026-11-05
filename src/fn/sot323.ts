@@ -42,7 +42,9 @@ export const sot323 = (
   raw_params: z.input<typeof sot323_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot323_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 3) : 3
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 3)
 
   const parameters = sot323_def.parse({
     ...raw_params,
