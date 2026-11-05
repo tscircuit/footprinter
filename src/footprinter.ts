@@ -398,8 +398,12 @@ export type Footprinter = {
     "w" | "h" | "p" | "px" | "pw" | "ph" | "pin1padwidth" | "pin1centeroffsetx"
   >
   sot323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  sot89: () => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
-  sot343: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
+  sot89: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "p" | "pl" | "pw" | "h">
+  sot343: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smc: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
   minimelf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pw" | "pl">
@@ -451,9 +455,9 @@ export type Footprinter = {
   smf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smb: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   smbf: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  potentiometer: () => FootprinterParamsBuilder<
-    "w" | "h" | "p" | "id" | "od" | "pw" | "ca"
-  >
+  potentiometer: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "pw" | "ca">
   electrolytic: () => FootprinterParamsBuilder<"d" | "p" | "id" | "od">
   sod923: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod323: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
@@ -489,8 +493,12 @@ export type Footprinter = {
   sod123: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod123w: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
   sod110: () => FootprinterParamsBuilder<"w" | "h" | "p" | "pl" | "pw">
-  to92: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
-  to92s: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
+  to92: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od" | "inline">
+  to92s: (
+    num_pins?: number,
+  ) => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   to92l: () => FootprinterParamsBuilder<"w" | "h" | "p" | "id" | "od">
   sot223: () => FootprinterParamsBuilder<
     "w" | "h" | "p" | "pl" | "pw" | "tabpl" | "tabpw" | "taboffset"

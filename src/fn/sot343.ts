@@ -38,7 +38,9 @@ export const sot343 = (
   raw_params: z.input<typeof sot343_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot343_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 4) : 4
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 4)
 
   const parameters = sot343_def.parse({
     ...raw_params,

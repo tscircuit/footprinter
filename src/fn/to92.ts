@@ -69,7 +69,9 @@ export const to92 = (
   parameters: z.infer<typeof to92_def>
 } => {
   const match = raw_params.string?.match(/^to92_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 3)
 
   const parameters = to92_def.parse({
     ...raw_params,
