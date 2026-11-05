@@ -6,20 +6,20 @@ import type {
 import { length } from "circuit-json"
 import { getQuadPinMap } from "src/helpers/get-quad-pin-map"
 import {
-  getQuadSidePinCounts,
   type QuadSidePinCounts,
+  getQuadSidePinCounts,
 } from "src/helpers/get-quad-side-pin-counts"
 import { createRectUnionOutline } from "src/helpers/rect-union-outline"
 import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { dim2d } from "src/helpers/zod/dim-2d"
 import { pin_order_specifier } from "src/helpers/zod/pin-order-specifier"
 import { optional, z } from "zod"
-import { pillpad } from "../helpers/pillpad"
-import { rectpad } from "../helpers/rectpad"
 import {
   createThermalPad,
   thermalPadOffsetFields,
 } from "../helpers/create-thermal-pad"
+import { pillpad } from "../helpers/pillpad"
+import { rectpad } from "../helpers/rectpad"
 import { base_def } from "../helpers/zod/base_def"
 import type { NowDefined } from "../helpers/zod/now-defined"
 
@@ -480,8 +480,15 @@ export const quad = (
     leftRightPadWidth
   const courtyardStepInnerHalfWidth = pinRowSpanX / 2 + 0.25
   const courtyardStepInnerHalfHeight = pinRowSpanY / 2 + 0.25
-  const courtyardStepOuterHalfWidth = parameters.w / 2 + 0.25
-  const courtyardStepOuterHalfHeight = parameters.h / 2 + 0.25
+  const courtyardStepOuterHalfWidth =
+    parameters.fn === "qfn" && !parameters.legsoutside
+      ? roundUpToCourtyardOuterGrid(padOuterHalfX - leftRightPadLength / 2) +
+        0.25
+      : parameters.w / 2 + 0.25
+  const courtyardStepOuterHalfHeight =
+    parameters.fn === "qfn" && !parameters.legsoutside
+      ? roundUpToCourtyardOuterGrid(padOuterHalfY - parameters.pl / 2) + 0.25
+      : parameters.h / 2 + 0.25
 
   const courtyardOuterHalfWidth = Math.max(
     courtyardStepOuterHalfWidth,
