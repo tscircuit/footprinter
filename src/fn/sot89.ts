@@ -176,7 +176,9 @@ export const sot89 = (
   raw_params: z.input<typeof sot89_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^sot89_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 3)
 
   const parameters = sot89_def.parse({
     ...raw_params,

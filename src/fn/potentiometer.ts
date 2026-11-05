@@ -41,7 +41,9 @@ export const potentiometer = (
   raw_params: z.input<typeof potentiometer_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const match = raw_params.string?.match(/^potentiometer_(\d+)/)
-  const numPins = match ? Number.parseInt(match[1]!, 10) : 3
+  const numPins = match
+    ? Number.parseInt(match[1]!, 10)
+    : (raw_params.num_pins ?? 3)
   const parameters = potentiometer_def.parse({
     ...raw_params,
     num_pins: numPins,
