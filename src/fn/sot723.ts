@@ -1,11 +1,11 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardOutline,
+  length,
 } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const sot723_def = base_def.extend({
@@ -61,12 +61,12 @@ export const getCcwSot723Coords = (parameters: {
   const { pn, w, h, pl, p } = parameters
 
   if (pn === 1) {
-    return { x: p, y: 0 }
+    return { x: -p, y: 0.4 }
   }
   if (pn === 2) {
     return { x: -p, y: -0.4 }
   }
-  return { x: -p, y: 0.4 }
+  return { x: p, y: 0 }
 }
 
 export const sot723WithoutParsing = (
