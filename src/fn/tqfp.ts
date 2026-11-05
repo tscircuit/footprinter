@@ -1,6 +1,6 @@
 import type { AnyCircuitElement } from "circuit-json"
-import { quad, quad_def } from "./quad"
 import type { z } from "zod"
+import { quad, quad_def } from "./quad"
 
 export const tqfp_def = quad_def
 
@@ -14,9 +14,9 @@ export const tqfp = (
   if (!raw_params.p) {
     switch (raw_params.num_pins) {
       case 32:
+      case 44:
         raw_params.p = 0.8
         break
-      case 44:
       case 48:
         raw_params.p = 0.5
         break
@@ -54,9 +54,9 @@ export const tqfp = (
   if (!raw_params.pw) {
     switch (raw_params.num_pins) {
       case 32:
+      case 44:
         raw_params.pw = 0.55
         break
-      case 44:
       case 48:
       case 64:
       case 80:
