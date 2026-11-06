@@ -123,7 +123,8 @@ test("invalid_vssop6", () => {
   } catch (error) {
     const e = error as Error
     expect(e).toBeInstanceOf(Error)
-    expect(e.message).toContain("Invalid footprint function")
+    expect(e.message).toContain("Function not found for footprinter")
+    expect(e.message).toContain('"invalid"')
   }
 })
 
