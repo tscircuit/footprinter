@@ -47,6 +47,18 @@ test("sot23_3", () => {
   expect(smtpad).toBeDefined()
   expect(smtpad.length).toBe(3)
 
+  const silkscreenPaths = circuitJson.filter(
+    (e) => e.type === "pcb_silkscreen_path",
+  )
+  expect(silkscreenPaths.length).toBe(8)
+  expect(
+    silkscreenPaths.some(
+      (e) =>
+        e.type === "pcb_silkscreen_path" &&
+        e.pcb_silkscreen_path_id === "pin1_indicator",
+    ),
+  ).toBe(true)
+
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23_3")
 })
