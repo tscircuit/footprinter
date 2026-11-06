@@ -7,6 +7,7 @@ test("parity/sot23", async () => {
     combinedFootprintElements,
     booleanDifferenceSvg,
     courtyardDiffPercent,
+    fpSilkscreenElements,
   } = await compareFootprinterVsKicad(
     "sot23",
     "Package_TO_SOT_SMD.pretty/SOT-23-3.circuit.json",
@@ -16,6 +17,9 @@ test("parity/sot23", async () => {
     showCourtyards: true,
   })
   expect(courtyardDiffPercent).toBeLessThan(5)
+  expect(
+    fpSilkscreenElements.filter((e) => e.type === "pcb_silkscreen_path").length,
+  ).toBe(8)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "sot23")
   expect(booleanDifferenceSvg).toMatchSvgSnapshot(
     import.meta.path,

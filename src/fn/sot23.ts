@@ -146,6 +146,125 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     0.3,
   )
 
+  const bodyHalfW = Number((w / 2 - 0.2275).toFixed(4))
+  const bodyHalfH = Number((h / 2 + 0.19).toFixed(4))
+  const padClearance = 0.26
+  const leftOuterClearY = Number((p + pw / 2 + padClearance).toFixed(4))
+  const leftInnerClearY = Number((p - pw / 2 - padClearance).toFixed(4))
+  const rightClearY = Number((pw / 2 + padClearance).toFixed(4))
+
+  const silkscreenPaths: PcbSilkscreenPath[] = [
+    {
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: "silkscreen_path_1",
+      route: [
+        { x: -bodyHalfW, y: bodyHalfH },
+        { x: bodyHalfW, y: bodyHalfH },
+      ],
+      stroke_width: 0.12,
+    },
+  ]
+
+  if (bodyHalfH > leftOuterClearY) {
+    silkscreenPaths.push({
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: "silkscreen_path_2",
+      route: [
+        { x: -bodyHalfW, y: leftOuterClearY },
+        { x: -bodyHalfW, y: bodyHalfH },
+      ],
+      stroke_width: 0.12,
+    })
+  }
+
+  if (leftInnerClearY > 0) {
+    silkscreenPaths.push({
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: "silkscreen_path_3",
+      route: [
+        { x: -bodyHalfW, y: -leftInnerClearY },
+        { x: -bodyHalfW, y: leftInnerClearY },
+      ],
+      stroke_width: 0.12,
+    })
+  }
+
+  if (bodyHalfH > leftOuterClearY) {
+    silkscreenPaths.push({
+      type: "pcb_silkscreen_path",
+      layer: "top",
+      pcb_component_id: "",
+      pcb_silkscreen_path_id: "silkscreen_path_4",
+      route: [
+        { x: -bodyHalfW, y: -bodyHalfH },
+        { x: -bodyHalfW, y: -leftOuterClearY },
+      ],
+      stroke_width: 0.12,
+    })
+  }
+
+  if (bodyHalfH > rightClearY) {
+    silkscreenPaths.push(
+      {
+        type: "pcb_silkscreen_path",
+        layer: "top",
+        pcb_component_id: "",
+        pcb_silkscreen_path_id: "silkscreen_path_5",
+        route: [
+          { x: bodyHalfW, y: bodyHalfH },
+          { x: bodyHalfW, y: rightClearY },
+        ],
+        stroke_width: 0.12,
+      },
+      {
+        type: "pcb_silkscreen_path",
+        layer: "top",
+        pcb_component_id: "",
+        pcb_silkscreen_path_id: "silkscreen_path_6",
+        route: [
+          { x: bodyHalfW, y: -rightClearY },
+          { x: bodyHalfW, y: -bodyHalfH },
+        ],
+        stroke_width: 0.12,
+      },
+    )
+  }
+
+  silkscreenPaths.push({
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "silkscreen_path_7",
+    route: [
+      { x: bodyHalfW, y: -bodyHalfH },
+      { x: -bodyHalfW, y: -bodyHalfH },
+    ],
+    stroke_width: 0.12,
+  })
+
+  const pin1TipX = Number((-w / 2 - 0.3125).toFixed(4))
+  const pin1TipY = Number((p - pw / 2 - 0.27).toFixed(4))
+  const pin1BaseY = Number((pin1TipY - 0.33).toFixed(4))
+  const pin1Indicator: PcbSilkscreenPath = {
+    type: "pcb_silkscreen_path",
+    layer: "top",
+    pcb_component_id: "",
+    pcb_silkscreen_path_id: "pin1_indicator",
+    route: [
+      { x: pin1TipX, y: pin1TipY },
+      { x: Number((pin1TipX + 0.24).toFixed(4)), y: pin1BaseY },
+      { x: Number((pin1TipX - 0.24).toFixed(4)), y: pin1BaseY },
+      { x: pin1TipX, y: pin1TipY },
+    ],
+    stroke_width: 0.12,
+  }
+
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
@@ -154,7 +273,13 @@ export const sot23_3 = (parameters: z.infer<typeof sot23_def>) => {
     layer: "top",
   }
 
-  return [...pads, silkscreenRefText as AnyCircuitElement, courtyard]
+  return [
+    ...pads,
+    silkscreenRefText as AnyCircuitElement,
+    ...silkscreenPaths,
+    pin1Indicator as AnyCircuitElement,
+    courtyard,
+  ]
 }
 
 export const getCcwSot235Coords = (parameters: {
