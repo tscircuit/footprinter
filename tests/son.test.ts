@@ -68,3 +68,50 @@ test("son6", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "son6")
 })
+
+test("son counter-clockwise pin numbering (#677)", () => {
+  const son8Json = fp.string("son8").circuitJson()
+  const son8Pads = son8Json.filter((e) => e.type === "pcb_smtpad") as any[]
+  const getPad = (pads: any[], pin: string) =>
+    pads.find((p) => p.port_hints?.includes(pin))
+
+  expect(getPad(son8Pads, "1").x).toBeLessThan(0)
+  expect(getPad(son8Pads, "1").y).toBeCloseTo(0.75, 5)
+  expect(getPad(son8Pads, "4").x).toBeLessThan(0)
+  expect(getPad(son8Pads, "4").y).toBeCloseTo(-0.75, 5)
+  expect(getPad(son8Pads, "5").x).toBeGreaterThan(0)
+  expect(getPad(son8Pads, "5").y).toBeCloseTo(-0.75, 5)
+  expect(getPad(son8Pads, "6").y).toBeCloseTo(-0.25, 5)
+  expect(getPad(son8Pads, "7").y).toBeCloseTo(0.25, 5)
+  expect(getPad(son8Pads, "8").x).toBeGreaterThan(0)
+  expect(getPad(son8Pads, "8").y).toBeCloseTo(0.75, 5)
+
+  const son6Pads = fp
+    .string("son6")
+    .circuitJson()
+    .filter((e) => e.type === "pcb_smtpad") as any[]
+  expect(getPad(son6Pads, "1").y).toBeGreaterThan(getPad(son6Pads, "3").y)
+  expect(getPad(son6Pads, "6").y).toBeGreaterThan(getPad(son6Pads, "4").y)
+  expect(getPad(son6Pads, "4").y).toBeCloseTo(getPad(son6Pads, "3").y, 5)
+  expect(getPad(son6Pads, "6").y).toBeCloseTo(getPad(son6Pads, "1").y, 5)
+
+  const annotatedJson = [
+    ...son8Json,
+    ...son8Pads.map((pad: any) => ({
+      type: "pcb_silkscreen_text" as const,
+      pcb_silkscreen_text_id: `pin_${pad.port_hints[0]}`,
+      pcb_component_id: "",
+      layer: "top" as const,
+      text: String(pad.port_hints[0]),
+      font: "tscircuit2024" as const,
+      font_size: 0.35,
+      anchor_position: {
+        x: pad.x < 0 ? pad.x - 0.65 : pad.x + 0.65,
+        y: pad.y,
+      },
+      anchor_alignment: "center" as const,
+    })),
+  ]
+  const svgContent = convertCircuitJsonToPcbSvg(annotatedJson as any)
+  expect(svgContent).toMatchSvgSnapshot(import.meta.path, "son8_ccw_pins")
+})
