@@ -77,7 +77,7 @@ const getMsopCoords = (
   const half = pinCount / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
-  const row = (half - 1) / 2 - rowIndex
+  const row = pn <= half ? (half - 1) / 2 - rowIndex : rowIndex - (half - 1) / 2
   const padBodyOverlap = length.parse("0.2mm")
 
   return {

@@ -171,7 +171,7 @@ export const getSonPadCoord = (
   const half = num_pins / 2
   const rowIndex = (pn - 1) % half
   const col = pn <= half ? -1 : 1
-  const row = (half - 1) / 2 - rowIndex
+  const row = pn <= half ? (half - 1) / 2 - rowIndex : rowIndex - (half - 1) / 2
 
   return {
     x: col * length.parse("1.4mm"),
