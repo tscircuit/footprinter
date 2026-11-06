@@ -240,6 +240,12 @@ export const quad = (
   const pads: AnyCircuitElement[] = []
   let padOuterHalfX = 0
   let padOuterHalfY = 0
+  const padBoxes: {
+    x: number
+    y: number
+    width: number
+    height: number
+  }[] = []
   const pin_map = getQuadPinMap({ ...parameters, sidePinCounts })
   const verticalSidePinCount = Math.max(sidePinCounts.left, sidePinCounts.right)
   const horizontalSidePinCount = Math.max(
@@ -284,6 +290,7 @@ export const quad = (
     const pn = pin_map[i + 1]!
     padOuterHalfX = Math.max(padOuterHalfX, Math.abs(x) + padWidth / 2)
     padOuterHalfY = Math.max(padOuterHalfY, Math.abs(y) + padHeight / 2)
+    padBoxes.push({ x, y, width: padWidth, height: padHeight })
     pads.push(
       parameters.pillpads
         ? pillpad(pn, x, y, padWidth, padHeight)
@@ -327,6 +334,38 @@ export const quad = (
 
   // Silkscreen corners
   const silkscreen_corners: PcbSilkscreenPath[] = []
+  const SILK_STROKE_WIDTH = 0.1
+  const silkPadClearance = 0.2 + SILK_STROKE_WIDTH / 2
+
+  const maxArmLength = (
+    cornerX: number,
+    cornerY: number,
+    axis: "x" | "y",
+    sign: number,
+    requested: number,
+  ) => {
+    let limit = requested
+    for (const pad of padBoxes) {
+      const left = pad.x - pad.width / 2 - silkPadClearance
+      const right = pad.x + pad.width / 2 + silkPadClearance
+      const bottom = pad.y - pad.height / 2 - silkPadClearance
+      const top = pad.y + pad.height / 2 + silkPadClearance
+
+      if (axis === "x") {
+        if (cornerY < bottom || cornerY > top) continue
+        const reach = sign < 0 ? cornerX - right : left - cornerX
+        if (reach >= 0) limit = Math.min(limit, reach)
+        else limit = 0
+      } else {
+        if (cornerX < left || cornerX > right) continue
+        const reach = sign < 0 ? cornerY - top : bottom - cornerY
+        if (reach >= 0) limit = Math.min(limit, reach)
+        else limit = 0
+      }
+    }
+    return Math.max(0, limit)
+  }
+
   for (const [corner, dx, dy] of [
     ["top-left", -1, 1],
     ["bottom-left", -1, -1],
@@ -373,13 +412,19 @@ export const quad = (
 
     // Normal Corner
     if (arrow === "none" || parameters.legsoutside) {
+      const armX = parameters.legsoutside
+        ? maxArmLength(corner_x, corner_y, "x", -dx, csz)
+        : csz
+      const armY = parameters.legsoutside
+        ? maxArmLength(corner_x, corner_y, "y", -dy, csz)
+        : csz
       silkscreen_corners.push({
         layer: "top",
         pcb_component_id: "",
         pcb_silkscreen_path_id: `pcb_silkscreen_path_${corner}`,
         route: [
           {
-            x: corner_x - csz * dx,
+            x: corner_x - armX * dx,
             y: corner_y,
           },
           {
@@ -388,7 +433,7 @@ export const quad = (
           },
           {
             x: corner_x,
-            y: corner_y - csz * dy,
+            y: corner_y - armY * dy,
           },
         ],
         type: "pcb_silkscreen_path",
