@@ -18,7 +18,7 @@ export const rectpad = (
   const cornerRadius =
     typeof cornerRadiusOrOpts === "number"
       ? cornerRadiusOrOpts
-      : cornerRadiusOrOpts?.cornerRadius ?? opts?.cornerRadius
+      : (cornerRadiusOrOpts?.cornerRadius ?? opts?.cornerRadius)
   const solderMaskMargin =
     typeof cornerRadiusOrOpts === "object" && cornerRadiusOrOpts !== null
       ? cornerRadiusOrOpts.solder_mask_margin
