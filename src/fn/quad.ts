@@ -44,8 +44,26 @@ export const base_quad_def = base_def.extend({
   leftrightpins: side_pin_count,
   tbpins: side_pin_count,
   topbottompins: side_pin_count,
-  w: length.optional(),
-  h: length.optional(),
+  w: length.optional().describe("width of the package body"),
+  h: length.optional().describe("height (length) of the package body"),
+  padspan: length
+    .optional()
+    .describe("center-to-center span between opposing pad rows on both axes"),
+  padspanx: length
+    .optional()
+    .describe("center-to-center span between left and right pad rows"),
+  padspany: length
+    .optional()
+    .describe("center-to-center span between top and bottom pad rows"),
+  leadspan: length
+    .optional()
+    .describe("outer tip-to-tip span across opposing pad rows on both axes"),
+  leadspanx: length
+    .optional()
+    .describe("outer tip-to-tip span across left and right pad rows"),
+  leadspany: length
+    .optional()
+    .describe("outer tip-to-tip span across top and bottom pad rows"),
   p: length.default(length.parse("0.5mm")),
   px: length.optional().describe("top and bottom side pad pitch"),
   py: length.optional().describe("left and right side pad pitch"),
@@ -89,6 +107,8 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   v.leftrightpadwidth = v.leftrightpadwidth ?? v.lrpw
   v.leftrightpadlength = v.leftrightpadlength ?? v.lrpl
 
+  const rawHadNoExplicitW = !v.w
+  const rawHadNoExplicitH = !v.h
   if (v.w && !v.h) {
     v.h = v.w
   } else if (!v.w && v.h) {
@@ -137,6 +157,35 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.pl = v.pw! * (1.0 / 0.6)
   }
 
+  const leftRightPadLength = v.leftrightpadlength ?? v.pl!
+  if (v.padspanx === undefined) {
+    if (v.padspan !== undefined) {
+      v.padspanx = v.padspan
+    } else if (v.leadspanx !== undefined || v.leadspan !== undefined) {
+      v.padspanx = (v.leadspanx ?? v.leadspan)! - leftRightPadLength
+    }
+  }
+  if (v.padspany === undefined) {
+    if (v.padspan !== undefined) {
+      v.padspany = v.padspan
+    } else if (v.leadspany !== undefined || v.leadspan !== undefined) {
+      v.padspany = (v.leadspany ?? v.leadspan)! - v.pl!
+    }
+  }
+
+  if (
+    rawHadNoExplicitW &&
+    rawHadNoExplicitH &&
+    (v.padspanx !== undefined || v.padspany !== undefined)
+  ) {
+    const spanX = v.padspanx ?? v.padspany!
+    const spanY = v.padspany ?? v.padspanx!
+    v.w = v.legsoutside
+      ? spanX - leftRightPadLength + 0.2
+      : spanX + leftRightPadLength - 0.2
+    v.h = v.legsoutside ? spanY - v.pl! + 0.2 : spanY + v.pl! - 0.2
+  }
+
   return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
 }
 
@@ -155,6 +204,8 @@ export const getQuadCoords = (params: {
   py?: number // vertical pitch between left/right pins
   pl: number // length of the pin
   leftRightPadLength?: number
+  padSpanX?: number // center-to-center span between left and right pad rows
+  padSpanY?: number // center-to-center span between top and bottom pad rows
   legsoutside?: boolean
 }) => {
   const {
@@ -167,6 +218,8 @@ export const getQuadCoords = (params: {
     py,
     pl,
     leftRightPadLength,
+    padSpanX,
+    padSpanY,
     legsoutside,
   } = params
   const sidePinCountsCcw = [
@@ -201,26 +254,26 @@ export const getQuadCoords = (params: {
   switch (side) {
     case "left":
       return {
-        x: -w / 2 - pcdfe + 0.1,
+        x: padSpanX !== undefined ? -padSpanX / 2 : -w / 2 - pcdfe + 0.1,
         y: ibh / 2 - pos * sidePitch,
         o: "vert",
       }
     case "bottom":
       return {
         x: -ibw / 2 + pos * sidePitch,
-        y: -h / 2 - pcdfe + 0.1,
+        y: padSpanY !== undefined ? -padSpanY / 2 : -h / 2 - pcdfe + 0.1,
         o: "horz",
       }
     case "right":
       return {
-        x: w / 2 + pcdfe - 0.1,
+        x: padSpanX !== undefined ? padSpanX / 2 : w / 2 + pcdfe - 0.1,
         y: -ibh / 2 + pos * sidePitch,
         o: "vert",
       }
     case "top":
       return {
         x: ibw / 2 - pos * sidePitch,
-        y: h / 2 + pcdfe - 0.1,
+        y: padSpanY !== undefined ? padSpanY / 2 : h / 2 + pcdfe - 0.1,
         o: "horz",
       }
     default:
@@ -270,6 +323,8 @@ export const quad = (
       py: parameters.py,
       pl: parameters.pl,
       leftRightPadLength,
+      padSpanX: parameters.padspanx,
+      padSpanY: parameters.padspany,
       legsoutside: parameters.legsoutside,
     })
 
