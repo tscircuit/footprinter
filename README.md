@@ -202,6 +202,33 @@ fp.string(
 // B1 → 1, C1 → 2, J1 → 8, AA1 → 20, A2 → 25, AE25 → 624
 ```
 
+### Quad package dimensions (`w`, `h`, `padspan`, and `leadspan`)
+
+On quad packages (`qfp`, `tqfp`, `lqfp`, `qfn`, `quad`), `w` and `h` represent
+the nominal package body width and height. By default:
+
+- For **leaded** quad packages (`qfp`, `tqfp`, `lqfp`, or `_legsoutside`): pad
+  inner edges start 0.1 mm inside the body edge (`±w/2`, `±h/2`), placing
+  opposing pad centers at `w + pl - 0.2` and `h + pl - 0.2` (for example,
+  `tqfp64_w12_h12_p0.5mm` uses `pl = 1.475mm`, placing opposing pad centers at
+  `12 + 1.475 - 0.2 = 13.275mm`).
+- For **leadless** quad packages (`qfn`): pad outer edges are inset 0.1 mm
+  inside the body edge (`±w/2`, `±h/2`), placing opposing pad centers at
+  `w - pl - 0.2` and `h - pl - 0.2`.
+
+When targeting an exact land-pattern center-to-center pad span or IPC/JEDEC
+overall lead tip-to-tip span from a datasheet, use `padspan` (`padspanx`,
+`padspany`) or `leadspan` (`leadspanx`, `leadspany`) to decouple pad placement
+from the silkscreen body outline (`w` / `h`):
+
+```ts
+// 10×10 mm body with exact 11.4 mm center-to-center pad span:
+fp.string("tqfp64_w10_h10_padspan11.4mm_p0.5mm")
+
+// 10×10 mm body with 12 mm JEDEC lead span (places pad centers at 12 - pl):
+fp.string("tqfp64_w10_h10_leadspan12mm_p0.5mm")
+```
+
 ## Getting JSON output from the builder
 
 Use the `.circuitJson()` function to output [tscircuit circuit JSON](https://github.com/tscircuit/circuit-json)
