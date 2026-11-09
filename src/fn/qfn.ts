@@ -1,6 +1,7 @@
 import type { AnyCircuitElement, PcbSmtPad } from "circuit-json"
 import { length } from "circuit-json"
 import { z } from "zod"
+import { getQuadSidePinCounts } from "src/helpers/get-quad-side-pin-counts"
 import { addThermalVias, thermalViaDef } from "src/helpers/create-thermal-vias"
 import { createThermalPad } from "../helpers/create-thermal-pad"
 import { circlepad } from "../helpers/circlepad"
@@ -83,13 +84,38 @@ export const qfn_def = base_quad_def
         parameters.rowgap ?? parameters.p,
       ) / 2
     const pw = parameters.pw ?? (parameters.rows === 2 ? rowPadSize : 0.25)
+    const computeDefaultSingleRowPl = () => {
+      const defaultPl = 0.875
+      const w = parameters.w ?? parameters.h
+      const h = parameters.h ?? parameters.w
+      if (w === undefined || h === undefined) return defaultPl
+      const gridCounts = parameters.grid
+        ? {
+            leftpins: parameters.grid.y,
+            rightpins: parameters.grid.y,
+            toppins: parameters.grid.x,
+            bottompins: parameters.grid.x,
+          }
+        : {}
+      const sideCounts = getQuadSidePinCounts({ ...parameters, ...gridCounts })
+      const hPins = Math.max(sideCounts.top, sideCounts.bottom)
+      const vPins = Math.max(sideCounts.left, sideCounts.right)
+      const px = parameters.px ?? parameters.p
+      const py = parameters.py ?? parameters.p
+      const ibw = px * Math.max(hPins - 1, 0)
+      const ibh = py * Math.max(vPins - 1, 0)
+      const maxPlX = (w - ibw - pw) / 2 - 0.25
+      const maxPlY = (h - ibh - pw) / 2 - 0.25
+      const maxSafePl = Math.min(maxPlX, maxPlY)
+      return maxSafePl > 0 ? Math.min(defaultPl, maxSafePl) : defaultPl
+    }
     const pl =
       parameters.pl ??
       (parameters.circularpads
         ? pw
         : parameters.rows === 2
           ? rowPadSize
-          : 0.875)
+          : computeDefaultSingleRowPl())
     if (parameters.circularpads && (parameters.pillpads || pl !== pw))
       throw new Error("Circular QFN pads require equal pl/pw and no pillpads")
     if (parameters.circularpads) {
