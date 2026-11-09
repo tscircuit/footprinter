@@ -44,8 +44,11 @@ export const base_quad_def = base_def.extend({
   leftrightpins: side_pin_count,
   tbpins: side_pin_count,
   topbottompins: side_pin_count,
-  w: length.optional(),
-  h: length.optional(),
+  w: length.optional().describe("package body width"),
+  h: length.optional().describe("package body height"),
+  pcw: length.optional().describe("pad center-to-center width"),
+  pch: length.optional().describe("pad center-to-center height"),
+  leadspan: length.optional().describe("lead tip-to-tip span"),
   p: length.default(length.parse("0.5mm")),
   px: length.optional().describe("top and bottom side pad pitch"),
   py: length.optional().describe("left and right side pad pitch"),
@@ -135,6 +138,18 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.pw = v.pl! * (0.6 / 1.0)
   } else if (!v.pl) {
     v.pl = v.pw! * (1.0 / 0.6)
+  }
+
+  const lrpl = v.leftrightpadlength ?? v.pl!
+  if (v.leadspan !== undefined) {
+    v.w = v.legsoutside ? v.leadspan - lrpl * 2 : v.leadspan
+    v.h = v.legsoutside ? v.leadspan - v.pl! * 2 : v.leadspan
+  }
+  if (v.pcw !== undefined) {
+    v.w = v.legsoutside ? v.pcw - lrpl : v.pcw + lrpl
+  }
+  if (v.pch !== undefined) {
+    v.h = v.legsoutside ? v.pch - v.pl! : v.pch + v.pl!
   }
 
   return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
