@@ -107,6 +107,23 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
 
+  if (
+    horizontal_pitch !== undefined &&
+    (!Number.isFinite(horizontal_pitch) || horizontal_pitch <= 0)
+  ) {
+    throw new Error(
+      `Invalid horizontal pitch "${horizontal_pitch}" for ${v.fn}${v.num_pins}. Pitch must be greater than 0.`,
+    )
+  }
+  if (
+    vertical_pitch !== undefined &&
+    (!Number.isFinite(vertical_pitch) || vertical_pitch <= 0)
+  ) {
+    throw new Error(
+      `Invalid vertical pitch "${vertical_pitch}" for ${v.fn}${v.num_pins}. Pitch must be greater than 0.`,
+    )
+  }
+
   if (!v.p && !v.pw && !v.pl && v.w) {
     // HACK: This is wayyy underspecified
     const approx_pin_size_of_side = horizontal_side_pin_count + 4
