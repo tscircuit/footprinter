@@ -1,31 +1,26 @@
-import type { AnyCircuitElement } from "circuit-json"
+import type { AnySoupElement } from "circuit-json"
 import { length } from "circuit-json"
-import { z } from "zod"
-import { extendSoicDef } from "./soic"
-import { qfn_without_thermal_pad, quadTransform } from "./qfn"
+import { base_quad_def, quad, quadTransform } from "./quad"
+import type { z } from "zod"
 
-export const lcc_def = extendSoicDef({
-  legsoutside: false,
-  thermalpad: false,
-})
+export const lcc_def = base_quad_def
   .extend({
     p: length.default(length.parse("1.27mm")),
   })
   .transform(quadTransform)
 
 export const lcc = (
-  raw_params: z.input<typeof lcc_def>,
-): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const parameters = lcc_def.parse({
-    ...raw_params,
-    legsoutside: false,
-    thermalpad: false,
-  })
+  parameters: z.input<typeof lcc_def>,
+): { circuitJson: AnySoupElement[]; parameters: any } => {
+  parameters.legsoutside = false
   if (!parameters.p) {
     parameters.p = 1.27
   }
-  return {
-    circuitJson: qfn_without_thermal_pad(parameters),
-    parameters,
+  if (!parameters.pl) {
+    parameters.pl = 1.0
   }
+  if (!parameters.pw) {
+    parameters.pw = 0.6
+  }
+  return quad(parameters)
 }
