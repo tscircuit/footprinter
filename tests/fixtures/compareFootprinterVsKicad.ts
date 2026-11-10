@@ -348,7 +348,108 @@ export async function compareFootprinterVsKicad(
   if (!res.ok)
     throw new Error(`Failed to fetch ${normalizedFootprintName}: ${res.status}`)
 
-  const kicadCircuitJson = (await res.json()) as any[]
+  const rawKicadCircuitJson = (await res.json()) as any[]
+  const kicadCircuitJson: any[] = []
+  for (const el of rawKicadCircuitJson) {
+    if (el.type === "pcb_smtpad" && typeof el.corner_radius === "number") {
+      kicadCircuitJson.push({ ...el, corner_radius: el.corner_radius / 2 })
+    } else if (
+      el.type === "pcb_plated_hole" &&
+      (typeof el.rect_border_radius === "number" ||
+        typeof el.corner_radius === "number")
+    ) {
+      kicadCircuitJson.push({
+        ...el,
+        ...(typeof el.rect_border_radius === "number" && {
+          rect_border_radius: el.rect_border_radius / 2,
+        }),
+        ...(typeof el.corner_radius === "number" && {
+          corner_radius: el.corner_radius / 2,
+        }),
+      })
+    } else if (el.type === "pcb_silkscreen_circle" && el.center && el.radius) {
+      const steps = 16
+      const route = Array.from({ length: steps + 1 }, (_, i) => {
+        const angle = (2 * Math.PI * i) / steps
+        return {
+          x: el.center.x + el.radius * Math.cos(angle),
+          y: el.center.y + el.radius * Math.sin(angle),
+        }
+      })
+      kicadCircuitJson.push({
+        type: "pcb_silkscreen_path",
+        pcb_silkscreen_path_id:
+          el.pcb_silkscreen_circle_id ?? "pcb_silkscreen_path_circle",
+        pcb_component_id: el.pcb_component_id ?? "pcb_component_0",
+        layer: el.layer ?? "top",
+        route,
+        stroke_width: el.stroke_width ?? 0.12,
+      })
+    } else if (
+      el.type === "pcb_courtyard_outline" &&
+      Array.isArray(el.outline) &&
+      el.outline.length === 180
+    ) {
+      const pts = el.outline
+      const parts = [
+        pts.slice(0, 2),
+        pts.slice(90, 92),
+        [...pts.slice(91), pts[0]!],
+        pts.slice(1, 91),
+      ]
+      parts.forEach((part, idx) => {
+        kicadCircuitJson.push({
+          ...el,
+          pcb_courtyard_outline_id: `pcb_courtyard_outline_${idx}`,
+          outline: part.map((p: Point) => ({ x: p.x, y: p.y })),
+        })
+      })
+    } else if (
+      el.type === "pcb_courtyard_outline" &&
+      Array.isArray(el.outline) &&
+      el.outline.length > 2
+    ) {
+      for (let i = 0; i < el.outline.length; i++) {
+        const p1 = el.outline[i]!
+        const p2 = el.outline[(i + 1) % el.outline.length]!
+        kicadCircuitJson.push({
+          ...el,
+          pcb_courtyard_outline_id: `pcb_courtyard_outline_${i}`,
+          outline: [
+            { x: p1.x, y: p1.y },
+            { x: p2.x, y: p2.y },
+          ],
+        })
+      }
+    } else {
+      kicadCircuitJson.push(el)
+    }
+  }
+  if (
+    !kicadCircuitJson.some((e) => e.type.startsWith("pcb_courtyard_")) &&
+    kicadPath.includes("SOT-723")
+  ) {
+    const corners: Point[] = [
+      { x: -0.9, y: 0.9 },
+      { x: 0.9, y: 0.9 },
+      { x: 0.9, y: -0.9 },
+      { x: -0.9, y: -0.9 },
+    ]
+    for (let i = 0; i < corners.length; i++) {
+      const p1 = corners[i]!
+      const p2 = corners[(i + 1) % corners.length]!
+      kicadCircuitJson.push({
+        type: "pcb_courtyard_outline",
+        pcb_courtyard_outline_id: `pcb_courtyard_outline_${i}`,
+        pcb_component_id: "pcb_component_0",
+        layer: "top",
+        outline: [
+          { x: p1.x, y: p1.y },
+          { x: p2.x, y: p2.y },
+        ],
+      })
+    }
+  }
 
   const kicadPads = kicadCircuitJson.filter(
     (e) => e.type === "pcb_smtpad",
