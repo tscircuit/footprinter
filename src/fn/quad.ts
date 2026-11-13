@@ -25,6 +25,13 @@ import type { NowDefined } from "../helpers/zod/now-defined"
 
 const side_pin_count = z.coerce.number().int().positive().optional()
 
+const positiveLength = length.refine(
+  (value) => Number.isFinite(value) && value > 0,
+  {
+    message: "pitch must be a positive finite length",
+  },
+)
+
 export const base_quad_def = base_def.extend({
   fn: z.string(),
   cc: z.boolean().default(true).optional(),
@@ -46,9 +53,9 @@ export const base_quad_def = base_def.extend({
   topbottompins: side_pin_count,
   w: length.optional(),
   h: length.optional(),
-  p: length.default(length.parse("0.5mm")),
-  px: length.optional().describe("top and bottom side pad pitch"),
-  py: length.optional().describe("left and right side pad pitch"),
+  p: positiveLength.default(length.parse("0.5mm")),
+  px: positiveLength.optional().describe("top and bottom side pad pitch"),
+  py: positiveLength.optional().describe("left and right side pad pitch"),
   pw: length.optional(),
   pl: length.optional(),
   lrpw: length.optional().describe("alias for leftrightpadwidth"),
@@ -106,6 +113,10 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   )
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
+
+  if (horizontal_pitch <= 0 || vertical_pitch <= 0) {
+    throw new Error("pitch must be a positive finite length")
+  }
 
   if (!v.p && !v.pw && !v.pl && v.w) {
     // HACK: This is wayyy underspecified
