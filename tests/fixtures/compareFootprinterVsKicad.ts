@@ -1,6 +1,7 @@
 import Flatten from "@flatten-js/core"
 import { transformPcbElements } from "@tscircuit/circuit-json-util"
 import { getBoundingBox } from "@tscircuit/math-utils"
+import { KicadFootprintToCircuitJsonConverter } from "kicad-to-circuit-json"
 import { translate } from "transformation-matrix"
 import { fp } from "src/footprinter"
 import type {
@@ -27,6 +28,12 @@ type CourtyardElement =
   | (Omit<PcbCourtyardCircle, "radius"> & { radius?: number; diameter: number })
 
 type PcbAlignmentElement = PcbSmtPad | PcbPlatedHole
+
+// The snapshots use KiCad's library from the last passing parity run and
+// the converter version that generated their Circuit JSON.
+const KICAD_FOOTPRINTS_REVISION = "a337146e090931ad1176e20ed0b7100990fac5fa"
+const KICAD_FOOTPRINTS_URL =
+  "https://gitlab.com/kicad/libraries/kicad-footprints"
 
 function signedPolygonArea(points: Point[]): number {
   let area = 0
@@ -339,8 +346,12 @@ export async function compareFootprinterVsKicad(
   courtyardIntersectionOverUnionPercent: number
   fpSilkscreenElements: any[]
 }> {
-  const BASE_URL = "https://kicad-mod-cache.tscircuit.com/"
-  const kicadUrl = BASE_URL + kicadPath
+  const kicadModPath = kicadPath
+    .replace(/\.circuit\.json$/, ".kicad_mod")
+    .split("/")
+    .map(encodeURIComponent)
+    .join("/")
+  const kicadUrl = `${KICAD_FOOTPRINTS_URL}/-/raw/${KICAD_FOOTPRINTS_REVISION}/${kicadModPath}`
   const normalizedFootprintName =
     kicadPath.split("/").pop()?.replace(".circuit.json", "") ?? "unknown"
 
@@ -348,7 +359,11 @@ export async function compareFootprinterVsKicad(
   if (!res.ok)
     throw new Error(`Failed to fetch ${normalizedFootprintName}: ${res.status}`)
 
-  const kicadCircuitJson = (await res.json()) as any[]
+  const kicadMod = (await res.text()).replace(/^\s*\(module\b/, "(footprint")
+  const converter = new KicadFootprintToCircuitJsonConverter()
+  converter.addFile("footprint.kicad_mod", kicadMod)
+  converter.runUntilFinished()
+  const kicadCircuitJson = converter.getOutput()
 
   const kicadPads = kicadCircuitJson.filter(
     (e) => e.type === "pcb_smtpad",
