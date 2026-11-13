@@ -123,11 +123,20 @@ for (const { footprint, builder } of [
     builder: () => fp().led().imperial("0603"),
   },
   {
+    footprint: "led_p1.498mm_pw0.8mm_ph0.8mm",
+    builder: () => fp().led().p("1.498mm").pw("0.8mm").ph("0.8mm"),
+  },
+  {
     footprint: "led_p3.4mm_pw1.2mm_ph0.95mm",
     builder: () => fp().led().p("3.4mm").pw("1.2mm").ph("0.95mm"),
   },
 ]) {
   test(`${footprint} strings normalize explicit polarity pins`, async () => {
+    const originalPads = fp
+      .string(footprint)
+      .circuitJson()
+      .filter((element) => element.type === "pcb_smtpad")
+
     for (const modifier of ["anodepin", "cathodepin"] as const) {
       for (const pin of [1, 2] as const) {
         const circuitJson = fp
@@ -145,6 +154,23 @@ for (const { footprint, builder } of [
         expect(
           negative!.anchor_position.x * (cathodePin === 1 ? -1 : 1),
         ).toBeGreaterThan(0)
+
+        const pads = circuitJson.filter(
+          (element) => element.type === "pcb_smtpad",
+        )
+        expect(pads).toEqual(originalPads)
+        const cathodePad = pads.find((pad) =>
+          pad.port_hints?.includes(String(cathodePin)),
+        )!
+        const outline = circuitJson.find(
+          (element) => element.type === "pcb_silkscreen_path",
+        )!
+        // The middle segment of the three-sided outline is the polarity bar.
+        const [, barStart, barEnd] = outline.route
+        expect(barStart!.x).toBe(barEnd!.x)
+        expect(
+          (barStart!.x - cathodePad.x) * (cathodePin === 1 ? -1 : 1),
+        ).toBeGreaterThan(cathodePad.width / 2 + outline.stroke_width / 2)
       }
     }
 

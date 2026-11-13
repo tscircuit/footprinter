@@ -1,29 +1,29 @@
-import type { AnySoupElement, PcbSilkscreenPath } from "circuit-json"
-import { createFabricationNoteDiodeFromCircuitJson } from "../helpers/create-fabrication-note-diode"
+import type { AnySoupElement } from "circuit-json"
+import {
+  createFabricationNoteDiodeFromCircuitJson,
+  getCathodePin,
+} from "../helpers/create-fabrication-note-diode"
 import { type PassiveDef, passive } from "../helpers/passive-fn"
 import { base_def } from "../helpers/zod/base_def"
 
 export const led = (
   parameters: PassiveDef,
 ): { circuitJson: AnySoupElement[]; parameters: PassiveDef } => {
-  const passiveCircuitJson = passive(parameters)
   const { anodepin, cathodepin, nonpolarized } = base_def.parse(parameters)
-  const circuitJson = passiveCircuitJson
-    .concat(
-      createFabricationNoteDiodeFromCircuitJson(passiveCircuitJson, {
-        nonpolarized,
-        anodePin: anodepin,
-        cathodePin: cathodepin,
-      }),
-    )
-    .map((element) => {
-      if (element.type !== "pcb_silkscreen_path") return element
+  const polarity = {
+    nonpolarized,
+    anodePin: anodepin,
+    cathodePin: cathodepin,
+  }
+  const cathodePin = nonpolarized ? 2 : getCathodePin(polarity)
+  const passiveCircuitJson = passive(parameters, {
+    polarizedSilkscreenSide: cathodePin === 1 ? "left" : "right",
+  })
 
-      return {
-        ...(element as PcbSilkscreenPath),
-        route: element.route.map((point) => ({ ...point, x: -point.x })),
-      }
-    })
-
-  return { circuitJson, parameters }
+  return {
+    circuitJson: passiveCircuitJson.concat(
+      createFabricationNoteDiodeFromCircuitJson(passiveCircuitJson, polarity),
+    ),
+    parameters,
+  }
 }
