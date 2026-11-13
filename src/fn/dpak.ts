@@ -54,14 +54,23 @@ const getNumberOfPads = (rawParams: DpakDef): 3 | 6 => {
   return 3
 }
 
+// Five-lead variants put a lead in every position, so adjacent leads sit on a
+// tighter pitch than the three-lead lead positions (KiCad TO-252-5_TabPin3
+// and TO-263-5_TabPin3).
+const dpakFiveLeadDefaults = { p: "1.14mm", pw: "0.8mm" } as const
+const d2pakFiveLeadDefaults = { p: "1.7mm", pw: "1.1mm" } as const
+
 const createDpak = (
   rawParams: DpakDef,
-  defaults?: Partial<DpakDef>,
+  defaults: Partial<DpakDef> | undefined,
+  fiveLeadDefaults: Partial<DpakDef>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
+  const numPads = getNumberOfPads(rawParams)
   const parameters = dpak_def.parse({
     ...defaults,
+    ...(numPads === 6 ? fiveLeadDefaults : {}),
     ...rawParams,
-    num_pins: getNumberOfPads(rawParams),
+    num_pins: numPads,
   })
   const { num_pins, p, pw, pl, tabw, tabh, span, w, h } = parameters
 
@@ -130,10 +139,11 @@ const createDpak = (
   }
 }
 
-export const dpak = (rawParams: DpakDef) => createDpak(rawParams)
+export const dpak = (rawParams: DpakDef) =>
+  createDpak(rawParams, undefined, dpakFiveLeadDefaults)
 
 export const d2pak = (rawParams: DpakDef) =>
-  createDpak(rawParams, d2pakDefaults)
+  createDpak(rawParams, d2pakDefaults, d2pakFiveLeadDefaults)
 
 export const to252 = dpak
 
