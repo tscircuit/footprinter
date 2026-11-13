@@ -103,8 +103,9 @@ mirrored-only location is rejected with an error.
 Diode footprints assume pin 1 is the anode and pin 2 is the cathode by default.
 Use `anodepin1` to record that default explicitly, or `cathodepin1` for parts
 whose package numbering assigns the cathode to pin 1. These modifiers orient
-the fabrication-note diode symbol and polarity labels without changing pad
-numbers:
+the fabrication-note diode symbol and polarity labels. On `led` footprints
+they also place the silkscreen bar on the cathode side. Pad numbering stays the
+same.
 
 ```ts
 fp.string("sod123w_p3.4mm_pw0.95mm_cathodepin1")

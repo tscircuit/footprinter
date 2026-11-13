@@ -65,10 +65,10 @@ export const createFabricationNoteDiodeFromCircuitJson = (
 ): AnyCircuitElement[] =>
   createFabricationNoteDiode(getCopperBounds(circuitJson), options)
 
-const getCathodePin = ({
+export const getCathodePin = ({
   anodePin,
   cathodePin,
-}: DiodeFabricationNoteOptions): 1 | 2 | undefined => {
+}: DiodeFabricationNoteOptions): 1 | 2 => {
   if (anodePin !== undefined && anodePin !== 1 && anodePin !== 2) {
     throw new Error("Diode anode pin must be 1 or 2")
   }
@@ -84,9 +84,8 @@ const getCathodePin = ({
   }
 
   if (cathodePin !== undefined) return cathodePin
-  if (anodePin === 1) return 2
   if (anodePin === 2) return 1
-  return undefined
+  return 2
 }
 
 export const createFabricationNoteDiodeFromCopperPads = (
