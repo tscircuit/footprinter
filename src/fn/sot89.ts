@@ -121,10 +121,12 @@ export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
 
 export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
   const outerPadCornerRadius = Math.min(1.5, 0.7) / 8
+  // Counter-clockwise from the top-left lead; the center lead joined to the
+  // exposed tab is pin 2, matching sot89_3 and KiCad's SOT-89-5.
   const pads: AnyCircuitElement[] = [
-    rectpad(1, -1.85, -1.5, 1.5, 0.7, outerPadCornerRadius),
-    rectpad(2, -1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
-    polygonpad(3, sot89_5CenterPadPoints),
+    rectpad(1, -1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
+    polygonpad(2, sot89_5CenterPadPoints),
+    rectpad(3, -1.85, -1.5, 1.5, 0.7, outerPadCornerRadius),
     rectpad(4, 1.85, -1.5, 1.5, 0.7, outerPadCornerRadius),
     rectpad(5, 1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
   ]
