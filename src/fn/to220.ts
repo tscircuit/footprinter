@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
+  p: length.optional().default("2.54mm"),
   id: length.optional().default("1.0mm"),
   od: length.optional().default("1.9mm"),
   w: length.optional().default("13mm"),
@@ -26,7 +26,7 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { id, od, w, h, string } = parameters
+  const { id, od, w, h, string, p } = parameters
 
   const numPins =
     parameters.num_pins ??
@@ -36,15 +36,13 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const minPitch = 2.5
-  const maxHoleWidth = w * 0.4
-  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
+  const pitch = p ?? 2.54
 
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
     const x =
       numPins % 2 === 0
-        ? (i - numPins / 2 + 0.5) * computedPitch
-        : (i - Math.floor(numPins / 2)) * computedPitch
+        ? (i - numPins / 2 + 0.5) * pitch
+        : (i - Math.floor(numPins / 2)) * pitch
     return platedhole(i + 1, x, holeY, id, od)
   })
 
@@ -135,6 +133,6 @@ export const to220 = (
       silkscreenRefText as AnyCircuitElement,
       courtyard,
     ],
-    parameters: { ...parameters, p: computedPitch },
+    parameters: { ...parameters, p: pitch },
   }
 }
