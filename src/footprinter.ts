@@ -568,6 +568,7 @@ export type Footprinter = {
     | "pl"
     | "staggered"
     | "reverse"
+    | "righttoleft"
     | "py"
     | "toppl"
     | "bottompl"
@@ -695,6 +696,7 @@ export type Footprinter = {
     num_pins?: number,
   ) => FootprinterParamsBuilder<
     | "pinstart"
+    | "sharedshell"
     | "split"
     | "reverse"
     | "noholes"
