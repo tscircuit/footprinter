@@ -26,6 +26,7 @@ pinrow6_rows2_cols5_p2.54mm_py5.08mm_missing(3,4,8,9)
 smdpinheader6
 tssop20_p0.5mm
 sot23
+utdfn4
 qfn24_w6_h6_p0.8mm_thermalpad_startingpin(topside,rightpin)_ccw
 qfn64_thermalpad6.3mmx6.3mm_thermalvias4x4_thermalviapitch1mm_thermalviaid0.3048mm_thermalviaod0.6096mm
 axial_p0.2in
@@ -79,6 +80,25 @@ fp.string("dip4_w7.62") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w7.62mm") // same as fp.dip(4).w(7.62)
 fp.string("dip4_w0.3in") // same as fp.dip(4).w("0.3in")
 ```
+
+### UTDFN-4-EP (1x1mm)
+
+`utdfn4`, `utdfn`, and `UTDFN-4-EP(1x1)` generate the SGM2036
+UTDFN-1x1-4L land pattern from SGMICRO drawing TX00066.000. The footprint
+has four corner pads and a 0.48mm square exposed pad rotated 45 degrees.
+Pin 1 is the longer lower-left pad in the manufacturer's top view; the
+remaining pads are numbered counter-clockwise. The exposed pad uses the
+`thermalpad` port hint.
+
+```ts
+fp.string("UTDFN-4-EP(1x1)").circuitJson()
+fp().utdfn(4).circuitJson()
+fp().utdfn().ep(false).circuitJson() // explicitly omit the exposed pad
+```
+
+These dimensions target SGM2036, including the SGM2036-1.2YUDH4G/TR listed
+under this catalog package. Other manufacturers' 1x1mm packages can have
+different land patterns; check the actual part's datasheet.
 
 ### Pin 1 location
 
