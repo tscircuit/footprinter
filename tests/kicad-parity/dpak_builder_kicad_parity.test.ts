@@ -4,6 +4,7 @@ import { fp } from "../../src/footprinter"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 
 for (const [family, alias, kicadName, dimensions] of [
+  ["dpak", "dpak_5", "TO-252-5_TabPin6", [1.14, 0.8, 2.2, 6.4, 5.8, 6.3]],
   ["to252", "TO-252-5", "TO-252-5_TabPin6", [1.14, 0.8, 2.2, 6.4, 5.8, 6.3]],
   ["to263", "TO-263-5", "TO-263-5_TabPin6", [1.7, 1.1, 4.6, 9.4, 10.8, 9.15]],
   ["d2pak", "d2pak5", "TO-263-5_TabPin6", [1.7, 1.1, 4.6, 9.4, 10.8, 9.15]],
