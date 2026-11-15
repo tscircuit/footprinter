@@ -14,12 +14,26 @@ import { function_call } from "../helpers/zod/function-call"
 
 export const smdslideswitch_def = base_def.extend({
   fn: z.literal("smdslideswitch"),
-  num_pins: z.literal(7).default(7),
+  num_pins: z
+    .union([z.literal(3), z.literal(7)])
+    .default(7)
+    .describe("three contacts, optionally with four solderable shell mounts"),
   signalcols: z.coerce.number().int().min(3).default(3),
   missing: function_call.default([]),
   p: length.default("1mm").describe("signal-pad column pitch"),
   pw: length.default("0.7mm").describe("signal-pad width"),
   pl: length.default("1.5mm").describe("signal-pad length"),
+  w: length
+    .pipe(z.number().positive())
+    .optional()
+    .describe("switch body width"),
+  h: length
+    .pipe(z.number().positive())
+    .optional()
+    .describe("switch body depth"),
+  bodyy: length
+    .optional()
+    .describe("body center relative to the signal-pad row"),
   mounty: length
     .default("-1.8mm")
     .describe("Y position of the mounting-pad row center"),
@@ -62,6 +76,7 @@ export const smdslideswitch = (
     noholes,
   } = parameters
   const holey = parameters.holey ?? mounty
+  const mountPadCount = num_pins === 7 ? 4 : 0
   const invalidMissingColumn = missing.find(
     (column) =>
       typeof column !== "number" ||
@@ -79,9 +94,9 @@ export const smdslideswitch = (
   )
   const signalPadCount = signalcols - missingColumns.size
 
-  if (signalPadCount + 4 !== num_pins) {
+  if (signalPadCount + mountPadCount !== num_pins) {
     throw new Error(
-      `smdslideswitch${num_pins} needs ${num_pins - 4} signal pads, but signalcols${signalcols}_missing(${[...missingColumns].join(",")}) creates ${signalPadCount}`,
+      `smdslideswitch${num_pins} needs ${num_pins - mountPadCount} signal pads, but signalcols${signalcols}_missing(${[...missingColumns].join(",")}) creates ${signalPadCount}`,
     )
   }
 
@@ -100,12 +115,15 @@ export const smdslideswitch = (
 
   const mountTopY = mounty + mpy / 2
   const mountBottomY = mounty - mpy / 2
-  const mountPositions = [
-    { x: clean(-mpx / 2), y: clean(mountTopY) },
-    { x: clean(mpx / 2), y: clean(mountTopY) },
-    { x: clean(-mpx / 2), y: clean(mountBottomY) },
-    { x: clean(mpx / 2), y: clean(mountBottomY) },
-  ]
+  const mountPositions =
+    mountPadCount === 0
+      ? []
+      : [
+          { x: clean(-mpx / 2), y: clean(mountTopY) },
+          { x: clean(mpx / 2), y: clean(mountTopY) },
+          { x: clean(-mpx / 2), y: clean(mountBottomY) },
+          { x: clean(mpx / 2), y: clean(mountBottomY) },
+        ]
   for (const position of mountPositions) {
     pads.push(rectpad(pinNumber, position.x, position.y, mpw, mpl))
     pinNumber++
@@ -123,9 +141,28 @@ export const smdslideswitch = (
         y: holey,
       }))
 
-  const bodyHalfWidth = Math.max(mpx / 2 - mpw / 2 - 0.2, p)
-  const bodyTop = -pl / 2 - 0.2
-  const bodyBottom = mountBottomY + mpl / 2 + 0.2
+  const bodyHalfWidth =
+    parameters.w !== undefined
+      ? parameters.w / 2
+      : mountPadCount > 0
+        ? Math.max(mpx / 2 - mpw / 2 - 0.2, p)
+        : Math.max(
+            ((signalcols - 1) * p) / 2 + pw / 2,
+            noholes ? 0 : holex + holed / 2,
+          ) + 0.2
+  let bodyTop = -pl / 2 - 0.2
+  let bodyBottom =
+    mountPadCount > 0
+      ? mountBottomY + mpl / 2 + 0.2
+      : noholes
+        ? bodyTop - 1
+        : Math.min(bodyTop - 0.5, holey - holed / 2 - 0.2)
+  if (parameters.h !== undefined || parameters.bodyy !== undefined) {
+    const bodyCenterY = parameters.bodyy ?? (bodyTop + bodyBottom) / 2
+    const bodyDepth = parameters.h ?? bodyTop - bodyBottom
+    bodyTop = bodyCenterY + bodyDepth / 2
+    bodyBottom = bodyCenterY - bodyDepth / 2
+  }
   const silkscreen = [
     silkscreenpath([
       { x: -bodyHalfWidth, y: bodyTop },
@@ -149,8 +186,21 @@ export const smdslideswitch = (
   const geometryBounds = getBoundsFromPoints([
     { x: signalStartX - pw / 2, y: -pl / 2 },
     { x: signalEndX + pw / 2, y: pl / 2 },
-    { x: -mpx / 2 - mpw / 2, y: mountBottomY - mpl / 2 },
-    { x: mpx / 2 + mpw / 2, y: mountTopY + mpl / 2 },
+    ...(mountPadCount > 0
+      ? [
+          { x: -mpx / 2 - mpw / 2, y: mountBottomY - mpl / 2 },
+          { x: mpx / 2 + mpw / 2, y: mountTopY + mpl / 2 },
+        ]
+      : []),
+    ...(mountPadCount === 0 ||
+    parameters.w !== undefined ||
+    parameters.h !== undefined ||
+    parameters.bodyy !== undefined
+      ? [
+          { x: -bodyHalfWidth, y: bodyBottom },
+          { x: bodyHalfWidth, y: bodyTop },
+        ]
+      : []),
     ...(!noholes
       ? [
           { x: -holex - holed / 2, y: holey - holed / 2 },
