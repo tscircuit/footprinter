@@ -49,3 +49,20 @@ test("TO-220F-3 (alias)", () => {
   )
   expect(aliasSvg).toEqual(canonicalSvg)
 })
+
+test("to220 default pin pitches (#790)", () => {
+  const holes2 = fp
+    .string("to220_2")
+    .circuitJson()
+    .filter((el) => el.type === "pcb_plated_hole")
+  expect(holes2).toHaveLength(2)
+  expect(holes2[1]!.x - holes2[0]!.x).toBeCloseTo(5.08, 5)
+
+  const holes3 = fp
+    .string("to220_3")
+    .circuitJson()
+    .filter((el) => el.type === "pcb_plated_hole")
+  expect(holes3).toHaveLength(3)
+  expect(holes3[1]!.x - holes3[0]!.x).toBeCloseTo(2.54, 5)
+  expect(holes3[2]!.x - holes3[1]!.x).toBeCloseTo(2.54, 5)
+})
