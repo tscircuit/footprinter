@@ -23,7 +23,7 @@ export const pad = (
   return {
     circuitJson: [
       rectpad(1, 0, 0, width, height),
-      silkscreenRef(0, height / 2 + 0.5, 0.2),
+      silkscreenRef(0, height / 2 + 0.5),
     ],
     parameters: params,
   }
