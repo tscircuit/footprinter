@@ -1,7 +1,8 @@
-import type {
-  AnyCircuitElement,
-  PcbCourtyardOutline,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardOutline,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
 import { silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
@@ -61,14 +62,14 @@ export const sot89_def = base_def.extend({
 })
 
 export const sot89_3 = (parameters: z.infer<typeof sot89_def>) => {
-  const padGap = Number.parseFloat(parameters.p)
-  const padWidth = Number.parseFloat(parameters.pw)
-  const length = Number.parseFloat(parameters.w)
-  const padHeight = Number.parseFloat(parameters.pl)
+  const padGap = length.parse(parameters.p)
+  const padWidth = length.parse(parameters.pw)
+  const bodyLength = length.parse(parameters.w)
+  const padHeight = length.parse(parameters.pl)
   const outerPadCornerRadius = Math.min(padHeight, padWidth) / 8
-  const outerPadX = -length / 2 + 0.15
-  const width = length / 2 - 1
-  const height = Number.parseFloat(parameters.h) / 2
+  const outerPadX = -bodyLength / 2 + 0.15
+  const width = bodyLength / 2 - 1
+  const height = length.parse(parameters.h) / 2
   const pads: AnyCircuitElement[] = [
     rectpad(1, outerPadX, padGap, padHeight, padWidth, outerPadCornerRadius),
     polygonpad(2, sot89_3CenterPadPoints),
@@ -129,8 +130,8 @@ export const sot89_5 = (parameters: z.infer<typeof sot89_def>) => {
     rectpad(5, 1.85, 1.5, 1.5, 0.7, outerPadCornerRadius),
   ]
 
-  const width = Number.parseFloat(parameters.w) / 2 - 1
-  const height = Number.parseFloat(parameters.h) / 2
+  const width = length.parse(parameters.w) / 2 - 1
+  const height = length.parse(parameters.h) / 2
   const silkscreenRefText = silkscreenRef(0, height + 0.5, 0.3)
   const silkscreenPath1: PcbSilkscreenPath = {
     layer: "top",
