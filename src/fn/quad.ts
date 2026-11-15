@@ -107,6 +107,21 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
   const horizontal_pitch = v.px ?? v.p
   const vertical_pitch = v.py ?? v.p
 
+  // Explicit zero/negative pitch must not silently produce NaN pad coords
+  // (e.g. `lcc_p0mm` / `qfn16_p0mm`). Treat non-positive pitch as invalid.
+  for (const [name, pitch] of [
+    ["p", v.p],
+    ["px", v.px],
+    ["py", v.py],
+  ] as const) {
+    if (pitch === undefined || pitch === null) continue
+    if (!(pitch > 0) || !Number.isFinite(pitch)) {
+      throw new Error(
+        `Invalid ${name}=${pitch}: pitch must be a positive finite number`,
+      )
+    }
+  }
+
   if (!v.p && !v.pw && !v.pl && v.w) {
     // HACK: This is wayyy underspecified
     const approx_pin_size_of_side = horizontal_side_pin_count + 4
@@ -122,13 +137,15 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.p = (horizontalPitch + verticalPitch) / 2
   }
 
-  if (!v.w && !v.h && v.p) {
+  // Use `> 0` (not truthiness) so zero pitch cannot skip body sizing and
+  // later yield NaN coordinates in getQuadCoords.
+  if (!v.w && !v.h && v.p != null && v.p > 0) {
     // HACK: underspecified
     v.w = horizontal_pitch * (horizontal_side_pin_count + 4)
     v.h = vertical_pitch * (vertical_side_pin_count + 4)
   }
 
-  if (v.p && !v.pw && !v.pl) {
+  if (v.p != null && v.p > 0 && !v.pw && !v.pl) {
     v.pw = v.p / 2
     v.pl = v.p / 2
   } else if (!v.pw) {
