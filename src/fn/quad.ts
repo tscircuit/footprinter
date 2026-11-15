@@ -311,7 +311,13 @@ export const quad = (
         padOuterHalfY,
         Math.abs(thermalPadOffset.y) + ibh / 2,
       )
-      pads.push(createThermalPad({ x: ibw, y: ibh }, thermalPadOffset))
+      pads.push(
+        createThermalPad(
+          { x: ibw, y: ibh },
+          thermalPadOffset,
+          parameters.num_pins + 1,
+        ),
+      )
     } else {
       padOuterHalfX = Math.max(
         padOuterHalfX,
@@ -321,7 +327,13 @@ export const quad = (
         padOuterHalfY,
         Math.abs(thermalPadOffset.y) + parameters.thermalpad.y / 2,
       )
-      pads.push(createThermalPad(parameters.thermalpad, thermalPadOffset))
+      pads.push(
+        createThermalPad(
+          parameters.thermalpad,
+          thermalPadOffset,
+          parameters.num_pins + 1,
+        ),
+      )
     }
   }
 
