@@ -81,10 +81,7 @@ export const micromelf = (
   }
 }
 
-export const getMicroMelfCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getMicroMelfCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
