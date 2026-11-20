@@ -128,6 +128,18 @@ export const applyOrigin = (
       el.anchor_position.x -= dx
       el.anchor_position.y -= dy
     }
+
+    if (
+      (el.type === "pcb_fabrication_note_dimension" ||
+        el.type === "pcb_note_dimension") &&
+      el.from &&
+      el.to
+    ) {
+      el.from.x -= dx
+      el.from.y -= dy
+      el.to.x -= dx
+      el.to.y -= dy
+    }
   }
 
   return elements
