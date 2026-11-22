@@ -17,7 +17,9 @@ export const qfp = (
         raw_params.p = 0.8
         break
       case 52:
-        if (raw_params.w === 14) raw_params.p = 1
+        // Footprint strings pass w as text ("14" or "14mm"), so choose the
+        // 14 mm body from the parsed width.
+        if (quad_defaults.w === 14) raw_params.p = 1
         else raw_params.p = 0.65
         break
       case 208:
@@ -47,7 +49,7 @@ export const qfp = (
         raw_params.pw = 0.5
         break
       case 52:
-        if (raw_params.w === 14) raw_params.pw = 0.45
+        if (quad_defaults.w === 14) raw_params.pw = 0.45
         else raw_params.pw = 0.55
         break
       case 208:

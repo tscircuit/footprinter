@@ -4,11 +4,9 @@ import { fp } from "../../src/footprinter"
 import { compareFootprinterVsKicad } from "../fixtures/compareFootprinterVsKicad"
 
 // A 52-lead QFP has either a 10 mm body with 0.65 mm pitch or a 14 mm body
-// with 1 mm pitch. A footprint string passes "w14" as text, so qfp52_w14 gets
-// the 10 mm pitch on a 14 mm body while fp().qfp(52).w(14) gets 1 mm.
-// test.failing until both forms select the same land pattern; the fix turns
-// it into a regular test().
-test.failing("parity/qfp52_w14", async () => {
+// with 1 mm pitch. A footprint string passes "w14" as text, which must select
+// the same 14 mm land pattern as fp().qfp(52).w(14).
+test("parity/qfp52_w14", async () => {
   // Use the reference land dimensions; this regression concerns the pitch.
   const {
     avgRelDiff,
