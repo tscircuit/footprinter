@@ -11,6 +11,8 @@ import { silkscreenpath } from "../helpers/silkscreenpath"
 import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
+const positiveLength = length.pipe(z.number().finite().positive())
+
 export const usbcmidmount_def = base_def.extend({
   fn: z.literal("usbcmidmount"),
   num_pins: z.literal(16).default(16),
@@ -21,6 +23,24 @@ export const usbcmidmount_def = base_def.extend({
     .default(false)
     .describe("number contact lands right-to-left"),
   noholes: z.boolean().default(false).describe("omit the two locator holes"),
+  shelldepth: positiveLength
+    .optional()
+    .describe(
+      "3D shell length from the front lip to its rear edge, excluding solder tails",
+    ),
+  shellwall: positiveLength
+    .optional()
+    .describe("3D metal wall thickness at the flat top of the shell"),
+  cavitydepth: positiveLength
+    .optional()
+    .describe("3D depth from the front lip to the face of the rear insulator"),
+  tonguesetback: length
+    .pipe(z.number().finite().nonnegative())
+    .optional()
+    .describe("3D distance from the front lip to the tongue tip"),
+  tonguethickness: positiveLength
+    .optional()
+    .describe("3D thickness of the flat portion of the tongue"),
   rowy: length.default("2.125mm").describe("contact pad row y position"),
   ph: length.default("1.1mm").describe("contact pad height"),
   pw: length.default("0.3mm").describe("signal contact pad width"),
@@ -82,6 +102,22 @@ export const usbcmidmount = (
   rawParams: z.input<typeof usbcmidmount_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = usbcmidmount_def.parse(rawParams)
+  const { shelldepth, cavitydepth, tonguesetback } = parameters
+  if (
+    shelldepth !== undefined &&
+    cavitydepth !== undefined &&
+    cavitydepth >= shelldepth
+  ) {
+    throw new Error("cavitydepth must be less than shelldepth")
+  }
+  if (
+    tonguesetback !== undefined &&
+    tonguesetback >= (cavitydepth ?? shelldepth ?? Infinity)
+  ) {
+    throw new Error(
+      "tonguesetback must leave room for the tongue inside the shell",
+    )
+  }
   const {
     pinstart: pinStart,
     split,

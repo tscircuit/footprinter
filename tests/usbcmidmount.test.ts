@@ -63,3 +63,39 @@ for (const variant of jlcpcbUsbCMidMountVariants) {
     )
   })
 }
+
+test("mechanical dimensions describe a USB-C body independently of its land pattern", () => {
+  const base = jlcpcbUsbCMidMountVariants[0]!
+  const body = fp.string(
+    base.definition +
+      "_shelldepth7.3mm_shellwall300um_cavitydepth4mm_tonguesetback0.3mm_tonguethickness0.62mm",
+  )
+  expect(body.json()).toMatchObject({
+    shelldepth: 7.3,
+    shellwall: 0.3,
+    cavitydepth: 4,
+    tonguesetback: 0.3,
+    tonguethickness: 0.62,
+  })
+  expect(body.circuitJson()).toEqual(fp.string(base.definition).circuitJson())
+  expect(convertCircuitJsonToPcbSvg(body.circuitJson())).toMatchSvgSnapshot(
+    import.meta.path,
+    `usbcmidmount16_${base.part}`,
+  )
+  expect(
+    fp().usbcmidmount(16).tonguesetback(0).shellwall("0.2mm").json(),
+  ).toMatchObject({ tonguesetback: 0, shellwall: 0.2 })
+  expect(fp.string("usbcmidmount16").json()).not.toHaveProperty("shelldepth")
+})
+
+test.each([
+  "shellwall0mm",
+  "shelldepth-1mm",
+  "tonguesetback-1mm",
+  "tonguethickness0mm",
+  "cavitydepth0mm",
+  "shelldepth4mm_cavitydepth4mm",
+  "cavitydepth2mm_tonguesetback3mm",
+])("rejects invalid USB-C geometry: %s", (fields) => {
+  expect(() => fp.string(`usbcmidmount16_${fields}`).json()).toThrow()
+})
