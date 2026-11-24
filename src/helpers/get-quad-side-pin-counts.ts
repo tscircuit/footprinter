@@ -87,5 +87,13 @@ export const getQuadSidePinCounts = (
     }
   }
 
+  if (!hasExplicitSidePinCounts) {
+    if (!Number.isInteger(defaultSidePinCount) || defaultSidePinCount < 1) {
+      throw new Error(
+        `Quad num_pins (${parameters.num_pins}) is not divisible by 4; specify leftpins, toppins, rightpins and bottompins explicitly`,
+      )
+    }
+  }
+
   return sidePinCounts
 }
