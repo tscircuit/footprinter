@@ -56,6 +56,7 @@ export const rj45_def = base_def.extend({
   bodyy: length
     .default("-0.96mm")
     .describe("signed connector body center y offset"),
+  string: z.string().optional(),
 })
 
 export type Rj45Def = z.input<typeof rj45_def>
@@ -63,11 +64,18 @@ export type Rj45Def = z.input<typeof rj45_def>
 export const rj45 = (
   rawParams: Rj45Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
-  const hasLedPins = rawParams.ledpins === true || rawParams.num_pins === 14
+  // The string parser drops bare numeric tokens, so "rj45_14" never reaches
+  // num_pins. Read the requested pin count back out of the definition string,
+  // the same way sot343 and to220 handle their "_N" variants.
+  const stringNumPins = rawParams.string?.match(/^rj45_(\d+)/)?.[1]
+  const requestedNumPins = stringNumPins
+    ? Number.parseInt(stringNumPins, 10)
+    : rawParams.num_pins
+  const hasLedPins = rawParams.ledpins === true || requestedNumPins === 14
   const parameters = rj45_def.parse({
     ...rawParams,
     ledpins: hasLedPins,
-    num_pins: hasLedPins ? 14 : 10,
+    num_pins: hasLedPins ? 14 : requestedNumPins,
   })
   const {
     ledpins,
