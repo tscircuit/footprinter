@@ -64,6 +64,14 @@ export const sot23_6_or_8_def = extendSoicDef({
   legsoutside: true,
 })
 
+// SOT-23-8 (JEDEC MO-178 BA) fits four leads per side on a 0.65mm pitch
+export const sot23_8_def = extendSoicDef({
+  p: "0.65mm",
+  pw: "0.5mm",
+  w: "1.6mm",
+  legsoutside: true,
+})
+
 export const sot23 = (
   raw_params: z.input<typeof sot23_def>,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
@@ -71,7 +79,8 @@ export const sot23 = (
   const numPins = match ? Number.parseInt(match[1]!, 10) : 3
 
   if (numPins === 6 || numPins === 8) {
-    const parameters = sot23_6_or_8_def.parse({
+    const def = numPins === 8 ? sot23_8_def : sot23_6_or_8_def
+    const parameters = def.parse({
       ...raw_params,
       num_pins: numPins,
     })
