@@ -6,17 +6,23 @@ import { silkscreenRef } from "../helpers/silkscreenRef"
 import { silkscreenpath } from "../helpers/silkscreenpath"
 import { base_def } from "../helpers/zod/base_def"
 
+const positiveLength = length.refine(
+  (value) => Number.isFinite(value) && value > 0,
+  "dimension must be finite and positive",
+)
+const finiteLength = length.refine(Number.isFinite, "dimension must be finite")
+
 export const sot143_def = base_def.extend({
   fn: z.literal("sot143"),
   num_pins: z.literal(4).default(4),
-  p: length.default("2.382774mm"),
-  px: length.default("1.89992mm"),
-  pw: length.default("0.8382mm"),
-  ph: length.default("0.8382mm"),
-  pin1padwidth: length.default("1.1938mm"),
-  pin1centeroffsetx: length.default("0.199898mm"),
-  w: length.default("3mm"),
-  h: length.default("2.9mm"),
+  p: positiveLength.default("2.382774mm"),
+  px: positiveLength.default("1.89992mm"),
+  pw: positiveLength.default("0.8382mm"),
+  ph: positiveLength.default("0.8382mm"),
+  pin1padwidth: positiveLength.default("1.1938mm"),
+  pin1centeroffsetx: finiteLength.default("0.199898mm"),
+  w: positiveLength.default("3mm"),
+  h: positiveLength.default("2.9mm"),
 })
 
 export const sot143 = (
