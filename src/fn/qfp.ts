@@ -47,8 +47,9 @@ export const qfp = (
         raw_params.pw = 0.5
         break
       case 52:
-        if (raw_params.w === 14) raw_params.pw = 0.45
-        else raw_params.pw = 0.55
+        // The 1 mm pitch of the 14 mm body takes the wider pad.
+        if (raw_params.w === 14) raw_params.pw = 0.55
+        else raw_params.pw = 0.45
         break
       case 208:
         raw_params.pw = 0.3
