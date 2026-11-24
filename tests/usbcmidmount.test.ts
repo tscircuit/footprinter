@@ -83,7 +83,7 @@ test("mechanical dimensions describe a USB-C body independently of its land patt
     `usbcmidmount16_${base.part}`,
   )
   expect(
-    fp().usbcmidmount(16).tonguesetback(0).shellwall("0.2mm").json(),
+    fp().usbcmidmount(16).tonguesetback(0).shellwall(0.2).params(),
   ).toMatchObject({ tonguesetback: 0, shellwall: 0.2 })
   expect(fp.string("usbcmidmount16").json()).not.toHaveProperty("shelldepth")
 })
