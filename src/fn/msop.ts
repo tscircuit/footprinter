@@ -57,11 +57,11 @@ export const msop_def = base_def.extend({
   num_pins: z
     .union([z.literal(8), z.literal(10), z.literal(12), z.literal(16)])
     .default(8),
-  w: z.string().optional(),
-  h: z.string().optional(),
-  p: z.string().optional(),
-  pl: z.string().optional(),
-  pw: z.string().optional(),
+  w: length.optional(),
+  h: length.optional(),
+  p: length.optional(),
+  pl: length.optional(),
+  pw: length.optional(),
   thermalpad: dim2d.optional(),
   ...thermalPadOffsetFields,
   string: z.string().optional(),
@@ -92,11 +92,11 @@ export const msop = (
   const parameters = msop_def.parse(raw_params)
   const defaults = getDefaultValues(parameters.num_pins)
 
-  const w = length.parse(parameters.w || defaults.w)
-  const h = length.parse(parameters.h || defaults.h)
-  const p = length.parse(parameters.p || defaults.p)
-  const pl = length.parse(parameters.pl || defaults.pl)
-  const pw = length.parse(parameters.pw || defaults.pw)
+  const w = parameters.w ?? length.parse(defaults.w)
+  const h = parameters.h ?? length.parse(defaults.h)
+  const p = parameters.p ?? length.parse(defaults.p)
+  const pl = parameters.pl ?? length.parse(defaults.pl)
+  const pw = parameters.pw ?? length.parse(defaults.pw)
   const cornerRadius = Math.min(pl, pw) / 8
 
   const pads: AnyCircuitElement[] = []
