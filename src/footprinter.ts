@@ -715,6 +715,11 @@ export type Footprinter = {
     | "holex"
     | "holey"
     | "holed"
+    | "shelldepth"
+    | "shellwall"
+    | "cavitydepth"
+    | "tonguesetback"
+    | "tonguethickness"
     | "bodybottom"
   >
 

@@ -23,6 +23,7 @@ import { ssop_def } from "src/fn/ssop"
 import { tqfp_def } from "src/fn/tqfp"
 import { tssop_def } from "src/fn/tssop"
 import { usba_def } from "src/fn/usba"
+import { usbcmidmount_def } from "src/fn/usbcmidmount"
 import { usbmicro_def } from "src/fn/usbmicro"
 import { z } from "zod"
 import { pad_def } from "../../fn/pad"
@@ -31,6 +32,7 @@ import { passive_def } from "../passive-fn"
 
 export const any_footprinter_def = z.union([
   usba_def,
+  usbcmidmount_def,
   usbmicro_def,
   qfn_def,
   axial_def,
