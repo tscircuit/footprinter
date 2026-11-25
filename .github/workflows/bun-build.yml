@@ -24,3 +24,6 @@ jobs:
 
       - name: Run build
         run: bun run build
+
+      - name: Check public json() types
+        run: bunx tsc --noEmit --strict --skipLibCheck --target esnext --module esnext --moduleResolution bundler tests/types/footprinter-json.ts
