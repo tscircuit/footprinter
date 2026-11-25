@@ -1,3 +1,4 @@
+import type { FootprintName } from "../../footprinter"
 import { axial_def } from "src/fn/axial"
 import { bga_def } from "src/fn/bga"
 import { dfn_def } from "src/fn/dfn"
@@ -63,4 +64,13 @@ export const any_footprinter_def = z.union([
   smtpad_def,
 ])
 
-export type AnyFootprinterDefinitionOutput = z.infer<typeof any_footprinter_def>
+type Definition = z.infer<typeof any_footprinter_def>
+type NamedDefinition = Extract<Definition, { fn: FootprintName }>
+
+// Older schemas accept a generic fn string. Only the other registered names
+// can produce those definitions, so a literal fn can narrow the result.
+export type AnyFootprinterDefinitionOutput =
+  | NamedDefinition
+  | (Exclude<Definition, NamedDefinition> & {
+      fn?: Exclude<FootprintName, NamedDefinition["fn"]>
+    })

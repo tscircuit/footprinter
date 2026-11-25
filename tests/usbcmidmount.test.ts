@@ -70,7 +70,11 @@ test("mechanical dimensions describe a USB-C body independently of its land patt
     base.definition +
       "_shelldepth7.3mm_shellwall300um_cavitydepth4mm_tonguesetback0.3mm_tonguethickness0.62mm",
   )
-  expect(body.json()).toMatchObject({
+  const definition = body.json()
+  if (definition.fn !== "usbcmidmount") throw new Error("Expected USB-C")
+  const depth: number | undefined = definition.shelldepth
+  expect(depth).toBe(7.3)
+  expect(definition).toMatchObject({
     shelldepth: 7.3,
     shellwall: 0.3,
     cavitydepth: 4,

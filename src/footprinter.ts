@@ -727,7 +727,7 @@ export type Footprinter = {
   /** @deprecated use circuitJson() instead */
   soup: () => AnySoupElement[]
   circuitJson: () => AnyCircuitElement[]
-  json: () => AnyFootprinterDefinitionOutput[]
+  json: () => AnyFootprinterDefinitionOutput
   getFootprintNames: () => string[]
 }
 
@@ -806,9 +806,13 @@ export const string = (
   return fp
 }
 
-export const getFootprintNames = (): string[] => {
-  return Object.keys(FOOTPRINT_FN)
-}
+const stringKeys = <T extends object>(value: T) =>
+  Object.keys(value) as Extract<keyof T, string>[]
+
+const registeredFootprintNames = stringKeys(FOOTPRINT_FN)
+export type FootprintName = (typeof registeredFootprintNames)[number]
+
+export const getFootprintNames = (): string[] => [...registeredFootprintNames]
 
 export const getFootprintSizes = (): typeof footprintSizes => {
   return footprintSizes
@@ -818,7 +822,7 @@ export const getFootprintNamesByType = (): {
   passiveFootprintNames: string[]
   normalFootprintNames: string[]
 } => {
-  const allFootprintNames = Object.keys(FOOTPRINT_FN)
+  const allFootprintNames = getFootprintNames()
 
   const passiveFootprintNames = allFootprintNames.filter((name) => {
     const fn = FOOTPRINT_FN[name]
@@ -895,7 +899,7 @@ export const footprinter = (): Footprinter & {
           return () => FOOTPRINT_FN[target.fn](target).parameters
         }
         if (prop === "getFootprintNames") {
-          return () => Object.keys(FOOTPRINT_FN)
+          return getFootprintNames
         }
         if (prop === "params") {
           // TODO
