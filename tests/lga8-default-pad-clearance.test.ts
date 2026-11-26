@@ -27,7 +27,7 @@ const getMinimumPadGap = (pads: RectPad[]) => {
   return minimum
 }
 
-test("lga8 default pads leave 0.085mm between the side and end pads", () => {
+test("lga8 default pads keep the board minimum between the side and end pads", () => {
   const footprint = "lga8_w2_h2.5_p0.65mm"
   const circuitJson = fp.string(footprint).circuitJson()
   const pads = circuitJson.filter(
@@ -37,7 +37,7 @@ test("lga8 default pads leave 0.085mm between the side and end pads", () => {
   )
 
   expect(pads).toHaveLength(8)
-  expect(getMinimumPadGap(pads)).toBeCloseTo(0.085, 3)
+  expect(getMinimumPadGap(pads)).toBeGreaterThanOrEqual(0.1 - 1e-9)
   expect(convertCircuitJsonToPcbSvg(circuitJson)).toMatchSvgSnapshot(
     import.meta.path,
     footprint,
