@@ -116,14 +116,35 @@ export const lga = (
     endPitch === undefined
       ? (count - 1) * pitch
       : 2 * endPitch + (count - 3) * pitch
+  const minimumPadEdgeClearance = length.parse("0.1mm")
+  const bodyPadLengthLimits = [
+    parameters.w === undefined
+      ? null
+      : parameters.w / 2 -
+        rowSpan(grid.y, parameters.px ?? parameters.p, parameters.tbendpitch) /
+          2 -
+        parameters.pw / 2 -
+        minimumPadEdgeClearance,
+    parameters.h === undefined
+      ? null
+      : parameters.h / 2 -
+        rowSpan(grid.x, parameters.py ?? parameters.p, parameters.lrendpitch) /
+          2 -
+        parameters.pw / 2 -
+        minimumPadEdgeClearance,
+  ].filter((limit): limit is number => limit !== null)
+  const pl =
+    rawParameters.pl === undefined && bodyPadLengthLimits.length > 0
+      ? Math.max(0, Math.min(parameters.pl, Math.max(...bodyPadLengthLimits)))
+      : parameters.pl
   const width =
     parameters.w ??
     rowSpan(grid.y, parameters.px ?? parameters.p, parameters.tbendpitch) +
-      2 * parameters.pl
+      2 * pl
   const height =
     parameters.h ??
     rowSpan(grid.x, parameters.py ?? parameters.p, parameters.lrendpitch) +
-      2 * parameters.pl
+      2 * pl
   const sidePinCounts = {
     left: grid.x,
     right: grid.x,
@@ -155,8 +176,8 @@ export const lga = (
           (index === count - 1 ? endPitch - pitch : 0))
     )
   }
-  const leftRightX = (width - parameters.pl) / 2
-  const topBottomY = (height - parameters.pl) / 2
+  const leftRightX = (width - pl) / 2
+  const topBottomY = (height - pl) / 2
   const pads: AnyCircuitElement[] = []
   const addPad = (
     pin: number,
@@ -183,7 +204,7 @@ export const lga = (
         parameters.py ?? parameters.p,
         parameters.lrendpitch,
       ),
-      parameters.pl,
+      pl,
       parameters.pw,
     )
   }
@@ -198,7 +219,7 @@ export const lga = (
       ) || 0,
       -topBottomY,
       parameters.pw,
-      parameters.pl,
+      pl,
     )
   }
   for (let index = 0; index < grid.x; index += 1) {
@@ -211,7 +232,7 @@ export const lga = (
         parameters.py ?? parameters.p,
         parameters.lrendpitch,
       ) || 0,
-      parameters.pl,
+      pl,
       parameters.pw,
     )
   }
@@ -226,7 +247,7 @@ export const lga = (
       ),
       topBottomY,
       parameters.pw,
-      parameters.pl,
+      pl,
     )
   }
 
@@ -321,6 +342,6 @@ export const lga = (
       silkscreenRef(0, height / 2 + 0.5, 0.3),
       courtyard,
     ],
-    parameters: { ...parameters, grid, w: width, h: height },
+    parameters: { ...parameters, grid, pl, w: width, h: height },
   }
 }
