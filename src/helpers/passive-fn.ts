@@ -355,7 +355,7 @@ export const passive = (
   }
 
   const textY = textbottom ? -ph / 2 - 0.9 : ph / 2 + 0.9
-  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY, 0.2)
+  const silkscreenRefText: SilkscreenRef = silkscreenRef(0, textY)
   const courtyard =
     sz?.courtyard_width_mm && sz.courtyard_height_mm
       ? createCourtyardRect(sz.courtyard_width_mm, sz.courtyard_height_mm)
