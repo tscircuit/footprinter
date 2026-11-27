@@ -23,6 +23,12 @@ export const fpc_def = base_def.extend({
     .boolean()
     .default(false)
     .describe("place pin 1 on the upper row when staggered"),
+  righttoleft: z
+    .boolean()
+    .default(false)
+    .describe(
+      "number contact pads right-to-left without renumbering mounting pads",
+    ),
   py: length.default("2.4mm").describe("staggered row center pitch"),
   toppl: length.optional().describe("upper-row contact pad length"),
   bottompl: length.optional().describe("lower-row contact pad length"),
@@ -81,6 +87,7 @@ export const fpc = (
     pl,
     staggered,
     reverse,
+    righttoleft,
     py,
     toppl,
     bottompl,
@@ -98,7 +105,8 @@ export const fpc = (
     const isUpperRow = staggered && (index % 2 === 1) !== reverse
     const y = staggered ? (isUpperRow ? py / 2 : -py / 2) : 0
     const padLength = isUpperRow ? (toppl ?? pl) : (bottompl ?? pl)
-    return rectangularPad(index + 1, startX + index * p, y, pw, padLength)
+    const x = (righttoleft ? -1 : 1) * (startX + index * p)
+    return rectangularPad(index + 1, x, y, pw, padLength)
   })
   const mountingPads = [
     rectangularPad(numPins + 1, mpx / 2, mountY, mpw, mpl),
@@ -110,7 +118,8 @@ export const fpc = (
   const topSilkY = bounds.maxY + 0.2
   const bottomSilkY = bounds.minY - 0.2
   const pinOne = contactPads[0]!
-  const pinMarkerX = pinOne.x - pinOne.width / 2 - 0.2
+  const pinMarkerDirection = righttoleft ? 1 : -1
+  const pinMarkerX = pinOne.x + pinMarkerDirection * (pinOne.width / 2 + 0.2)
   const pinMarkerY = pinOne.y
   const silkscreen = [
     silkscreenpath([
@@ -122,9 +131,9 @@ export const fpc = (
       { x: silkInsetX, y: bottomSilkY },
     ]),
     silkscreenpath([
-      { x: pinMarkerX - 0.25, y: pinMarkerY - 0.25 },
+      { x: pinMarkerX + pinMarkerDirection * 0.25, y: pinMarkerY - 0.25 },
       { x: pinMarkerX, y: pinMarkerY },
-      { x: pinMarkerX - 0.25, y: pinMarkerY + 0.25 },
+      { x: pinMarkerX + pinMarkerDirection * 0.25, y: pinMarkerY + 0.25 },
     ]),
   ]
   const ref: SilkscreenRef = silkscreenRef(0, topSilkY + 0.7, 0.5)

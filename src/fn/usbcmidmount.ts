@@ -17,6 +17,10 @@ export const usbcmidmount_def = base_def.extend({
   fn: z.literal("usbcmidmount"),
   num_pins: z.literal(16).default(16),
   pinstart: z.coerce.number().int().positive().default(1),
+  sharedshell: z
+    .boolean()
+    .default(false)
+    .describe("give both shell tabs on each side the same pin number"),
   split: z.boolean().default(false).describe("emit all 16 contact lands"),
   reverse: z
     .boolean()
@@ -120,6 +124,7 @@ export const usbcmidmount = (
   }
   const {
     pinstart: pinStart,
+    sharedshell,
     split,
     reverse,
     noholes,
@@ -174,7 +179,7 @@ export const usbcmidmount = (
       outerHeight: tophh + 2 * topring,
     }),
     pillPlatedHole({
-      pin: pinStart + 2,
+      pin: pinStart + (sharedshell ? 0 : 2),
       x: -shellx,
       y: -bottomy,
       holeWidth: bottomhw,
@@ -183,7 +188,7 @@ export const usbcmidmount = (
       outerHeight: bottomhh + 2 * bottomring,
     }),
     pillPlatedHole({
-      pin: pinStart + 3,
+      pin: pinStart + (sharedshell ? 1 : 3),
       x: shellx,
       y: -bottomy,
       holeWidth: bottomhw,
@@ -221,7 +226,13 @@ export const usbcmidmount = (
         index < 2 || index >= signalXs.length - 2 ? powerpw : pw,
       )
   const signalPads = signalXs.map((x, index) =>
-    rectpad(pinStart + 4 + index, x, rowy, signalWidths[index], ph),
+    rectpad(
+      pinStart + (sharedshell ? 2 : 4) + index,
+      x,
+      rowy,
+      signalWidths[index]!,
+      ph,
+    ),
   )
   const silkX = Math.min(shellx - Math.max(tophw, bottomhw) / 2 - 0.2, 4.5)
   const silkscreen = [
