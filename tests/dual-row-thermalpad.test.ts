@@ -24,7 +24,7 @@ for (const [footprint, width, height] of cases) {
       y: 0,
       width,
       height,
-      port_hints: ["thermalpad"],
+      port_hints: ["thermalpad", "9", "pin9", "EP", "EPAD"],
     })
 
     const svgContent = convertCircuitJsonToPcbSvg(soup)

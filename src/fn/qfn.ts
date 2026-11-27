@@ -451,10 +451,14 @@ export const qfn = (
                 2 * parameters.pl,
             }
           : parameters.thermalpad
-      const exposed = createThermalPad(dimensions, {
-        x: parameters.thermalpadcenteroffsetx,
-        y: parameters.thermalpadcenteroffsety,
-      })
+      const exposed = createThermalPad(
+        dimensions,
+        {
+          x: parameters.thermalpadcenteroffsetx,
+          y: parameters.thermalpadcenteroffsety,
+        },
+        parameters.num_pins + 1,
+      )
       if (parameters.pinnumbering === "ballcoords")
         exposed.port_hints = ["EP", "thermalpad"]
       pads.push(exposed)

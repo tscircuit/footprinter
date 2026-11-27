@@ -201,3 +201,35 @@ test("qfn10 supports wider left and right pads for C128396", () => {
     "qfn10_c128396_left_right_pad_overrides",
   )
 })
+
+test("qfn thermal pad exposes pin{N+1} and EP/EPAD port hints for pinLabels binding", () => {
+  const qfn28Pads = fp
+    .string("qfn28_w5mm_h5mm_p0.5mm_pw0.25mm_pl0.75mm_thermalpad2.6mmx2.6mm")
+    .circuitJson()
+    .filter((element) => element.type === "pcb_smtpad")
+  const qfn28ThermalPad = qfn28Pads.find((pad) =>
+    pad.port_hints.includes("thermalpad"),
+  )
+  expect(qfn28ThermalPad?.port_hints).toEqual([
+    "thermalpad",
+    "29",
+    "pin29",
+    "EP",
+    "EPAD",
+  ])
+
+  const qfn56Pads = fp
+    .string("qfn56_w7mm_h7mm_p0.4mm_pw0.2mm_pl0.8mm_thermalpad3.1mmx3.1mm")
+    .circuitJson()
+    .filter((element) => element.type === "pcb_smtpad")
+  const qfn56ThermalPad = qfn56Pads.find((pad) =>
+    pad.port_hints.includes("thermalpad"),
+  )
+  expect(qfn56ThermalPad?.port_hints).toEqual([
+    "thermalpad",
+    "57",
+    "pin57",
+    "EP",
+    "EPAD",
+  ])
+})

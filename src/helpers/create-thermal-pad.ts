@@ -16,5 +16,14 @@ export const createThermalPad = (
     x: number
     y: number
   },
+  pinNumber?: number,
 ): PcbSmtPad =>
-  rectpad(["thermalpad"], offset.x, offset.y, dimensions.x, dimensions.y)
+  rectpad(
+    pinNumber !== undefined
+      ? ["thermalpad", String(pinNumber), `pin${pinNumber}`, "EP", "EPAD"]
+      : ["thermalpad"],
+    offset.x,
+    offset.y,
+    dimensions.x,
+    dimensions.y,
+  )
