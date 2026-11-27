@@ -11,7 +11,7 @@ import { base_def } from "../helpers/zod/base_def"
 
 export const to220_def = base_def.extend({
   fn: z.string(),
-  p: length.optional().default("5.0mm"),
+  p: length.optional(),
   id: length.optional().default("1.0mm"),
   od: length.optional().default("1.9mm"),
   w: length.optional().default("13mm"),
@@ -26,7 +26,7 @@ export const to220 = (
   raw_params: To220Def,
 ): { circuitJson: AnyCircuitElement[]; parameters: any } => {
   const parameters = to220_def.parse(raw_params)
-  const { id, od, w, h, string } = parameters
+  const { id, od, w, h, p, string } = parameters
 
   const numPins =
     parameters.num_pins ??
@@ -36,9 +36,8 @@ export const to220 = (
   const halfWidth = w / 2
   const halfHeight = h / 2
 
-  const minPitch = 2.5
-  const maxHoleWidth = w * 0.4
-  const computedPitch = Math.max(minPitch, maxHoleWidth / (numPins - 1))
+  const defaultPitch = numPins === 2 ? 5.08 : 2.54
+  const computedPitch = p ?? defaultPitch
 
   const plated_holes = Array.from({ length: numPins }, (_, i) => {
     const x =
