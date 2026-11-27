@@ -132,11 +132,12 @@ const getCcwVsonCoords = (params: {
   let pinX = 0
   const centerY = ((params.pinCount / 2 - 1) * params.pitch) / 2
   const pinHalf = params.pinCount / 2
+  // Pin 1 is top-left: pins run down the left side, then up the right side
   if (params.pinIndex + 1 <= pinHalf) {
-    pinY = params.pitch * params.pinIndex - centerY
+    pinY = centerY - params.pitch * params.pinIndex
     pinX = 0 - params.width / 2
   } else {
-    pinY = params.pitch * (params.pinCount - params.pinIndex - 1) - centerY
+    pinY = centerY - params.pitch * (params.pinCount - params.pinIndex - 1)
     pinX = params.width / 2
   }
 
