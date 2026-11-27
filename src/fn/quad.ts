@@ -137,6 +137,19 @@ export const quadTransform = <T extends z.infer<typeof base_quad_def>>(
     v.pl = v.pw! * (1.0 / 0.6)
   }
 
+  const finalPitches: [string, number][] = [
+    ["p", v.p],
+    ["px", v.px ?? v.p],
+    ["py", v.py ?? v.p],
+  ]
+  for (const [name, pitch] of finalPitches) {
+    if (!Number.isFinite(pitch) || pitch <= 0) {
+      throw new Error(
+        `Invalid ${name} (${pitch}) for ${v.fn}: pitch must be a number greater than 0`,
+      )
+    }
+  }
+
   return v as NowDefined<T, "w" | "h" | "p" | "pw" | "pl">
 }
 
