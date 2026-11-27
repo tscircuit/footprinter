@@ -32,8 +32,13 @@ export const radial = (
   const { p, id, od } = parameters
 
   if (id === 0.8 && od === 1.6) {
-    parameters.id = p === 5 ? 0.8 : p * 0.25
-    parameters.od = p === 5 ? 1.6 : p * 0.5
+    // Preserve explicit dimensions, even when they equal the schema defaults.
+    if (raw_params.id === undefined) {
+      parameters.id = p === 5 ? 0.8 : p * 0.25
+    }
+    if (raw_params.od === undefined) {
+      parameters.od = p === 5 ? 1.6 : p * 0.5
+    }
   }
 
   const plated_holes = [
