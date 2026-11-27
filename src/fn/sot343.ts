@@ -143,11 +143,44 @@ export const sot343_4 = (parameters: z.infer<typeof sot343_def>) => {
     stroke_width: 0.1,
   }
 
+  // The standard stepped outline is only large enough for the default lands.
+  // Preserve it when possible; custom lands outside its common horizontal band
+  // need a rectangular envelope so no copper is hidden in an outline notch.
+  const courtyardXs = sot343CourtyardOutline.map((point) => point.x)
+  const courtyardYs = sot343CourtyardOutline.map((point) => point.y)
+  const courtyardLeft = Math.min(...courtyardXs)
+  const courtyardRight = Math.max(...courtyardXs)
+  const courtyardPadHalfHeight = Math.min(...courtyardYs.map(Math.abs))
+  const copperLeft = minX - pl / 2
+  const copperRight = maxX + pl / 2
+  const copperBottom = minY - pw / 2
+  const copperTop = maxY + pw / 2
+  const needsExpandedCourtyard =
+    pl > 0 &&
+    pw > 0 &&
+    [copperLeft, copperRight, copperBottom, copperTop].every(Number.isFinite) &&
+    (copperLeft < courtyardLeft ||
+      copperRight > courtyardRight ||
+      copperBottom < -courtyardPadHalfHeight ||
+      copperTop > courtyardPadHalfHeight)
+  const clearance = 0.1
+  const left = Math.min(courtyardLeft, copperLeft - clearance)
+  const right = Math.max(courtyardRight, copperRight + clearance)
+  const bottom = Math.min(...courtyardYs, copperBottom - clearance)
+  const top = Math.max(...courtyardYs, copperTop + clearance)
+
   const courtyard: PcbCourtyardOutline = {
     type: "pcb_courtyard_outline",
     pcb_courtyard_outline_id: "",
     pcb_component_id: "",
-    outline: sot343CourtyardOutline,
+    outline: needsExpandedCourtyard
+      ? [
+          { x: left, y: top },
+          { x: right, y: top },
+          { x: right, y: bottom },
+          { x: left, y: bottom },
+        ]
+      : sot343CourtyardOutline,
     layer: "top",
   }
 
