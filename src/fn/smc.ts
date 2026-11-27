@@ -78,10 +78,7 @@ export const smc = (
 }
 
 // Get coordinates for smc pads
-export const getSmcCoords = (parameters: {
-  pn: number
-  p: number
-}) => {
+export const getSmcCoords = (parameters: { pn: number; p: number }) => {
   const { pn, p } = parameters
 
   if (pn === 1) {
