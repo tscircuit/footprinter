@@ -1,13 +1,14 @@
-import { z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+  type PcbSilkscreenPath,
+  length,
+} from "circuit-json"
 import { platedHolePill } from "src/helpers/platedHolePill"
 import { platedHoleWithRectPad } from "src/helpers/platedHoleWithRectPad"
-import type {
-  AnyCircuitElement,
-  PcbCourtyardRect,
-  PcbSilkscreenPath,
-} from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedhole } from "src/helpers/platedhole"
+import { z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const to92s_def = base_def.extend({
@@ -22,9 +23,9 @@ export const to92s_def = base_def.extend({
 })
 
 export const to92s_3 = (parameters: z.infer<typeof to92s_def>) => {
-  const { p, id, od, w, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
+  const { p, id, od, h } = parameters
+  const holeY = length.parse(h) / 2
+  const padSpacing = length.parse(p)
 
   return [
     platedhole(1, -padSpacing, holeY - padSpacing, id, od),
@@ -36,10 +37,10 @@ export const to92s_3 = (parameters: z.infer<typeof to92s_def>) => {
 
 export const to92s_2 = (parameters: z.infer<typeof to92s_def>) => {
   const { p, id, od, h } = parameters
-  const holeY = Number.parseFloat(h) / 2
-  const padSpacing = Number.parseFloat(p)
-  const holeDiameter = Number.parseFloat(id)
-  const padWidth = Number.parseFloat(od)
+  const holeY = length.parse(h) / 2
+  const padSpacing = length.parse(p)
+  const holeDiameter = length.parse(id)
+  const padWidth = length.parse(od)
   const padHeight = padWidth * (1.5 / 1.05)
 
   return [
@@ -83,8 +84,8 @@ export const to92s = (
     throw new Error("Invalid number of pins for TO-92")
   }
 
-  const holeY = Number.parseFloat(parameters.h) / 2
-  const padSpacing = Number.parseFloat(parameters.p)
+  const holeY = length.parse(parameters.h) / 2
+  const padSpacing = length.parse(parameters.p)
 
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
@@ -95,8 +96,8 @@ export const to92s = (
       { x: -1.9, y: 0 },
       { x: 1.9, y: 0 },
       { x: holeY, y: holeY - padSpacing },
-      { x: 1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
-      { x: -1.5, y: Number.parseFloat(parameters.h) / 2 + 0.5 },
+      { x: 1.5, y: holeY + 0.5 },
+      { x: -1.5, y: holeY + 0.5 },
       { x: -holeY, y: holeY - padSpacing },
     ],
     stroke_width: 0.1,
@@ -105,7 +106,7 @@ export const to92s = (
 
   const silkscreenRefText: SilkscreenRef = silkscreenRef(0, holeY + 1, 0.5)
 
-  const padOuterDiameter = Number.parseFloat(parameters.od)
+  const padOuterDiameter = length.parse(parameters.od)
   const padCenterY = holeY - padSpacing
   const padMinX = -padSpacing - padOuterDiameter / 2
   const padMaxX = padSpacing + padOuterDiameter / 2

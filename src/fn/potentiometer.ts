@@ -1,11 +1,12 @@
-import { string, z } from "zod"
-import { platedhole } from "src/helpers/platedhole"
-import type {
-  AnyCircuitElement,
-  PcbCourtyardRect,
-  PcbSilkscreenPath,
+import {
+  type AnyCircuitElement,
+  type PcbCourtyardRect,
+  type PcbSilkscreenPath,
+  length,
 } from "circuit-json"
-import { silkscreenRef, type SilkscreenRef } from "../helpers/silkscreenRef"
+import { platedhole } from "src/helpers/platedhole"
+import { string, z } from "zod"
+import { type SilkscreenRef, silkscreenRef } from "../helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const potentiometer_def = base_def.extend({
@@ -29,8 +30,8 @@ export const potentiometer_acp = (
   parameters: z.infer<typeof potentiometer_def>,
 ) => {
   const { p, id, od, h } = parameters
-  const x = Number.parseFloat(h)
-  const y = Number.parseFloat(p)
+  const x = length.parse(h)
+  const y = length.parse(p)
   return [
     platedhole(1, 0, y, id, od),
     platedhole(2, x, 0, id, od),
@@ -53,9 +54,12 @@ export const potentiometer = (
     platedHoles = potentiometer_acp(parameters)
   }
 
-  const y = Number.parseFloat(parameters.ca) / 2 + 0.15
-  const x = Number.parseFloat(parameters.w)
-  const od = Number.parseFloat(parameters.od) / 2 + 0.35
+  const ca = length.parse(parameters.ca)
+  const w = length.parse(parameters.w)
+  const odVal = length.parse(parameters.od)
+  const y = ca / 2 + 0.15
+  const x = w
+  const od = odVal / 2 + 0.35
   const silkscreenBody: PcbSilkscreenPath = {
     type: "pcb_silkscreen_path",
     layer: "top",
@@ -82,12 +86,12 @@ export const potentiometer = (
     stroke_width: 0.1,
     pcb_silkscreen_path_id: "",
   }
-  const W = Number.parseFloat(parameters.w) / 2
+  const W = w / 2
   const silkscreenRefText: SilkscreenRef = silkscreenRef(W, y + 1, 0.5)
 
-  const padRadius = Number.parseFloat(parameters.od) / 2
-  const pinRowSpanX = Number.parseFloat(parameters.h)
-  const pinRowSpanY = Number.parseFloat(parameters.ca) / 2
+  const padRadius = odVal / 2
+  const pinRowSpanX = length.parse(parameters.h)
+  const pinRowSpanY = ca / 2
   const courtyardMinX = -(padRadius + 0.25)
   const courtyardMaxX = pinRowSpanX + padRadius + 0.25
   const courtyardHalfHeight = pinRowSpanY + 0.25
