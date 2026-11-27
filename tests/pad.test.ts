@@ -79,3 +79,14 @@ test("pad footprint with different dimensions", async () => {
   const params = fp().pad().w(3).h(2).json()
   expect(params).toMatchObject({ w: 3, h: 2 })
 })
+
+test("bare pad defaults to 1mm pad without throwing", () => {
+  const soup = fp.string("pad").circuitJson()
+  const pads = soup.filter((e) => e.type === "pcb_smtpad")
+  expect(pads).toHaveLength(1)
+  expect(pads[0]).toMatchObject({
+    type: "pcb_smtpad",
+    width: 1,
+    height: 1,
+  })
+})
