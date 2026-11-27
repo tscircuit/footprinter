@@ -23,3 +23,8 @@ test("quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(bottomside,leftpin)"
     "quad16_w4_l4_p0.4_pw0.25_pl0.4_thermalpad_startingpin(bottomside,leftpin)",
   )
 })
+
+test("quad throws clear error on zero pitch instead of emitting NaN", () => {
+  expect(() => fp.string("lcc_p0mm").circuitJson()).toThrow("Invalid pitch")
+  expect(() => fp.string("qfn16_p0mm").circuitJson()).toThrow("Invalid pitch")
+})
