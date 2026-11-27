@@ -55,15 +55,8 @@ const getTssopCoords = (parameters: {
 export const tssop = (
   raw_params: TssopInput,
 ): { circuitJson: AnyCircuitElement[]; parameters: TssopInput } => {
-  const params: Record<string, unknown> = { ...raw_params }
-  const pRaw = params.p
-  const pValue =
-    typeof pRaw === "string" || typeof pRaw === "number"
-      ? length.parse(pRaw)
-      : undefined
-  const isFinePitch = pValue != null && pValue <= length.parse("0.5mm")
-
-  const parameters = tssop_def.parse(params)
+  const parameters = tssop_def.parse(raw_params)
+  const isFinePitch = parameters.p <= length.parse("0.5mm")
   const pads: AnyCircuitElement[] = []
   const cornerRadius =
     parameters.rounded ?? Math.min(parameters.pl, parameters.pw) / 8
