@@ -137,3 +137,20 @@ test("dip_0.1in", () => {
   const svgContent = convertCircuitJsonToPcbSvg(circuitJson)
   expect(svgContent).toMatchSvgSnapshot(import.meta.path, "dip_0.1in")
 })
+
+test("PDIP-8 aliases resolve to the existing DIP-8 footprint", () => {
+  const dip8 = fp.string("dip8").circuitJson()
+
+  for (const alias of ["pdip8", "PDIP8", "pdip-8", "PDIP-8"]) {
+    expect(fp.string(alias).circuitJson()).toEqual(dip8)
+  }
+})
+
+test("PDIP-8 preserves DIP parameters and global modifiers", () => {
+  expect(fp.string("PDIP-8_w10mm_p2.54mm_id1mm_od1.8mm").circuitJson()).toEqual(
+    fp.string("dip8_w10mm_p2.54mm_id1mm_od1.8mm").circuitJson(),
+  )
+  expect(
+    fp.string("PDIP-8_nosquareplating_nosilkscreen").circuitJson(),
+  ).toEqual(fp.string("dip8_nosquareplating_nosilkscreen").circuitJson())
+})
