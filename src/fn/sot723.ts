@@ -1,11 +1,11 @@
 import {
-  length,
   type AnyCircuitElement,
   type PcbCourtyardOutline,
+  length,
 } from "circuit-json"
+import { type SilkscreenRef, silkscreenRef } from "src/helpers/silkscreenRef"
 import { z } from "zod"
 import { rectpad } from "../helpers/rectpad"
-import { silkscreenRef, type SilkscreenRef } from "src/helpers/silkscreenRef"
 import { base_def } from "../helpers/zod/base_def"
 
 export const sot723_def = base_def.extend({
@@ -73,11 +73,11 @@ export const sot723WithoutParsing = (
   parameters: z.infer<typeof sot723_def>,
 ) => {
   const pads: AnyCircuitElement[] = []
-  const w = Number.parseFloat(parameters.w)
-  const h = Number.parseFloat(parameters.h)
-  const pl = Number.parseFloat(parameters.pl)
-  const pw = Number.parseFloat(parameters.pw)
-  const p = Number.parseFloat(parameters.p)
+  const w = length.parse(parameters.w)
+  const h = length.parse(parameters.h)
+  const pl = length.parse(parameters.pl)
+  const pw = length.parse(parameters.pw)
+  const p = length.parse(parameters.p)
   const cornerRadius = Math.min(pl, pw) / 8
 
   for (let i = 0; i < 3; i++) {
